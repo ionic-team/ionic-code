@@ -546,7 +546,7 @@ angular.module('ionic.service.view', ['ui.router'])
 
   // init the variables that keep track of the view history
   $rootScope.$viewHistory = {
-    histories: { root: { historyId: 'root', parentHistoryId: null, stack: [] } },
+    histories: { root: { historyId: 'root', parentHistoryId: null, stack: [], cursor: -1 } },
     backView: null,
     forwardView: null,
     currentView: null,
@@ -557,10 +557,10 @@ angular.module('ionic.service.view', ['ui.router'])
     if(!data) return;
 
     var hist = (data.historyId ? $rootScope.$viewHistory.histories[ data.historyId ] : null );
-    if(hist && hist.stack.length) {
+    if(hist && hist.cursor > -1 && hist.cursor < hist.stack.length) {
       // the history they're going to already exists
       // go to it's last view in its stack
-      var view = hist.stack[ hist.stack.length - 1 ];
+      var view = hist.stack[ hist.cursor ];
       return view.go();
     }
 
@@ -649,6 +649,7 @@ angular.module('ionic.service.view', ['ui.router'])
         scope.$viewId = backView.viewId;
         if(backView.historyId === currentView.historyId) {
           viewHistory.navDirection = 'back';
+          hist.cursor--;
         }
 
       } else if(forwardView && forwardView.stateId === currentStateId) {
@@ -656,6 +657,7 @@ angular.module('ionic.service.view', ['ui.router'])
         scope.$viewId = forwardView.viewId;
         if(forwardView.historyId === currentView.historyId) {
           viewHistory.navDirection = 'forward';
+          hist.cursor++;
         }
 
         var parentHistory = this._getParentHistoryObj(scope);
@@ -694,6 +696,7 @@ angular.module('ionic.service.view', ['ui.router'])
           url: $location.url()
         });
         hist.stack.push(newView);
+        hist.cursor++;
 
         viewHistory.histories[scope.$viewId] = hist.stack[ hist.stack.length - 1 ];
       }
@@ -708,8 +711,10 @@ angular.module('ionic.service.view', ['ui.router'])
       } else if (scope.title) {
         viewHistory.currentView.title = scope.title;
       }
-      viewHistory.currentView.navDirection = viewHistory.navDirection;
-      $rootScope.$broadcast('viewState.viewShown', viewHistory.currentView);
+      
+      var eventData = angular.copy(viewHistory.currentView);
+      eventData.navDirection = viewHistory.navDirection;
+      $rootScope.$broadcast('viewState.viewShown', eventData);
     },
 
     registerHistory: function(scope) {
@@ -799,7 +804,8 @@ angular.module('ionic.service.view', ['ui.router'])
         $rootScope.$viewHistory.histories[ histObj.historyId ] = { 
           historyId: histObj.historyId, 
           parentHistoryId: this._getParentHistoryObj(histObj.scope).historyId,
-          stack: [] 
+          stack: [],
+          cursor: -1
         };
       }
 
