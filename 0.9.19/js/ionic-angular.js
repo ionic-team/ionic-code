@@ -584,15 +584,18 @@ angular.module('ionic.service.view', ['ui.router'])
     return null;
   };
   View.prototype.go = function(opts) {
-    if(this.url && this.url !== $location.url() && (!opts || opts.enableUrlChange !== false)) {
+    if(this.url && this.url !== $location.url() && 
+      (!opts || opts.enableUrlChange !== false)) {
 
-      if($rootScope.$viewHistory.backView === this && !this.initialView) {
+      if(!this.initialView && $rootScope.$viewHistory.backView === this) {
         return $window.history.go(-1);
       } else if($rootScope.$viewHistory.forwardView === this) {
         return $window.history.go(1);
       }
 
-      //return $location.url(this.url);
+      $location.url(this.url);
+      $rootScope.$apply();
+      return;
     }
 
     if(this.stateName) {
