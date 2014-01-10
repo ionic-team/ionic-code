@@ -29,6 +29,7 @@ angular.module('ionic.service', [
 // UI specific services and delegates
 angular.module('ionic.ui.service', [
   'ionic.ui.service.scrollDelegate',
+  'ionic.ui.service.slideBoxDelegate',
 ]);
 
 angular.module('ionic.ui', [
@@ -116,6 +117,36 @@ angular.module('ionic.ui.service.scrollDelegate', [])
        */
       $scope.$parent.$on('scroll.scrollTop', function(e, animate) {
         $scope.$parent.scrollView && $scope.$parent.scrollView.scrollTo(0, 0, animate === false ? false : true);
+      });
+    }
+  };
+}]);
+
+})(ionic);
+;
+(function() {
+'use strict';
+
+angular.module('ionic.ui.service.slideBoxDelegate', [])
+
+.factory('SlideBoxDelegate', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+  return {
+    /**
+     * Trigger a slidebox to update and resize itself
+     */
+    update: function(animate) {
+      $rootScope.$broadcast('slideBox.update');
+    },
+
+    register: function($scope, $element) {
+      $scope.$parent.$on('slideBox.update', function(e) {
+        if(e.defaultPrevented) {
+          return;
+        }
+        $timeout(function() {
+          $scope.$parent.slideBox.setup();
+        });
+        e.preventDefault();
       });
     }
   };
@@ -295,9 +326,10 @@ angular.module('ionic.service.modal', ['ionic.service.templateLoad', 'ngAnimate'
 
     // Remove and destroy the modal scope
     remove: function() {
-      var element = angular.element(this.el);
+      var self  = this,
+          element = angular.element(this.el);
       $animate.leave(angular.element(this.el), function() {
-        scope.$destroy();
+        self.scope.$destroy();
       });
     }
   });
@@ -410,6 +442,10 @@ angular.module('ionic.service.platform', [])
           this.ready(function() {
             document.removeEventListener('backbutton', fn);
           });
+        },
+
+        is: function(type) {
+          return ionic.Platform.is(type);
         },
 
         /**
@@ -591,7 +627,7 @@ angular.module('ionic.service.view', ['ui.router'])
 
     if(this.url && this.url !== $location.url()) {
 
-      if(!this.initialView && $rootScope.$viewHistory.backView === this) {
+      if($rootScope.$viewHistory.backView === this) {
         return $window.history.go(-1);
       } else if($rootScope.$viewHistory.forwardView === this) {
         return $window.history.go(1);
@@ -675,7 +711,6 @@ angular.module('ionic.service.view', ['ui.router'])
         rsp.viewId = createViewId(currentStateId);
 
         if(currentView) {
-
           // set the forward view if there is a current view (ie: if its not the first view)
           currentView.forwardViewId = rsp.viewId;
 
@@ -715,8 +750,7 @@ angular.module('ionic.service.view', ['ui.router'])
           stateId: currentStateId,
           stateName: this.getCurrentStateName(),
           stateParams: this.getCurrentStateParams(),
-          url: $location.url(),
-          initialView: (rsp.navAction === 'initialView')
+          url: $location.url()
         });
 
         // add the new view to this history's stack
@@ -1118,7 +1152,7 @@ angular.module('ionic.ui.content', ['ionic.ui.service'])
 
 // The content directive is a core scrollable content area
 // that is part of many View hierarchies
-.directive('content', ['$parse', '$timeout', 'ScrollDelegate', function($parse, $timeout, ScrollDelegate) {
+.directive('content', ['$parse', '$timeout', 'Platform', 'ScrollDelegate', function($parse, $timeout, Platform, ScrollDelegate) {
   return {
     restrict: 'E',
     replace: true,
@@ -1132,6 +1166,7 @@ angular.module('ionic.ui.content', ['ionic.ui.service'])
       refreshComplete: '=',
       onInfiniteScroll: '=',
       infiniteScrollDistance: '@',
+      hasBouncing: '@',
       scroll: '@',
       hasScrollX: '@',
       hasScrollY: '@',
@@ -1187,8 +1222,13 @@ angular.module('ionic.ui.content', ['ionic.ui.service'])
 
           // Otherwise, supercharge this baby!
           $timeout(function() {
+            var hasBouncing = $scope.$eval($scope.hasBouncing);
+            var enableBouncing = !Platform.is('Android') && hasBouncing !== false;
+            // No bouncing by default for Android users, lest they take up pitchforks
+            // to our bouncing goodness
             sv = new ionic.views.Scroll({
               el: $element[0],
+              bouncing: enableBouncing,
               scrollbarX: $scope.$eval($scope.scrollbarX) !== false,
               scrollbarY: $scope.$eval($scope.scrollbarY) !== false,
               scrollingX: $scope.$eval($scope.hasScrollX) === true,
@@ -1637,7 +1677,6 @@ angular.module('ionic.ui.scroll', [])
         sc.className = 'scroll';
         if(attr.padding == "true") {
           sc.classList.add('padding');
-          addedPadding = true;
         }
         if($scope.$eval($scope.paging) === true) {
           sc.classList.add('scroll-paging');
@@ -1908,7 +1947,7 @@ angular.module('ionic.ui.slideBox', [])
  * The internal controller for the slide box controller.
  */
 
-.directive('slideBox', ['$timeout', '$compile', function($timeout, $compile) {
+.directive('slideBox', ['$timeout', '$compile', 'SlideBoxDelegate', function($timeout, $compile, SlideBoxDelegate) {
   return {
     restrict: 'E',
     replace: true,
@@ -1918,7 +1957,8 @@ angular.module('ionic.ui.slideBox', [])
       slideInterval: '@',
       showPager: '@',
       disableScroll: '@',
-      onSlideChanged: '&'
+      onSlideChanged: '&',
+      activeSlide: '='
     },
     controller: ['$scope', '$element', function($scope, $element) {
       var _this = this;
@@ -1941,9 +1981,15 @@ angular.module('ionic.ui.slideBox', [])
           $scope.currentSlide = slideIndex;
           $scope.onSlideChanged({index:$scope.currentSlide});
           $scope.$parent.$broadcast('slideBox.slideChanged', slideIndex);
-
+          $scope.activeSlide = slideIndex;
           // Try to trigger a digest
           $timeout(function() {});
+        }
+      });
+
+      $scope.$watch('activeSlide', function(nv) {
+        if(angular.isDefined(nv)){
+          slider.slide(nv);
         }
       });
 
@@ -1960,6 +2006,8 @@ angular.module('ionic.ui.slideBox', [])
       });
 
       $scope.$parent.slideBox = slider;
+
+      SlideBoxDelegate.register($scope, $element);
 
       this.getNumSlides = function() {
         return slider.getNumSlides();
@@ -2585,7 +2633,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
           }
         });
 
-      } 
+      };
     }
 
   };
