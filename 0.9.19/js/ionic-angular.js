@@ -586,13 +586,13 @@ angular.module('ionic.service.view', ['ui.router'])
   View.prototype.go = function(opts) {
     if(this.url && this.url !== $location.url() && (!opts || opts.enableUrlChange !== false)) {
 
-      if($rootScope.$viewHistory.backView === this) {
+      if($rootScope.$viewHistory.backView === this && !this.initialView) {
         return $window.history.go(-1);
       } else if($rootScope.$viewHistory.forwardView === this) {
         return $window.history.go(1);
       }
 
-      return $location.url(this.url);
+      //return $location.url(this.url);
     }
 
     if(this.stateName) {
@@ -705,7 +705,8 @@ angular.module('ionic.service.view', ['ui.router'])
           stateId: currentStateId,
           stateName: this.getCurrentStateName(),
           stateParams: this.getCurrentStateParams(),
-          url: $location.url()
+          url: $location.url(),
+          initialView: (rsp.navAction === 'initialView')
         });
 
         // add the new view to this history's stack
@@ -717,6 +718,9 @@ angular.module('ionic.service.view', ['ui.router'])
       viewHistory.forwardView = this._getForwardView(viewHistory.currentView);
 
       hist.cursor = viewHistory.currentView.index;
+
+      // var stateObj = { foo: "bar" };
+      // window.history.pushState(rsp.viewId);
 
       return rsp;
     },
@@ -2626,7 +2630,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
 
       function update(doAnimation) {
         var locals = $state.$current && $state.$current.locals[name],
-            template = (locals && locals.$template ? locals.$template.trim() : null);
+            template = (locals && locals.$template ? locals.$template : null);
 
         if (locals === viewLocals) return; // nothing to do here, go about your business
 
@@ -2639,7 +2643,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
         };
 
         if (template) {
-          currentElement = angular.element(template);
+          currentElement = angular.element(template.trim());
 
           var registerData = {};
           if(currentElement[0].tagName !== 'TABS') {
