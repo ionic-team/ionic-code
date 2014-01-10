@@ -584,8 +584,12 @@ angular.module('ionic.service.view', ['ui.router'])
     return null;
   };
   View.prototype.go = function(opts) {
-    if(this.url && this.url !== $location.url() && 
-      (!opts || opts.enableUrlChange !== false)) {
+
+    if(this.stateName) {
+      return $state.go(this.stateName, this.stateParams);
+    }
+
+    if(this.url && this.url !== $location.url()) {
 
       if(!this.initialView && $rootScope.$viewHistory.backView === this) {
         return $window.history.go(-1);
@@ -594,12 +598,7 @@ angular.module('ionic.service.view', ['ui.router'])
       }
 
       $location.url(this.url);
-      $rootScope.$apply();
       return;
-    }
-
-    if(this.stateName) {
-      return $state.go(this.stateName, this.stateParams);
     }
 
     return null;
@@ -663,12 +662,20 @@ angular.module('ionic.service.view', ['ui.router'])
           rsp.historyId = forwardView.historyId;
         }
 
+      } else if(currentView && currentView.historyId !== hist.historyId && 
+                hist.cursor > -1 && hist.stack.length > 0 && hist.cursor < hist.stack.length &&
+                hist.stack[hist.cursor].stateId === currentStateId) {
+        // they just changed to a different history and the history already has views in it
+        rsp.viewId = hist.stack[hist.cursor].viewId;
+        rsp.navAction = 'moveBack';
+
       } else {
 
         // set a new unique viewId
         rsp.viewId = createViewId(currentStateId);
 
         if(currentView) {
+
           // set the forward view if there is a current view (ie: if its not the first view)
           currentView.forwardViewId = rsp.viewId;
 
@@ -722,8 +729,9 @@ angular.module('ionic.service.view', ['ui.router'])
 
       hist.cursor = viewHistory.currentView.index;
 
-      // var stateObj = { foo: "bar" };
-      // window.history.pushState(rsp.viewId);
+      $rootScope.$broadcast('$viewHistory.historyChange', {
+        showBack: (viewHistory.backView && viewHistory.backView.historyId === viewHistory.currentView.historyId)
+      });
 
       return rsp;
     },
@@ -2424,7 +2432,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
     },
     template: '<header class="bar bar-header nav-bar">'+//' ng-class="{invisible: !navController.navBar.isVisible}">' + 
         '<div class="buttons"> ' +
-          '<button view-back class="button" ng-show="enableBackButton && showBackButton" ng-class="backButtonClass" ng-bind-html="backButtonLabel"></button>' +
+          '<button view-back class="button" ng-if="enableBackButton" ng-class="backButtonClass" ng-bind-html="backButtonLabel"></button>' +
           '<button ng-click="button.tap($event)" ng-repeat="button in leftButtons" class="button no-animation {{button.type}}" ng-bind-html="button.content"></button>' + 
         '</div>' +
         '<h1 class="title" ng-bind="currentTitle"></h1>' + 
@@ -2440,21 +2448,6 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
       if($attr.backButtonIcon) {
         $scope.backButtonClass += ' icon ' + $attr.backButtonIcon;
       }
-
-      // Listen for changes in the stack cursor position to indicate whether a back
-      // button should be shown (this can still be disabled by the $scope.enableBackButton
-      $rootScope.$watch('$viewHistory.backView', function(backView) {
-        if(backView) {
-          var currentView = ViewService.getCurrentView();
-          if(currentView) {
-            if(backView.historyId === currentView.historyId) {
-              $scope.showBackButton = true;
-              return;
-            }
-          }
-        }
-        $scope.showBackButton = false;
-      });
 
       // Store a reference to our nav controller
       $scope.navController = navCtrl;
@@ -2568,7 +2561,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
 }])
 
 
-.directive('viewBack', ['ViewService', function(ViewService) {
+.directive('viewBack', ['ViewService', '$rootScope', function(ViewService, $rootScope) {
   var goBack = function(e) {
     var backView = ViewService.getBackView();
     backView && backView.go();
@@ -2578,9 +2571,23 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
 
   return {
     restrict: 'AC',
-    link: function($scope, $element) {
-      $element.bind('click', goBack);
+    compile: function(tElement) {
+      tElement.addClass('hide');
+
+      return function link($scope, $element) {
+        $element.bind('click', goBack);
+
+        $rootScope.$on('$viewHistory.historyChange', function(e, data) {
+          if(data.showBack) {
+            $element[0].classList.remove('hide');
+          } else {
+            $element[0].classList.add('hide');
+          }
+        });
+
+      } 
     }
+
   };
 }])
 
