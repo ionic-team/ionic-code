@@ -1,6 +1,7 @@
 [
  {
   "files": [
+   "http://code.ionicframework.com/0.9.19/ionic-v0.9.19.zip",
    "http://code.ionicframework.com/0.9.19/css/ionic.css",
    "http://code.ionicframework.com/0.9.19/css/ionic.min.css",
    "http://code.ionicframework.com/0.9.19/css/themes/ionic-ios7.css",
@@ -51,6 +52,7 @@
  },
  {
   "files": [
+   "http://code.ionicframework.com/0.9.19-alpha/ionic-v0.9.19-alpha.zip",
    "http://code.ionicframework.com/0.9.19-alpha/css/ionic.css",
    "http://code.ionicframework.com/0.9.19-alpha/css/ionic.min.css",
    "http://code.ionicframework.com/0.9.19-alpha/css/themes/ionic-ios7.css",
@@ -101,6 +103,7 @@
  },
  {
   "files": [
+   "http://code.ionicframework.com/0.9.18-alpha/ionic-v0.9.18-alpha.zip",
    "http://code.ionicframework.com/0.9.18-alpha/css/ionic.css",
    "http://code.ionicframework.com/0.9.18-alpha/css/ionic.min.css",
    "http://code.ionicframework.com/0.9.18-alpha/css/themes/ionic-ios7.css",
@@ -149,6 +152,7 @@
  },
  {
   "files": [
+   "http://code.ionicframework.com/nightly/ionic-nightly.zip",
    "http://code.ionicframework.com/nightly/css/ionic.css",
    "http://code.ionicframework.com/nightly/css/ionic.min.css",
    "http://code.ionicframework.com/nightly/css/themes/ionic-ios7.css",

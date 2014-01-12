@@ -33,8 +33,9 @@ def main():
   with open("../versions.json", "w") as text_file:
     text_file.write(output)
 
-
 def build_version(versions, path, version_number):
+  build_zip(path, version_number)
+  
   version = {
     'id':  ('v%s' % (version_number.replace('.', '_').replace('-', '_'))).replace('vnightly', 'nightly'),
     'version_number': version_number,
@@ -43,7 +44,7 @@ def build_version(versions, path, version_number):
   for (dirpath, dirnames, filenames) in os.walk(path):
     print dirpath
     for filename in filenames:
-      if filename.startswith('.'):
+      if filename.startswith('.') :
         continue
       url = '%s/%s' % (dirpath, filename)
       url = url.replace('../', 'http://code.ionicframework.com/')
@@ -51,6 +52,23 @@ def build_version(versions, path, version_number):
 
   versions.append(version)
 
+
+def build_zip(path, version_number):
+  zipname = os.path.join(path, 'ionic-v%s.zip' % (version_number))
+  zipname = zipname.replace('vnightly', 'nightly')
+  if os.path.isfile(zipname):
+    return
+
+  zipf = zipfile.ZipFile(zipname, 'w')
+
+  for (dirpath, dirnames, filenames) in os.walk(path):
+    print dirpath
+    for filename in filenames:
+      if filename.startswith('.') or '.zip' in filename:
+        continue
+      zipf.write(os.path.join(dirpath, filename))
+
+  zipf.close()
     
 
 if __name__ == "__main__":
