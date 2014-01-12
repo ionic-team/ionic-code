@@ -59,6 +59,7 @@
       font-family: 'Helvetica Neue', Helvetica, Arial, serif;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
       color: #6d6d6d;
+      padding-bottom: 40px;
     }
 
     a {
@@ -94,7 +95,7 @@
     }
 
     .inner {
-      width: 620px;
+      width: 800px;
       margin: 0 auto;
     }
 
@@ -242,7 +243,6 @@
     } 
 
     h3 {
-      color: #d5000d;
       font-size: 18px;
       font-weight: bold;
       margin-bottom: 8px;
@@ -359,10 +359,7 @@
     /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
     @media only screen and (max-width: 479px) {}
     </style>
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>Ionic Framework Code</title>
+    <title>Ionic Framework CDN</title>
   </head>
 
   <body>
@@ -370,7 +367,7 @@
       <div class="inner">
 
         <header>
-          <h1>Ionic Framework Code</h1>
+          <h1>Ionic Framework CDN</h1>
         </header>
 
         <section>
@@ -378,14 +375,65 @@
             Static files maintained for the <a href="http://ionicframework.com/">Ionic Framework</a>.
           </p>
           <p>
-            Awesomely sponsored by <a href="http://www.maxcdn.com/">MaxCDN</a>.
+            <em>Note: Its best to use your own local copies of the framework's files when building a Cordova/Phonegap app. These CDN files are provided to be used for online tutorials, demos, examples, etc.</em>
           </p>
+          <p>
+            <select id="versions" style="visibility: hidden"></select>
+          </p>
+          <p id="files"></p>
+          <h3>
+            Awesomely sponsored by <a href="http://www.maxcdn.com/">MaxCDN</a>.
+          </h3>
         </section>
-
-        <footer>
-        </footer>
 
       </div>
     </div>
+    
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script>
+      (function(){
+        var data;
+
+        $.get( "versions.json", function( d ) {
+          if(!d || !d.length) return;
+
+          data = d;
+          var selectOptions = [];
+
+          for(var x=0; x<data.length; x++) {
+            selectOptions.push( '<option value="' + data[x].id + '">' + data[x].version_number + '</option>');
+          }
+
+          $('#versions').html( selectOptions.join('') ).css('visibility', 'visible');
+
+          loadVersion(data[0].id);
+        });
+
+        function loadVersion(versionId) {
+          if(!data) return;
+
+          var links = [];
+
+          for(var x=0; x<data.length; x++) {
+            if(data[x].id === versionId) {
+
+              for(var f=0; f<data[x].files.length; f++) {
+                links.push('<a href="' + data[x].files[f] + '">' + data[x].files[f] + '</a><br>');
+              }
+
+              $('#files').html( links.join('') );
+              return;
+            }
+          }
+        }
+
+        $('#versions').change(function(){
+
+          loadVersion( $(this).val() );
+
+        });
+
+      })();
+    </script>
   </body>
 </html>
