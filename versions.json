@@ -155,8 +155,6 @@
    "http://code.ionicframework.com/nightly/ionic-nightly.zip",
    "http://code.ionicframework.com/nightly/css/ionic.css",
    "http://code.ionicframework.com/nightly/css/ionic.min.css",
-   "http://code.ionicframework.com/nightly/css/themes/ionic-ios7.css",
-   "http://code.ionicframework.com/nightly/css/themes/ionic-ios7.min.css",
    "http://code.ionicframework.com/nightly/fonts/ionicons.eot",
    "http://code.ionicframework.com/nightly/fonts/ionicons.svg",
    "http://code.ionicframework.com/nightly/fonts/ionicons.ttf",
@@ -194,7 +192,9 @@
    "http://code.ionicframework.com/nightly/js/angular/angular.min.js.map",
    "http://code.ionicframework.com/nightly/js/angular/errors.json",
    "http://code.ionicframework.com/nightly/js/angular/version.json",
-   "http://code.ionicframework.com/nightly/js/angular/version.txt"
+   "http://code.ionicframework.com/nightly/js/angular/version.txt",
+   "http://code.ionicframework.com/nightly/js/angular-ui/angular-ui-router.js",
+   "http://code.ionicframework.com/nightly/js/angular-ui/angular-ui-router.min.js"
   ],
   "id": "nightly",
   "version_number": "nightly"
