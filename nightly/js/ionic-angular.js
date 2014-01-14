@@ -435,15 +435,7 @@ angular.module('ionic.service.platform', [])
 
   // We need to do some stuff as soon as we know the platform,
   // like adjust header margins for iOS 7, etc.
-  setTimeout(function afterReadyWait() {
-    if(isReady() && ionic.Platform.detect()) {
-      return;
-    } else {
-      setTimeout(afterReadyWait, 50);
-    }
-  }, 10);
-
-
+  ionic.Platform.detect();
 
 
   return {
@@ -638,7 +630,7 @@ angular.module('ionic.service.view', ['ui.router'])
 }])
 
 .factory('$ionicViewService', ['$rootScope', '$state', '$location', '$window', '$injector', 
-                function( $rootScope,   $state,   $location,   $window,   $injector) {
+                      function( $rootScope,   $state,   $location,   $window,   $injector) {
   var $animate = $injector.has('$animate') ? $injector.get('$animate') : false;
 
   var View = function(){};
@@ -930,6 +922,7 @@ angular.module('ionic.service.view', ['ui.router'])
       if($animate && animationClass && opts.doAnimation !== false && opts.navDirection) {
         // set the animation we're gonna use
         this.setAnimationClass(opts.parentElement, animationClass, opts.navDirection);
+        opts.enteringElement.addClass('ng-enter');
 
         // start the animations
         if(opts.leavingElement) {
@@ -2309,7 +2302,7 @@ angular.module('ionic.ui.tabs', ['ionic.service.view'])
           if(childElement) {
             childElement.remove();
             childElement = null;
-            $scope.$broadcast('tab.hidden');
+            $rootScope.$broadcast('tab.hidden');
           }
           if(childScope) {
             childScope.$destroy();
@@ -2322,8 +2315,8 @@ angular.module('ionic.ui.tabs', ['ionic.service.view'])
               clone.removeAttr('title');
               childElement = clone;
               $element.parent().append(childElement);
-              $scope.$broadcast('tab.shown');
             });
+            $rootScope.$broadcast('tab.shown');
           }
         });
 
@@ -2684,7 +2677,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
       tElement.addClass('hide');
 
       return function link($scope, $element) {
-        $element.bind('tap', goBack);
+        $element.bind('click', goBack);
 
         $scope.showButton = function(val) {
           if(val) {
