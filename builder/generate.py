@@ -5,7 +5,7 @@ import json
 
 def main():
   versions = []
-  SKIP_DIRS = ('assets', 'builder', 'nightly')
+  SKIP_DIRS = ('assets', 'builder', 'nightly', 'contrib')
   ROOT_DIR = '../'
 
   for f in os.listdir(ROOT_DIR):
