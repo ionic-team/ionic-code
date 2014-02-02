@@ -5,7 +5,8 @@ import json
 
 def main():
   versions = []
-  SKIP_DIRS = ('assets', 'builder', 'nightly', 'contrib')
+  ionicons = []
+  SKIP_DIRS = ('assets', 'builder', 'nightly', 'contrib', 'ionicons')
   ROOT_DIR = '../'
 
   for f in os.listdir(ROOT_DIR):
@@ -25,13 +26,38 @@ def main():
   versions = sorted(versions, key=lambda k: sort_name(k), reverse=True) 
   build_version(versions, '../nightly', 'nightly')
 
+  build_ionicons(ionicons)
 
-  output = json.dumps(versions, sort_keys=True,
+  data = {
+    'versions': versions,
+    'ionicons': ionicons
+  }
+
+  output = json.dumps(data, sort_keys=True,
                       indent=1, separators=(',', ': '))
 
   print output
   with open("../versions.json", "w") as text_file:
     text_file.write(output)
+
+def build_ionicons(ionicons):
+  IONICONS_DIR = '../ionicons'
+
+  for f in os.listdir(IONICONS_DIR):
+    if f.startswith('.'):
+      continue
+
+    path = os.path.join(IONICONS_DIR, f)
+    if os.path.isdir(path):
+      build_version(ionicons, path, f)
+
+  def sort_name(k):
+    key = k['id']
+    if '-' not in key:
+      key += '-release'
+    return key
+
+  ionicons = sorted(ionicons, key=lambda k: sort_name(k), reverse=True) 
 
 def build_version(versions, path, version_number):
   build_zip(path, version_number)
@@ -47,7 +73,7 @@ def build_version(versions, path, version_number):
       if filename.startswith('.') :
         continue
       url = '%s/%s' % (dirpath, filename)
-      url = url.replace('../', 'http://code.ionicframework.com/')
+      url = url.replace('../', '/')
       version['files'].append(url)
 
   versions.append(version)

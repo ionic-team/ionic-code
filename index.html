@@ -36,22 +36,6 @@
     body {
       line-height: 1;
     }
-    ol, ul {
-      list-style: none;
-    }
-    blockquote, q {
-      quotes: none;
-    }
-    blockquote:before, blockquote:after,
-    q:before, q:after {
-      content: '';
-      content: none;
-    }
-    table {
-      border-collapse: collapse;
-      border-spacing: 0;
-    }
-
     /* LAYOUT STYLES */
     body {
       font-size: 1em;
@@ -164,68 +148,8 @@
       font-size: 14px;
     }
 
-    code {
-      background-color: #f2f2f2;
-      border: solid 1px #ddd;
-      padding: 0 3px;
-    }
-
-    pre {
-      padding: 20px;
-      background: #303030;
-      color: #f2f2f2;
-      text-shadow: none;
-      overflow: auto;
-    }
-    pre code {
-      color: #f2f2f2;
-      background-color: #303030;
-      border: none;
-      padding: 0;
-    }
-
     ul, ol, dl {
       margin-bottom: 20px;
-    }
-
-
-    /* COMMON STYLES */
-
-    hr {
-      height: 1px;
-      line-height: 1px;
-      margin-top: 1em;
-      padding-bottom: 1em;
-      border: none;
-    }
-
-    strong {
-      font-weight: bold;
-    }
-
-    em {
-      font-style: italic;
-    }
-
-    table {
-      width: 100%;
-      border: 1px solid #ebebeb;
-    }
-
-    th {
-      font-weight: 500;
-    }
-
-    td {
-      border: 1px solid #ebebeb;
-      text-align: center; 
-      font-weight: 300;
-    }
-
-    form {
-      background: #f2f2f2;
-      padding: 20px;
-      
     }
 
 
@@ -276,88 +200,6 @@
     p a {
       font-weight: 400;
     }
-
-    blockquote {
-      font-size: 1.6em;
-      border-left: 10px solid #e9e9e9;
-      margin-bottom: 20px;
-      padding: 0 0 0 30px;
-    }
-
-    ul li {
-      list-style: disc inside;
-      padding-left: 20px;
-    }
-
-    ol li {
-      list-style: decimal inside;
-      padding-left: 3px;
-    }
-
-    dl dt {
-      color: #303030;
-    }
-
-    footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      padding-bottom: 30px;
-      font-size: 13px;
-      color: #aaa;
-    }
-
-    footer a {
-      color: #666;
-    }
-    footer a:hover {
-      color: #444;
-    }
-
-    /* MISC */
-    .clearfix:after {
-      clear: both;
-      content: '.';
-      display: block;
-      visibility: hidden;
-      height: 0;
-    }
-
-    .clearfix {display: inline-block;}
-    * html .clearfix {height: 1%;}
-    .clearfix {display: block;}
-
-    /* #Media Queries
-    ================================================== */
-
-    /* Smaller than standard 960 (devices and browsers) */
-    @media only screen and (max-width: 959px) {}
-
-    /* Tablet Portrait size to standard 960 (devices and browsers) */
-    @media only screen and (min-width: 768px) and (max-width: 959px) {}
-
-    /* All Mobile Sizes (devices and browser) */
-    @media only screen and (max-width: 767px) {
-      header {
-        padding-top: 10px;
-        padding-bottom: 10px;
-      }
-      #downloads {
-        margin-bottom: 25px;
-      }
-      #download-zip, #download-tar-gz {
-        display: none;
-      }
-      .inner {
-        width: 94%;
-        margin: 0 auto;
-      }
-    }
-
-    /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
-    @media only screen and (min-width: 480px) and (max-width: 767px) {}
-
-    /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
-    @media only screen and (max-width: 479px) {}
     </style>
     <title>Ionic Framework CDN</title>
   </head>
@@ -395,9 +237,9 @@
         var data;
 
         $.get( "versions.json", function( d ) {
-          if(!d || !d.length) return;
+          if(!d) return;
 
-          data = d;
+          data = d.versions;
           var selectOptions = [];
 
           for(var x=0; x<data.length; x++) {
@@ -418,7 +260,7 @@
             if(data[x].id === versionId) {
 
               for(var f=0; f<data[x].files.length; f++) {
-                links.push('<a href="' + data[x].files[f] + '">' + data[x].files[f] + '</a><br>');
+                links.push('<a href="http://code.ionicframework.com' + data[x].files[f] + '">http://code.ionicframework.com' + data[x].files[f] + '</a><br>');
               }
 
               $('#files').html( links.join('') );
