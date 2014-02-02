@@ -2,179 +2,16 @@
  "ionicons": [
   {
    "files": [
-    "/ionicons/1.0/ionic-v1.0.zip",
-    "/ionicons/1.0/ionicons.css",
-    "/ionicons/1.0/fonts/ionicons.eot",
-    "/ionicons/1.0/fonts/ionicons.svg",
-    "/ionicons/1.0/fonts/ionicons.ttf",
-    "/ionicons/1.0/fonts/ionicons.woff"
+    "/ionicons/1.4.1/ionic-v1.4.1.zip",
+    "/ionicons/1.4.1/css/ionicons.css",
+    "/ionicons/1.4.1/css/ionicons.min.css",
+    "/ionicons/1.4.1/fonts/ionicons.eot",
+    "/ionicons/1.4.1/fonts/ionicons.svg",
+    "/ionicons/1.4.1/fonts/ionicons.ttf",
+    "/ionicons/1.4.1/fonts/ionicons.woff"
    ],
-   "id": "v1_0",
-   "version_number": "1.0"
-  },
-  {
-   "files": [
-    "/ionicons/1.1/ionic-v1.1.zip",
-    "/ionicons/1.1/ionicons.css",
-    "/ionicons/1.1/fonts/ionicons.eot",
-    "/ionicons/1.1/fonts/ionicons.svg",
-    "/ionicons/1.1/fonts/ionicons.ttf",
-    "/ionicons/1.1/fonts/ionicons.woff"
-   ],
-   "id": "v1_1",
-   "version_number": "1.1"
-  },
-  {
-   "files": [
-    "/ionicons/1.2/ionic-v1.2.zip",
-    "/ionicons/1.2/ionicons.css",
-    "/ionicons/1.2/fonts/ionicons.eot",
-    "/ionicons/1.2/fonts/ionicons.svg",
-    "/ionicons/1.2/fonts/ionicons.ttf",
-    "/ionicons/1.2/fonts/ionicons.woff"
-   ],
-   "id": "v1_2",
-   "version_number": "1.2"
-  },
-  {
-   "files": [
-    "/ionicons/1.2.1/ionic-v1.2.1.zip",
-    "/ionicons/1.2.1/ionicons.css",
-    "/ionicons/1.2.1/fonts/ionicons.eot",
-    "/ionicons/1.2.1/fonts/ionicons.svg",
-    "/ionicons/1.2.1/fonts/ionicons.ttf",
-    "/ionicons/1.2.1/fonts/ionicons.woff"
-   ],
-   "id": "v1_2_1",
-   "version_number": "1.2.1"
-  },
-  {
-   "files": [
-    "/ionicons/1.2.2/ionic-v1.2.2.zip",
-    "/ionicons/1.2.2/ionicons.css",
-    "/ionicons/1.2.2/fonts/ionicons.eot",
-    "/ionicons/1.2.2/fonts/ionicons.svg",
-    "/ionicons/1.2.2/fonts/ionicons.ttf",
-    "/ionicons/1.2.2/fonts/ionicons.woff"
-   ],
-   "id": "v1_2_2",
-   "version_number": "1.2.2"
-  },
-  {
-   "files": [
-    "/ionicons/1.2.3/ionic-v1.2.3.zip",
-    "/ionicons/1.2.3/ionicons.css",
-    "/ionicons/1.2.3/fonts/ionicons.eot",
-    "/ionicons/1.2.3/fonts/ionicons.svg",
-    "/ionicons/1.2.3/fonts/ionicons.ttf",
-    "/ionicons/1.2.3/fonts/ionicons.woff"
-   ],
-   "id": "v1_2_3",
-   "version_number": "1.2.3"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.0/ionic-v1.3.0.zip",
-    "/ionicons/1.3.0/css/ionicons.css",
-    "/ionicons/1.3.0/css/ionicons.min.css",
-    "/ionicons/1.3.0/fonts/ionicons.eot",
-    "/ionicons/1.3.0/fonts/ionicons.svg",
-    "/ionicons/1.3.0/fonts/ionicons.ttf",
-    "/ionicons/1.3.0/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_0",
-   "version_number": "1.3.0"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.1/ionic-v1.3.1.zip",
-    "/ionicons/1.3.1/css/ionicons.css",
-    "/ionicons/1.3.1/css/ionicons.min.css",
-    "/ionicons/1.3.1/fonts/ionicons.eot",
-    "/ionicons/1.3.1/fonts/ionicons.svg",
-    "/ionicons/1.3.1/fonts/ionicons.ttf",
-    "/ionicons/1.3.1/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_1",
-   "version_number": "1.3.1"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.2/ionic-v1.3.2.zip",
-    "/ionicons/1.3.2/css/ionicons.css",
-    "/ionicons/1.3.2/css/ionicons.min.css",
-    "/ionicons/1.3.2/fonts/ionicons.eot",
-    "/ionicons/1.3.2/fonts/ionicons.svg",
-    "/ionicons/1.3.2/fonts/ionicons.ttf",
-    "/ionicons/1.3.2/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_2",
-   "version_number": "1.3.2"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.3/ionic-v1.3.3.zip",
-    "/ionicons/1.3.3/css/ionicons.css",
-    "/ionicons/1.3.3/css/ionicons.min.css",
-    "/ionicons/1.3.3/fonts/ionicons.eot",
-    "/ionicons/1.3.3/fonts/ionicons.svg",
-    "/ionicons/1.3.3/fonts/ionicons.ttf",
-    "/ionicons/1.3.3/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_3",
-   "version_number": "1.3.3"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.4/ionic-v1.3.4.zip",
-    "/ionicons/1.3.4/css/ionicons.css",
-    "/ionicons/1.3.4/css/ionicons.min.css",
-    "/ionicons/1.3.4/fonts/ionicons.eot",
-    "/ionicons/1.3.4/fonts/ionicons.svg",
-    "/ionicons/1.3.4/fonts/ionicons.ttf",
-    "/ionicons/1.3.4/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_4",
-   "version_number": "1.3.4"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.5/ionic-v1.3.5.zip",
-    "/ionicons/1.3.5/css/ionicons.css",
-    "/ionicons/1.3.5/css/ionicons.min.css",
-    "/ionicons/1.3.5/fonts/ionicons.eot",
-    "/ionicons/1.3.5/fonts/ionicons.svg",
-    "/ionicons/1.3.5/fonts/ionicons.ttf",
-    "/ionicons/1.3.5/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_5",
-   "version_number": "1.3.5"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.6/ionic-v1.3.6.zip",
-    "/ionicons/1.3.6/css/ionicons.css",
-    "/ionicons/1.3.6/css/ionicons.min.css",
-    "/ionicons/1.3.6/fonts/ionicons.eot",
-    "/ionicons/1.3.6/fonts/ionicons.svg",
-    "/ionicons/1.3.6/fonts/ionicons.ttf",
-    "/ionicons/1.3.6/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_6",
-   "version_number": "1.3.6"
-  },
-  {
-   "files": [
-    "/ionicons/1.3.7/ionic-v1.3.7.zip",
-    "/ionicons/1.3.7/css/ionicons.css",
-    "/ionicons/1.3.7/css/ionicons.min.css",
-    "/ionicons/1.3.7/fonts/ionicons.eot",
-    "/ionicons/1.3.7/fonts/ionicons.svg",
-    "/ionicons/1.3.7/fonts/ionicons.ttf",
-    "/ionicons/1.3.7/fonts/ionicons.woff"
-   ],
-   "id": "v1_3_7",
-   "version_number": "1.3.7"
+   "id": "v1_4_1",
+   "version_number": "1.4.1"
   },
   {
    "files": [
@@ -191,16 +28,179 @@
   },
   {
    "files": [
-    "/ionicons/1.4.1/ionic-v1.4.1.zip",
-    "/ionicons/1.4.1/css/ionicons.css",
-    "/ionicons/1.4.1/css/ionicons.min.css",
-    "/ionicons/1.4.1/fonts/ionicons.eot",
-    "/ionicons/1.4.1/fonts/ionicons.svg",
-    "/ionicons/1.4.1/fonts/ionicons.ttf",
-    "/ionicons/1.4.1/fonts/ionicons.woff"
+    "/ionicons/1.3.7/ionic-v1.3.7.zip",
+    "/ionicons/1.3.7/css/ionicons.css",
+    "/ionicons/1.3.7/css/ionicons.min.css",
+    "/ionicons/1.3.7/fonts/ionicons.eot",
+    "/ionicons/1.3.7/fonts/ionicons.svg",
+    "/ionicons/1.3.7/fonts/ionicons.ttf",
+    "/ionicons/1.3.7/fonts/ionicons.woff"
    ],
-   "id": "v1_4_1",
-   "version_number": "1.4.1"
+   "id": "v1_3_7",
+   "version_number": "1.3.7"
+  },
+  {
+   "files": [
+    "/ionicons/1.3.6/ionic-v1.3.6.zip",
+    "/ionicons/1.3.6/css/ionicons.css",
+    "/ionicons/1.3.6/css/ionicons.min.css",
+    "/ionicons/1.3.6/fonts/ionicons.eot",
+    "/ionicons/1.3.6/fonts/ionicons.svg",
+    "/ionicons/1.3.6/fonts/ionicons.ttf",
+    "/ionicons/1.3.6/fonts/ionicons.woff"
+   ],
+   "id": "v1_3_6",
+   "version_number": "1.3.6"
+  },
+  {
+   "files": [
+    "/ionicons/1.3.5/ionic-v1.3.5.zip",
+    "/ionicons/1.3.5/css/ionicons.css",
+    "/ionicons/1.3.5/css/ionicons.min.css",
+    "/ionicons/1.3.5/fonts/ionicons.eot",
+    "/ionicons/1.3.5/fonts/ionicons.svg",
+    "/ionicons/1.3.5/fonts/ionicons.ttf",
+    "/ionicons/1.3.5/fonts/ionicons.woff"
+   ],
+   "id": "v1_3_5",
+   "version_number": "1.3.5"
+  },
+  {
+   "files": [
+    "/ionicons/1.3.4/ionic-v1.3.4.zip",
+    "/ionicons/1.3.4/css/ionicons.css",
+    "/ionicons/1.3.4/css/ionicons.min.css",
+    "/ionicons/1.3.4/fonts/ionicons.eot",
+    "/ionicons/1.3.4/fonts/ionicons.svg",
+    "/ionicons/1.3.4/fonts/ionicons.ttf",
+    "/ionicons/1.3.4/fonts/ionicons.woff"
+   ],
+   "id": "v1_3_4",
+   "version_number": "1.3.4"
+  },
+  {
+   "files": [
+    "/ionicons/1.3.3/ionic-v1.3.3.zip",
+    "/ionicons/1.3.3/css/ionicons.css",
+    "/ionicons/1.3.3/css/ionicons.min.css",
+    "/ionicons/1.3.3/fonts/ionicons.eot",
+    "/ionicons/1.3.3/fonts/ionicons.svg",
+    "/ionicons/1.3.3/fonts/ionicons.ttf",
+    "/ionicons/1.3.3/fonts/ionicons.woff"
+   ],
+   "id": "v1_3_3",
+   "version_number": "1.3.3"
+  },
+  {
+   "files": [
+    "/ionicons/1.3.2/ionic-v1.3.2.zip",
+    "/ionicons/1.3.2/css/ionicons.css",
+    "/ionicons/1.3.2/css/ionicons.min.css",
+    "/ionicons/1.3.2/fonts/ionicons.eot",
+    "/ionicons/1.3.2/fonts/ionicons.svg",
+    "/ionicons/1.3.2/fonts/ionicons.ttf",
+    "/ionicons/1.3.2/fonts/ionicons.woff"
+   ],
+   "id": "v1_3_2",
+   "version_number": "1.3.2"
+  },
+  {
+   "files": [
+    "/ionicons/1.3.1/ionic-v1.3.1.zip",
+    "/ionicons/1.3.1/css/ionicons.css",
+    "/ionicons/1.3.1/css/ionicons.min.css",
+    "/ionicons/1.3.1/fonts/ionicons.eot",
+    "/ionicons/1.3.1/fonts/ionicons.svg",
+    "/ionicons/1.3.1/fonts/ionicons.ttf",
+    "/ionicons/1.3.1/fonts/ionicons.woff"
+   ],
+   "id": "v1_3_1",
+   "version_number": "1.3.1"
+  },
+  {
+   "files": [
+    "/ionicons/1.3.0/ionic-v1.3.0.zip",
+    "/ionicons/1.3.0/css/ionicons.css",
+    "/ionicons/1.3.0/css/ionicons.min.css",
+    "/ionicons/1.3.0/fonts/ionicons.eot",
+    "/ionicons/1.3.0/fonts/ionicons.svg",
+    "/ionicons/1.3.0/fonts/ionicons.ttf",
+    "/ionicons/1.3.0/fonts/ionicons.woff"
+   ],
+   "id": "v1_3_0",
+   "version_number": "1.3.0"
+  },
+  {
+   "files": [
+    "/ionicons/1.2.3/ionic-v1.2.3.zip",
+    "/ionicons/1.2.3/ionicons.css",
+    "/ionicons/1.2.3/fonts/ionicons.eot",
+    "/ionicons/1.2.3/fonts/ionicons.svg",
+    "/ionicons/1.2.3/fonts/ionicons.ttf",
+    "/ionicons/1.2.3/fonts/ionicons.woff"
+   ],
+   "id": "v1_2_3",
+   "version_number": "1.2.3"
+  },
+  {
+   "files": [
+    "/ionicons/1.2.2/ionic-v1.2.2.zip",
+    "/ionicons/1.2.2/ionicons.css",
+    "/ionicons/1.2.2/fonts/ionicons.eot",
+    "/ionicons/1.2.2/fonts/ionicons.svg",
+    "/ionicons/1.2.2/fonts/ionicons.ttf",
+    "/ionicons/1.2.2/fonts/ionicons.woff"
+   ],
+   "id": "v1_2_2",
+   "version_number": "1.2.2"
+  },
+  {
+   "files": [
+    "/ionicons/1.2.1/ionic-v1.2.1.zip",
+    "/ionicons/1.2.1/ionicons.css",
+    "/ionicons/1.2.1/fonts/ionicons.eot",
+    "/ionicons/1.2.1/fonts/ionicons.svg",
+    "/ionicons/1.2.1/fonts/ionicons.ttf",
+    "/ionicons/1.2.1/fonts/ionicons.woff"
+   ],
+   "id": "v1_2_1",
+   "version_number": "1.2.1"
+  },
+  {
+   "files": [
+    "/ionicons/1.2/ionic-v1.2.zip",
+    "/ionicons/1.2/ionicons.css",
+    "/ionicons/1.2/fonts/ionicons.eot",
+    "/ionicons/1.2/fonts/ionicons.svg",
+    "/ionicons/1.2/fonts/ionicons.ttf",
+    "/ionicons/1.2/fonts/ionicons.woff"
+   ],
+   "id": "v1_2",
+   "version_number": "1.2"
+  },
+  {
+   "files": [
+    "/ionicons/1.1/ionic-v1.1.zip",
+    "/ionicons/1.1/ionicons.css",
+    "/ionicons/1.1/fonts/ionicons.eot",
+    "/ionicons/1.1/fonts/ionicons.svg",
+    "/ionicons/1.1/fonts/ionicons.ttf",
+    "/ionicons/1.1/fonts/ionicons.woff"
+   ],
+   "id": "v1_1",
+   "version_number": "1.1"
+  },
+  {
+   "files": [
+    "/ionicons/1.0/ionic-v1.0.zip",
+    "/ionicons/1.0/ionicons.css",
+    "/ionicons/1.0/fonts/ionicons.eot",
+    "/ionicons/1.0/fonts/ionicons.svg",
+    "/ionicons/1.0/fonts/ionicons.ttf",
+    "/ionicons/1.0/fonts/ionicons.woff"
+   ],
+   "id": "v1_0",
+   "version_number": "1.0"
   }
  ],
  "versions": [

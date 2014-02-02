@@ -27,6 +27,7 @@ def main():
   build_version(versions, '../nightly', 'nightly')
 
   build_ionicons(ionicons)
+  ionicons = sorted(ionicons, key=lambda k: sort_name(k), reverse=True) 
 
   data = {
     'versions': versions,
@@ -50,14 +51,6 @@ def build_ionicons(ionicons):
     path = os.path.join(IONICONS_DIR, f)
     if os.path.isdir(path):
       build_version(ionicons, path, f)
-
-  def sort_name(k):
-    key = k['id']
-    if '-' not in key:
-      key += '-release'
-    return key
-
-  ionicons = sorted(ionicons, key=lambda k: sort_name(k), reverse=True) 
 
 def build_version(versions, path, version_number):
   build_zip(path, version_number)
