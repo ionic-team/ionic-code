@@ -53,6 +53,7 @@ def build_ionicons(ionicons):
       build_version(ionicons, path, f)
 
 def build_version(versions, path, version_number):
+  print version_number
   build_zip(path, version_number)
   
   version = {
@@ -62,7 +63,6 @@ def build_version(versions, path, version_number):
   }
   set_version_codename(path, version)
   for (dirpath, dirnames, filenames) in os.walk(path):
-    print dirpath
     for filename in filenames:
       if filename.startswith('.') or filename.endswith('.txt') or filename.endswith('.json'):
         continue
@@ -116,15 +116,15 @@ def set_version_codename(path, version):
 def build_zip(path, version_number):
   zipname = os.path.join(path, 'ionic-v%s.zip' % (version_number))
   zipname = zipname.replace('vnightly', 'nightly')
-  if os.path.isfile(zipname):
+  if 'nightly' not in zipname and os.path.isfile(zipname):
     return
 
+  print 'Build ' + zipname
   zipf = zipfile.ZipFile(zipname, 'w')
 
   for (dirpath, dirnames, filenames) in os.walk(path):
-    print dirpath
     for filename in filenames:
-      if filename.startswith('.') or '.zip' in filename:
+      if filename.startswith('.') or '.zip' in filename or filename.endswith('.json')or filename.endswith('.txt'):
         continue
       zipf.write(os.path.join(dirpath, filename))
 
