@@ -60,17 +60,40 @@ def build_version(versions, path, version_number):
     'version_number': version_number,
     'files': []
   }
+  set_version_codename(path, version)
   for (dirpath, dirnames, filenames) in os.walk(path):
     print dirpath
     for filename in filenames:
-      if filename.startswith('.') :
+      if filename.startswith('.') or filename.endswith('.txt'):
         continue
+
       url = '%s/%s' % (dirpath, filename)
       url = url.replace('../', '/')
       version['files'].append(url)
 
   versions.append(version)
 
+def set_version_codename(path, version):
+  if version['id'] == 'nightly':
+    return
+    
+  try:
+    #0.9.23 oxen-trajectory
+    filename = os.path.join(path, 'version.txt')
+    f = open(filename, 'r')
+    txt = f.read()
+    f.close()
+    codename = txt.strip().split(' ')[1]
+
+    version['version_codename'] = codename
+
+    names = codename.split('-')
+    name = ''
+    for n in names:
+      name += n.capitalize() + ' '
+    version['version_name'] = name.strip()
+  except:
+    pass
 
 def build_zip(path, version_number):
   zipname = os.path.join(path, 'ionic-v%s.zip' % (version_number))
