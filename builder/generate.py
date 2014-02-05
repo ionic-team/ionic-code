@@ -37,7 +37,7 @@ def main():
   output = json.dumps(data, sort_keys=True,
                       indent=1, separators=(',', ': '))
 
-  print output
+  #print output
   with open("../versions.json", "w") as text_file:
     text_file.write(output)
 
@@ -64,7 +64,7 @@ def build_version(versions, path, version_number):
   for (dirpath, dirnames, filenames) in os.walk(path):
     print dirpath
     for filename in filenames:
-      if filename.startswith('.') or filename.endswith('.txt'):
+      if filename.startswith('.') or filename.endswith('.txt') or filename.endswith('.json'):
         continue
 
       url = '%s/%s' % (dirpath, filename)
@@ -74,24 +74,42 @@ def build_version(versions, path, version_number):
   versions.append(version)
 
 def set_version_codename(path, version):
-  if version['id'] == 'nightly':
-    return
-    
   try:
-    #0.9.23 oxen-trajectory
-    filename = os.path.join(path, 'version.txt')
+    filename = os.path.join(path, 'version.json')
     f = open(filename, 'r')
-    txt = f.read()
+    d = json.loads(f.read())
     f.close()
-    codename = txt.strip().split(' ')[1]
 
-    version['version_codename'] = codename
+    # {
+    #   "version": "0.9.24-alpha-670",
+    #   "codename": "peleguin",
+    #   "date": "2014-02-05",
+    #   "time": "19:22:10"
+    # }
 
-    names = codename.split('-')
-    name = ''
-    for n in names:
-      name += n.capitalize() + ' '
-    version['version_name'] = name.strip()
+    date = d.get('date', None)
+    if date:
+      version['release_datetime'] = date.strip()
+      version['release_date'] = date.strip()
+
+      time = d.get('time', None)
+      if time:
+        version['release_datetime'] += ' ' + time.strip()
+
+    if version['id'] == 'nightly':
+      return
+    
+    codename = d.get('codename', None)
+    if codename:
+      codename = d.get('codename', None)
+      version['version_codename'] = codename
+
+      version['version_name'] = ''
+      names = codename.split('-')
+      for n in names:
+        version['version_name'] += n.capitalize() + ' '
+      version['version_name'] = version['version_name'].strip()
+
   except:
     pass
 
