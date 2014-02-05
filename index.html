@@ -7,7 +7,7 @@
     html, body, div, span, applet, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
     a, abbr, acronym, address, big, cite, code,
-    del, dfn, em, img, ins, kbd, q, s, samp,
+    del, dfn, img, ins, kbd, q, s, samp,
     small, strike, strong, sub, sup, tt, var,
     b, u, i, center,
     dl, dt, dd, ol, ul, li,
@@ -120,7 +120,7 @@
             Static files maintained for the <a href="http://ionicframework.com/">Ionic Framework</a>.
           </p>
           <p>
-            <em>Note: Its best to use your own local copies of the framework's files when building a Cordova/Phonegap app. These CDN files are provided for online tutorials, demos, examples, etc.</em>
+            <em>Note: Its best to use your own local copies of the framework's files when building a Cordova/Phonegap hybrid app. These CDN files are provided for archived versions, online tutorials, demos, examples, etc.</em>
           </p>
           <p>
             <select id="versions" style="visibility: hidden"></select>
@@ -137,7 +137,7 @@
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script>
       (function(){
-        var data;
+        var data, preload;
 
         $.get( "versions.json", function( d ) {
           if(!d) return;
@@ -157,6 +157,10 @@
           $('#versions').html( selectOptions.join('') ).css('visibility', 'visible');
 
           loadVersion(data[0].id);
+          if(preload) {
+            loadVersion(preload);
+          }
+          
         });
 
         function loadVersion(versionId) {
@@ -172,16 +176,30 @@
               }
 
               $('#files').html( links.join('') );
+              $('#versions').val(versionId);
+
+              var newUrl = (x > 0 ? data[x].version_number : '');
+              try {
+                history.pushState({}, 
+                                  'Ionic Framework CDN, ' + data[x].version_number, 
+                                  '#' + newUrl);
+              }catch(e){};
               return;
             }
           }
         }
 
         $('#versions').change(function(){
-
           loadVersion( $(this).val() );
-
         });
+
+        if(location.hash.length) {
+          preload = location.hash.replace('#', '').replace(/\./g, '_');
+          if(preload !== 'nightly' && preload.indexOf('v') === -1) {
+            preload = 'v' + preload;
+          }
+          loadVersion(preload);
+        }
 
       })();
     </script>
