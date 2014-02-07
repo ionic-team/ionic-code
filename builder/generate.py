@@ -34,8 +34,7 @@ def main():
     'ionicons': ionicons
   }
 
-  output = json.dumps(data, sort_keys=True,
-                      indent=1, separators=(',', ': '))
+  output = json.dumps(data, sort_keys=True, indent=1, separators=(',', ':'))
 
   #print output
   with open("../versions.json", "w") as text_file:
@@ -71,27 +70,39 @@ def build_version(versions, path, version_number):
 
   for (dirpath, dirnames, filenames) in os.walk(path):
     for filename in filenames:
-      if filename.startswith('.') or filename.endswith('.txt') or filename.endswith('.json'):
+      if filename.startswith('.') or filename.endswith('.txt') or filename.endswith('.json') or filename.endswith('.map'):
         continue
 
-      url = '%s/%s' % (dirpath, filename)
-      url = url.replace('../', '/')
-      if filename.endswith('.zip'):
-        zip_files.append(url)
-      elif filename.endswith('.css'):
-        css_files.append(url)
-      elif filename.endswith('.js') and 'ionic' in filename:
-        js_files.append(url)
-      elif 'font' in dirpath:
-        font_files.append(url)
-      else:
-        dep_files.append(url)
+      f = {
+        'path': '%s/%s' % (dirpath, filename)
+      }
+      f['path'] = f['path'].replace('../', '/')
+      f['size'] = sizeof_fmt( os.path.getsize( os.path.join(dirpath, filename) ) )
 
-  zip_files.sort()
-  css_files.sort()
-  js_files.sort()
-  font_files.sort()
-  dep_files.sort()
+      if filename.endswith('.zip'):
+        f['type'] = 'zip'
+        zip_files.append(f)
+      elif filename.endswith('.css'):
+        f['type'] = 'css'
+        css_files.append(f)
+      elif filename.endswith('.js') and 'ionic' in filename:
+        f['type'] = 'js'
+        js_files.append(f)
+      elif 'font' in dirpath:
+        f['type'] = 'font'
+        font_files.append(f)
+      else:
+        f['type'] = 'dependency'
+        dep_files.append(f)
+
+      if filename.endswith('.css') or filename.endswith('.js'):
+        f['minified'] = ('.min.' in filename)
+
+  zip_files = sorted(zip_files, key=lambda k: 'path')
+  css_files = sorted(css_files, key=lambda k: 'path')
+  js_files = sorted(js_files, key=lambda k: 'path')
+  font_files = sorted(font_files, key=lambda k: 'path')
+  dep_files = sorted(dep_files, key=lambda k: 'path')
 
   version['files'] = zip_files + css_files + js_files + dep_files + font_files
 
@@ -155,7 +166,12 @@ def build_zip(path, version_number):
       zipf.write(os.path.join(dirpath, filename))
 
   zipf.close()
-    
+  
+def sizeof_fmt(num):
+  for x in ['bytes','KB','MB','GB','TB']:
+      if num < 1024.0:
+          return "%3.1f %s" % (num, x)
+      num /= 1024.0
 
 if __name__ == "__main__":
   main()

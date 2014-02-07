@@ -66,9 +66,9 @@
       line-height: 1.3;
     }
 
-    h3 {
+    h2 {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
     }
 
     #container {
@@ -76,7 +76,7 @@
     }
 
     .inner {
-      width: 800px;
+      width: 700px;
       margin: 0 auto;
     }
 
@@ -101,7 +101,18 @@
       font-size: 16px;
     }
     #files {
-      line-height: 26px
+      line-height: 24px
+    }
+    .files-panel {
+      margin: 0 0 18px 0;
+    }
+    .files-panel h3 {
+      line-height: 18px;
+    }
+    .files-panel p {
+      font-size: 12px;
+      line-height: 18px;
+      margin: 3px 0 1px 0;
     }
     </style>
     <title>Ionic Framework CDN</title>
@@ -117,18 +128,55 @@
 
         <section>
           <p>
+            <select id="versions" style="visibility: hidden"></select>
+          </p>
+
+          <div id="files" style="display: none">
+
+            <div class="files-panel">
+              <h3>Bundle</h3>
+              <p>Includes all the files below in one archive file.</p>
+              <div id="zip-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Ionic CSS Files</h3>
+              <div id="css-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Ionic JavaScript Files</h3>
+              <div id="js-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Dependencies</h3>
+              <p>Not all of these files are required by Ionic, but have been included here for if needed.</p>
+              <div id="dependency-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Ionicons</h3>
+              <p>These files automatically get referenced from Ionic's CSS files. 
+                See <a href="http://ionicons.com/">Ionicons</a> for more info.</p>
+              <div id="font-files"></div>
+            </div>
+
+          </div>
+
+          <hr>
+
+          <p>
             Static files maintained for the <a href="http://ionicframework.com/">Ionic Framework</a>.
           </p>
+
           <p>
             <em>Note: Its best to use your own local copies of the framework's files when building a Cordova/Phonegap hybrid app. These CDN files are provided for archived versions, online tutorials, demos, examples, etc.</em>
           </p>
-          <p>
-            <select id="versions" style="visibility: hidden"></select>
-          </p>
-          <p id="files"></p>
-          <h3>
+
+          <h2>
             Awesomely sponsored by <a href="http://www.maxcdn.com/">MaxCDN</a>.
-          </h3>
+          </h2>
         </section>
 
       </div>
@@ -168,21 +216,48 @@
         function loadVersion(versionId) {
           if(!data) return;
 
-          var links = [];
+          var
+          x, f, file, newUrl, link,
+          zip = [],
+          css = [],
+          js = [],
+          dependency = [],
+          font = [];
 
-          for(var x=0; x<data.length; x++) {
+          for(x=0; x<data.length; x++) {
             if(data[x].id === versionId) {
 
-              for(var f=0; f<data[x].files.length; f++) {
-                links.push('<a href="http://code.ionicframework.com' + data[x].files[f] + '">http://code.ionicframework.com' + data[x].files[f] + '</a><br>');
+              for(f=0; f<data[x].files.length; f++) {
+                file = data[x].files[f];
+
+                link = '<div><a href="http://code.ionicframework.com' + file.path + '">http://code.ionicframework.com' + file.path + '</a></div>'
+
+                if(file.type === 'zip') {
+                  zip.push(link)
+                } else if(file.type === 'css') {
+                  css.push(link)
+                } else if(file.type === 'js') {
+                  js.push(link)
+                } else if(file.type === 'dependency') {
+                  dependency.push(link)
+                } else if(file.type === 'font') {
+                  font.push(link)
+                }
               }
 
-              $('#files').html( links.join('') );
+              $('#zip-files').html( zip.join('') );
+              $('#css-files').html( css.join('') );
+              $('#js-files').html( js.join('') );
+              $('#dependency-files').html( dependency.join('') );
+              $('#font-files').html( font.join('') );
+
               $('#versions').val(versionId);
 
-              var newUrl = (x > 0 ? data[x].version_number : '');
+              $('#files').show();
+
+              newUrl = (x > 0 ? data[x].version_number : '');
               try {
-                history.pushState({}, 
+                history.replaceState({}, 
                                   'Ionic Framework CDN, ' + data[x].version_number, 
                                   '#' + newUrl);
               }catch(e){};
