@@ -62,6 +62,13 @@ def build_version(versions, path, version_number):
     'files': []
   }
   set_version_codename(path, version)
+
+  zip_files = []
+  css_files = []
+  js_files = []
+  font_files = []
+  dep_files = []
+
   for (dirpath, dirnames, filenames) in os.walk(path):
     for filename in filenames:
       if filename.startswith('.') or filename.endswith('.txt') or filename.endswith('.json'):
@@ -69,7 +76,24 @@ def build_version(versions, path, version_number):
 
       url = '%s/%s' % (dirpath, filename)
       url = url.replace('../', '/')
-      version['files'].append(url)
+      if filename.endswith('.zip'):
+        zip_files.append(url)
+      elif filename.endswith('.css'):
+        css_files.append(url)
+      elif filename.endswith('.js') and 'ionic' in filename:
+        js_files.append(url)
+      elif 'font' in dirpath:
+        font_files.append(url)
+      else:
+        dep_files.append(url)
+
+  zip_files.sort()
+  css_files.sort()
+  js_files.sort()
+  font_files.sort()
+  dep_files.sort()
+
+  version['files'] = zip_files + css_files + js_files + dep_files + font_files
 
   versions.append(version)
 
@@ -97,18 +121,20 @@ def set_version_codename(path, version):
         version['release_datetime'] += ' ' + time.strip()
 
     if version['id'] == 'nightly':
-      return
-    
-    codename = d.get('codename', None)
-    if codename:
-      codename = d.get('codename', None)
-      version['version_codename'] = codename
+      version['version_codename'] = d.get('version', None)
+      version['version_name'] = d.get('version', None)
 
-      version['version_name'] = ''
-      names = codename.split('-')
-      for n in names:
-        version['version_name'] += n.capitalize() + ' '
-      version['version_name'] = version['version_name'].strip()
+    else:
+      codename = d.get('codename', None)
+      if codename:
+        codename = d.get('codename', None)
+        version['version_codename'] = codename
+
+        version['version_name'] = ''
+        names = codename.split('-')
+        for n in names:
+          version['version_name'] += n.capitalize() + ' '
+        version['version_name'] = version['version_name'].strip()
 
   except:
     pass
