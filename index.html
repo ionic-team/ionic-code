@@ -211,7 +211,7 @@
         $.get( "versions.json", function( d ) {
           if(!d) return;
 
-          data = d.versions;
+          data = d;
           var selectOptions = [];
 
           for(var x=0; x<data.length; x++) {

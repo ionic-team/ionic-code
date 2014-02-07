@@ -5,7 +5,6 @@ import json
 
 def main():
   versions = []
-  ionicons = []
   SKIP_DIRS = ('assets', 'builder', 'nightly', 'contrib', 'ionicons')
   ROOT_DIR = '../'
 
@@ -26,30 +25,11 @@ def main():
   versions = sorted(versions, key=lambda k: sort_name(k), reverse=True) 
   build_version(versions, '../nightly', 'nightly')
 
-  build_ionicons(ionicons)
-  ionicons = sorted(ionicons, key=lambda k: sort_name(k), reverse=True) 
-
-  data = {
-    'versions': versions,
-    'ionicons': ionicons
-  }
-
-  output = json.dumps(data, sort_keys=True, indent=1, separators=(',', ':'))
+  output = json.dumps(versions, sort_keys=True, indent=1, separators=(',', ':'))
 
   #print output
   with open("../versions.json", "w") as text_file:
     text_file.write(output)
-
-def build_ionicons(ionicons):
-  IONICONS_DIR = '../ionicons'
-
-  for f in os.listdir(IONICONS_DIR):
-    if f.startswith('.'):
-      continue
-
-    path = os.path.join(IONICONS_DIR, f)
-    if os.path.isdir(path):
-      build_version(ionicons, path, f)
 
 def build_version(versions, path, version_number):
   print version_number
