@@ -8,7 +8,7 @@
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
     a, abbr, acronym, address, big, cite, code,
     del, dfn, img, ins, kbd, q, s, samp,
-    small, strike, strong, sub, sup, tt, var,
+    small, strike, sub, sup, tt, var,
     b, u, i, center,
     dl, dt, dd, ol, ul, li,
     fieldset, form, label, legend,
@@ -35,7 +35,7 @@
       font-family: 'Helvetica Neue', Helvetica, Arial, serif;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
       color: #6d6d6d;
-      padding-bottom: 40px;
+      padding-bottom: 30px;
     }
 
     a {
@@ -46,14 +46,13 @@
     }
 
     header {
-      padding-top: 35px;
-      padding-bottom: 25px;
+      padding: 20px 0;
     }
 
     header h1 {
       font-family: 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 900;
       letter-spacing: -1px;
-      font-size: 48px;
+      font-size: 36px;
       color: #303030;
       line-height: 1.2;
     }
@@ -114,6 +113,22 @@
       line-height: 18px;
       margin: 3px 0 1px 0;
     }
+    .note {
+      background: #eee;
+      padding: 5px 10px;
+      font-size: 14px;
+      margin: 20px 0;
+    }
+    footer {
+      text-align: center;
+      font-size: 12px;
+      border-top: 1px solid #ccc;
+      margin: 30px 0 0 0;
+      padding: 30px;
+    }
+    footer a {
+      padding: 0 10px;
+    }
     </style>
     <title>Ionic Framework CDN</title>
   </head>
@@ -166,20 +181,22 @@
 
           </div>
 
-          <hr>
-
-          <p>
-            Static files maintained for the <a href="http://ionicframework.com/">Ionic Framework</a>.
-          </p>
-
-          <p>
-            <em>Note: Its best to use your own local copies of the framework's files when building a Cordova/Phonegap hybrid app. These CDN files are provided for archived versions, online tutorials, demos, examples, etc.</em>
+          <p class="note">
+            <strong>Note:</strong> Its best to use your own local copies of the framework's files when building a Cordova/Phonegap hybrid app. These CDN files are provided for archived versions, online tutorials, demos, examples, etc.
           </p>
 
           <h2>
             Awesomely sponsored by <a href="http://www.maxcdn.com/">MaxCDN</a>.
           </h2>
         </section>
+
+        <footer>
+          <a href="http://ionicframework.com/">Ionic Framework</a> 
+          &#183; <a href="https://github.com/driftyco/ionic">Github</a> 
+          &#183; <a href="http://forum.ionicframework.com/">Forum</a>
+          &#183; <a href="http://ionicons.com/">Ionicons</a> 
+          &#183; <a href="http://ionicframework.com/blog/">Blog</a> 
+        </footer>
 
       </div>
     </div>
