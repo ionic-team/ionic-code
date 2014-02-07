@@ -95,9 +95,6 @@ def build_version(versions, path, version_number):
         f['type'] = 'dependency'
         dep_files.append(f)
 
-      if filename.endswith('.css') or filename.endswith('.js'):
-        f['minified'] = ('.min.' in filename)
-
   zip_files = sorted(zip_files, key=lambda k: 'path')
   css_files = sorted(css_files, key=lambda k: 'path')
   js_files = sorted(js_files, key=lambda k: 'path')
