@@ -134,7 +134,7 @@
           <div id="files" style="display: none">
 
             <div class="files-panel">
-              <h3>Bundle</h3>
+              <h3>Ionic Bundle: <span id="version-id"></span></h3>
               <p>Includes all the files below in one archive file.</p>
               <div id="zip-files"></div>
             </div>
@@ -199,8 +199,6 @@
                                  data[x].version_number +
                                  ' - ' +  
                                  data[x].version_name +
-                                 ' - ' +  
-                                 data[x].release_date +
                                  '</option>');
           }
 
@@ -254,6 +252,8 @@
               $('#versions').val(versionId);
 
               $('#files').show();
+
+              $('#version-id').html(data[x].version_number + ' ' + data[x].version_name + ' (' + data[x].release_date + ')');
 
               newUrl = (x > 0 ? data[x].version_number : '');
               try {
