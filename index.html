@@ -76,7 +76,7 @@
     }
 
     .inner {
-      width: 700px;
+      width: 800px;
       margin: 0 auto;
     }
 
@@ -128,7 +128,9 @@
 
         <section>
           <p>
-            <select id="versions" style="visibility: hidden"></select>
+            <select id="versions" disabled="disabled">
+              <option>Loading...</option>
+            </select>
           </p>
 
           <div id="files" style="display: none">
@@ -202,13 +204,13 @@
                                  '</option>');
           }
 
-          $('#versions').html( selectOptions.join('') ).css('visibility', 'visible');
-
-          loadVersion(data[0].id);
           if(preload) {
             loadVersion(preload);
+          } else {
+            loadVersion(data[0].id);
           }
-          
+
+          $('#versions').html( selectOptions.join('') ).removeAttr('disabled');
         });
 
         function loadVersion(versionId) {
