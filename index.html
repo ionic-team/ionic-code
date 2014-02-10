@@ -223,13 +223,13 @@
                                  '</option>');
           }
 
+          $('#versions').html( selectOptions.join('') ).removeAttr('disabled');
+
           if(preload) {
             loadVersion(preload);
           } else {
             loadVersion(data[0].id);
           }
-
-          $('#versions').html( selectOptions.join('') ).removeAttr('disabled');
         });
 
         function loadVersion(versionId) {
