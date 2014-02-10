@@ -803,12 +803,12 @@
    },
    {
     "path":"/nightly/css/ionic.min.css",
-    "size":"113.8 KB",
+    "size":"114.0 KB",
     "type":"css"
    },
    {
     "path":"/nightly/css/ionic.css",
-    "size":"152.1 KB",
+    "size":"152.4 KB",
     "type":"css"
    },
    {
@@ -903,10 +903,10 @@
    }
   ],
   "id":"nightly",
-  "release_date":"2014-02-09",
-  "release_datetime":"2014-02-09 23:8:7",
-  "version_codename":"0.9.24-alpha-713",
-  "version_name":"0.9.24-alpha-713",
+  "release_date":"2014-02-10",
+  "release_datetime":"2014-02-10 3:24:33",
+  "version_codename":"0.9.24-alpha-714",
+  "version_name":"0.9.24-alpha-714",
   "version_number":"nightly"
  }
 ]
