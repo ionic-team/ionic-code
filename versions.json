@@ -943,7 +943,7 @@
    },
    {
     "path":"/nightly/js/ionic.bundle.min.js",
-    "size":"245.2 KB",
+    "size":"245.3 KB",
     "type":"js"
    },
    {
@@ -953,7 +953,7 @@
    },
    {
     "path":"/nightly/js/ionic-angular.js",
-    "size":"107.1 KB",
+    "size":"107.2 KB",
     "type":"js"
    },
    {
@@ -1039,9 +1039,9 @@
   ],
   "id":"nightly",
   "release_date":"2014-02-12",
-  "release_datetime":"2014-02-12 15:26:23",
-  "version_codename":"0.9.24-777",
-  "version_name":"0.9.24-777",
+  "release_datetime":"2014-02-12 15:47:43",
+  "version_codename":"0.9.25-alpha-780",
+  "version_name":"0.9.25-alpha-780",
   "version_number":"nightly"
  }
 ]
