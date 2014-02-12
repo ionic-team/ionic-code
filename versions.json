@@ -7,23 +7,18 @@
     "type":"zip"
    },
    {
-    "path":"/0.9.23/css/ionic.css",
-    "size":"151.6 KB",
-    "type":"css"
-   },
-   {
     "path":"/0.9.23/css/ionic.min.css",
     "size":"113.2 KB",
     "type":"css"
    },
    {
-    "path":"/0.9.23/js/ionic.js",
-    "size":"196.4 KB",
-    "type":"js"
+    "path":"/0.9.23/css/ionic.css",
+    "size":"151.6 KB",
+    "type":"css"
    },
    {
-    "path":"/0.9.23/js/ionic.min.js",
-    "size":"69.1 KB",
+    "path":"/0.9.23/js/ionic.js",
+    "size":"196.4 KB",
     "type":"js"
    },
    {
@@ -37,6 +32,11 @@
     "type":"js"
    },
    {
+    "path":"/0.9.23/js/ionic.min.js",
+    "size":"69.1 KB",
+    "type":"js"
+   },
+   {
     "path":"/0.9.23/js/angular-ui/angular-ui-router.js",
     "size":"62.9 KB",
     "type":"dependency"
@@ -47,28 +47,8 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.23/js/angular/angular-animate.js",
-    "size":"68.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.23/js/angular/angular-animate.min.js",
-    "size":"9.4 KB",
-    "type":"dependency"
-   },
-   {
     "path":"/0.9.23/js/angular/angular.js",
     "size":"710.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.23/js/angular/angular-sanitize.min.js",
-    "size":"4.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.23/js/angular/angular.min.js",
-    "size":"97.7 KB",
     "type":"dependency"
    },
    {
@@ -77,13 +57,33 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.23/fonts/ionicons.eot",
-    "size":"84.2 KB",
+    "path":"/0.9.23/js/angular/angular-animate.min.js",
+    "size":"9.4 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.23/js/angular/angular-animate.js",
+    "size":"68.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.23/js/angular/angular.min.js",
+    "size":"97.7 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.23/js/angular/angular-sanitize.min.js",
+    "size":"4.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.23/fonts/ionicons.woff",
+    "size":"47.2 KB",
     "type":"font"
    },
    {
-    "path":"/0.9.23/fonts/ionicons.svg",
-    "size":"235.9 KB",
+    "path":"/0.9.23/fonts/ionicons.eot",
+    "size":"84.2 KB",
     "type":"font"
    },
    {
@@ -92,8 +92,8 @@
     "type":"font"
    },
    {
-    "path":"/0.9.23/fonts/ionicons.woff",
-    "size":"47.2 KB",
+    "path":"/0.9.23/fonts/ionicons.svg",
+    "size":"235.9 KB",
     "type":"font"
    }
   ],
@@ -117,23 +117,18 @@
     "type":"css"
    },
    {
-    "path":"/0.9.22/css/ionic.css",
-    "size":"154.1 KB",
-    "type":"css"
-   },
-   {
     "path":"/0.9.22/css/ionic.min.css",
     "size":"116.1 KB",
     "type":"css"
    },
    {
-    "path":"/0.9.22/js/ionic.js",
-    "size":"192.1 KB",
-    "type":"js"
+    "path":"/0.9.22/css/ionic.css",
+    "size":"154.1 KB",
+    "type":"css"
    },
    {
-    "path":"/0.9.22/js/ionic.min.js",
-    "size":"67.9 KB",
+    "path":"/0.9.22/js/ionic.js",
+    "size":"192.1 KB",
     "type":"js"
    },
    {
@@ -147,6 +142,11 @@
     "type":"js"
    },
    {
+    "path":"/0.9.22/js/ionic.min.js",
+    "size":"67.9 KB",
+    "type":"js"
+   },
+   {
     "path":"/0.9.22/js/angular-ui/angular-ui-router.js",
     "size":"62.9 KB",
     "type":"dependency"
@@ -154,6 +154,76 @@
    {
     "path":"/0.9.22/js/angular-ui/angular-ui-router.min.js",
     "size":"18.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular.js",
+    "size":"710.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-loader.js",
+    "size":"14.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-resource.js",
+    "size":"22.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-touch.js",
+    "size":"20.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-resource.min.js",
+    "size":"3.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-sanitize.js",
+    "size":"19.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-route.min.js",
+    "size":"3.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-touch.min.js",
+    "size":"3.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-cookies.js",
+    "size":"5.6 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-animate.min.js",
+    "size":"9.4 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-loader.min.js",
+    "size":"1.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-animate.js",
+    "size":"68.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular.min.js",
+    "size":"97.7 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.22/js/angular/angular-scenario.js",
+    "size":"1.0 MB",
     "type":"dependency"
    },
    {
@@ -167,73 +237,8 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.22/js/angular/angular-animate.js",
-    "size":"68.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-resource.min.js",
-    "size":"3.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-animate.min.js",
-    "size":"9.4 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular.js",
-    "size":"710.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-touch.js",
-    "size":"20.2 KB",
-    "type":"dependency"
-   },
-   {
     "path":"/0.9.22/js/angular/angular-sanitize.min.js",
     "size":"4.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular.min.js",
-    "size":"97.7 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-sanitize.js",
-    "size":"19.9 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-loader.js",
-    "size":"14.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-loader.min.js",
-    "size":"1.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-touch.min.js",
-    "size":"3.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-route.min.js",
-    "size":"3.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-scenario.js",
-    "size":"1.0 MB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.22/js/angular/angular-resource.js",
-    "size":"22.9 KB",
     "type":"dependency"
    },
    {
@@ -242,18 +247,13 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.22/js/angular/angular-cookies.js",
-    "size":"5.6 KB",
-    "type":"dependency"
+    "path":"/0.9.22/fonts/ionicons.woff",
+    "size":"47.3 KB",
+    "type":"font"
    },
    {
     "path":"/0.9.22/fonts/ionicons.eot",
     "size":"84.2 KB",
-    "type":"font"
-   },
-   {
-    "path":"/0.9.22/fonts/ionicons.svg",
-    "size":"235.9 KB",
     "type":"font"
    },
    {
@@ -262,8 +262,8 @@
     "type":"font"
    },
    {
-    "path":"/0.9.22/fonts/ionicons.woff",
-    "size":"47.3 KB",
+    "path":"/0.9.22/fonts/ionicons.svg",
+    "size":"235.9 KB",
     "type":"font"
    }
   ],
@@ -287,23 +287,18 @@
     "type":"css"
    },
    {
-    "path":"/0.9.21/css/ionic.css",
-    "size":"153.9 KB",
-    "type":"css"
-   },
-   {
     "path":"/0.9.21/css/ionic.min.css",
     "size":"115.9 KB",
     "type":"css"
    },
    {
-    "path":"/0.9.21/js/ionic.js",
-    "size":"189.1 KB",
-    "type":"js"
+    "path":"/0.9.21/css/ionic.css",
+    "size":"153.9 KB",
+    "type":"css"
    },
    {
-    "path":"/0.9.21/js/ionic.min.js",
-    "size":"67.2 KB",
+    "path":"/0.9.21/js/ionic.js",
+    "size":"189.1 KB",
     "type":"js"
    },
    {
@@ -317,6 +312,11 @@
     "type":"js"
    },
    {
+    "path":"/0.9.21/js/ionic.min.js",
+    "size":"67.2 KB",
+    "type":"js"
+   },
+   {
     "path":"/0.9.21/js/angular-ui/angular-ui-router.js",
     "size":"62.9 KB",
     "type":"dependency"
@@ -324,6 +324,76 @@
    {
     "path":"/0.9.21/js/angular-ui/angular-ui-router.min.js",
     "size":"18.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular.js",
+    "size":"709.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-loader.js",
+    "size":"14.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-resource.js",
+    "size":"22.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-touch.js",
+    "size":"20.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-resource.min.js",
+    "size":"3.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-sanitize.js",
+    "size":"19.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-route.min.js",
+    "size":"3.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-touch.min.js",
+    "size":"3.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-cookies.js",
+    "size":"5.6 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-animate.min.js",
+    "size":"8.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-loader.min.js",
+    "size":"1.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-animate.js",
+    "size":"64.4 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular.min.js",
+    "size":"97.6 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.21/js/angular/angular-scenario.js",
+    "size":"1.0 MB",
     "type":"dependency"
    },
    {
@@ -337,73 +407,8 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.21/js/angular/angular-animate.js",
-    "size":"64.4 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-resource.min.js",
-    "size":"3.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-animate.min.js",
-    "size":"8.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular.js",
-    "size":"709.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-touch.js",
-    "size":"20.2 KB",
-    "type":"dependency"
-   },
-   {
     "path":"/0.9.21/js/angular/angular-sanitize.min.js",
     "size":"4.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular.min.js",
-    "size":"97.6 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-sanitize.js",
-    "size":"19.9 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-loader.js",
-    "size":"14.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-loader.min.js",
-    "size":"1.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-touch.min.js",
-    "size":"3.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-route.min.js",
-    "size":"3.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-scenario.js",
-    "size":"1.0 MB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.21/js/angular/angular-resource.js",
-    "size":"22.9 KB",
     "type":"dependency"
    },
    {
@@ -412,18 +417,13 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.21/js/angular/angular-cookies.js",
-    "size":"5.6 KB",
-    "type":"dependency"
+    "path":"/0.9.21/fonts/ionicons.woff",
+    "size":"47.3 KB",
+    "type":"font"
    },
    {
     "path":"/0.9.21/fonts/ionicons.eot",
     "size":"84.2 KB",
-    "type":"font"
-   },
-   {
-    "path":"/0.9.21/fonts/ionicons.svg",
-    "size":"235.9 KB",
     "type":"font"
    },
    {
@@ -432,8 +432,8 @@
     "type":"font"
    },
    {
-    "path":"/0.9.21/fonts/ionicons.woff",
-    "size":"47.3 KB",
+    "path":"/0.9.21/fonts/ionicons.svg",
+    "size":"235.9 KB",
     "type":"font"
    }
   ],
@@ -457,23 +457,18 @@
     "type":"css"
    },
    {
-    "path":"/0.9.20/css/ionic.css",
-    "size":"149.4 KB",
-    "type":"css"
-   },
-   {
     "path":"/0.9.20/css/ionic.min.css",
     "size":"111.5 KB",
     "type":"css"
    },
    {
-    "path":"/0.9.20/js/ionic.js",
-    "size":"186.5 KB",
-    "type":"js"
+    "path":"/0.9.20/css/ionic.css",
+    "size":"149.4 KB",
+    "type":"css"
    },
    {
-    "path":"/0.9.20/js/ionic.min.js",
-    "size":"66.1 KB",
+    "path":"/0.9.20/js/ionic.js",
+    "size":"186.5 KB",
     "type":"js"
    },
    {
@@ -487,6 +482,11 @@
     "type":"js"
    },
    {
+    "path":"/0.9.20/js/ionic.min.js",
+    "size":"66.1 KB",
+    "type":"js"
+   },
+   {
     "path":"/0.9.20/js/angular-ui/angular-ui-router.js",
     "size":"62.9 KB",
     "type":"dependency"
@@ -494,6 +494,76 @@
    {
     "path":"/0.9.20/js/angular-ui/angular-ui-router.min.js",
     "size":"18.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular.js",
+    "size":"708.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-loader.js",
+    "size":"14.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-resource.js",
+    "size":"22.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-touch.js",
+    "size":"20.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-resource.min.js",
+    "size":"3.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-sanitize.js",
+    "size":"19.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-route.min.js",
+    "size":"3.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-touch.min.js",
+    "size":"3.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-cookies.js",
+    "size":"5.6 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-animate.min.js",
+    "size":"8.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-loader.min.js",
+    "size":"1.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-animate.js",
+    "size":"64.4 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular.min.js",
+    "size":"98.0 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.20/js/angular/angular-scenario.js",
+    "size":"1.0 MB",
     "type":"dependency"
    },
    {
@@ -507,73 +577,8 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.20/js/angular/angular-animate.js",
-    "size":"64.4 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-resource.min.js",
-    "size":"3.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-animate.min.js",
-    "size":"8.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular.js",
-    "size":"708.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-touch.js",
-    "size":"20.2 KB",
-    "type":"dependency"
-   },
-   {
     "path":"/0.9.20/js/angular/angular-sanitize.min.js",
     "size":"4.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular.min.js",
-    "size":"98.0 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-sanitize.js",
-    "size":"19.9 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-loader.js",
-    "size":"14.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-loader.min.js",
-    "size":"1.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-touch.min.js",
-    "size":"3.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-route.min.js",
-    "size":"3.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-scenario.js",
-    "size":"1.0 MB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.20/js/angular/angular-resource.js",
-    "size":"22.9 KB",
     "type":"dependency"
    },
    {
@@ -582,18 +587,13 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.20/js/angular/angular-cookies.js",
-    "size":"5.6 KB",
-    "type":"dependency"
+    "path":"/0.9.20/fonts/ionicons.woff",
+    "size":"47.3 KB",
+    "type":"font"
    },
    {
     "path":"/0.9.20/fonts/ionicons.eot",
     "size":"84.2 KB",
-    "type":"font"
-   },
-   {
-    "path":"/0.9.20/fonts/ionicons.svg",
-    "size":"235.9 KB",
     "type":"font"
    },
    {
@@ -602,8 +602,8 @@
     "type":"font"
    },
    {
-    "path":"/0.9.20/fonts/ionicons.woff",
-    "size":"47.3 KB",
+    "path":"/0.9.20/fonts/ionicons.svg",
+    "size":"235.9 KB",
     "type":"font"
    }
   ],
@@ -627,13 +627,13 @@
     "type":"css"
    },
    {
-    "path":"/0.9.19/css/ionic.css",
-    "size":"149.2 KB",
+    "path":"/0.9.19/css/ionic.min.css",
+    "size":"111.3 KB",
     "type":"css"
    },
    {
-    "path":"/0.9.19/css/ionic.min.css",
-    "size":"111.3 KB",
+    "path":"/0.9.19/css/ionic.css",
+    "size":"149.2 KB",
     "type":"css"
    },
    {
@@ -652,11 +652,6 @@
     "type":"js"
    },
    {
-    "path":"/0.9.19/js/ionic.min.js",
-    "size":"65.8 KB",
-    "type":"js"
-   },
-   {
     "path":"/0.9.19/js/ionic-angular.min.js",
     "size":"41.9 KB",
     "type":"js"
@@ -664,6 +659,11 @@
    {
     "path":"/0.9.19/js/ionic-angular.js",
     "size":"92.8 KB",
+    "type":"js"
+   },
+   {
+    "path":"/0.9.19/js/ionic.min.js",
+    "size":"65.8 KB",
     "type":"js"
    },
    {
@@ -677,6 +677,76 @@
     "type":"dependency"
    },
    {
+    "path":"/0.9.19/js/angular/angular.js",
+    "size":"708.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-loader.js",
+    "size":"14.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-resource.js",
+    "size":"22.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-touch.js",
+    "size":"20.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-resource.min.js",
+    "size":"3.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-sanitize.js",
+    "size":"19.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-route.min.js",
+    "size":"3.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-touch.min.js",
+    "size":"3.1 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-cookies.js",
+    "size":"5.6 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-animate.min.js",
+    "size":"8.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-loader.min.js",
+    "size":"1.5 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-animate.js",
+    "size":"64.4 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular.min.js",
+    "size":"98.0 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.9.19/js/angular/angular-scenario.js",
+    "size":"1.0 MB",
+    "type":"dependency"
+   },
+   {
     "path":"/0.9.19/js/angular/angular-mocks.js",
     "size":"65.8 KB",
     "type":"dependency"
@@ -687,73 +757,8 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.19/js/angular/angular-animate.js",
-    "size":"64.4 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-resource.min.js",
-    "size":"3.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-animate.min.js",
-    "size":"8.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular.js",
-    "size":"708.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-touch.js",
-    "size":"20.2 KB",
-    "type":"dependency"
-   },
-   {
     "path":"/0.9.19/js/angular/angular-sanitize.min.js",
     "size":"4.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular.min.js",
-    "size":"98.0 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-sanitize.js",
-    "size":"19.9 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-loader.js",
-    "size":"14.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-loader.min.js",
-    "size":"1.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-touch.min.js",
-    "size":"3.1 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-route.min.js",
-    "size":"3.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-scenario.js",
-    "size":"1.0 MB",
-    "type":"dependency"
-   },
-   {
-    "path":"/0.9.19/js/angular/angular-resource.js",
-    "size":"22.9 KB",
     "type":"dependency"
    },
    {
@@ -762,18 +767,13 @@
     "type":"dependency"
    },
    {
-    "path":"/0.9.19/js/angular/angular-cookies.js",
-    "size":"5.6 KB",
-    "type":"dependency"
+    "path":"/0.9.19/fonts/ionicons.woff",
+    "size":"47.2 KB",
+    "type":"font"
    },
    {
     "path":"/0.9.19/fonts/ionicons.eot",
     "size":"84.2 KB",
-    "type":"font"
-   },
-   {
-    "path":"/0.9.19/fonts/ionicons.svg",
-    "size":"230.8 KB",
     "type":"font"
    },
    {
@@ -782,8 +782,8 @@
     "type":"font"
    },
    {
-    "path":"/0.9.19/fonts/ionicons.woff",
-    "size":"47.2 KB",
+    "path":"/0.9.19/fonts/ionicons.svg",
+    "size":"230.8 KB",
     "type":"font"
    }
   ],
@@ -802,13 +802,13 @@
     "type":"zip"
    },
    {
-    "path":"/nightly/css/ionic.css",
-    "size":"153.5 KB",
+    "path":"/nightly/css/ionic.min.css",
+    "size":"114.9 KB",
     "type":"css"
    },
    {
-    "path":"/nightly/css/ionic.min.css",
-    "size":"114.9 KB",
+    "path":"/nightly/css/ionic.css",
+    "size":"153.5 KB",
     "type":"css"
    },
    {
@@ -817,8 +817,8 @@
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.min.js",
-    "size":"71.6 KB",
+    "path":"/nightly/js/ionic.bundle.js",
+    "size":"1.1 MB",
     "type":"js"
    },
    {
@@ -827,8 +827,8 @@
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.js",
-    "size":"1.1 MB",
+    "path":"/nightly/js/ionic.bundle.min.js",
+    "size":"245.3 KB",
     "type":"js"
    },
    {
@@ -837,8 +837,8 @@
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.min.js",
-    "size":"245.3 KB",
+    "path":"/nightly/js/ionic.min.js",
+    "size":"71.6 KB",
     "type":"js"
    },
    {
@@ -852,38 +852,8 @@
     "type":"dependency"
    },
    {
-    "path":"/nightly/js/angular/angular-animate.js",
-    "size":"68.8 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular/angular-resource.min.js",
-    "size":"3.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular/angular-animate.min.js",
-    "size":"9.4 KB",
-    "type":"dependency"
-   },
-   {
     "path":"/nightly/js/angular/angular.js",
     "size":"710.5 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular/angular-sanitize.min.js",
-    "size":"4.2 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular/angular.min.js",
-    "size":"97.7 KB",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular/angular-sanitize.js",
-    "size":"19.9 KB",
     "type":"dependency"
    },
    {
@@ -892,13 +862,43 @@
     "type":"dependency"
    },
    {
-    "path":"/nightly/fonts/ionicons.eot",
-    "size":"84.2 KB",
+    "path":"/nightly/js/angular/angular-resource.min.js",
+    "size":"3.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular/angular-sanitize.js",
+    "size":"19.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular/angular-animate.min.js",
+    "size":"9.4 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular/angular-animate.js",
+    "size":"68.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular/angular.min.js",
+    "size":"97.7 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular/angular-sanitize.min.js",
+    "size":"4.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/fonts/ionicons.woff",
+    "size":"47.2 KB",
     "type":"font"
    },
    {
-    "path":"/nightly/fonts/ionicons.svg",
-    "size":"235.9 KB",
+    "path":"/nightly/fonts/ionicons.eot",
+    "size":"84.2 KB",
     "type":"font"
    },
    {
@@ -907,16 +907,16 @@
     "type":"font"
    },
    {
-    "path":"/nightly/fonts/ionicons.woff",
-    "size":"47.2 KB",
+    "path":"/nightly/fonts/ionicons.svg",
+    "size":"235.9 KB",
     "type":"font"
    }
   ],
   "id":"nightly",
   "release_date":"2014-02-12",
-  "release_datetime":"2014-02-12 14:48:29",
-  "version_codename":"0.9.24-alpha-774",
-  "version_name":"0.9.24-alpha-774",
+  "release_datetime":"2014-02-12 15:11:45",
+  "version_codename":"0.9.24-alpha-775",
+  "version_name":"0.9.24-alpha-775",
   "version_number":"nightly"
  }
 ]
