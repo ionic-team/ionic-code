@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-795
+ * Ionic, v0.9.25-alpha-797
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.25-alpha-795'
+  version: '0.9.25-alpha-797'
 };;
 (function(ionic) {
 
@@ -30754,7 +30754,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-795
+ * Ionic, v0.9.25-alpha-797
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -33599,9 +33599,10 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
       backButtonType: '@',
       backButtonLabel: '@',
       backButtonIcon: '@',
-      alignTitle: '@'
+      alignTitle: '@',
+      barType: '@type'
     },
-    template: '<header class="bar bar-header nav-bar invisible">' +
+    template: '<header class="bar bar-header nav-bar invisible" ng-class="barType">' +
         '<div class="buttons"> ' +
           '<button view-back class="back-button button hide" ng-if="enableBackButton"></button>' +
           '<button ng-click="button.tap($event)" ng-repeat="button in leftButtons" class="button no-animation {{button.type}}" bind-html-unsafe="button.content"></button>' +
@@ -33625,8 +33626,6 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
           backBtnEle.className += ' icon ' + tAttrs.backButtonIcon;
         }
       }
-
-      if(tAttrs.type) tElement.addClass(tAttrs.type);
 
       return function link($scope, $element, $attr) {
         var canHaveBackButton = !(!tAttrs.backButtonType && !tAttrs.backButtonLabel && !tAttrs.backButtonIcon);
