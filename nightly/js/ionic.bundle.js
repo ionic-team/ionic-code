@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-820
+ * Ionic, v0.9.25-alpha-821
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.25-alpha-820'
+  version: '0.9.25-alpha-821'
 };;
 (function(ionic) {
 
@@ -5187,10 +5187,10 @@ ionic.views.Scroll = ionic.views.View.inherit({
 (function(ionic) {
 'use strict';
   /**
-   * An ActionSheet is the slide up menu popularized on iOS.
+   * Loading
    *
-   * You see it all over iOS apps, where it offers a set of options 
-   * triggered after an action.
+   * The Loading is an overlay that can be used to indicate
+   * activity while blocking user interaction.
    */
   ionic.views.Loading = ionic.views.View.inherit({
     initialize: function(opts) {
@@ -5199,6 +5199,8 @@ ionic.views.Scroll = ionic.views.View.inherit({
       this.el = opts.el;
 
       this.maxWidth = opts.maxWidth || 200;
+
+      this.showDelay = opts.showDelay || 0;
 
       this._loadingBox = this.el.querySelector('.loading');
     },
@@ -5215,12 +5217,18 @@ ionic.views.Scroll = ionic.views.View.inherit({
         lb.style.marginLeft = (-lb.offsetWidth) / 2 + 'px';
         lb.style.marginTop = (-lb.offsetHeight) / 2 + 'px';
 
-        _this.el.classList.add('active');
+        // Wait 'showDelay' ms before showing the loading screen
+        this._showDelayTimeout = window.setTimeout(function() {
+          _this.el.classList.add('active');
+        }, _this.showDelay);
       }
     },
     hide: function() {
       // Force a reflow so the animation will actually run
       this.el.offsetWidth;
+
+      // Prevent unnecessary 'show' after 'hide' has already been called
+      window.clearTimeout(this._showDelayTimeout);
 
       this.el.classList.remove('active');
     }
@@ -30753,7 +30761,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-820
+ * Ionic, v0.9.25-alpha-821
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
