@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-799
+ * Ionic, v0.9.25-alpha-814
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.25-alpha-799'
+  version: '0.9.25-alpha-814'
 };;
 (function(ionic) {
 
@@ -2029,8 +2029,9 @@ window.ionic = {
 
     if(ele.tagName === 'INPUT' || ele.tagName === 'TEXTAREA' || ele.tagName === 'SELECT') {
       ele.focus();
+      e.preventDefault();
     } else {
-      ele.blur();
+      blurActive();
     }
 
     // remember the coordinates of this tap so if it happens again we can ignore it
@@ -2085,12 +2086,7 @@ window.ionic = {
     // they didn't tap one of the above elements
     // if the currently active element is an input, and they tapped outside
     // of the current input, then unset its focus (blur) so the keyboard goes away
-    ele = document.activeElement;
-    if(ele && (ele.tagName === "INPUT" || 
-               ele.tagName === "TEXTAREA" || 
-               ele.tagName === "SELECT")) {
-      ele.blur();
-    }
+    blurActive();
   }
 
   function preventGhostClick(e) {
@@ -2139,6 +2135,18 @@ window.ionic = {
     e.stopPropagation();
     e.preventDefault();
     return false;
+  }
+
+  function blurActive() {
+    var ele = document.activeElement;
+    if(ele && (ele.tagName === "INPUT" || 
+               ele.tagName === "TEXTAREA" || 
+               ele.tagName === "SELECT")) {
+      // using a timeout to prevent funky scrolling while a keyboard hides
+      setTimeout(function(){
+        ele.blur();
+      }, 400);
+    }
   }
 
   function isRecentTap(event) {
@@ -30754,7 +30762,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-799
+ * Ionic, v0.9.25-alpha-814
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
