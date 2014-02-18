@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-835
+ * Ionic, v0.9.25-alpha-836
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.25-alpha-835'
+  version: '0.9.25-alpha-836'
 };
 ;
 (function(ionic) {
@@ -3106,12 +3106,11 @@ ionic.views.Scroll = ionic.views.View.inherit({
     if ('ontouchstart' in window) {
 
       container.addEventListener("touchstart", function(e) {
-        console.log('touchstart scrollview');
         if (e.defaultPrevented || shouldIgnorePress(e)) {
           return;
         }
         self.doTouchStart(e.touches, e.timeStamp);
-        // e.preventDefault();
+        e.preventDefault();
       }, false);
 
       document.addEventListener("touchmove", function(e) {
@@ -31156,7 +31155,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.25-alpha-835
+ * Ionic, v0.9.25-alpha-836
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
