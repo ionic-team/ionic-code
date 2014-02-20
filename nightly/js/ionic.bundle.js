@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-857
+ * Ionic, v0.9.26-alpha-858
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-857'
+  version: '0.9.26-alpha-858'
 };
 ;
 (function(ionic) {
@@ -2256,7 +2256,7 @@ window.ionic = {
 
   var tapCoordinates = {}; // used to remember coordinates to ignore if they happen again quickly
   var CLICK_PREVENT_DURATION = 1500; // max milliseconds ghostclicks in the same area should be prevented
-  var REMOVE_PREVENT_DELAY = 325; // delay after a touchend/mouseup before removing the ghostclick prevent
+  var REMOVE_PREVENT_DELAY = 375; // delay after a touchend/mouseup before removing the ghostclick prevent
   var HIT_RADIUS = 15;
 
   // set global click handler and check if the event should stop or not
@@ -31025,7 +31025,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-857
+ * Ionic, v0.9.26-alpha-858
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
