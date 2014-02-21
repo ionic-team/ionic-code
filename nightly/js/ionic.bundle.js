@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-896
+ * Ionic, v0.9.26-alpha-897
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-896'
+  version: '0.9.26-alpha-897'
 };
 ;
 (function(ionic) {
@@ -31625,7 +31625,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-896
+ * Ionic, v0.9.26-alpha-897
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32705,6 +32705,9 @@ angular.module('ionic.service.view', ['ui.router', 'ionic.service.platform'])
       if(historyId) {
         var hist = $rootScope.$viewHistory.histories[ historyId ];
         if(hist && hist.stack.length) {
+          if($rootScope.$viewHistory.currentView && $rootScope.$viewHistory.currentView.viewId === hist.stack[0].viewId) {
+            return;
+          }
           $rootScope.$viewHistory.forcedNav = {
             viewId: hist.stack[0].viewId,
             navAction: 'moveBack',
