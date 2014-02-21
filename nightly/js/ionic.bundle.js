@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-894
+ * Ionic, v0.9.26-alpha-895
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-894'
+  version: '0.9.26-alpha-895'
 };
 ;
 (function(ionic) {
@@ -31625,7 +31625,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-894
+ * Ionic, v0.9.26-alpha-895
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -33650,7 +33650,7 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
 
 .run(['$ionicViewService', function($ionicViewService) {
   // set that the side-menus directive should not animate when transitioning to it
-  $ionicViewService.disableRegisterByTagName('side-menus');
+  $ionicViewService.disableRegisterByTagName('ion-side-menus');
 }])
 
 .directive('ionSideMenus', function() {
@@ -33974,7 +33974,7 @@ angular.module('ionic.ui.tabs', ['ionic.service.view', 'ngSanitize'])
 .run(['$ionicViewService', function($ionicViewService) {
   // set that the tabs directive should not animate when transitioning
   // to it. Instead, the children <ion-tab> directives would animate
-  $ionicViewService.disableRegisterByTagName('tabs');
+  $ionicViewService.disableRegisterByTagName('ion-tabs');
 }])
 
 .controller('$ionicTabs', ['$scope', '$ionicViewService', function($scope, $ionicViewService) {
