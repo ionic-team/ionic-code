@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-916
+ * Ionic, v0.9.26-alpha-923
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-916'
+  version: '0.9.26-alpha-923'
 };
 ;
 (function(ionic) {
@@ -31644,7 +31644,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-916
+ * Ionic, v0.9.26-alpha-923
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -31659,6 +31659,7 @@ angular.module('ui.router.compat')
  * modules.
  */
 angular.module('ionic.service', [
+  'ionic.service.bind',
   'ionic.service.platform',
   'ionic.service.actionSheet',
   'ionic.service.gesture',
@@ -32074,6 +32075,60 @@ angular.module('ionic.service.actionSheet', ['ionic.service.templateLoad', 'ioni
     }
   };
 
+}]);
+;
+angular.module('ionic.service.bind', [])
+.factory('$ionicBind', ['$parse', '$interpolate', function($parse, $interpolate) {
+  var LOCAL_REGEXP = /^\s*([@=&])(\??)\s*(\w*)\s*$/;
+  return function(scope, attrs, bindDefinition) {
+    angular.forEach(bindDefinition || {}, function (definition, scopeName) {
+      //Adapted from angular.js $compile
+      var match = definition.match(LOCAL_REGEXP) || [],
+        attrName = match[3] || scopeName,
+        mode = match[1], // @, =, or &
+        parentGet,
+        unwatch;
+
+      switch(mode) {
+        case '@':
+          if (!attrs[attrName]) {
+            return;
+          }
+          attrs.$observe(attrName, function(value) {
+            scope[scopeName] = value;
+          });
+          // we trigger an interpolation to ensure
+          // the value is there for use immediately
+          if (attrs[attrName]) {
+            scope[scopeName] = $interpolate(attrs[attrName])(scope);
+          }
+          break;
+
+        case '=':
+          if (!attrs[attrName]) {
+            return;
+          }
+          unwatch = scope.$watch(attrs[attrName], function(value) {
+            scope[scopeName] = value;
+          });
+          //Destroy parent scope watcher when this scope is destroyed
+          scope.$on('$destroy', unwatch);
+          break;
+
+        case '&':
+          /* jshint -W044 */
+          if (attrs[attrName] && attrs[attrName].match(RegExp(scopeName + '\(.*?\)'))) {
+            throw new Error('& expression binding "' + scopeName + '" looks like it will recursively call "' +
+                          attrs[attrName] + '" and cause a stack overflow! Please choose a different scopeName.');
+          }
+          parentGet = $parse(attrs[attrName]);
+          scope[scopeName] = function(locals) {
+            return parentGet(scope, locals);
+          };
+          break;
+      }
+    });
+  };
 }]);
 ;
 angular.module('ionic.service.gesture', [])
@@ -33118,33 +33173,23 @@ angular.module('ionic.ui.content', ['ionic.ui.service', 'ionic.ui.scroll'])
 
 // The content directive is a core scrollable content area
 // that is part of many View hierarchies
-.directive('ionContent', ['$parse', '$timeout', '$ionicScrollDelegate', '$controller', function($parse, $timeout, $ionicScrollDelegate, $controller) {
+.directive('ionContent', [
+  '$parse',
+  '$timeout',
+  '$ionicScrollDelegate',
+  '$controller',
+  '$ionicBind',
+function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
   return {
     restrict: 'E',
     replace: true,
-    template: '<div class="scroll-content"><div class="scroll" ng-transclude></div></div>',
     transclude: true,
     require: '^?ionNavView',
-    scope: {
-      onRefresh: '&',
-      onRefreshOpening: '&',
-      onScroll: '&',
-      onScrollComplete: '&',
-      refreshComplete: '=',
-      onInfiniteScroll: '=',
-      infiniteScrollDistance: '@',
-      hasBouncing: '@',
-      scroll: '@',
-      padding: '@',
-      hasScrollX: '@',
-      hasScrollY: '@',
-      scrollbarX: '@',
-      scrollbarY: '@',
-      startX: '@',
-      startY: '@',
-      scrollEventInterval: '@'
-    },
-
+    scope: true,
+    template:
+    '<div class="scroll-content">' +
+      '<div class="scroll"></div>' +
+    '</div>',
     compile: function(element, attr, transclude) {
       if(attr.hasHeader == "true") { element.addClass('has-header'); }
       if(attr.hasSubheader == "true") { element.addClass('has-subheader'); }
@@ -33160,7 +33205,31 @@ angular.module('ionic.ui.content', ['ionic.ui.service', 'ionic.ui.scroll'])
 
       function prelink($scope, $element, $attr, navViewCtrl) {
         var clone, sc, scrollView, scrollCtrl,
-          c = angular.element($element.children()[0]);
+          scrollContent = angular.element($element[0].querySelector('.scroll'));
+
+        transclude($scope, function(clone) {
+          scrollContent.append(clone);
+        });
+
+        $ionicBind($scope, $attr, {
+          onRefresh: '&',
+          onRefreshOpening: '&',
+          onScroll: '&',
+          onScrollComplete: '&',
+          refreshComplete: '=',
+          onInfiniteScroll: '&',
+          infiniteScrollDistance: '@',
+          hasBouncing: '@',
+          scroll: '@',
+          padding: '@',
+          hasScrollX: '@',
+          hasScrollY: '@',
+          scrollbarX: '@',
+          scrollbarY: '@',
+          startX: '@',
+          startY: '@',
+          scrollEventInterval: '@'
+        });
 
         if($scope.scroll === "false") {
           // No scrolling
@@ -33192,6 +33261,7 @@ angular.module('ionic.ui.content', ['ionic.ui.service', 'ionic.ui.scroll'])
             }
           }
         });
+
         //Publish scrollView to parent so children can access it
         scrollView = $scope.$parent.scrollView = scrollCtrl.scrollView;
 
