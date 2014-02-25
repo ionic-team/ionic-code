@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-945
+ * Ionic, v0.9.26-alpha-946
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-945'
+  version: '0.9.26-alpha-946'
 };
 ;
 (function(ionic) {
@@ -31666,7 +31666,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-945
+ * Ionic, v0.9.26-alpha-946
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -31883,12 +31883,9 @@ angular.module('ionic.ui.service.scrollDelegate', [])
       }
 
       $element.on('scroll', function(e) {
-        if ( !$scope.onScroll ) {
-          return;
-        }
         var detail = (e.originalEvent || e).detail || {};
 
-        $scope.onScroll && $scope.onScroll({
+        $scope.$onScroll && $scope.$onScroll({
           event: e,
           scrollTop: detail.scrollTop || 0,
           scrollLeft: detail.scrollLeft || 0
@@ -33234,10 +33231,11 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
         });
 
         $ionicBind($scope, $attr, {
-          onRefresh: '&',
-          onRefreshOpening: '&',
-          onScroll: '&',
-          onScrollComplete: '&',
+          //Use $ to stop onRefresh from recursively calling itself
+          $onRefresh: '&onRefresh',
+          $onRefreshOpening: '&onRefreshOpening',
+          $onScroll: '&onScroll',
+          $onScrollComplete: '&onScrollComplete',
           refreshComplete: '=',
           onInfiniteScroll: '&',
           infiniteScrollDistance: '@',
@@ -33276,7 +33274,7 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
             scrollingY: $scope.$eval($scope.hasScrollY) !== false,
             scrollEventInterval: parseInt($scope.scrollEventInterval, 10) || 20,
             scrollingComplete: function() {
-              $scope.onScrollComplete({
+              $scope.$onScrollComplete({
                 scrollTop: this.__scrollTop,
                 scrollLeft: this.__scrollLeft
               });
@@ -35303,12 +35301,13 @@ angular.module('ionic.ui.scroll')
       var refresherHeight = self.refresher.clientHeight || 0;
       scrollView.activatePullToRefresh(refresherHeight, function() {
         self.refresher.classList.add('active');
+        $scope.$onRefreshOpening && $scope.$onRefreshOpening();
       }, function() {
         self.refresher.classList.remove('refreshing');
         self.refresher.classList.remove('active');
       }, function() {
         self.refresher.classList.add('refreshing');
-        $scope.onRefresh && $scope.onRefresh();
+        $scope.$onRefresh && $scope.$onRefresh();
         $scope.$parent.$broadcast('scroll.onRefresh');
       });
     }
