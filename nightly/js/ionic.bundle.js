@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-942
+ * Ionic, v0.9.26-alpha-943
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-942'
+  version: '0.9.26-alpha-943'
 };
 ;
 (function(ionic) {
@@ -31666,7 +31666,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-942
+ * Ionic, v0.9.26-alpha-943
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -33315,7 +33315,7 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
         // Check if this supports infinite scrolling and listen for scroll events
         // to trigger the infinite scrolling
         // TODO(ajoslin): move functionality out of this function and make testable
-        var infiniteScroll = $element.find('infinite-scroll');
+        var infiniteScroll = $element.find('ion-infinite-scroll');
         var infiniteStarted = false;
         if(infiniteScroll) {
           // Parse infinite scroll distance
