@@ -8,11 +8,11 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-935
+ * Ionic, v0.9.26-alpha-936
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
- * By @maxlynch, @helloimben, @adamdbradley <3
+ * By @maxlynch, @benjsperry, @adamdbradley <3
  *
  * Licensed under the MIT license. Please see LICENSE for more information.
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-935'
+  version: '0.9.26-alpha-936'
 };
 ;
 (function(ionic) {
@@ -31666,11 +31666,11 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-935
+ * Ionic, v0.9.26-alpha-936
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
- * By @maxlynch, @helloimben, @adamdbradley <3
+ * By @maxlynch, @benjsperry, @adamdbradley <3
  *
  * Licensed under the MIT license. Please see LICENSE for more information.
  *
