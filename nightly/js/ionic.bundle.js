@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-981
+ * Ionic, v0.10.0-alpha-983
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.10.0-alpha-981'
+  version: '0.10.0-alpha-983'
 };
 ;
 (function(ionic) {
@@ -31667,7 +31667,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-981
+ * Ionic, v0.10.0-alpha-983
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34381,8 +34381,8 @@ function($scope, $ionicViewService, $rootScope, $element) {
     '<a ng-class="{active: isTabActive(), \'has-badge\':badge}" ' +
       'ng-click="selectTab($event)" class="tab-item">' +
       '<span class="badge {{badgeStyle}}" ng-if="badge">{{badge}}</span>' +
-      '<i class="icon {{iconOn}}" ng-if="iconOn && isTabActive()"></i>' +
-      '<i class="icon {{iconOff}}" ng-if="iconOff && !isTabActive()"></i>' +
+      '<i class="icon {{getIconOn()}}" ng-if="getIconOn() && isTabActive()"></i>' +
+      '<i class="icon {{getIconOff()}}" ng-if="getIconOff() && !isTabActive()"></i>' +
       '<span class="tab-title" ng-bind-html="title"></span>' +
     '</a>',
     scope: {
@@ -34394,13 +34394,16 @@ function($scope, $ionicViewService, $rootScope, $element) {
       badgeStyle: '@'
     },
     compile: function(element, attr, transclude) {
-      if (attr.icon) {
-        attr.$set('iconOn', attr.icon);
-        attr.$set('iconOff', attr.icon);
-      }
       return function link($scope, $element, $attrs, ctrls) {
         var tabsCtrl = ctrls[0],
           tabCtrl = ctrls[1];
+
+        $scope.getIconOn = function() {
+          return $scope.iconOn || $scope.icon;
+        };
+        $scope.getIconOff = function() {
+          return $scope.iconOff || $scope.icon;
+        };
 
         $scope.isTabActive = function() {
           return tabsCtrl.selectedTab === tabCtrl.$scope;
