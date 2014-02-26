@@ -297,7 +297,7 @@
         });
 
         if(location.hash.length) {
-          preload = location.hash.replace('#', '').replace(/\./g, '_');
+          preload = location.hash.replace('#', '');
           loadVersion(preload);
         }
 
