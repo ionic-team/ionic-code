@@ -1037,6 +1037,131 @@
  {
   "files":[
    {
+    "path":"/0.10.0-alpha/ionic-v0.10.0-alpha.zip",
+    "size":"3.6 MB",
+    "type":"zip"
+   },
+   {
+    "path":"/0.10.0-alpha/css/ionic.min.css",
+    "size":"118.0 KB",
+    "type":"css"
+   },
+   {
+    "path":"/0.10.0-alpha/css/ionic.css",
+    "size":"157.1 KB",
+    "type":"css"
+   },
+   {
+    "path":"/0.10.0-alpha/js/ionic.js",
+    "size":"204.8 KB",
+    "type":"js"
+   },
+   {
+    "path":"/0.10.0-alpha/js/ionic.bundle.js",
+    "size":"1.2 MB",
+    "type":"js"
+   },
+   {
+    "path":"/0.10.0-alpha/js/ionic-angular.min.js",
+    "size":"50.2 KB",
+    "type":"js"
+   },
+   {
+    "path":"/0.10.0-alpha/js/ionic.bundle.min.js",
+    "size":"252.8 KB",
+    "type":"js"
+   },
+   {
+    "path":"/0.10.0-alpha/js/ionic-angular.js",
+    "size":"113.4 KB",
+    "type":"js"
+   },
+   {
+    "path":"/0.10.0-alpha/js/ionic.min.js",
+    "size":"72.7 KB",
+    "type":"js"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular-ui/angular-ui-router.js",
+    "size":"62.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular-ui/angular-ui-router.min.js",
+    "size":"18.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular.js",
+    "size":"717.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular-resource.js",
+    "size":"22.9 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular-resource.min.js",
+    "size":"3.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular-sanitize.js",
+    "size":"20.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular-animate.min.js",
+    "size":"9.4 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular-animate.js",
+    "size":"68.8 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular.min.js",
+    "size":"98.0 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/js/angular/angular-sanitize.min.js",
+    "size":"4.2 KB",
+    "type":"dependency"
+   },
+   {
+    "path":"/0.10.0-alpha/fonts/ionicons.woff",
+    "size":"47.2 KB",
+    "type":"font"
+   },
+   {
+    "path":"/0.10.0-alpha/fonts/ionicons.eot",
+    "size":"84.2 KB",
+    "type":"font"
+   },
+   {
+    "path":"/0.10.0-alpha/fonts/ionicons.ttf",
+    "size":"136.4 KB",
+    "type":"font"
+   },
+   {
+    "path":"/0.10.0-alpha/fonts/ionicons.svg",
+    "size":"235.9 KB",
+    "type":"font"
+   }
+  ],
+  "id":"v0_10_0_alpha",
+  "release_date":"2014-02-26",
+  "release_datetime":"2014-02-26 19:46:53",
+  "version_codename":"salamander",
+  "version_name":"Salamander",
+  "version_number":"0.10.0-alpha"
+ },
+ {
+  "files":[
+   {
     "path":"/nightly/ionic-nightly.zip",
     "size":"3.6 MB",
     "type":"zip"
