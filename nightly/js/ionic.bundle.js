@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-961
+ * Ionic, v0.9.26-alpha-962
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -23,7 +23,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.26-alpha-961'
+  version: '0.9.26-alpha-962'
 };
 ;
 (function(ionic) {
@@ -31666,7 +31666,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.26-alpha-961
+ * Ionic, v0.9.26-alpha-962
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32464,19 +32464,10 @@ angular.module('ionic.service.templateLoad', [])
 .factory('$ionicTemplateLoader', ['$q', '$http', '$templateCache', function($q, $http, $templateCache) {
   return {
     load: function(url) {
-      var deferred = $q.defer();
-
-      $http({
-        method: 'GET',
-        url: url,
-        cache: $templateCache
-      }).success(function(html) {
-        deferred.resolve(html && html.trim());
-      }).error(function(err) {
-        deferred.reject(err);
+      return $http.get(url, {cache: $templateCache})
+      .then(function(response) {
+        return response.data && response.data.trim();
       });
-
-      return deferred.promise;
     }
   };
 }]);
