@@ -19,7 +19,7 @@
    {
     "path":"/0.9.26/js/ionic-angular.js",
     "type":"js",
-    "size":"113.4 KB"
+    "size":"113.5 KB"
    },
    {
     "path":"/0.9.26/js/ionic-angular.min.js",
@@ -34,7 +34,7 @@
    {
     "path":"/0.9.26/js/ionic.bundle.min.js",
     "type":"js",
-    "size":"252.8 KB"
+    "size":"252.9 KB"
    },
    {
     "path":"/0.9.26/js/ionic.js",
@@ -117,7 +117,7 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-02-26 20:16:16",
+  "release_datetime":"2014-02-26 21:16:43",
   "version_number":"0.9.26",
   "release_date":"2014-02-26",
   "version_codename":"rabbit",
