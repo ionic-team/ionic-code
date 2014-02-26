@@ -246,7 +246,10 @@
           font = [];
 
           for(x=0; x<data.length; x++) {
-            if(data[x].id === versionId) {
+            if(versionId === data[x].id || 
+               versionId === data[x].version_number || 
+               versionId === data[x].version_name || 
+               versionId === data[x].version_codename) {
 
               for(f=0; f<data[x].files.length; f++) {
                 file = data[x].files[f];
@@ -295,9 +298,6 @@
 
         if(location.hash.length) {
           preload = location.hash.replace('#', '').replace(/\./g, '_');
-          if(preload !== 'nightly' && preload.indexOf('v') === -1) {
-            preload = 'v' + preload;
-          }
           loadVersion(preload);
         }
 
