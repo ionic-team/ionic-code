@@ -2,7 +2,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-972
+ * Ionic, v0.10.0-alpha-981
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -13,11 +13,12 @@
  */
 ;
 
-// Create namespaces 
+// Create namespaces
+//
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.10.0-alpha-972'
+  version: '0.10.0-alpha-981'
 };
 ;
 (function(ionic) {
