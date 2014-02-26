@@ -101,7 +101,7 @@ def set_version_codename(path, version):
       if time:
         version['release_datetime'] += ' ' + time.strip()
 
-    if version['id'] == 'nightly':
+    if version['version_number'] == 'nightly':
       version['version_codename'] = d.get('version', None)
       version['version_name'] = d.get('version', None)
 
