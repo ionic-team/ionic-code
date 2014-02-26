@@ -5,7 +5,7 @@ import json
 
 def main():
   versions = []
-  SKIP_DIRS = ('assets', 'builder', 'nightly', 'contrib', 'ionicons')
+  SKIP_DIRS = ('assets', 'builder', 'contrib', 'ionicons')
   ROOT_DIR = '../'
 
   for f in os.listdir(ROOT_DIR):
@@ -16,16 +16,9 @@ def main():
     if os.path.isdir(path) and f not in SKIP_DIRS:
       build_version(versions, path, f)
 
-  def sort_name(k):
-    key = k['version_number']
-    if '-' not in key:
-      key += '-release'
-    return key
+  versions = sorted(versions, key=lambda k: k['id'], reverse=True) 
 
-  versions = sorted(versions, key=lambda k: sort_name(k), reverse=True) 
-  build_version(versions, '../nightly', 'nightly')
-
-  output = json.dumps(versions, sort_keys=True, indent=1, separators=(',', ':'))
+  output = json.dumps(versions, indent=1, separators=(',', ':'))
 
   #print output
   with open("../versions.json", "w") as text_file:
@@ -36,7 +29,7 @@ def build_version(versions, path, version_number):
   build_zip(path, version_number)
   
   version = {
-    'id':  ('v%s' % (version_number.replace('.', '_').replace('-', '_'))).replace('vnightly', 'nightly'),
+    'id': get_id(version_number),
     'version_number': version_number,
     'files': []
   }
@@ -126,6 +119,27 @@ def set_version_codename(path, version):
 
   except:
     pass
+
+def get_id(version_number):
+  if version_number == 'nightly':
+    return '0'
+
+  version_number = version_number.replace('-', '')
+
+  if 'alpha' in version_number:
+    version_number = version_number.replace('alpha', '.1')
+  elif 'beta' in version_number:
+    version_number = version_number.replace('beta', '.2')
+  else:
+    version_number += '.99'
+
+  parts = version_number.split('.')
+
+  v = ''
+  for part in parts:
+    v += '%s' % (int(part) + 100)
+
+  return v
 
 def build_zip(path, version_number):
   zipname = os.path.join(path, 'ionic-v%s.zip' % (version_number))
