@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-992
+ * Ionic, v0.10.0-alpha-994
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.10.0-alpha-992'
+  version: '0.10.0-alpha-994'
 };
 ;
 (function(ionic) {
@@ -2044,15 +2044,27 @@ window.ionic = {
   ionic.CSS = {};
 
   (function() {
-    var keys = ['webkitTransform', 'transform', '-webkit-transform', 'webkit-transform',
+
+    // transform
+    var i, keys = ['webkitTransform', 'transform', '-webkit-transform', 'webkit-transform',
                 '-moz-transform', 'moz-transform', 'MozTransform', 'mozTransform'];
 
-    for(var i = 0; i < keys.length; i++) {
+    for(i = 0; i < keys.length; i++) {
       if(document.documentElement.style[keys[i]] !== undefined) {
         ionic.CSS.TRANSFORM = keys[i];
         break;
       }
     }
+
+    // transition
+    keys = ['webkitTransition', 'mozTransition', 'transition'];
+    for(i = 0; i < keys.length; i++) {
+      if(document.documentElement.style[keys[i]] !== undefined) {
+        ionic.CSS.TRANSITION = keys[i];
+        break;
+      }
+    }
+
   })();
 
   // classList polyfill for them older Androids
@@ -2068,12 +2080,12 @@ window.ionic = {
             for(x=0; x<arguments.length; x++) {
               fn(classes, classes.indexOf(arguments[x]), arguments[x]);
             }
-            
+
             self.className = classes.join(" ");
           };
         }
 
-        return {                    
+        return {
           add: update(function(classes, index, value) {
             ~index || classes.push(value);
           }),
@@ -2102,7 +2114,7 @@ window.ionic = {
   // polyfill use to simulate native "tap"
   ionic.tapElement = function(target, e) {
     // simulate a normal click by running the element's click method then focus on it
-    
+
     var ele = target.control || target;
 
     if(ele.disabled) return;
@@ -4820,7 +4832,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
       }
 
       this._currentDrag.content.style[ionic.CSS.TRANSFORM] = 'translate3d(' + newX + 'px, 0, 0)';
-      this._currentDrag.content.style.webkitTransition = 'none';
+      this._currentDrag.content.style[ionic.CSS.TRANSITION] = 'none';
     }
   });
 
@@ -4870,7 +4882,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
       } else {
         _this._currentDrag.content.style[ionic.CSS.TRANSFORM] = 'translate3d(' + restingPoint + 'px, 0, 0)';
       }
-      _this._currentDrag.content.style[ionic.CSS.TRANSFORM] = '';
+      _this._currentDrag.content.style[ionic.CSS.TRANSITION] = '';
 
 
       // Kill the current drag
@@ -31667,7 +31679,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-992
+ * Ionic, v0.10.0-alpha-994
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
