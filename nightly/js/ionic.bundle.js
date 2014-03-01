@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-997
+ * Ionic, v0.10.0-alpha-998
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.10.0-alpha-997'
+  version: '0.10.0-alpha-998'
 };
 ;
 (function(ionic) {
@@ -31679,7 +31679,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-997
+ * Ionic, v0.10.0-alpha-998
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -33009,22 +33009,6 @@ angular.module('ionic.service.view', ['ui.router', 'ionic.service.platform'])
 
 }]);
 ;
-angular.module('ionic.ui.navAnimation', [])
-.directive('ionNavAnimation', function() {
-  return {
-    restrict: 'A',
-    require: '^?ionNavView',
-    link: function($scope, $element, $attrs, navViewCtrl) {
-      if (!navViewCtrl) {
-        return;
-      }
-      ionic.on('tap', function() {
-        navViewCtrl.setNextAnimation($attrs.ionNavAnimation);
-      }, $element[0]);
-    }
-  };
-});
-;
 (function() {
 'use strict';
 
@@ -33623,6 +33607,22 @@ angular.module('ionic.ui.loading', [])
 });
 
 })();
+;
+angular.module('ionic.ui.navAnimation', [])
+.directive('ionNavAnimation', function() {
+  return {
+    restrict: 'A',
+    require: '^?ionNavView',
+    link: function($scope, $element, $attrs, navViewCtrl) {
+      if (!navViewCtrl) {
+        return;
+      }
+      ionic.on('tap', function() {
+        navViewCtrl.setNextAnimation($attrs.ionNavAnimation);
+      }, $element[0]);
+    }
+  };
+});
 ;
 (function(ionic) {
 'use strict';
