@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-996
+ * Ionic, v0.10.0-alpha-997
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.10.0-alpha-996'
+  version: '0.10.0-alpha-997'
 };
 ;
 (function(ionic) {
@@ -31679,7 +31679,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-996
+ * Ionic, v0.10.0-alpha-997
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
