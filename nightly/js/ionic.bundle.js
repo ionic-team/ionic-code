@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-1045
+ * Ionic, v0.10.0-alpha-1047
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.10.0-alpha-1045'
+  version: '0.10.0-alpha-1047'
 };
 ;
 (function(ionic) {
@@ -31758,7 +31758,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-1045
+ * Ionic, v0.10.0-alpha-1047
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32103,15 +32103,14 @@ angular.module('ionic.ui.service.slideBoxDelegate', [])
 ;
 angular.module('ionic.service.actionSheet', ['ionic.service.templateLoad', 'ionic.service.platform', 'ionic.ui.actionSheet', 'ngAnimate'])
 
-.factory('$ionicActionSheet', ['$rootScope', '$document', '$compile', '$animate', '$timeout',
-    '$ionicTemplateLoader', '$ionicPlatform',
-    function($rootScope, $document, $compile, $animate, $timeout, $ionicTemplateLoader, $ionicPlatform) {
+.factory('$ionicActionSheet', ['$rootScope', '$document', '$compile', '$animate', '$timeout', '$ionicTemplateLoader', '$ionicPlatform',
+                      function($rootScope, $document, $compile, $animate, $timeout, $ionicTemplateLoader, $ionicPlatform) {
 
   return {
     /**
      * Load an action sheet with the given template string.
      *
-     * A new isolated scope will be created for the 
+     * A new isolated scope will be created for the
      * action sheet and the new element will be appended into the body.
      *
      * @param {object} opts the options for this ActionSheet (see docs)
@@ -32128,12 +32127,13 @@ angular.module('ionic.service.actionSheet', ['ionic.service.templateLoad', 'ioni
       var sheetEl = angular.element(element[0].querySelector('.action-sheet-wrapper'));
 
       var hideSheet = function(didCancel) {
-        $animate.leave(sheetEl, function() {
-          if(didCancel) {
+        sheetEl.removeClass('action-sheet-up');
+        if(didCancel) {
+          $timeout(function(){
             opts.cancel();
-          }
-        });
-        
+          }, 200);
+        }
+
         $animate.removeClass(element, 'active', function() {
           scope.$destroy();
         });
@@ -32180,8 +32180,10 @@ angular.module('ionic.service.actionSheet', ['ionic.service.templateLoad', 'ioni
       scope.sheet = sheet;
 
       $animate.addClass(element, 'active');
-      $animate.enter(sheetEl, element, null, function() {
-      });
+
+      $timeout(function(){
+        sheetEl.addClass('action-sheet-up');
+      }, 20);
 
       return sheet;
     }
@@ -33126,7 +33128,7 @@ angular.module('ionic.ui.actionSheet', [])
       $element.bind('click', backdropClick);
     },
     template: '<div class="action-sheet-backdrop">' +
-                '<div class="action-sheet-wrapper action-sheet-up">' + 
+                '<div class="action-sheet-wrapper">' +
                   '<div class="action-sheet">' +
                     '<div class="action-sheet-group">' +
                       '<div class="action-sheet-title" ng-if="titleText">{{titleText}}</div>' +
