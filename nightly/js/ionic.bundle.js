@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1080
+ * Ionic, v0.10.0-alpha-nightly-1081
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -31791,7 +31791,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1080
+ * Ionic, v0.10.0-alpha-nightly-1081
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34286,16 +34286,18 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
           getTranslateX: function() {
             return $scope.sideMenuContentTranslateX || 0;
           },
-          setTranslateX: ionic.animationFrameThrottle(function(amount) {
-            if(amount === 0) {
-              $element[0].style[ionic.CSS.TRANSFORM] = 'none';
-            } else {
-              $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + amount + 'px, 0, 0)';
-            }
-            $timeout(function() {
-              $scope.sideMenuContentTranslateX = amount;
+          setTranslateX: function(amount) {
+            ionic.requestAnimationFrame(function() {
+              if(amount === 0) {
+                $element[0].style[ionic.CSS.TRANSFORM] = 'none';
+              } else {
+                $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + amount + 'px, 0, 0)';
+              }
+              $timeout(function() {
+                $scope.sideMenuContentTranslateX = amount;
+              });
             });
-          }),
+          },
           enableAnimation: function() {
             //this.el.classList.add(this.animateClass);
             $scope.animationEnabled = true;
