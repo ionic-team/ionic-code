@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1100
+ * Ionic, v0.10.0-alpha-nightly-1101
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -31806,7 +31806,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1100
+ * Ionic, v0.10.0-alpha-nightly-1101
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34090,6 +34090,23 @@ angular.module('ionic.ui.radio', [])
 
 // The radio button is a radio powered element with only
 // one possible selection in a set of options.
+/**
+ * @ngdoc directive
+ * @name ionRadio
+ * @module ionic
+ * @restrict E
+ * @description
+ * No different than the HTML radio input, except it's styled differently.
+ *
+ * Behaves like any [AngularJS radio](http://docs.angularjs.org/api/ng/input/input[radio]).
+ *
+ * @usage
+ * ```html
+ * <ion-radio ng-model="choice" value="A">Choose A</ion-radio>
+ * <ion-radio ng-model="choice" value="B">Choose B</ion-radio>
+ * <ion-radio ng-model="choice" value="C">Choose C</ion-radio>
+ * ```
+ */
 .directive('ionRadio', function() {
   return {
     restrict: 'E',
