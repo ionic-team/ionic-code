@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1127
+ * Ionic, v0.10.0-alpha-nightly-1131
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -2411,16 +2411,11 @@ window.ionic = {
   }
 
   function preventGhostClick(e) {
-    if(e.target.control) {
-      // this is a label that has an associated input
-      // the native layer will send the actual event, so stop this one
-      void 0;
-      return stopEvent(e);
-    }
 
-    if( isRecentTap(e) ) {
-      // a tap has already happened at these coordinates recently, ignore this event
-      void 0;
+    void 0;
+
+
+    if(e.target.control || isRecentTap(e) || isScrolledSinceStart(e)) {
       return stopEvent(e);
     }
 
@@ -2445,6 +2440,16 @@ window.ionic = {
         return existingCoordinates;
       }
     }
+  }
+
+  function isScrolledSinceStart(event) {
+    // check if this click's coordinates are different than its touchstart/mousedown
+    var c = getCoordinates(event);
+
+    return (c.x > startCoordinates.x + HIT_RADIUS ||
+            c.x < startCoordinates.x - HIT_RADIUS ||
+            c.y > startCoordinates.y + HIT_RADIUS ||
+            c.y < startCoordinates.y - HIT_RADIUS);
   }
 
   function recordCoordinates(event) {
@@ -2505,7 +2510,12 @@ window.ionic = {
     }
   }
 
+  function recordStartCoordinates(e) {
+    startCoordinates = getCoordinates(e);
+  }
+
   var tapCoordinates = {}; // used to remember coordinates to ignore if they happen again quickly
+  var startCoordinates = {}; // used to remember where the coordinates of the start of the tap
   var CLICK_PREVENT_DURATION = 1500; // max milliseconds ghostclicks in the same area should be prevented
   var REMOVE_PREVENT_DELAY = 375; // delay after a touchend/mouseup before removing the ghostclick prevent
   var HIT_RADIUS = 15;
@@ -2519,6 +2529,10 @@ window.ionic = {
   // listeners used to remove ghostclick prevention
   document.addEventListener('touchend', removeClickPrevent, false);
   document.addEventListener('mouseup', removeClickPrevent, false);
+
+  // in the case the user touched the screen, then scrolled, it shouldn't fire the click
+  document.addEventListener('touchstart', recordStartCoordinates, false);
+  document.addEventListener('mousedown', recordStartCoordinates, false);
 
 })(this, document, ionic);
 
@@ -32078,7 +32092,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1127
+ * Ionic, v0.10.0-alpha-nightly-1131
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34050,23 +34064,28 @@ angular.module('ionic.ui.content', ['ionic.ui.service', 'ionic.ui.scroll'])
  * @module ionic
  *
  * @description
- * The ionContent directive provides an easy to use content area that can be configured to use
- * Ionic's custom Scroll View, or the built in overflow scorlling of the browser.
+ * The ionContent directive provides an easy to use content area that can be configured 
+ * to use Ionic's custom Scroll View, or the built in overflow scorlling of the browser.
  *
- * While we recommend using the custom Scroll features in Ionic in most cases, sometimes (for performance reasons) only the browser's native overflow scrolling will suffice, and so we've made it easy to toggle between the Ionic scroll implementation and overflow scrolling.
+ * While we recommend using the custom Scroll features in Ionic in most cases, sometimes 
+ * (for performance reasons) only the browser's native overflow scrolling will suffice,
+ * and so we've made it easy to toggle between the Ionic scroll implementation and 
+ * overflow scrolling.
  *
- * You can implement pull-to-refresh with the {@link ionic.directive:ionRefresher} directive, and infinite scrolling with the {@link ionic.directive:ionInfiniteScroll} directive.
+ * You can implement pull-to-refresh with the {@link ionic.directive:ionRefresher} 
+ * directive, and infinite scrolling with the {@link ionic.directive:ionInfiniteScroll} 
+ * directive.
  *
  * @restrict E
  * @param {boolean=} scroll Whether to allow scrolling of content.  Defaults to true.
- * @param {boolean=} overflow-scroll Whether to use overflow-scrolling instead of Ionic scroll.
+ * @param {boolean=} overflow-scroll Whether to use overflow-scrolling instead of 
+ * Ionic scroll.
  * @param {boolean=} padding Whether to add padding to the content.
  * @param {boolean=} has-header Whether to offset the content for a header bar.
  * @param {boolean=} has-subheader Whether to offset the content for a subheader bar.
  * @param {boolean=} has-footer Whether to offset the content for a footer bar.
- * @param {boolean=} has-bouncing Whether to allow scrolling to bounce past the edges of the content.  Defaults to true on iOS, false on Android.
- * @param {expression=} on-refresh Expression to evaluate on refresh completion.
- * @param {expression=} on-refresh-opening Expression to evaluate on refresh opening.
+ * @param {boolean=} has-bouncing Whether to allow scrolling to bounce past the edges 
+ * of the content.  Defaults to true on iOS, false on Android.
  * @param {expression=} on-scroll Expression to evaluate when the content is scrolled.
  * @param {expression=} on-scroll-complete Expression to evaluate when a scroll action completes.
  */
@@ -34106,15 +34125,10 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
 
         $ionicBind($scope, $attr, {
           //Use $ to stop onRefresh from recursively calling itself
-          //DEPRECATED, use <ion-infinite-scroll on-infinite-scroll="">
           $onRefresh: '&onRefresh',
           $onRefreshOpening: '&onRefreshOpening',
           $onScroll: '&onScroll',
           $onScrollComplete: '&onScrollComplete',
-          //DEPRECATED, use <ion-infinite-scroll on-infinite-scroll="">
-          $onInfiniteScroll: '&onInfiniteScroll',
-          refreshComplete: '=',
-          infiniteScrollDistance: '@',
           hasBouncing: '@',
           scroll: '@',
           padding: '@',
@@ -34174,8 +34188,6 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
           if(attr.refreshComplete) {
             $scope.refreshComplete = function() {
               if($scope.scrollView) {
-                scrollCtrl.refresher && scrollCtrl.refresher.classList.remove('active');
-                scrollView.finishPullToRefresh();
                 $scope.$parent.$broadcast('scroll.onRefreshComplete');
               }
             };
@@ -34195,24 +34207,99 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
   };
 }])
 
-.directive('ionRefresher', function() {
+/**
+ * @ngdoc directive
+ * @name ionRefresher
+ * @module ionic
+ * @restrict E
+ * @parent ionContent, ionScroll
+ * @description
+ * Allows you to add pull-to-refresh to a scrollView.
+ *
+ * Place it as the first child of your {@link ionic.directive:ionContent} or
+ * {@link ionic.directive:ionScroll} element.
+ *
+ * When refreshing is complete, $broadcast the 'scroll.refreshComplete' event
+ * from your controller.
+ *
+ * @param {expression=} on-refresh Called when the user pulls down enough and lets go 
+ * of the refresher.
+ * @param {expression=} on-pulling Called when the user starts to pull down 
+ * on the refresher.
+ * @param {string=} pulling-icon The icon to display while the user is pulling down.  
+ * Default: 'ion-arrow-down-c'.
+ * @param {string=} pulling-text The text to display while the user is pulling down. 
+ * @param {string=} refreshing-icon The icon to display after user lets go of the 
+ * refresher.
+ * @param {string=} refreshing-text The text to display after the user lets go of
+ * the refresher.
+ *
+ * @usage
+ * ```html
+ * <ion-content ng-controller="MyController">
+ *   <ion-refresher
+ *     pulling-text="Pull to refresh..."
+ *     on-refresh="doRefresh()">
+ *   </ion-refresher>
+ *   <ion-list>
+ *     <ion-item ng-repeat="item in items"></ion-item>
+ *   </ion-list>
+ * </ion-content>
+ * ```
+ * ```js
+ * angular.module('testApp', ['ionic'])
+ * .controller('MyController', function($scope, $http) {
+ *   $scope.items = [1,2,3];
+ *   $scope.doRefresh = function() {
+ *     $http.get('/new-items').success(function(newItems) {
+ *       $scope.items = newItems;
+ *       //Stop the ion-refresher from spinning
+ *       $scope.$broadcast('scroll.refreshComplete');
+ *     });
+ *   };
+ * });
+ * ```
+ */
+.directive('ionRefresher', ['$ionicBind', function($ionicBind) {
   return {
     restrict: 'E',
     replace: true,
-    require: ['^?ionContent', '^?ionList'],
-    template: '<div class="scroll-refresher"><div class="ionic-refresher-content"><i class="icon ion-arrow-down-c icon-pulling"></i><i class="icon ion-loading-d icon-refreshing"></i></div></div>',
-    scope: true
-  };
-})
+    require: '^$ionicScroll',
+    template:
+    '<div class="scroll-refresher">' +
+    '<div class="ionic-refresher-content">' +
+        '<i class="icon {{pullingIcon}} icon-pulling"></i>' +
+        '<span class="icon-pulling" ng-bind-html="pullingText"></span>' +
+        '<i class="icon {{refreshingIcon}} icon-refreshing"></i>' +
+        '<span class="icon-refreshing" ng-bind-html="refreshingText"></span>' +
+      '</div>' +
+    '</div>',
+    compile: function($element, $attrs) {
+      if (angular.isUndefined($attrs.pullingIcon)) {
+        $attrs.$set('pullingIcon', 'ion-arrow-down-c');
+      }
+      if (angular.isUndefined($attrs.refreshingIcon)) {
+        $attrs.$set('refreshingIcon', 'ion-loading-d');
+      }
+      return function($scope, $element, $attrs, scrollCtrl) {
+        $ionicBind($scope, $attrs, {
+          pullingIcon: '@',
+          pullingText: '@',
+          refreshingIcon: '@',
+          refreshingText: '@',
+          $onRefresh: '&onRefresh',
+          $onRefreshOpening: '&onRefreshOpening'
+        });
 
-.directive('ionScrollRefresher', function() {
-  return {
-    restrict: 'E',
-    replace: true,
-    transclude: true,
-    template: '<div class="scroll-refresher"><div class="scroll-refresher-content" ng-transclude></div></div>'
+        scrollCtrl.setRefresher($scope, $element[0]);
+        $scope.$on('scroll.refreshComplete', function() {
+          $element[0].classList.remove('active');
+          scrollCtrl.scrollView.finishPullToRefresh();
+        });
+      };
+    }
   };
-})
+}])
 
 /**
  * @ngdoc directive
@@ -34281,10 +34368,7 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
       this.isLoading = false;
       this.scrollView = null; //given by link function
       this.getMaxScroll = function() {
-        var dist = $attrs.distance ||
-          //deprecated: allow infiniteScrollDistance from ionContent
-          $scope.infiniteScrollDistance ||
-          '1%';
+        var dist = $attrs.distance || '1%';
         return dist.indexOf('%') > -1 ?
           this.scrollView.getScrollMax().top * (1 - parseInt(dist,10) / 100) :
           this.scrollView.getScrollMax().top - parseInt(dist, 10);
@@ -34312,9 +34396,7 @@ function($parse, $timeout, $ionicScrollDelegate, $controller, $ionicBind) {
             scrollView.getValues().top >= infiniteScrollCtrl.getMaxScroll()) {
           $element[0].classList.add('active');
           infiniteScrollCtrl.isLoading = true;
-
-          //deprecated: allow $onInfiniteScroll from parent
-          $scope.$apply($attrs.onInfinite || $scope.$onInfiniteScroll);
+          $scope.$parent.$apply($attrs.onInfinite || '');
         }
       }));
     }
@@ -36800,28 +36882,36 @@ angular.module('ionic.ui.scroll')
     scrollView.resize();
   }
 
+  this.setRefresher = function(refresherScope, refresherElement) {
+    var refresher = this.refresher = refresherElement;
+    var refresherHeight = self.refresher.clientHeight || 0;
+    scrollView.activatePullToRefresh(refresherHeight, function() {
+      refresher.classList.add('active');
+      refresherScope.$onRefreshOpening();
+    }, function() {
+      refresher.classList.remove('refreshing');
+      refresher.classList.remove('active');
+    }, function() {
+      refresher.classList.add('refreshing');
+      refresherScope.$onRefresh();
+    });
+  };
+
   $timeout(function() {
     scrollView.run();
-
-    self.refresher = element.querySelector('.scroll-refresher');
-
-    // Activate pull-to-refresh
-    if(self.refresher) {
-      var refresherHeight = self.refresher.clientHeight || 0;
-      scrollView.activatePullToRefresh(refresherHeight, function() {
-        self.refresher.classList.add('active');
-        $scope.$onRefreshOpening && $scope.$onRefreshOpening();
-      }, function() {
-        self.refresher.classList.remove('refreshing');
-        self.refresher.classList.remove('active');
-      }, function() {
-        self.refresher.classList.add('refreshing');
-        $scope.$onRefresh && $scope.$onRefresh();
-        $scope.$parent.$broadcast('scroll.onRefresh');
-      });
-    }
   });
-
 }]);
 
 })();
+
+var popups = [];
+function showPopup() {
+  var newPopupDeferred = $q.defer();
+  $q.all(popups).then(showThisPopup);
+
+  popups.push(newPopupDeferred);
+
+  function showThisPopup() {
+    popups.splice(popups.indexOf(newPopupDeferred.promise), 1);
+  }
+}
