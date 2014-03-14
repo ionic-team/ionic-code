@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1192
+ * Ionic, v0.10.0-alpha-nightly-1194
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32058,7 +32058,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1192
+ * Ionic, v0.10.0-alpha-nightly-1194
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32585,6 +32585,8 @@ angular.module('ionic.service.modal', ['ionic.service.templateLoad', 'ionic.serv
       var self = this;
       var modalEl = angular.element(self.modalEl);
 
+      self.el.classList.remove('hide');
+
       $document[0].body.classList.add('modal-open');
 
       self._isShown = true;
@@ -32600,13 +32602,14 @@ angular.module('ionic.service.modal', ['ionic.service.templateLoad', 'ionic.serv
       $timeout(function(){
         modalEl.addClass('ng-enter-active');
         self.scope.$parent && self.scope.$parent.$broadcast('modal.shown');
+        self.el.classList.add('active');
       }, 20);
 
       self._deregisterBackButton = $ionicPlatform.registerBackButtonAction(function(){
         self.hide();
       }, 200);
 
-      ionic.views.Modal.prototype.show.call(this);
+      ionic.views.Modal.prototype.show.call(self);
 
     },
 
@@ -32616,9 +32619,11 @@ angular.module('ionic.service.modal', ['ionic.service.templateLoad', 'ionic.serv
      * @description Hide this modal instance.
      */
     hide: function() {
-      this._isShown = false;
-      var modalEl = angular.element(this.modalEl);
+      var self = this;
+      self._isShown = false;
+      var modalEl = angular.element(self.modalEl);
 
+      self.el.classList.remove('active');
       modalEl.addClass('ng-leave');
 
       $timeout(function(){
@@ -32628,13 +32633,14 @@ angular.module('ionic.service.modal', ['ionic.service.templateLoad', 'ionic.serv
 
       $timeout(function(){
         $document[0].body.classList.remove('modal-open');
+        self.el.classList.add('hide');
       }, 350);
 
-      ionic.views.Modal.prototype.hide.call(this);
+      ionic.views.Modal.prototype.hide.call(self);
 
-      this.scope.$parent && this.scope.$parent.$broadcast('modal.hidden');
+      self.scope.$parent && self.scope.$parent.$broadcast('modal.hidden');
 
-      this._deregisterBackButton && this._deregisterBackButton();
+      self._deregisterBackButton && self._deregisterBackButton();
     },
 
     /**
