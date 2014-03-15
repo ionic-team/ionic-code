@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1235
+ * Ionic, v0.9.27-nightly-1236
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32102,7 +32102,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1235
+ * Ionic, v0.9.27-nightly-1236
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -35144,6 +35144,7 @@ angular.module('ionic.ui.navAnimation', [])
  * @ngdoc directive
  * @name ionNavAnimation
  * @module ionic
+ * @group navigation
  * @restrict A
  * @parent ionic.directive:ionNavView
  *
@@ -35189,6 +35190,7 @@ angular.module('ionic.ui.navBar', ['ionic.service.view', 'ngSanitize'])
  * @ngdoc controller
  * @name ionicNavBar
  * @module ionic
+ * @group navigation
  * @description
  * Controller for the {@link ionic.directive:ionNavBar} directive.
  */
@@ -35291,6 +35293,23 @@ function($scope, $element, $ionicViewService, $animate, $compile) {
   };
 
   /**
+   * @ngdoc method
+   * @name ionicNavBar#getTitle
+   * @returns {string} The current title of the navbar.
+   */
+  this.getTitle = function() {
+    return $scope.title || '';
+  };
+  /**
+   * @ngdoc method
+   * @name ionicNavBar#getPreviousTitle
+   * @returns {string} The previous title of the navbar.
+   */
+  this.getPreviousTitle = function() {
+    return $scope.oldTitle || '';
+  };
+
+  /**
    * @private
    * Exposed for testing
    */
@@ -35341,6 +35360,7 @@ function($scope, $element, $ionicViewService, $animate, $compile) {
  * @ngdoc directive
  * @name ionNavBar
  * @module ionic
+ * @group navigation
  * @controller ionicNavBar
  * @restrict E
  *
@@ -35399,8 +35419,7 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
     compile: function(tElement, tAttrs, transclude) {
 
       return function link($scope, $element, $attr, navBarCtrl) {
-        $parse($attr.model || 'navBarController')
-          .assign($scope.$parent, navBarCtrl);
+        $parse($attr.model || 'navBarController').assign($scope.$parent, navBarCtrl);
 
         //Put transcluded content (usually a back button) before the rest
         transclude($scope, function(clone) {
@@ -35429,16 +35448,15 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
  * @name ionNavBackButton
  * @module ionic
  * @restrict E
+ * @group navigation
  * @parent ionNavBar
  * @description
  * Creates a back button inside an {@link ionic.directive:ionNavBar}.
  *
  * Will show up when the user is able to go back in the current navigation stack.
  *
- * By default, will go back when clicked.  If you wish to set a custom action on click,
- * simply define an `ng-click` attribute and use
- * {@link ionic.controller:ionicNavBar#back ionicNavBar controller's .back method} to go back
- * when wished.
+ * By default, will go back when clicked.  If you wish for more advanced behavior, see the 
+ * examples below.
  *
  * @usage
  *
@@ -35452,16 +35470,28 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
  * </ion-nav-bar>
  * ```
  *
- * With custom click action:
+ * With custom click action, using {@link ionic.controller:ionicNavBar ionicNavBar controller}:
  *
  * ```html
- * <ion-nav-bar>
+ * <ion-nav-bar model="navBarController">
  *   <ion-nav-back-button class="button-icon"
  *     ng-click="canGoBack && navBarController.back()">
- *     <i class="ion-arrow-left-c"></i> Back!
+ *     <i class="ion-arrow-left-c"></i> Back
  *   </ion-nav-back-button>
  * </ion-nav-bar>
  * ```
+ *
+ * Displaying the previous title on the back button, again using
+ * {@link ionic.controller:ionicNavBar ionicNavBar controller}.
+ *
+ * ```html
+ * <ion-nav-bar model="navBarController">
+ *   <ion-nav-back-button class="button button-icon ion-arrow-left-c">
+ *     {% raw %}{{navBarController.getPreviousTitle() || 'Back'}}{% endraw %}
+ *   </ion-nav-back-button>
+ * </ion-nav-bar>
+ * ```
+ *
  */
 .directive('ionNavBackButton', ['$ionicNgClick', function($ionicNgClick) {
   return {
@@ -35502,6 +35532,7 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
  * @name ionNavButtons
  * @module ionic
  * @restrict E
+ * @group navigation
  * @parent ionNavView
  *
  * @description
@@ -36879,6 +36910,7 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
  * @name ionView
  * @module ionic
  * @restrict E
+ * @group navigation
  * @parent ionNavBar
  *
  * @description
@@ -36950,6 +36982,8 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
  * @module ionic
  * @restrict E
  * @codepen HjnFx
+ * @group navigation
+ * @groupMainItem
  *
  * @description
  * As a user navigates throughout your app, Ionic is able to keep track of their
