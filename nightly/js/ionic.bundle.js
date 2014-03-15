@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1221
+ * Ionic, v0.10.0-alpha-nightly-1222
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32103,7 +32103,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1221
+ * Ionic, v0.10.0-alpha-nightly-1222
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -36581,6 +36581,7 @@ function($scope, $ionicViewService, $rootScope, $element) {
  * @param {expression=} badge-style The style of badge to put on this tab (eg tabs-positive).
  * @param {expression=} on-select Called when this tab is selected.
  * @param {expression=} on-deselect Called when this tab is deselected.
+ * @param {expression=} ng-click By default, the tab will be selected on click. If ngClick is set, it will not.  You can explicitly switch tabs using {@link ionic.controller:ionicTabs#select ionicTabBar controller's select method}.
  */
 .directive('ionTab', ['$rootScope', '$animate', '$ionicBind', '$compile', '$ionicViewService',
 function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
@@ -36633,6 +36634,7 @@ function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
 
         tabNavElement = angular.element(
           '<ion-tab-nav' +
+          attrStr('ng-click', attr.ngClick) +
           attrStr('title', attr.title) +
           attrStr('icon', attr.icon) +
           attrStr('icon-on', attr.iconOn) +
@@ -36673,14 +36675,14 @@ function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
   };
 }])
 
-.directive('ionTabNav', function() {
+.directive('ionTabNav', ['$ionicNgClick', function($ionicNgClick) {
   return {
     restrict: 'E',
     replace: true,
     require: ['^ionTabs', '^ionTab'],
     template:
     '<a ng-class="{active: isTabActive(), \'has-badge\':badge}" ' +
-      'ng-click="selectTab($event)" class="tab-item">' +
+      ' class="tab-item">' +
       '<span class="badge {{badgeStyle}}" ng-if="badge">{{badge}}</span>' +
       '<i class="icon {{getIconOn()}}" ng-if="getIconOn() && isTabActive()"></i>' +
       '<i class="icon {{getIconOff()}}" ng-if="getIconOff() && !isTabActive()"></i>' +
@@ -36699,6 +36701,14 @@ function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
         var tabsCtrl = ctrls[0],
           tabCtrl = ctrls[1];
 
+        $scope.selectTab = function(e) {
+          e.preventDefault();
+          tabsCtrl.select(tabCtrl.$scope, true);
+        };
+        if (!$attrs.ngClick) {
+          $ionicNgClick($scope, $element, 'selectTab($event)');
+        }
+
         $scope.getIconOn = function() {
           return $scope.iconOn || $scope.icon;
         };
@@ -36709,14 +36719,10 @@ function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
         $scope.isTabActive = function() {
           return tabsCtrl.selectedTab() === tabCtrl.$scope;
         };
-        $scope.selectTab = function(e) {
-          e.preventDefault();
-          tabsCtrl.select(tabCtrl.$scope, true);
-        };
       };
     }
   };
-});
+}]);
 
 (function(ionic) {
 'use strict';
