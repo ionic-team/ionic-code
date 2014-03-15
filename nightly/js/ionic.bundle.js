@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1225
+ * Ionic, v0.10.0-alpha-nightly-1226
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32103,7 +32103,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1225
+ * Ionic, v0.10.0-alpha-nightly-1226
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -33232,7 +33232,7 @@ angular.module('ionic.service.popup', ['ionic.service.templateLoad'])
         pushAndShow(popup, data);
 
       }, function(err) {
-        void 0;
+        console.error('Unable to load popup:', err);
       });
 
       return q.promise;
@@ -35191,6 +35191,7 @@ angular.module('ionic.ui.modal', [])
 
 })();
 
+(function() {
 angular.module('ionic.ui.navAnimation', [])
 /**
  * @ngdoc directive
@@ -35232,8 +35233,9 @@ angular.module('ionic.ui.navAnimation', [])
     }
   };
 });
+})();
 
-[object Object]
+
 (function() {
 'use strict';
 
@@ -35401,7 +35403,6 @@ angular.module('ionic.ui.radio', [])
       if(!ngModel || !radioButtons) { return; }
 
       var setIt = function() {
-        void 0;
         $element.addClass('active');
         ngModel.$setViewValue($scope.$eval($attr.ngValue));
 
@@ -35409,7 +35410,6 @@ angular.module('ionic.ui.radio', [])
       };
 
       var clickHandler = function(e) {
-        void 0;
         setIt();
       };
 
