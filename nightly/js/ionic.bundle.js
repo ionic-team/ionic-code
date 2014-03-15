@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1216
+ * Ionic, v0.10.0-alpha-nightly-1217
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32080,7 +32080,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.10.0-alpha-nightly-1216
+ * Ionic, v0.10.0-alpha-nightly-1217
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
