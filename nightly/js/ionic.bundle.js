@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1236
+ * Ionic, v0.9.27-nightly-1237
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32102,7 +32102,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1236
+ * Ionic, v0.9.27-nightly-1237
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -36724,6 +36724,9 @@ function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
       return function link($scope, $element, $attrs, ctrls) {
         var tabsCtrl = ctrls[0],
           tabCtrl = ctrls[1];
+
+        //Remove title attribute so browser-tooltip does not apear
+        $element[0].removeAttribute('title');
 
         $scope.selectTab = function(e) {
           e.preventDefault();
