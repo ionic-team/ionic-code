@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1239
+ * Ionic, v0.9.27-nightly-1240
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -3508,8 +3508,20 @@ ionic.views.Scroll = ionic.views.View.inherit({
         mousedown = false;
       }, false);
 
+      var wheelShowBarFn = ionic.debounce(function() {
+        void 0;
+        self.__fadeScrollbars('in');
+      }, 500, true);
+
+      var wheelHideBarFn = ionic.debounce(function() {
+        void 0;
+        self.__fadeScrollbars('out');
+      }, 100, false);
+
       document.addEventListener("mousewheel", function(e) {
+        wheelShowBarFn();
         self.scrollBy(e.wheelDeltaX/self.options.wheelDampen, -e.wheelDeltaY/self.options.wheelDampen);
+        wheelHideBarFn();
       });
     }
   },
@@ -32098,7 +32110,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1239
+ * Ionic, v0.9.27-nightly-1240
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
