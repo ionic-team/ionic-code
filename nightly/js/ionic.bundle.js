@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1246
+ * Ionic, v0.9.27-nightly-1247
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32107,7 +32107,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1246
+ * Ionic, v0.9.27-nightly-1247
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34411,7 +34411,6 @@ angular.module('ionic.ui.header', ['ngAnimate', 'ngSanitize'])
  * Is able to have left or right buttons, and additionally its title can be
  * aligned through the {@link ionic.controller:ionicBar ionicBar controller}.
  *
- * @param {string=} type The type of the bar. For example 'bar-positive'.
  * @param {string=} model The model to assign this headerBar's
  * {@link ionic.controller:ionicBar ionicBar controller} to.
  * Defaults to assigning to $scope.headerBarController.
@@ -34420,7 +34419,7 @@ angular.module('ionic.ui.header', ['ngAnimate', 'ngSanitize'])
  *
  * @usage
  * ```html
- * <ion-header-bar align-title="left">
+ * <ion-header-bar align-title="left" class="bar-positive">
  *   <div class="buttons">
  *     <button class="button">Left Button</button>
  *   </div>
@@ -34449,7 +34448,6 @@ angular.module('ionic.ui.header', ['ngAnimate', 'ngSanitize'])
  * Is able to have left or right buttons, and additionally its title can be
  * aligned through the {@link ionic.controller:ionicBar ionicBar controller}.
  *
- * @param {string=} type The type of the bar. For example 'bar-positive'.
  * @param {string=} model The model to assign this footerBar's
  * {@link ionic.controller:ionicBar ionicBar controller} to.
  * Defaults to assigning to $scope.footerBarController.
@@ -34461,7 +34459,7 @@ angular.module('ionic.ui.header', ['ngAnimate', 'ngSanitize'])
  * <ion-content>
  *   Some content!
  * </ion-content>
- * <ion-footer-bar align-title="left">
+ * <ion-footer-bar align-title="left" class="bar-assertive">
  *   <div class="buttons">
  *     <button class="button">Left Button</button>
  *   </div>
@@ -34494,11 +34492,6 @@ function barDirective(isHeader) {
         });
 
         $parse($attr.model || BAR_MODEL_DEFAULT).assign($scope.$parent || $scope, hb);
-
-        $attr.$observe('type', function(val, oldVal) {
-          oldVal && $element.removeClass(oldVal);
-          $element.addClass(val);
-        });
       }
     };
   }];
@@ -34629,7 +34622,7 @@ function($parse, $timeout, $controller, $ionicBind) {
     require: '^?ionNavView',
     scope: true,
     template:
-    '<div class="scroll-content" ng-class="$$contentState.getClassName()">' +
+    '<div class="scroll-content">' +
       '<div class="scroll"></div>' +
     '</div>',
     compile: function(element, attr, transclude) {
@@ -35441,7 +35434,7 @@ function($scope, $element, $ionicViewService, $animate, $compile) {
  *   <!-- The nav bar that will be updated as we navigate -->
  *   <ion-nav-bar
  *     animation="nav-title-slide-ios7"
- *     type="bar-positive"></ion-nav-bar>
+ *     class="bar-positive"></ion-nav-bar>
  *
  *   <!-- where the initial view template will be rendered -->
  *   <ion-nav-view animation="slide-left-right"></ion-nav-view>
@@ -35452,7 +35445,6 @@ function($scope, $element, $ionicViewService, $animate, $compile) {
  * {@link ionic.controller:ionicNavBar ionicNavBar controller} to.
  * Default: assigns it to $scope.navBarController.
  * @param animation {string=} The animation used to transition between titles.
- * @param type {string=} The className for the navbar.  For example, 'bar-positive'.
  * @param align {string=} Where to align the title of the navbar.
  * Available: 'left', 'right', 'center'. Defaults to 'center'.
  */
@@ -35466,7 +35458,6 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
     controller: '$ionicNavBar',
     scope: {
       animation: '@',
-      type: '@',
       alignTitle: '@'
     },
     template:
@@ -35494,8 +35485,7 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
         $scope.isInvisible = true;
 
         $scope.navBarClass = function() {
-          return ($scope.type ? ' ' + $scope.type : '') +
-            ($scope.isReverse ? ' reverse' : '') +
+          return ($scope.isReverse ? ' reverse' : '') +
             ($scope.isInvisible ? ' invisible' : '') +
             ($scope.shouldAnimate && $scope.animation ? ' ' + $scope.animation : '');
         };
