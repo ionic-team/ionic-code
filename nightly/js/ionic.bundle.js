@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1245
+ * Ionic, v0.9.27-nightly-1246
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -170,7 +170,6 @@ window.ionic = {
   * @ngdoc utility
   * @name ionic.DomUtil
   * @module ionic
-  * @group utilities
   */
   ionic.DomUtil = {
     //Call with proper context
@@ -430,7 +429,6 @@ window.ionic = {
    * @ngdoc utility
    * @name ionic.EventController
    * @module ionic
-   * @group utilities
    */
   ionic.EventController = {
     VIRTUALIZED_EVENTS: ['tap', 'swipe', 'swiperight', 'swipeleft', 'drag', 'hold', 'release'],
@@ -500,7 +498,7 @@ window.ionic = {
      * @ngdoc method
      * @name ionic.EventController#onGesture
      * @alias ionic.onGesture
-     * @description Add an event listener for a gesture on an element. 
+     * @description Add an event listener for a gesture on an element.
      * @param {string} eventType The gesture event to listen for.
      * @param {function(e)} callback The function to call when the gesture
      * happens.
@@ -516,7 +514,7 @@ window.ionic = {
      * @ngdoc method
      * @name ionic.EventController#offGesture
      * @alias ionic.offGesture
-     * @description Remove an event listener for a gesture on an element. 
+     * @description Remove an event listener for a gesture on an element.
      * @param {string} eventType The gesture event.
      * @param {function(e)} callback The listener that was added earlier.
      * @param {DOMElement} element The element the listener was added on.
@@ -1942,7 +1940,6 @@ window.ionic = {
    * @ngdoc utility
    * @name ionic.Platform
    * @module ionic
-   * @group utilities
    */
   ionic.Platform = {
 
@@ -32110,7 +32107,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1245
+ * Ionic, v0.9.27-nightly-1246
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32790,7 +32787,6 @@ angular.module('ionic.service.platform', [])
  * @ngdoc service
  * @name $ionicPlatform
  * @module ionic
- * @group utilities
  * @description
  * An angular abstraction of {@link ionic.utility:ionic.Platform}.
  *
@@ -34043,7 +34039,6 @@ angular.module('ionic.ui.service.scrollDelegate', [])
  * @ngdoc service
  * @name $ionicScrollDelegate
  * @module ionic
- * @group page layout
  * @description
  * Allows you to have some control over a scrollable area (created by an
  * {@link ionic.directive:ionContent} or {@link ionic.directive:ionScroll}
@@ -34577,7 +34572,6 @@ angular.module('ionic.ui.content', ['ionic.ui.service', 'ionic.ui.scroll'])
  * @ngdoc directive
  * @name ionPane
  * @module ionic
- * @group page layout
  * @restrict E
  *
  * @description A simple container that fits content, with no side effects.  Adds the 'pane' class to the element.
@@ -34595,8 +34589,6 @@ angular.module('ionic.ui.content', ['ionic.ui.service', 'ionic.ui.scroll'])
  * @ngdoc directive
  * @name ionContent
  * @module ionic
- * @group page layout
- * @groupMainItem
  *
  * @description
  * The ionContent directive provides an easy to use content area that can be configured
@@ -34719,7 +34711,6 @@ function($parse, $timeout, $controller, $ionicBind) {
  * @name ionRefresher
  * @module ionic
  * @restrict E
- * @group page layout
  * @parent ionic.directive:ionContent, ionic.directive:ionScroll
  * @description
  * Allows you to add pull-to-refresh to a scrollView.
@@ -34813,7 +34804,6 @@ function($parse, $timeout, $controller, $ionicBind) {
  * @ngdoc directive
  * @name ionInfiniteScroll
  * @module ionic
- * @group page layout
  * @parent ionic.directive:ionContent, ionic.directive:ionScroll
  * @restrict E
  *
@@ -35218,7 +35208,6 @@ angular.module('ionic.ui.navAnimation', [])
  * @ngdoc directive
  * @name ionNavAnimation
  * @module ionic
- * @group navigation
  * @restrict A
  * @parent ionic.directive:ionNavView
  *
@@ -35264,7 +35253,6 @@ angular.module('ionic.ui.navBar', ['ionic.service.view', 'ngSanitize'])
  * @ngdoc controller
  * @name ionicNavBar
  * @module ionic
- * @group navigation
  * @description
  * Controller for the {@link ionic.directive:ionNavBar} directive.
  */
@@ -35434,7 +35422,6 @@ function($scope, $element, $ionicViewService, $animate, $compile) {
  * @ngdoc directive
  * @name ionNavBar
  * @module ionic
- * @group navigation
  * @controller ionicNavBar
  * @restrict E
  *
@@ -35522,14 +35509,13 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
  * @name ionNavBackButton
  * @module ionic
  * @restrict E
- * @group navigation
  * @parent ionNavBar
  * @description
  * Creates a back button inside an {@link ionic.directive:ionNavBar}.
  *
  * Will show up when the user is able to go back in the current navigation stack.
  *
- * By default, will go back when clicked.  If you wish for more advanced behavior, see the 
+ * By default, will go back when clicked.  If you wish for more advanced behavior, see the
  * examples below.
  *
  * @usage
@@ -35606,7 +35592,6 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
  * @name ionNavButtons
  * @module ionic
  * @restrict E
- * @group navigation
  * @parent ionNavView
  *
  * @description
@@ -35974,7 +35959,6 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
  * @ngdoc controller
  * @name ionicSideMenus
  * @module ionic
- * @group side menu
  *
  * @description
  * Controller for the {@link ionic.directive:ionSideMenus} directive.
@@ -35995,8 +35979,6 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
  * @name ionSideMenus
  * @module ionic
  * @restrict E
- * @group side menu
- * @groupMainItem
  * @controller ionicSideMenus
  *
  * @description
@@ -36069,7 +36051,6 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
  * @name ionSideMenuContent
  * @module ionic
  * @restrict A
- * @group side menu
  * @parent ionic.directive:ionSideMenus
  *
  * @description
@@ -36196,7 +36177,6 @@ angular.module('ionic.ui.sideMenu', ['ionic.service.gesture', 'ionic.service.vie
  * @name ionSideMenu
  * @module ionic
  * @restrict E
- * @group side menu
  * @parent ionic.directive:ionSideMenus
  *
  * @description
@@ -36442,7 +36422,6 @@ angular.module('ionic.ui.tabs', ['ionic.service.view'])
 
 /**
  * @ngdoc controller
- * @group tab bar
  * @name ionicTabs
  * @module ionic
  *
@@ -36567,8 +36546,6 @@ angular.module('ionic.ui.tabs', ['ionic.service.view'])
  * @name ionTabs
  * @module ionic
  * @restrict E
- * @group tab bar
- * @groupMainItem
  * @controller ionicTabs
  * @codepen KbrzJ
  *
@@ -36645,7 +36622,6 @@ function($scope, $ionicViewService, $rootScope, $element) {
 
 /**
  * @ngdoc directive
- * @group tab bar
  * @name ionTab
  * @module ionic
  * @restrict E
@@ -36987,7 +36963,6 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
  * @name ionView
  * @module ionic
  * @restrict E
- * @group navigation
  * @parent ionNavBar
  *
  * @description
@@ -37059,8 +37034,6 @@ angular.module('ionic.ui.viewState', ['ionic.service.view', 'ionic.service.gestu
  * @module ionic
  * @restrict E
  * @codepen HjnFx
- * @group navigation
- * @groupMainItem
  *
  * @description
  * As a user navigates throughout your app, Ionic is able to keep track of their
