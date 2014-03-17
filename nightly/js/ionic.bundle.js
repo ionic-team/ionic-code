@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1251
+ * Ionic, v0.9.27-nightly-1252
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32118,7 +32118,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1251
+ * Ionic, v0.9.27-nightly-1252
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -36633,8 +36633,6 @@ function($scope, $ionicViewService, $rootScope, $element) {
  *
  * Each ionTab has its own view history.
  *
- * Whenever a tab is shown or hidden, it will broadcast a 'tab.shown' or 'tab.hidden' event.
- *
  * @usage
  * ```html
  * <ion-tab
@@ -36723,9 +36721,6 @@ function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
         tabsCtrl.$tabsElement.append($compile(tabNavElement)($scope));
 
         $scope.$watch('$tabSelected', function(value) {
-          if (!value) {
-            $scope.$broadcast('tab.hidden', $scope);
-          }
           childScope && childScope.$destroy();
           childScope = null;
           childElement && $animate.leave(childElement);
@@ -36735,7 +36730,6 @@ function($rootScope, $animate, $ionicBind, $compile, $ionicViewService) {
             childElement = tabContent.clone();
             $animate.enter(childElement, tabsCtrl.$element);
             $compile(childElement)(childScope);
-            $scope.$broadcast('tab.shown', $scope);
           }
         });
 
