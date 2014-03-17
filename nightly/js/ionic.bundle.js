@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1247
+ * Ionic, v0.9.27-nightly-1248
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32107,7 +32107,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1247
+ * Ionic, v0.9.27-nightly-1248
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -35632,7 +35632,7 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
 
         //When our ion-nav-buttons container is destroyed,
         //destroy everything in the navbar
-        $element.on('$destroy', function() {
+        $scope.$on('$destroy', function() {
           $animate.leave(clone);
         });
 
