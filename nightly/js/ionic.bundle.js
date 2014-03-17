@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1237
+ * Ionic, v0.9.27-nightly-1239
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -3564,9 +3564,6 @@ ionic.views.Scroll = ionic.views.View.inherit({
   __resizeScrollbars: function() {
     var self = this;
 
-    // Bring the scrollbars in to show the content change
-    self.__fadeScrollbars('in');
-
     // Update horiz bar
     if(self.__indicatorX) {
       var width = Math.max(Math.round(self.__clientWidth * self.__clientWidth / (self.__contentWidth)), 20);
@@ -4181,8 +4178,6 @@ ionic.views.Scroll = ionic.views.View.inherit({
 
     var self = this;
 
-    self.__fadeScrollbars('in');
-
     // Reset interruptedAnimation flag
     self.__interruptedAnimation = true;
 
@@ -4425,6 +4420,7 @@ ionic.views.Scroll = ionic.views.View.inherit({
       self.__isDragging = (self.__enableScrollX || self.__enableScrollY) && (distanceX >= minimumTrackingForDrag || distanceY >= minimumTrackingForDrag);
       if (self.__isDragging) {
         self.__interruptedAnimation = false;
+        self.__fadeScrollbars('in');
       }
 
     }
@@ -32102,7 +32098,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1237
+ * Ionic, v0.9.27-nightly-1239
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
