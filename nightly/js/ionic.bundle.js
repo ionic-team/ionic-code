@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1284
+ * Ionic, v0.9.27-nightly-1285
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32150,7 +32150,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1284
+ * Ionic, v0.9.27-nightly-1285
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34620,7 +34620,7 @@ angular.module('ionic.ui.content', ['ionic.ui.service', 'ionic.ui.scroll'])
  * directive, and infinite scrolling with the {@link ionic.directive:ionInfiniteScroll}
  * directive.
  *
- * Use the classes 'has-header', 'has-subheader', 'has-footer', and 'has-tabs' 
+ * Use the classes 'has-header', 'has-subheader', 'has-footer', and 'has-tabs'
  * to modify the positioning of the ion-content relative to surrounding elements.
  *
  * @param {boolean=} padding Whether to add padding to the content.
@@ -34650,8 +34650,6 @@ function($parse, $timeout, $controller, $ionicBind) {
       '<div class="scroll"></div>' +
     '</div>',
     compile: function(element, attr, transclude) {
-      if(attr.padding == "true") { element.find('div').addClass('padding'); }
-
       return {
         //Prelink <ion-content> so it can compile before other directives compile.
         //Then other directives can require ionicScrollCtrl
@@ -34678,7 +34676,7 @@ function($parse, $timeout, $controller, $ionicBind) {
         });
 
         $scope.$watch($attr.padding, function(newVal) {
-          $element.toggleClass('padding', !!newVal);
+          scrollContent.toggleClass('padding', !!newVal);
         });
 
         if ($scope.scroll === "false") {
