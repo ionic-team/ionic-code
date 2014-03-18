@@ -1309,7 +1309,7 @@
    {
     "path":"/nightly/js/ionic-angular.js",
     "type":"js",
-    "size":"170.8 KB"
+    "size":"170.7 KB"
    },
    {
     "path":"/nightly/js/ionic.bundle.js",
@@ -1402,11 +1402,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-03-18 00:43:40",
+  "release_datetime":"2014-03-18 00:45:52",
   "version_number":"nightly",
   "release_date":"2014-03-18",
-  "version_codename":"0.9.27-nightly-1256",
-  "version_name":"0.9.27-nightly-1256",
+  "version_codename":"0.9.27-nightly-1257",
+  "version_name":"0.9.27-nightly-1257",
   "id":"0"
  }
 ]
