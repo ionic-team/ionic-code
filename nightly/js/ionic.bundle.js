@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1259
+ * Ionic, v0.9.27-nightly-1261
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -2256,7 +2256,6 @@ window.ionic = {
     }
     readyCallbacks = [];
     ionic.trigger('platformready', { target: document });
-    document.removeEventListener("deviceready", onPlatformReady, false);
   }
 
 })(window.ionic);
@@ -32137,7 +32136,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1259
+ * Ionic, v0.9.27-nightly-1261
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
