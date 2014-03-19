@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1291
+ * Ionic, v0.9.27-nightly-1292
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -2359,7 +2359,7 @@ window.ionic = {
 
     ele.dispatchEvent(clickEvent);
 
-    if(ele.tagName === 'INPUT' || ele.tagName === 'TEXTAREA' || ele.tagName === 'SELECT') {
+    if(ele.tagName === 'INPUT' || ele.tagName === 'TEXTAREA') {
       ele.focus();
       e.preventDefault();
     } else {
@@ -2400,8 +2400,7 @@ window.ionic = {
           ele.tagName === "A" ||
           ele.tagName === "BUTTON" ||
           ele.tagName === "LABEL" ||
-          ele.tagName === "TEXTAREA" ||
-          ele.tagName === "SELECT" ) {
+          ele.tagName === "TEXTAREA" ) {
 
         return ionic.tapElement(ele, e);
       }
@@ -2510,8 +2509,7 @@ window.ionic = {
   function blurActive() {
     var ele = document.activeElement;
     if(ele && (ele.tagName === "INPUT" ||
-               ele.tagName === "TEXTAREA" ||
-               ele.tagName === "SELECT")) {
+               ele.tagName === "TEXTAREA")) {
       // using a timeout to prevent funky scrolling while a keyboard hides
       setTimeout(function(){
         ele.blur();
@@ -32150,7 +32148,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1291
+ * Ionic, v0.9.27-nightly-1292
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
