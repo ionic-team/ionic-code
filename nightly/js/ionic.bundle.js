@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1319
+ * Ionic, v0.9.27-nightly-1320
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1319'
+  version: '0.9.27-nightly-1320'
 };
 
 (function(ionic) {
@@ -2569,11 +2569,14 @@ window.ionic = {
           queueElements[keyId] = ele;
 
           // in XX milliseconds, set the queued elements to active
-          setTimeout(activateElements, 60);
-
           // add listeners to clear all queued/active elements onMove
-          document.body.addEventListener('mousemove', clear, false);
-          document.body.addEventListener('touchmove', clear, false);
+          if(e.type === 'touchstart') {
+            document.body.addEventListener('touchmove', clear, false);
+            setTimeout(activateElements, 85);
+          } else {
+            document.body.addEventListener('mousemove', clear, false);
+            ionic.requestAnimationFrame(activateElements);
+          }
 
           keyId = (keyId > 19 ? 0 : keyId + 1);
           break;
@@ -2594,6 +2597,15 @@ window.ionic = {
     queueElements = {};
   }
 
+  function deactivateElements() {
+    for(var key in activeElements) {
+      if(activeElements[key]) {
+        activeElements[key].classList.remove('active');
+        delete activeElements[key];
+      }
+    }
+  }
+
   function onEnd(e) {
     // clear out any active/queued elements after XX milliseconds
     setTimeout(clear, 200);
@@ -2604,14 +2616,7 @@ window.ionic = {
     queueElements = {};
 
     // in the next frame, remove the active class from all active elements
-    ionic.requestAnimationFrame(function(){
-      for(var key in activeElements) {
-        if(activeElements[key]) {
-          activeElements[key].classList.remove('active');
-          delete activeElements[key];
-        }
-      }
-    });
+    ionic.requestAnimationFrame(deactivateElements);
 
     // remove onMove listeners that clear out active elements
     document.body.removeEventListener('mousemove', clear);
@@ -32183,7 +32188,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1319
+ * Ionic, v0.9.27-nightly-1320
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34830,11 +34835,11 @@ angular.module('ionic.ui.list', ['ngAnimate'])
     },
 
     template: '<div class="item item-complex">\
-            <div class="item-edit" ng-if="deleteClick !== undefined">\
+            <div class="item-left-edit item-delete" ng-if="deleteClick !== undefined">\
               <button class="button button-icon icon" ng-class="deleteIconClass" ng-click="deleteClick()" ion-stop-event="click"></button>\
             </div>\
             <a class="item-content" ng-href="{{ href }}" ng-transclude></a>\
-            <div class="item-drag" ng-if="reorderIconClass !== undefined">\
+            <div class="item-right-edit item-drag" ng-if="reorderIconClass !== undefined">\
               <button data-ionic-action="reorder" class="button button-icon icon" ng-class="reorderIconClass"></button>\
             </div>\
             <div class="item-options" ng-if="itemOptionButtons">\
@@ -34881,12 +34886,14 @@ angular.module('ionic.ui.list', ['ngAnimate'])
 
           // Set which icons to use for deleting
           $scope.deleteIconClass = $scope.deleteIcon || $parentScope.deleteIcon || 'ion-minus-circled';
+          $element.addClass('item-left-editable');
         }
       }
 
       // set the reorder Icon Class only if the item or list set can-reorder="true"
       if(($attr.canReorder ? $scope.canReorder : $parentScope.canReorder) === "true") {
         $scope.reorderIconClass = $scope.reorderIcon || $parentScope.reorderIcon || 'ion-navicon';
+        $element.addClass('item-right-editable');
       }
 
       // Set the option buttons which can be revealed by swiping to the left
@@ -34896,6 +34903,7 @@ angular.module('ionic.ui.list', ['ngAnimate'])
         if(typeof $scope.itemOptionButtons === "undefined") {
           $scope.itemOptionButtons = $parentScope.optionButtons();
         }
+        $element.addClass('item-swipeable');
       }
 
     }
@@ -34969,7 +34977,7 @@ angular.module('ionic.ui.list', ['ngAnimate'])
       reorderIcon: '@'
     },
 
-    template: '<div class="list" ng-class="{\'list-editing\': showDelete, \'list-reordering\': showReorder}" ng-transclude></div>',
+    template: '<div class="list" ng-class="{\'list-left-editing\': showDelete, \'list-right-editing\': showReorder}" ng-transclude></div>',
 
     controller: ['$scope', '$attrs', function($scope, $attrs) {
       this.scope = $scope;
