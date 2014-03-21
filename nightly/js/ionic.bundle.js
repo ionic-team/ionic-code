@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1323
+ * Ionic, v0.9.27-nightly-1324
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1323'
+  version: '0.9.27-nightly-1324'
 };
 
 (function(ionic) {
@@ -5427,7 +5427,8 @@ ionic.views.Scroll = ionic.views.View.inherit({
       opts = ionic.extend({
         onReorder: function(el, oldIndex, newIndex) {},
         virtualRemoveThreshold: -200,
-        virtualAddThreshold: 200
+        virtualAddThreshold: 200,
+        canSwipe: false
       }, opts);
 
       ionic.extend(this, opts);
@@ -5616,6 +5617,10 @@ ionic.views.Scroll = ionic.views.View.inherit({
      */
     _handleDrag: function(e) {
       var _this = this, content, buttons;
+
+      if (!this.canSwipe) {
+        return;
+      }
 
       if(Math.abs(e.gesture.deltaY) > 5) {
         this._didDragUpOrDown = true;
@@ -32192,7 +32197,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1323
+ * Ionic, v0.9.27-nightly-1324
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34990,6 +34995,7 @@ angular.module('ionic.ui.list', ['ngAnimate'])
 
     link: function($scope, $element, $attr, ionicScrollCtrl) {
       $scope.listView = new ionic.views.ListView({
+        canSwipe: $scope.canSwipe !== "false" && !!$scope.optionButtons(),
         el: $element[0],
         listEl: $element[0].children[0],
         scrollEl: ionicScrollCtrl && ionicScrollCtrl.element,
