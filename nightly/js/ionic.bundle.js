@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1335
+ * Ionic, v0.9.27-nightly-1336
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1335'
+  version: '0.9.27-nightly-1336'
 };
 
 (function(ionic) {
@@ -6366,6 +6366,16 @@ ionic.views.Slider = ionic.views.View.inherit({
     }
 
     // Public API
+    /**
+     * @ngdoc method
+     * @name ionicSlideBox#update
+     * @description
+     * Update the slidebox (for example if using Angular with ng-repeat,
+     * resize it for the elements inside).
+     */
+    this.update = function() {
+      setTimeout(setup);
+    };
     this.setup = function() {
       setup();
     };
@@ -32226,7 +32236,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1335
+ * Ionic, v0.9.27-nightly-1336
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
