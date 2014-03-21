@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1329
+ * Ionic, v0.9.27-nightly-1330
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1329'
+  version: '0.9.27-nightly-1330'
 };
 
 (function(ionic) {
@@ -32212,7 +32212,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1329
+ * Ionic, v0.9.27-nightly-1330
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34291,7 +34291,7 @@ angular.module('ionic.ui.header', ['ngAnimate', 'ngSanitize'])
  * ```html
  * <ion-header-bar align-title="left" class="bar-positive">
  *   <div class="buttons">
- *     <button class="button">Left Button</button>
+ *     <button class="button" ng-click="doSomething()">Left Button</button>
  *   </div>
  *   <h1 class="title">Title!</h1>
  *   <div class="buttons">
@@ -34334,7 +34334,7 @@ angular.module('ionic.ui.header', ['ngAnimate', 'ngSanitize'])
  *     <button class="button">Left Button</button>
  *   </div>
  *   <h1 class="title">Title!</h1>
- *   <div class="buttons">
+ *   <div class="buttons" ng-click="doSomething()">
  *     <button class="button">Right Button</button>
  *   </div>
  * </ion-footer-bar>
@@ -35463,7 +35463,7 @@ function($ionicViewService, $rootScope, $animate, $compile, $parse) {
  * <ion-nav-view>
  *   <ion-view>
  *     <ion-nav-buttons side="left">
- *       <button class="button">
+ *       <button class="button" ng-click="doSomething()">
  *         I'm a button on the left of the navbar!
  *       </button>
  *     </ion-nav-buttons>
