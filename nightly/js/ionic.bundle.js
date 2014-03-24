@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1354
+ * Ionic, v0.9.27-nightly-1355
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1354'
+  version: '0.9.27-nightly-1355'
 };
 
 (function(ionic) {
@@ -3547,8 +3547,9 @@ ionic.views.Scroll = ionic.views.View.inherit({
     function shouldIgnorePress(e) {
       // Don't react if initial down happens on a form element
       return e.target.tagName.match(IS_INPUT_LIKE_REGEX) ||
-        e.target.isContentEditable ||
-        e.target.tagName.match(IS_EMBEDDED_OBJECT_REGEX);
+             e.target.isContentEditable ||
+             e.target.tagName.match(IS_EMBEDDED_OBJECT_REGEX) ||
+             e.target.dataset.preventScroll;
     }
 
 
@@ -32243,7 +32244,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1354
+ * Ionic, v0.9.27-nightly-1355
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -34906,7 +34907,7 @@ angular.module('ionic.ui.list', ['ngAnimate'])
             </div>\
             <a class="item-content" ng-href="{{ href }}" ng-transclude></a>\
             <div class="item-right-edit item-reorder" ng-if="reorderIconClass !== undefined">\
-              <button data-ionic-action="reorder" class="button button-icon icon" ng-class="reorderIconClass"></button>\
+              <button data-ionic-action="reorder" data-prevent-scroll="true" class="button button-icon icon" ng-class="reorderIconClass"></button>\
             </div>\
             <div class="item-options" ng-if="itemOptionButtons">\
              <button ng-click="b.onTap(item, b)" ion-stop-event="click" class="button" ng-class="b.type" ng-repeat="b in itemOptionButtons" ng-bind="b.text"></button>\
