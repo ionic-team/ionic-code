@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1360
+ * Ionic, v0.9.27-nightly-1361
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -25,7 +25,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1360'
+  version: '0.9.27-nightly-1361'
 };
 
 (function(ionic) {
@@ -32242,7 +32242,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1360
+ * Ionic, v0.9.27-nightly-1361
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
