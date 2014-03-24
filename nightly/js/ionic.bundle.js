@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1359
+ * Ionic, v0.9.27-nightly-1360
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -18,13 +18,14 @@
  *
  */
 
+(function() {
 
 // Create namespaces
 //
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1359'
+  version: '0.9.27-nightly-1360'
 };
 
 (function(ionic) {
@@ -7525,6 +7526,7 @@ ionic.controllers.TabBarController = ionic.controllers.ViewController.inherit({
 
 })(window.ionic);
 
+})();
 /*!
  * ionic.bundle.js is a concatenation of:
  * ionic.js, angular.js, angular-animate.js,
@@ -32240,7 +32242,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1359
+ * Ionic, v0.9.27-nightly-1360
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -32250,6 +32252,7 @@ angular.module('ui.router.compat')
  *
  */
 
+(function() {
 /**
  * Create a wrapping module to ease having to include too many
  * modules.
@@ -37976,3 +37979,5 @@ function($scope, scrollViewOptions, $timeout, $window, $$scrollValueCache, $loca
   };
 }]);
 
+
+})();
