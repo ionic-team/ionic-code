@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1355
+ * Ionic, v0.9.27-nightly-1356
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -24,7 +24,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1355'
+  version: '0.9.27-nightly-1356'
 };
 
 (function(ionic) {
@@ -2512,11 +2512,6 @@ window.ionic = {
     }, REMOVE_PREVENT_DELAY);
   }
 
-  function touchEnd(e) {
-    tapPolyfill(e);
-    removeClickPrevent(e);
-  }
-
   function stopEvent(e){
     e.stopPropagation();
     e.preventDefault();
@@ -2551,13 +2546,14 @@ window.ionic = {
       REMOVE_PREVENT_DELAY = 800;
     }
 
-    // global action event listener for HTML elements that were tapped or held by the user
-    document.addEventListener('touchend', touchEnd, false);
-
     // set global click handler and check if the event should stop or not
     document.addEventListener('click', preventGhostClick, true);
 
-    // listener used to remove ghostclick prevention
+    // global release event listener polyfill for HTML elements that were tapped or held
+    ionic.on("release", tapPolyfill, document);
+
+    // listeners used to remove ghostclick prevention
+    document.addEventListener('touchend', removeClickPrevent, false);
     document.addEventListener('mouseup', removeClickPrevent, false);
 
     // in the case the user touched the screen, then scrolled, it shouldn't fire the click
@@ -32244,7 +32240,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1355
+ * Ionic, v0.9.27-nightly-1356
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -36877,14 +36873,14 @@ angular.module('ionic.ui.touch', [])
         });
       });
 
-      element[0].addEventListener('touchend', onTap, false);
+      ionic.on("release", onTap, element[0]);
 
       // Hack for iOS Safari's benefit. It goes searching for onclick handlers and is liable to click
       // something else nearby.
       element.onclick = function(event) { };
 
       scope.$on('$destroy', function () {
-        element[0].removeEventListener('touchend', onTap);
+        ionic.off("release", onTap, element[0]);
       });
     };
   }])
