@@ -8,7 +8,7 @@
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1368
+ * Ionic, v0.9.27-nightly-1369
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -25,7 +25,7 @@
 window.ionic = {
   controllers: {},
   views: {},
-  version: '0.9.27-nightly-1368'
+  version: '0.9.27-nightly-1369'
 };
 
 (function(ionic) {
@@ -6359,7 +6359,7 @@ ionic.views.Slider = ionic.views.View.inherit({
       slide(to, speed);
     };
 
-    this.prev = function() {
+    this.prev = this.previous = function() {
       // cancel slideshow
       stop();
 
@@ -32177,7 +32177,7 @@ angular.module('ui.router.compat')
  * Copyright 2014 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v0.9.27-nightly-1368
+ * Ionic, v0.9.27-nightly-1369
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -36396,10 +36396,10 @@ angular.module('ionic.ui.slideBox', [])
   'slide',
   /**
    * @ngdoc method
-   * @name $ionicSlideBoxDelegate#prev
+   * @name $ionicSlideBoxDelegate#previous
    * @description Go to the previous slide. Wraps around if at the beginning.
    */
-  'prev',
+  'previous',
   /**
    * @ngdoc method
    * @name $ionicSlideBoxDelegate#next
