@@ -203,15 +203,15 @@
         } else {
           self._transformOriginLeft();
         }
-        window.rAF(function() { self._doDragStart(e) });
+        ionic.requestAnimationFrame(function() { self._doDragStart(e) });
       }, this.el);
 
       ionic.onGesture('drag', function(e) {
-        window.rAF(function() { self._doDrag(e) });
+        ionic.requestAnimationFrame(function() { self._doDrag(e) });
       }, this.el);
 
       ionic.onGesture('dragend', function(e) {
-        window.rAF(function() { self._doDragEnd(e) });
+        ionic.requestAnimationFrame(function() { self._doDragEnd(e) });
       }, this.el);
     },
 
