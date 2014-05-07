@@ -4,7 +4,7 @@
    {
     "path":"/1.0.0-beta.4/ionic-v1.0.0-beta.4.zip",
     "type":"zip",
-    "size":"4.6 MB"
+    "size":"4.3 MB"
    },
    {
     "path":"/1.0.0-beta.4/css/ionic.css",
@@ -24,7 +24,7 @@
    {
     "path":"/1.0.0-beta.4/js/ionic-angular.min.js",
     "type":"js",
-    "size":"213.5 KB"
+    "size":"63.4 KB"
    },
    {
     "path":"/1.0.0-beta.4/js/ionic.bundle.js",
@@ -34,17 +34,17 @@
    {
     "path":"/1.0.0-beta.4/js/ionic.bundle.min.js",
     "type":"js",
-    "size":"302.3 KB"
+    "size":"302.6 KB"
    },
    {
     "path":"/1.0.0-beta.4/js/ionic.js",
     "type":"js",
-    "size":"356.2 KB"
+    "size":"355.5 KB"
    },
    {
     "path":"/1.0.0-beta.4/js/ionic.min.js",
     "type":"js",
-    "size":"356.5 KB"
+    "size":"108.4 KB"
    },
    {
     "path":"/1.0.0-beta.4/js/angular/angular-animate.js",
@@ -117,11 +117,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-05-07 17:00:20",
+  "release_datetime":"2014-05-07 18:05:56",
   "version_number":"1.0.0-beta.4",
   "release_date":"2014-05-07",
-  "version_codename":"americium",
-  "version_name":"Americium",
+  "version_codename":"antimony-antelope",
+  "version_name":"Antimony Antelope",
   "id":"101100100102104"
  },
  {
