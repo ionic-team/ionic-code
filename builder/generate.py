@@ -16,7 +16,7 @@ def main():
     if os.path.isdir(path) and f not in SKIP_DIRS:
       build_version(versions, path, f)
 
-  versions = sorted(versions, key=lambda k: k['id'], reverse=True) 
+  versions = sorted(versions, key=lambda k: k['id'], reverse=True)
 
   output = json.dumps(versions, indent=1, separators=(',', ':'))
 
@@ -27,7 +27,7 @@ def main():
 def build_version(versions, path, version_number):
   print version_number
   build_zip(path, version_number)
-  
+
   version = {
     'id': get_id(version_number),
     'version_number': version_number,
@@ -137,7 +137,10 @@ def get_id(version_number):
 
   v = ''
   for part in parts:
-    v += '%s' % (int(part) + 100)
+    try:
+      v += '%s' % (int(part) + 100)
+    except:
+      v += '%s' % (int(part[0]) + 100)
 
   return v
 
@@ -158,7 +161,7 @@ def build_zip(path, version_number):
       zipf.write(os.path.join(dirpath, filename), archive_name)
 
   zipf.close()
-  
+
 def sizeof_fmt(num):
   for x in ['bytes','KB','MB','GB','TB']:
       if num < 1024.0:
