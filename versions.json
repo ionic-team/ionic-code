@@ -2262,11 +2262,6 @@
     "size":"19.9 KB"
    },
    {
-    "path":"/nightly/fonts/ionicons.woff",
-    "type":"font",
-    "size":"47.2 KB"
-   },
-   {
     "path":"/nightly/fonts/ionicons.eot",
     "type":"font",
     "size":"84.2 KB"
@@ -2280,13 +2275,18 @@
     "path":"/nightly/fonts/ionicons.ttf",
     "type":"font",
     "size":"136.4 KB"
+   },
+   {
+    "path":"/nightly/fonts/ionicons.woff",
+    "type":"font",
+    "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-03 21:28:12",
+  "release_datetime":"2014-06-03 21:35:27",
   "version_number":"nightly",
   "release_date":"2014-06-03",
-  "version_codename":"1.0.0-beta.6-nightly-71",
-  "version_name":"1.0.0-beta.6-nightly-71",
+  "version_codename":"1.0.0-beta.6-nightly-72",
+  "version_name":"1.0.0-beta.6-nightly-72",
   "id":"0"
  }
 ]
