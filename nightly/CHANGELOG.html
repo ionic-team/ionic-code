@@ -1,6 +1,11 @@
-<h3 id="1-0-0-beta-6-nightly-97-changes-since-v1-0-0-beta-6-2014-06-06-">1.0.0-beta.6-nightly-97 (changes since v1.0.0-beta.6) (2014-06-06)</h3>
+<h3 id="1-0-0-beta-6-nightly-98-changes-since-v1-0-0-beta-6-2014-06-06-">1.0.0-beta.6-nightly-98 (changes since v1.0.0-beta.6) (2014-06-06)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
+<li><strong>$ionicActionSheet:</strong><ul>
+<li>stop memory leak due to hidden element staying in dom (<a href="https://github.com/driftyco/ionic/commit/7bd5ac5e1e2cd03d27fa40dd2678c090d71be359">7bd5ac5e</a>)</li>
+<li>fix problems with cancel() not being called (<a href="https://github.com/driftyco/ionic/commit/323e2ce22dc98cdf32fcb4125f4bc34ae8a6c6c5">323e2ce2</a>, closes <a href="https://github.com/driftyco/ionic/issues/1013">#1013</a>, <a href="https://github.com/driftyco/ionic/issues/1576">#1576</a>)</li>
+</ul>
+</li>
 <li><strong>backdrop:</strong> Changed z-index for loading backdrop only. (<a href="https://github.com/driftyco/ionic/commit/4c700e9c0f0e6cf2583314dcffa7ef844355ef3b">4c700e9c</a>, closes <a href="https://github.com/driftyco/ionic/issues/1428">#1428</a>)</li>
 <li><strong>collectionRepeat:</strong> use $rootScope when checking if digest is needed (<a href="https://github.com/driftyco/ionic/commit/74a4612210e6da9f5ebdf964d5256c4896eff185">74a46122</a>, closes <a href="https://github.com/driftyco/ionic/issues/1518">#1518</a>)</li>
 <li><strong>firefox:</strong> Add FF 19+ style vendor prefixing (bit.ly/1tLz8Qp) (<a href="https://github.com/driftyco/ionic/commit/5286a0c4dbe04dfd812512ccdc6a6c1b477624bf">5286a0c4</a>, closes <a href="https://github.com/driftyco/ionic/issues/1574">#1574</a>)</li>
@@ -24,3 +29,20 @@
 <li><strong>ionScroll:</strong> add has-bouncing=true/false attribute (<a href="https://github.com/driftyco/ionic/commit/00c80e85575ad37af634431583e1e3357b350f62">00c80e85</a>, closes <a href="https://github.com/driftyco/ionic/issues/1573">#1573</a>, <a href="https://github.com/driftyco/ionic/issues/1367">#1367</a>)</li>
 <li><strong>scrollView:</strong> better deceleration for scroll view on iOS (<a href="https://github.com/driftyco/ionic/commit/9c77089a5e41970d1f940abff4d9600db62019f3">9c77089a</a>)</li>
 </ul>
+<h4 id="breaking-changes">Breaking Changes</h4>
+<ul>
+<li>$ionicActionSheet now returns a method to hide the
+action sheet.</li>
+</ul>
+<p>Previously, it returned an object that had a <code>show</code> and <code>hide</code> method.
+This was undocumented, but if you used it, here is how to migrate your
+code:</p>
+<p>Change your code from this:</p>
+<pre><code class="lang-js">var sheet = $ionicActionSheet({...});
+sheet.hide();
+</code></pre>
+<p>To this:</p>
+<pre><code class="lang-js">var hideSheet = $ionicActionSheet({...});
+hideSheet();
+</code></pre>
+<p> (<a href="https://github.com/driftyco/ionic/commit/7bd5ac5e1e2cd03d27fa40dd2678c090d71be359">7bd5ac5e</a>)</p>
