@@ -1,8 +1,8 @@
-<h3 id="1-0-0-beta-6-nightly-99-changes-since-v1-0-0-beta-6-2014-06-06-">1.0.0-beta.6-nightly-99 (changes since v1.0.0-beta.6) (2014-06-06)</h3>
+<h3 id="1-0-0-beta-6-nightly-100-changes-since-v1-0-0-beta-6-2014-06-06-">1.0.0-beta.6-nightly-100 (changes since v1.0.0-beta.6) (2014-06-06)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li><strong>$ionicActionSheet:</strong><ul>
-<li>stop memory leak due to hidden element staying in dom (<a href="https://github.com/driftyco/ionic/commit/7bd5ac5e1e2cd03d27fa40dd2678c090d71be359">7bd5ac5e</a>)</li>
+<li>stop memory leak due to hidden element staying in dom (<a href="https://github.com/driftyco/ionic/commit/b7646a56309273f37fc73903114de5e363bbf060">b7646a56</a>)</li>
 <li>fix problems with cancel() not being called (<a href="https://github.com/driftyco/ionic/commit/323e2ce22dc98cdf32fcb4125f4bc34ae8a6c6c5">323e2ce2</a>, closes <a href="https://github.com/driftyco/ionic/issues/1013">#1013</a>, <a href="https://github.com/driftyco/ionic/issues/1576">#1576</a>)</li>
 </ul>
 </li>
@@ -38,11 +38,11 @@ action sheet.</li>
 This was undocumented, but if you used it, here is how to migrate your
 code:</p>
 <p>Change your code from this:</p>
-<pre><code class="lang-js">var sheet = $ionicActionSheet({...});
+<pre><code class="lang-js">var sheet = $ionicActionSheet.show({...});
 sheet.hide();
 </code></pre>
 <p>To this:</p>
-<pre><code class="lang-js">var hideSheet = $ionicActionSheet({...});
+<pre><code class="lang-js">var hideSheet = $ionicActionSheet.show({...});
 hideSheet();
 </code></pre>
-<p> (<a href="https://github.com/driftyco/ionic/commit/7bd5ac5e1e2cd03d27fa40dd2678c090d71be359">7bd5ac5e</a>)</p>
+<p> (<a href="https://github.com/driftyco/ionic/commit/b7646a56309273f37fc73903114de5e363bbf060">b7646a56</a>)</p>
