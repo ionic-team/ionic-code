@@ -2184,7 +2184,7 @@
    {
     "path":"/nightly/js/ionic-angular.js",
     "type":"js",
-    "size":"221.0 KB"
+    "size":"221.5 KB"
    },
    {
     "path":"/nightly/js/ionic.min.js",
@@ -2282,11 +2282,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-10 17:33:12",
+  "release_datetime":"2014-06-10 18:53:45",
   "version_number":"nightly",
   "release_date":"2014-06-10",
-  "version_codename":"1.0.0-beta.6-nightly-116",
-  "version_name":"1.0.0-beta.6-nightly-116",
+  "version_codename":"1.0.0-beta.6-nightly-117",
+  "version_name":"1.0.0-beta.6-nightly-117",
   "id":"0"
  }
 ]
