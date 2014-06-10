@@ -2164,7 +2164,7 @@
    {
     "path":"/nightly/ionic-nightly.zip",
     "type":"zip",
-    "size":"4.1 MB"
+    "size":"4.2 MB"
    },
    {
     "path":"/nightly/css/ionic.css",
@@ -2199,7 +2199,7 @@
    {
     "path":"/nightly/js/ionic.bundle.min.js",
     "type":"js",
-    "size":"285.5 KB"
+    "size":"291.8 KB"
    },
    {
     "path":"/nightly/js/ionic.bundle.js",
@@ -2209,22 +2209,22 @@
    {
     "path":"/nightly/CHANGELOG.html",
     "type":"dependency",
-    "size":"6.5 KB"
+    "size":"6.6 KB"
    },
    {
     "path":"/nightly/js/angular/angular-animate.js",
     "type":"dependency",
-    "size":"68.8 KB"
+    "size":"73.4 KB"
    },
    {
     "path":"/nightly/js/angular/angular-animate.min.js",
     "type":"dependency",
-    "size":"9.4 KB"
+    "size":"10.6 KB"
    },
    {
     "path":"/nightly/js/angular/angular-resource.js",
     "type":"dependency",
-    "size":"22.9 KB"
+    "size":"23.3 KB"
    },
    {
     "path":"/nightly/js/angular/angular-resource.min.js",
@@ -2234,22 +2234,22 @@
    {
     "path":"/nightly/js/angular/angular-sanitize.js",
     "type":"dependency",
-    "size":"20.2 KB"
+    "size":"20.6 KB"
    },
    {
     "path":"/nightly/js/angular/angular-sanitize.min.js",
     "type":"dependency",
-    "size":"4.2 KB"
+    "size":"4.3 KB"
    },
    {
     "path":"/nightly/js/angular/angular.js",
     "type":"dependency",
-    "size":"717.9 KB"
+    "size":"748.2 KB"
    },
    {
     "path":"/nightly/js/angular/angular.min.js",
     "type":"dependency",
-    "size":"98.0 KB"
+    "size":"102.9 KB"
    },
    {
     "path":"/nightly/js/angular-ui/angular-ui-router.js",
@@ -2282,11 +2282,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-10 19:02:39",
+  "release_datetime":"2014-06-10 21:29:54",
   "version_number":"nightly",
   "release_date":"2014-06-10",
-  "version_codename":"1.0.0-beta.6-nightly-121",
-  "version_name":"1.0.0-beta.6-nightly-121",
+  "version_codename":"1.0.0-beta.6-nightly-122",
+  "version_name":"1.0.0-beta.6-nightly-122",
   "id":"0"
  }
 ]
