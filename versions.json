@@ -2179,7 +2179,7 @@
    {
     "path":"/nightly/js/ionic.js",
     "type":"js",
-    "size":"266.1 KB"
+    "size":"266.2 KB"
    },
    {
     "path":"/nightly/js/ionic-angular.js",
@@ -2209,7 +2209,7 @@
    {
     "path":"/nightly/CHANGELOG.html",
     "type":"dependency",
-    "size":"8.1 KB"
+    "size":"8.3 KB"
    },
    {
     "path":"/nightly/js/angular/angular-animate.js",
@@ -2222,6 +2222,16 @@
     "size":"10.6 KB"
    },
    {
+    "path":"/nightly/js/angular/angular-resource.js",
+    "type":"dependency",
+    "size":"23.3 KB"
+   },
+   {
+    "path":"/nightly/js/angular/angular-resource.min.js",
+    "type":"dependency",
+    "size":"3.2 KB"
+   },
+   {
     "path":"/nightly/js/angular/angular-sanitize.js",
     "type":"dependency",
     "size":"20.6 KB"
@@ -2232,24 +2242,14 @@
     "size":"4.3 KB"
    },
    {
-    "path":"/nightly/js/angular/angular-resource.js",
+    "path":"/nightly/js/angular/angular.js",
     "type":"dependency",
-    "size":"23.3 KB"
+    "size":"748.2 KB"
    },
    {
     "path":"/nightly/js/angular/angular.min.js",
     "type":"dependency",
     "size":"102.9 KB"
-   },
-   {
-    "path":"/nightly/js/angular/angular-resource.min.js",
-    "type":"dependency",
-    "size":"3.2 KB"
-   },
-   {
-    "path":"/nightly/js/angular/angular.js",
-    "type":"dependency",
-    "size":"748.2 KB"
    },
    {
     "path":"/nightly/js/angular-ui/angular-ui-router.js",
@@ -2282,11 +2282,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-11 17:36:06",
+  "release_datetime":"2014-06-11 18:54:54",
   "version_number":"nightly",
   "release_date":"2014-06-11",
-  "version_codename":"1.0.0-beta.6-nightly-129",
-  "version_name":"1.0.0-beta.6-nightly-129",
+  "version_codename":"1.0.0-beta.6-nightly-133",
+  "version_name":"1.0.0-beta.6-nightly-133",
   "id":"0"
  }
 ]
