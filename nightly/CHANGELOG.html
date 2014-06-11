@@ -1,4 +1,4 @@
-<h3 id="1-0-0-beta-6-nightly-124-changes-since-v1-0-0-beta-6-2014-06-11-">1.0.0-beta.6-nightly-124 (changes since v1.0.0-beta.6) (2014-06-11)</h3>
+<h3 id="1-0-0-beta-6-nightly-125-changes-since-v1-0-0-beta-6-2014-06-11-">1.0.0-beta.6-nightly-125 (changes since v1.0.0-beta.6) (2014-06-11)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li><strong>$ionicActionSheet:</strong><ul>
@@ -7,7 +7,11 @@
 </ul>
 </li>
 <li><strong>backdrop:</strong> Changed z-index for loading backdrop only. (<a href="https://github.com/driftyco/ionic/commit/4c700e9c0f0e6cf2583314dcffa7ef844355ef3b">4c700e9c</a>, closes <a href="https://github.com/driftyco/ionic/issues/1428">#1428</a>)</li>
-<li><strong>collectionRepeat:</strong> use $rootScope when checking if digest is needed (<a href="https://github.com/driftyco/ionic/commit/74a4612210e6da9f5ebdf964d5256c4896eff185">74a46122</a>, closes <a href="https://github.com/driftyco/ionic/issues/1518">#1518</a>)</li>
+<li><strong>collectionRepeat:</strong><ul>
+<li>remove elements at correct time when leaving page (<a href="https://github.com/driftyco/ionic/commit/30a3c8e0c8aa3a4ce98fa05aff910d14f009efa5">30a3c8e0</a>)</li>
+<li>use $rootScope when checking if digest is needed (<a href="https://github.com/driftyco/ionic/commit/74a4612210e6da9f5ebdf964d5256c4896eff185">74a46122</a>, closes <a href="https://github.com/driftyco/ionic/issues/1518">#1518</a>)</li>
+</ul>
+</li>
 <li><strong>firefox:</strong> Add FF 19+ style vendor prefixing (bit.ly/1tLz8Qp) (<a href="https://github.com/driftyco/ionic/commit/5286a0c4dbe04dfd812512ccdc6a6c1b477624bf">5286a0c4</a>, closes <a href="https://github.com/driftyco/ionic/issues/1574">#1574</a>)</li>
 <li><strong>ionItem:</strong><ul>
 <li>make target attribute work properly (<a href="https://github.com/driftyco/ionic/commit/f5f5851b2e493a944656c1af7491c0ba03d3e75e">f5f5851b</a>, closes <a href="https://github.com/driftyco/ionic/issues/1521">#1521</a>)</li>
