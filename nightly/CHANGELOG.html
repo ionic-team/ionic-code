@@ -1,4 +1,4 @@
-<h3 id="1-0-0-beta-6-nightly-127-changes-since-v1-0-0-beta-6-2014-06-11-">1.0.0-beta.6-nightly-127 (changes since v1.0.0-beta.6) (2014-06-11)</h3>
+<h3 id="1-0-0-beta-6-nightly-128-changes-since-v1-0-0-beta-6-2014-06-11-">1.0.0-beta.6-nightly-128 (changes since v1.0.0-beta.6) (2014-06-11)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li><strong>$ionicActionSheet:</strong><ul>
@@ -40,6 +40,7 @@
 </ul>
 <h4 id="features">Features</h4>
 <ul>
+<li><strong>$ionicActionSheet:</strong> add cancelOnStateChange option, default true (<a href="https://github.com/driftyco/ionic/commit/087e55f320b25828c45f1e57b1f8fe718ebdcd19">087e55f3</a>, closes <a href="https://github.com/driftyco/ionic/issues/1318">#1318</a>)</li>
 <li><strong>$ionicModal:</strong> add <code>hardwareBackButtonClose</code> as option, default true (<a href="https://github.com/driftyco/ionic/commit/9ffca1e4eb642d15b896b22666e6e8822cdca115">9ffca1e4</a>, closes <a href="https://github.com/driftyco/ionic/issues/1397">#1397</a>)</li>
 <li><strong>angular:</strong> update to AngularJS v1.2.17 (<a href="https://github.com/driftyco/ionic/commit/89d5553d7f91c49990057a85d39a97be30377c94">89d5553d</a>)</li>
 <li><strong>collectionRepeat:</strong> huge optimization upgrades (<a href="https://github.com/driftyco/ionic/commit/6af5d68da42e0f876ae3b7875b2222a3e4ea430b">6af5d68d</a>, closes <a href="https://github.com/driftyco/ionic/issues/1597">#1597</a>)</li>
@@ -50,6 +51,11 @@
 </ul>
 <h4 id="breaking-changes">Breaking Changes</h4>
 <ul>
+<li><p>$ionicActionSheet&#39;s default behavior is now to cancel
+when the app&#39;s state changes.  To disable this behavior, pass
+<code>cancelOnStateChange: false</code> into $ionicActionSheet.show().</p>
+<p>(<a href="https://github.com/driftyco/ionic/commit/087e55f320b25828c45f1e57b1f8fe718ebdcd19">087e55f3</a>)</p>
+</li>
 <li>$ionicActionSheet now returns a method to hide the
 action sheet.</li>
 </ul>
