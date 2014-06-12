@@ -17,19 +17,9 @@
     "size":"146.6 KB"
    },
    {
-    "path":"/1.0.0-beta.7/js/ionic.js",
-    "type":"js",
-    "size":"266.2 KB"
-   },
-   {
     "path":"/1.0.0-beta.7/js/ionic-angular.js",
     "type":"js",
     "size":"233.7 KB"
-   },
-   {
-    "path":"/1.0.0-beta.7/js/ionic.min.js",
-    "type":"js",
-    "size":"88.5 KB"
    },
    {
     "path":"/1.0.0-beta.7/js/ionic-angular.min.js",
@@ -37,14 +27,34 @@
     "size":"66.9 KB"
    },
    {
+    "path":"/1.0.0-beta.7/js/ionic.bundle.js",
+    "type":"js",
+    "size":"1.4 MB"
+   },
+   {
     "path":"/1.0.0-beta.7/js/ionic.bundle.min.js",
     "type":"js",
     "size":"294.2 KB"
    },
    {
-    "path":"/1.0.0-beta.7/js/ionic.bundle.js",
+    "path":"/1.0.0-beta.7/js/ionic.js",
     "type":"js",
-    "size":"1.4 MB"
+    "size":"266.2 KB"
+   },
+   {
+    "path":"/1.0.0-beta.7/js/ionic.min.js",
+    "type":"js",
+    "size":"88.5 KB"
+   },
+   {
+    "path":"/1.0.0-beta.7/js/angular-ui/angular-ui-router.js",
+    "type":"dependency",
+    "size":"113.7 KB"
+   },
+   {
+    "path":"/1.0.0-beta.7/js/angular-ui/angular-ui-router.min.js",
+    "type":"dependency",
+    "size":"19.9 KB"
    },
    {
     "path":"/1.0.0-beta.7/js/angular/angular-animate.js",
@@ -85,16 +95,6 @@
     "path":"/1.0.0-beta.7/js/angular/angular.min.js",
     "type":"dependency",
     "size":"102.9 KB"
-   },
-   {
-    "path":"/1.0.0-beta.7/js/angular-ui/angular-ui-router.js",
-    "type":"dependency",
-    "size":"113.7 KB"
-   },
-   {
-    "path":"/1.0.0-beta.7/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency",
-    "size":"19.9 KB"
    },
    {
     "path":"/1.0.0-beta.7/fonts/ionicons.eot",
@@ -2302,29 +2302,14 @@
     "size":"146.6 KB"
    },
    {
-    "path":"/nightly/js/ionic-angular.js",
-    "type":"js",
-    "size":"233.7 KB"
-   },
-   {
-    "path":"/nightly/js/ionic-angular.min.js",
-    "type":"js",
-    "size":"66.9 KB"
-   },
-   {
-    "path":"/nightly/js/ionic.bundle.js",
-    "type":"js",
-    "size":"1.4 MB"
-   },
-   {
-    "path":"/nightly/js/ionic.bundle.min.js",
-    "type":"js",
-    "size":"294.2 KB"
-   },
-   {
     "path":"/nightly/js/ionic.js",
     "type":"js",
     "size":"266.2 KB"
+   },
+   {
+    "path":"/nightly/js/ionic-angular.js",
+    "type":"js",
+    "size":"233.7 KB"
    },
    {
     "path":"/nightly/js/ionic.min.js",
@@ -2332,19 +2317,24 @@
     "size":"88.5 KB"
    },
    {
+    "path":"/nightly/js/ionic-angular.min.js",
+    "type":"js",
+    "size":"66.9 KB"
+   },
+   {
+    "path":"/nightly/js/ionic.bundle.min.js",
+    "type":"js",
+    "size":"294.2 KB"
+   },
+   {
+    "path":"/nightly/js/ionic.bundle.js",
+    "type":"js",
+    "size":"1.4 MB"
+   },
+   {
     "path":"/nightly/CHANGELOG.html",
     "type":"dependency",
-    "size":"10.3 KB"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.js",
-    "type":"dependency",
-    "size":"113.7 KB"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency",
-    "size":"19.9 KB"
+    "size":"147.0 bytes"
    },
    {
     "path":"/nightly/js/angular/angular-animate.js",
@@ -2387,6 +2377,16 @@
     "size":"102.9 KB"
    },
    {
+    "path":"/nightly/js/angular-ui/angular-ui-router.js",
+    "type":"dependency",
+    "size":"113.7 KB"
+   },
+   {
+    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
+    "type":"dependency",
+    "size":"19.9 KB"
+   },
+   {
     "path":"/nightly/fonts/ionicons.eot",
     "type":"font",
     "size":"84.2 KB"
@@ -2407,11 +2407,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-12 21:35:06",
+  "release_datetime":"2014-06-12 21:57:11",
   "version_number":"nightly",
   "release_date":"2014-06-12",
-  "version_codename":"1.0.0-beta.6-nightly-169",
-  "version_name":"1.0.0-beta.6-nightly-169",
+  "version_codename":"1.0.0-beta.7-nightly-176",
+  "version_name":"1.0.0-beta.7-nightly-176",
   "id":"0"
  }
 ]
