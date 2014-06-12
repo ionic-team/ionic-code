@@ -2242,14 +2242,14 @@
     "size":"4.3 KB"
    },
    {
-    "path":"/nightly/js/angular/angular.js",
-    "type":"dependency",
-    "size":"748.2 KB"
-   },
-   {
     "path":"/nightly/js/angular/angular.min.js",
     "type":"dependency",
     "size":"102.9 KB"
+   },
+   {
+    "path":"/nightly/js/angular/angular.js",
+    "type":"dependency",
+    "size":"748.2 KB"
    },
    {
     "path":"/nightly/js/angular-ui/angular-ui-router.js",
@@ -2282,11 +2282,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-12 21:02:57",
+  "release_datetime":"2014-06-12 21:06:34",
   "version_number":"nightly",
   "release_date":"2014-06-12",
-  "version_codename":"1.0.0-beta.6-nightly-163",
-  "version_name":"1.0.0-beta.6-nightly-163",
+  "version_codename":"1.0.0-beta.6-nightly-164",
+  "version_name":"1.0.0-beta.6-nightly-164",
   "id":"0"
  }
 ]
