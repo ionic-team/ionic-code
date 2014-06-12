@@ -2169,12 +2169,12 @@
    {
     "path":"/nightly/css/ionic.css",
     "type":"css",
-    "size":"188.1 KB"
+    "size":"189.1 KB"
    },
    {
     "path":"/nightly/css/ionic.min.css",
     "type":"css",
-    "size":"145.8 KB"
+    "size":"146.1 KB"
    },
    {
     "path":"/nightly/js/ionic.js",
@@ -2282,11 +2282,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-12 16:54:09",
+  "release_datetime":"2014-06-12 18:31:49",
   "version_number":"nightly",
   "release_date":"2014-06-12",
-  "version_codename":"1.0.0-beta.6-nightly-158",
-  "version_name":"1.0.0-beta.6-nightly-158",
+  "version_codename":"1.0.0-beta.6-nightly-160",
+  "version_name":"1.0.0-beta.6-nightly-160",
   "id":"0"
  }
 ]
