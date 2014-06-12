@@ -2209,7 +2209,7 @@
    {
     "path":"/nightly/CHANGELOG.html",
     "type":"dependency",
-    "size":"9.7 KB"
+    "size":"9.9 KB"
    },
    {
     "path":"/nightly/js/angular/angular-animate.js",
@@ -2282,11 +2282,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-12 18:31:49",
+  "release_datetime":"2014-06-12 18:50:24",
   "version_number":"nightly",
   "release_date":"2014-06-12",
-  "version_codename":"1.0.0-beta.6-nightly-160",
-  "version_name":"1.0.0-beta.6-nightly-160",
+  "version_codename":"1.0.0-beta.6-nightly-161",
+  "version_name":"1.0.0-beta.6-nightly-161",
   "id":"0"
  }
 ]
