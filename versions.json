@@ -2304,7 +2304,7 @@
    {
     "path":"/nightly/js/ionic.js",
     "type":"js",
-    "size":"266.2 KB"
+    "size":"266.3 KB"
    },
    {
     "path":"/nightly/js/ionic-angular.js",
@@ -2334,7 +2334,7 @@
    {
     "path":"/nightly/CHANGELOG.html",
     "type":"dependency",
-    "size":"147.0 bytes"
+    "size":"444.0 bytes"
    },
    {
     "path":"/nightly/js/angular/angular-animate.js",
@@ -2407,11 +2407,11 @@
     "size":"47.2 KB"
    }
   ],
-  "release_datetime":"2014-06-12 22:04:06",
+  "release_datetime":"2014-06-13 01:25:10",
   "version_number":"nightly",
-  "release_date":"2014-06-12",
-  "version_codename":"1.0.0-beta.7-nightly-177",
-  "version_name":"1.0.0-beta.7-nightly-177",
+  "release_date":"2014-06-13",
+  "version_codename":"1.0.0-beta.7-nightly-178",
+  "version_name":"1.0.0-beta.7-nightly-178",
   "id":"0"
  }
 ]
