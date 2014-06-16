@@ -13,7 +13,7 @@ def main():
       continue
 
     path = os.path.join(ROOT_DIR, f)
-    if os.path.isdir(path) and f not in SKIP_DIRS:
+    if os.path.isdir(path) and f not in SKIP_DIRS and not f.startswith('0.9'):
       build_version(versions, path, f)
 
   versions = sorted(versions, key=lambda k: k['id'], reverse=True)
