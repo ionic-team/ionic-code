@@ -2,6 +2,7 @@ import os
 import zipfile
 import json
 
+MAX_VERSIONS = 10
 
 def main():
   versions = []
@@ -14,26 +15,39 @@ def main():
 
     path = os.path.join(ROOT_DIR, f)
     if os.path.isdir(path) and f not in SKIP_DIRS and not f.startswith('0.9'):
-      build_version(versions, path, f)
+      prepare_version(versions, path, f)
 
   versions = sorted(versions, key=lambda k: k['id'], reverse=True)
 
-  output = json.dumps(versions, indent=1, separators=(',', ':'))
+  final_versions = []
+  for version in versions:
+    if version['version_number'] == 'nightly' or len(final_versions) < MAX_VERSIONS:
+      build_version(version)
+      final_versions.append(version)
+
+  output = json.dumps(final_versions, indent=1, separators=(',', ':'))
 
   #print output
   with open("../versions.json", "w") as text_file:
     text_file.write(output)
 
-def build_version(versions, path, version_number):
+def prepare_version(versions, path, version_number):
   print version_number
   build_zip(path, version_number)
 
   version = {
     'id': get_id(version_number),
     'version_number': version_number,
-    'files': []
+    'files': [],
+    'path': path
   }
   set_version_codename(path, version)
+
+  versions.append(version)
+
+def build_version(version):
+  path = version['path']
+  del version['path']
 
   zip_files = []
   css_files = []
@@ -75,8 +89,6 @@ def build_version(versions, path, version_number):
   dep_files = sorted(dep_files, key=lambda k: 'path')
 
   version['files'] = zip_files + css_files + js_files + dep_files + font_files
-
-  versions.append(version)
 
 def set_version_codename(path, version):
   try:
