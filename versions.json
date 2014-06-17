@@ -1149,7 +1149,7 @@
    {
     "path":"/nightly/js/ionic-angular.js",
     "type":"js",
-    "size":"233.5 KB"
+    "size":"233.7 KB"
    },
    {
     "path":"/nightly/js/ionic.min.js",
@@ -1159,12 +1159,12 @@
    {
     "path":"/nightly/js/ionic-angular.min.js",
     "type":"js",
-    "size":"66.8 KB"
+    "size":"67.0 KB"
    },
    {
     "path":"/nightly/js/ionic.bundle.min.js",
     "type":"js",
-    "size":"294.1 KB"
+    "size":"294.3 KB"
    },
    {
     "path":"/nightly/js/ionic.bundle.js",
@@ -1174,7 +1174,7 @@
    {
     "path":"/nightly/CHANGELOG.html",
     "type":"dependency",
-    "size":"824.0 bytes"
+    "size":"1.1 KB"
    },
    {
     "path":"/nightly/js/angular/angular-animate.js",
@@ -1232,6 +1232,11 @@
     "size":"99.6 KB"
    },
    {
+    "path":"/nightly/fonts/ionicons.svg",
+    "type":"font",
+    "size":"279.6 KB"
+   },
+   {
     "path":"/nightly/fonts/ionicons.ttf",
     "type":"font",
     "size":"160.7 KB"
@@ -1240,18 +1245,13 @@
     "path":"/nightly/fonts/ionicons.woff",
     "type":"font",
     "size":"55.9 KB"
-   },
-   {
-    "path":"/nightly/fonts/ionicons.svg",
-    "type":"font",
-    "size":"279.6 KB"
    }
   ],
-  "release_datetime":"2014-06-17 15:54:46",
+  "release_datetime":"2014-06-17 17:44:24",
   "version_number":"nightly",
   "release_date":"2014-06-17",
-  "version_codename":"1.0.0-beta.8-nightly-203",
-  "version_name":"1.0.0-beta.8-nightly-203",
+  "version_codename":"1.0.0-beta.8-nightly-204",
+  "version_name":"1.0.0-beta.8-nightly-204",
   "id":"0"
  }
 ]
