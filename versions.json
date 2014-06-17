@@ -1174,7 +1174,7 @@
    {
     "path":"/nightly/CHANGELOG.html",
     "type":"dependency",
-    "size":"654.0 bytes"
+    "size":"824.0 bytes"
    },
    {
     "path":"/nightly/js/angular/angular-animate.js",
@@ -1232,11 +1232,6 @@
     "size":"99.6 KB"
    },
    {
-    "path":"/nightly/fonts/ionicons.svg",
-    "type":"font",
-    "size":"279.6 KB"
-   },
-   {
     "path":"/nightly/fonts/ionicons.ttf",
     "type":"font",
     "size":"160.7 KB"
@@ -1245,13 +1240,18 @@
     "path":"/nightly/fonts/ionicons.woff",
     "type":"font",
     "size":"55.9 KB"
+   },
+   {
+    "path":"/nightly/fonts/ionicons.svg",
+    "type":"font",
+    "size":"279.6 KB"
    }
   ],
-  "release_datetime":"2014-06-17 15:13:54",
+  "release_datetime":"2014-06-17 15:54:46",
   "version_number":"nightly",
   "release_date":"2014-06-17",
-  "version_codename":"1.0.0-beta.8-nightly-202",
-  "version_name":"1.0.0-beta.8-nightly-202",
+  "version_codename":"1.0.0-beta.8-nightly-203",
+  "version_name":"1.0.0-beta.8-nightly-203",
   "id":"0"
  }
 ]
