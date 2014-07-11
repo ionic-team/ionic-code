@@ -1,4 +1,4 @@
-<h3 id="1-0-0-beta-9-nightly-259-changes-since-v1-0-0-beta-9-2014-07-10-">1.0.0-beta.9-nightly-259 (changes since v1.0.0-beta.9) (2014-07-10)</h3>
+<h3 id="1-0-0-beta-9-nightly-260-changes-since-v1-0-0-beta-9-2014-07-11-">1.0.0-beta.9-nightly-260 (changes since v1.0.0-beta.9) (2014-07-11)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li><strong>collectionRepeat:</strong> patch ngSrc/ngHref to fix a bug with falsy values (<a href="https://github.com/driftyco/ionic/commit/208ef13d549b4d6dba5d2e5ced5f524415d16e93">208ef13d</a>, closes <a href="https://github.com/driftyco/ionic/issues/1674">#1674</a>)</li>
@@ -28,6 +28,7 @@
 <li>fire input behavior when tap/clicking file input label. (<a href="https://github.com/driftyco/ionic/commit/889482e048eb2b014d28f95c2abcecdb094b6a7e">889482e0</a>, closes <a href="https://github.com/driftyco/ionic/issues/1699">#1699</a>)</li>
 </ul>
 </li>
+<li><strong>toggle:</strong> fix ngChange being reported before model changes (<a href="https://github.com/driftyco/ionic/commit/537b29d0bbf000fc0639965029983a0f79c03c8f">537b29d0</a>, closes <a href="https://github.com/driftyco/ionic/issues/1349">#1349</a>, <a href="https://github.com/driftyco/ionic/issues/1741">#1741</a>)</li>
 <li><strong>view:</strong> don&#39;t affect history when inside a modal (<a href="https://github.com/driftyco/ionic/commit/b7f45e7ca5e8f23397be3e977166820a4a3346ad">b7f45e7c</a>, closes <a href="https://github.com/driftyco/ionic/issues/1667">#1667</a>)</li>
 </ul>
 <h4 id="features">Features</h4>
@@ -39,6 +40,17 @@
 <li><strong>tab:</strong> options &#39;hidden&#39; attribute for tabs., #1673 (<a href="https://github.com/driftyco/ionic/commit/bb6976ad54736103d78be3bddd9faf7719dc0153">bb6976ad</a>, closes <a href="https://github.com/driftyco/ionic/issues/1666">#1666</a>)</li>
 </ul>
 <h4 id="breaking-changes">Breaking Changes</h4>
+<ul>
+<li>ion-toggle no longer has an isolate scope.
+This will break your toggle only if you were relying upon the toggle
+having an isolate scope: if you were referencing <code>$parent.value</code> as
+the ng-disabled attribute, for example.</li>
+</ul>
+<p>Change your code from this:</p>
+<p><ion-toggle ng-disabled="{{$parent.isDisabled}}"></ion-toggle></p>
+<p>To this:</p>
+<p><ion-toggle ng-disabled="{{isDisabled}}"></ion-toggle></p>
+<p> (<a href="https://github.com/driftyco/ionic/commit/537b29d0bbf000fc0639965029983a0f79c03c8f">537b29d0</a>)</p>
 <ul>
 <li>Reordering with ion-reorder-button no longer changes the order of the items in the DOM.</li>
 </ul>
