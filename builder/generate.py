@@ -173,7 +173,7 @@ def build_zip(path, version_number):
 
   for (dirpath, dirnames, filenames) in os.walk(path):
     for filename in filenames:
-      if filename.startswith('.') or '.zip' in filename or filename.endswith('.json')or filename.endswith('.txt'):
+      if filename.startswith('.') or '.zip' in filename or filename.endswith('.txt'):
         continue
       archive_name = '/'.join( dirpath.split('/')[2:] ) + '/' + filename
       zipf.write(os.path.join(dirpath, filename), archive_name)
