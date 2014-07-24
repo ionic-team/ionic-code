@@ -69,11 +69,12 @@ def build_version(version):
         'path': '%s/%s' % (dirpath, filename)
       }
       f['path'] = f['path'].replace('../', '/')
-      f['size'] = sizeof_fmt( os.path.getsize( os.path.join(dirpath, filename) ) )
+      # f['size'] = sizeof_fmt( os.path.getsize( os.path.join(dirpath, filename) ) )
 
       if filename.endswith('.zip'):
         f['type'] = 'zip'
         zip_files.append(f)
+        version['archive'] = f['path']
       elif filename.endswith('.css'):
         f['type'] = 'css'
         css_files.append(f)
