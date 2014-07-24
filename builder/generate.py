@@ -31,6 +31,11 @@ def main():
   with open("../versions.json", "w") as text_file:
     text_file.write(output)
 
+  latest = final_versions[0]
+  output = json.dumps(latest, indent=1, separators=(',', ':'))
+  with open("../latest.json", "w") as text_file:
+    text_file.write(output)
+
 def prepare_version(versions, path, version_number):
   print version_number
   build_zip(path, version_number)
