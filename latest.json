@@ -37,14 +37,6 @@
    "type":"js"
   },
   {
-   "path":"/1.0.0-beta.10/js/angular-ui/angular-ui-router.js",
-   "type":"dependency"
-  },
-  {
-   "path":"/1.0.0-beta.10/js/angular-ui/angular-ui-router.min.js",
-   "type":"dependency"
-  },
-  {
    "path":"/1.0.0-beta.10/js/angular/angular-animate.js",
    "type":"dependency"
   },
@@ -77,6 +69,14 @@
    "type":"dependency"
   },
   {
+   "path":"/1.0.0-beta.10/js/angular-ui/angular-ui-router.js",
+   "type":"dependency"
+  },
+  {
+   "path":"/1.0.0-beta.10/js/angular-ui/angular-ui-router.min.js",
+   "type":"dependency"
+  },
+  {
    "path":"/1.0.0-beta.10/fonts/ionicons.eot",
    "type":"font"
   },
@@ -97,7 +97,7 @@
  "version_number":"1.0.0-beta.10",
  "release_date":"2014-07-25",
  "archive":"/1.0.0-beta.10/ionic-v1.0.0-beta.10.zip",
- "version_codename":"gadolinium-gator",
- "version_name":"Gadolinium Gator",
+ "version_codename":"hafnium-heron",
+ "version_name":"Hafnium Heron",
  "id":"101100100102110"
 }
