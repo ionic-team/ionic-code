@@ -2,6 +2,109 @@
  {
   "files":[
    {
+    "path":"/1.0.0-beta.11/ionic-v1.0.0-beta.11.zip",
+    "type":"zip"
+   },
+   {
+    "path":"/1.0.0-beta.11/css/ionic.css",
+    "type":"css"
+   },
+   {
+    "path":"/1.0.0-beta.11/css/ionic.min.css",
+    "type":"css"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/ionic.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/ionic.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/ionic-angular.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/ionic-angular.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/ionic.bundle.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/ionic.bundle.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular-animate.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular-animate.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular-resource.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular-resource.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular-sanitize.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular-sanitize.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/js/angular-ui/angular-ui-router.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-beta.11/fonts/ionicons.eot",
+    "type":"font"
+   },
+   {
+    "path":"/1.0.0-beta.11/fonts/ionicons.svg",
+    "type":"font"
+   },
+   {
+    "path":"/1.0.0-beta.11/fonts/ionicons.ttf",
+    "type":"font"
+   },
+   {
+    "path":"/1.0.0-beta.11/fonts/ionicons.woff",
+    "type":"font"
+   }
+  ],
+  "release_datetime":"2014-08-06 21:49:26",
+  "version_number":"1.0.0-beta.11",
+  "release_date":"2014-08-06",
+  "archive":"/1.0.0-beta.11/ionic-v1.0.0-beta.11.zip",
+  "version_codename":"indium-iguana",
+  "version_name":"Indium Iguana",
+  "id":"101100100102111"
+ },
+ {
+  "files":[
+   {
     "path":"/1.0.0-beta.10/ionic-v1.0.0-beta.10.zip",
     "type":"zip"
    },
@@ -929,109 +1032,6 @@
  {
   "files":[
    {
-    "path":"/1.0.0-beta.2/ionic-v1.0.0-beta.2.zip",
-    "type":"zip"
-   },
-   {
-    "path":"/1.0.0-beta.2/css/ionic.css",
-    "type":"css"
-   },
-   {
-    "path":"/1.0.0-beta.2/css/ionic.min.css",
-    "type":"css"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/ionic-angular.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/ionic-angular.min.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/ionic.bundle.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/ionic.bundle.min.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/ionic.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/ionic.min.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular-animate.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular-animate.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular-resource.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular-resource.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular-sanitize.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular-sanitize.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/js/angular/angular.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.2/fonts/ionicons.eot",
-    "type":"font"
-   },
-   {
-    "path":"/1.0.0-beta.2/fonts/ionicons.svg",
-    "type":"font"
-   },
-   {
-    "path":"/1.0.0-beta.2/fonts/ionicons.ttf",
-    "type":"font"
-   },
-   {
-    "path":"/1.0.0-beta.2/fonts/ionicons.woff",
-    "type":"font"
-   }
-  ],
-  "release_datetime":"2014-04-28 22:19:29",
-  "version_number":"1.0.0-beta.2",
-  "release_date":"2014-04-28",
-  "archive":"/1.0.0-beta.2/ionic-v1.0.0-beta.2.zip",
-  "version_codename":"aluminum",
-  "version_name":"Aluminum",
-  "id":"101100100102102"
- },
- {
-  "files":[
-   {
     "path":"/nightly/ionic-nightly.zip",
     "type":"zip"
    },
@@ -1044,14 +1044,6 @@
     "type":"css"
    },
    {
-    "path":"/nightly/js/ionic.js",
-    "type":"js"
-   },
-   {
-    "path":"/nightly/js/ionic.min.js",
-    "type":"js"
-   },
-   {
     "path":"/nightly/js/ionic-angular.js",
     "type":"js"
    },
@@ -1060,15 +1052,31 @@
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.min.js",
-    "type":"js"
-   },
-   {
     "path":"/nightly/js/ionic.bundle.js",
     "type":"js"
    },
    {
+    "path":"/nightly/js/ionic.bundle.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/nightly/js/ionic.js",
+    "type":"js"
+   },
+   {
+    "path":"/nightly/js/ionic.min.js",
+    "type":"js"
+   },
+   {
     "path":"/nightly/CHANGELOG.html",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -1101,14 +1109,6 @@
    },
    {
     "path":"/nightly/js/angular/angular.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
