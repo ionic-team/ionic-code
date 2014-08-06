@@ -1044,14 +1044,6 @@
     "type":"css"
    },
    {
-    "path":"/nightly/js/ionic.js",
-    "type":"js"
-   },
-   {
-    "path":"/nightly/js/ionic.min.js",
-    "type":"js"
-   },
-   {
     "path":"/nightly/js/ionic-angular.js",
     "type":"js"
    },
@@ -1060,15 +1052,31 @@
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.min.js",
-    "type":"js"
-   },
-   {
     "path":"/nightly/js/ionic.bundle.js",
     "type":"js"
    },
    {
+    "path":"/nightly/js/ionic.bundle.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/nightly/js/ionic.js",
+    "type":"js"
+   },
+   {
+    "path":"/nightly/js/ionic.min.js",
+    "type":"js"
+   },
+   {
     "path":"/nightly/CHANGELOG.html",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -1101,14 +1109,6 @@
    },
    {
     "path":"/nightly/js/angular/angular.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
