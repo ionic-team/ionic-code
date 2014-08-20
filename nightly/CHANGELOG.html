@@ -1,4 +1,4 @@
-<h3 id="1-0-0-beta-11-nightly-383-changes-since-v1-0-0-beta-11-2014-08-20-">1.0.0-beta.11-nightly-383 (changes since v1.0.0-beta.11) (2014-08-20)</h3>
+<h3 id="1-0-0-beta-11-nightly-388-changes-since-v1-0-0-beta-11-2014-08-20-">1.0.0-beta.11-nightly-388 (changes since v1.0.0-beta.11) (2014-08-20)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li><strong>collectionRepeat:</strong><ul>
@@ -9,9 +9,14 @@
 <li>ignore spacing of hidden elements (ion-refresher) (<a href="https://github.com/driftyco/ionic/commit/9bfa3bd18b099be14be2e99e0ba380c09702b75b">9bfa3bd1</a>, closes <a href="https://github.com/driftyco/ionic/issues/1970">#1970</a>)</li>
 </ul>
 </li>
+<li><strong>ionContent:</strong> fix rare positioning bug when overflow-scroll is enabled (<a href="https://github.com/driftyco/ionic/commit/84b5e91975c04cd6f5778086f711f8ac436cf588">84b5e919</a>, closes <a href="https://github.com/driftyco/ionic/issues/1281">#1281</a>)</li>
 <li><strong>item:</strong> clicks climb 5 levels looking for an item to activate, but not 6. (<a href="https://github.com/driftyco/ionic/commit/840c014b27b5cf0616f4f1191555ee20c772ab85">840c014b</a>, closes <a href="https://github.com/driftyco/ionic/issues/1921">#1921</a>)</li>
 <li><strong>loading:</strong> potential race condition with showing and hiding loading in same watch cycle (<a href="https://github.com/driftyco/ionic/commit/65aece2aadb47c3f7d692aaa687afe6872581179">65aece2a</a>)</li>
-<li><strong>popup:</strong> only override prompt input if template includes HTML (<a href="https://github.com/driftyco/ionic/commit/044fac4d77a9c6dad94bdd5708ec0cea0a4b2922">044fac4d</a>)</li>
+<li><strong>popup:</strong><ul>
+<li>fix alignment, backdrop not fading out (<a href="https://github.com/driftyco/ionic/commit/6d859f4876e07c4650e459b9e0d850aff380521c">6d859f48</a>)</li>
+<li>only override prompt input if template includes HTML (<a href="https://github.com/driftyco/ionic/commit/044fac4d77a9c6dad94bdd5708ec0cea0a4b2922">044fac4d</a>)</li>
+</ul>
+</li>
 <li><strong>refresher:</strong> finish animating before changing icon, hide when not in use (<a href="https://github.com/driftyco/ionic/commit/c336e8ede8a1f83ef2a4a567121cce0d82aa78e8">c336e8ed</a>)</li>
 <li><strong>reorder:</strong><ul>
 <li>reorder drag threshold are equal for going up and down. (<a href="https://github.com/driftyco/ionic/commit/6f5b6c24c607d4fe609756616ff6ea4a6e1a4ef1">6f5b6c24</a>, closes <a href="https://github.com/driftyco/ionic/issues/1394">#1394</a>)</li>
