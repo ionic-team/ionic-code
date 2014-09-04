@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html> 
+<html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -13,8 +13,8 @@
     dl, dt, dd, ol, ul, li,
     fieldset, form, label, legend,
     table, caption, tbody, tfoot, thead, tr, th, td,
-    article, aside, canvas, details, embed, 
-    figure, figcaption, footer, header, hgroup, 
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
     menu, nav, output, ruby, section, summary,
     time, mark, audio, video {
       margin: 0;
@@ -25,13 +25,13 @@
       vertical-align: baseline;
     }
     /* HTML5 display-role reset for older browsers */
-    article, aside, details, figcaption, figure, 
+    article, aside, details, figcaption, figure,
     footer, header, hgroup, menu, nav, section {
       display: block;
     }
     body {
       font-size: 1em;
-      line-height: 1.5; 
+      line-height: 1.5;
       font-family: 'Helvetica Neue', Helvetica, Arial, serif;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
       color: #6d6d6d;
@@ -91,7 +91,7 @@
       font-weight: 300;
       margin-bottom: 20px;
     }
-     
+
     a {
       text-decoration: none;
     }
@@ -163,7 +163,7 @@
 
             <div class="files-panel">
               <h3>Ionic JavaScript Files</h3>
-              <p>The ionic.bundle.js file combines all the required JS files, both Ionic and Angular. 
+              <p>The ionic.bundle.js file combines all the required JS files, both Ionic and Angular.
                 Use ionic.js and ionic-angular.js if you'd like to break the files apart.</p>
               <div id="js-files"></div>
             </div>
@@ -176,7 +176,7 @@
 
             <div class="files-panel">
               <h3>Ionicons</h3>
-              <p>These files automatically get referenced from Ionic's CSS files. 
+              <p>These files automatically get referenced from Ionic's CSS files.
                 See <a href="http://ionicons.com/">Ionicons</a> for more info.</p>
               <div id="font-files"></div>
             </div>
@@ -193,19 +193,19 @@
         </section>
 
         <footer>
-          <a href="http://ionicframework.com/">Ionic Framework</a> 
-          &#183; <a href="https://github.com/driftyco/ionic">Github</a> 
-          &#183; <a href="http://ionicons.com/">Ionicons</a> 
-          &#183; <a href="http://ionicframework.com/blog/">Blog</a> 
+          <a href="http://ionicframework.com/">Ionic Framework</a>
+          &#183; <a href="https://github.com/driftyco/ionic">Github</a>
+          &#183; <a href="http://ionicons.com/">Ionicons</a>
+          &#183; <a href="http://ionicframework.com/blog/">Blog</a>
           &#183; <a href="http://forum.ionicframework.com/">Forum</a>
-          &#183; <a href="http://ionicframework.com/subscribe/">Newsletter</a> 
-          &#183; <a href="https://twitter.com/Ionicframework">@ionicframework</a> 
+          &#183; <a href="http://ionicframework.com/subscribe/">Newsletter</a>
+          &#183; <a href="https://twitter.com/Ionicframework">@ionicframework</a>
         </footer>
 
       </div>
     </div>
-    
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script>
       (function(){
         var data, preload;
@@ -217,10 +217,10 @@
           var selectOptions = [];
 
           for(var x=0; x<data.length; x++) {
-            selectOptions.push( '<option value="' + 
-                                 data[x].id + '">' + 
+            selectOptions.push( '<option value="' +
+                                 data[x].id + '">' +
                                  data[x].version_number +
-                                 ' - ' +  
+                                 ' - ' +
                                  data[x].version_name +
                                  '</option>');
           }
@@ -246,9 +246,9 @@
           font = [];
 
           for(x=0; x<data.length; x++) {
-            if(versionId === data[x].id || 
-               versionId === data[x].version_number || 
-               versionId === data[x].version_name || 
+            if(versionId === data[x].id ||
+               versionId === data[x].version_number ||
+               versionId === data[x].version_name ||
                versionId === data[x].version_codename) {
 
               for(f=0; f<data[x].files.length; f++) {
@@ -283,8 +283,8 @@
 
               newUrl = (x > 0 ? data[x].version_number : '');
               try {
-                history.replaceState({}, 
-                                  'Ionic Framework CDN, ' + data[x].version_number, 
+                history.replaceState({},
+                                  'Ionic Framework CDN, ' + data[x].version_number,
                                   '#' + newUrl);
               }catch(e){};
               return;
