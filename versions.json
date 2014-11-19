@@ -1128,12 +1128,12 @@
     "type":"font"
    }
   ],
-  "release_datetime":"2014-11-19 04:30:46",
+  "release_datetime":"2014-11-19 17:39:24",
   "version_number":"nightly",
   "release_date":"2014-11-19",
   "archive":"/nightly/ionic-nightly.zip",
-  "version_codename":"1.0.0-beta.13-nightly-766",
-  "version_name":"1.0.0-beta.13-nightly-766",
+  "version_codename":"1.0.0-beta.13-nightly-767",
+  "version_name":"1.0.0-beta.13-nightly-767",
   "id":"0"
  }
 ]
