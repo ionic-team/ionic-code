@@ -1,4 +1,4 @@
-<h3 id="1-0-0-beta-13-nightly-817-changes-since-v1-0-0-beta-13-2014-12-01-">1.0.0-beta.13-nightly-817 (changes since v1.0.0-beta.13) (2014-12-01)</h3>
+<h3 id="1-0-0-beta-13-nightly-818-changes-since-v1-0-0-beta-13-2014-12-01-">1.0.0-beta.13-nightly-818 (changes since v1.0.0-beta.13) (2014-12-01)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li><strong>$ionicHistory:</strong> pop duplicate view registers (<a href="https://github.com/driftyco/ionic/commit/4833467d86f3484159dd7de46a8a38c38ab44178">4833467d</a>)</li>
@@ -6,6 +6,7 @@
 <li><strong>backButton:</strong> add .header-item class (<a href="https://github.com/driftyco/ionic/commit/57bf4f16831264470422a62f2d0a9690a38dcdcb">57bf4f16</a>)</li>
 <li><strong>backdrop:</strong> use sass vars (<a href="https://github.com/driftyco/ionic/commit/a56bbc978dff7f3c143b7bb92ec6f031855bb6b5">a56bbc97</a>)</li>
 <li><strong>collectionRepeat:</strong><ul>
+<li>parse collection-item-height/width to int (<a href="https://github.com/driftyco/ionic/commit/a49e577db8890d2eadb40d79533b30f82f7c5f52">a49e577d</a>, closes <a href="https://github.com/driftyco/ionic/issues/2633">#2633</a>)</li>
 <li>rerender after resize/enter (<a href="https://github.com/driftyco/ionic/commit/3ddaf34722054bde9c14c6f28f840fe10845a343">3ddaf347</a>)</li>
 <li>fix error when switching back to collection-repeat after resizing (<a href="https://github.com/driftyco/ionic/commit/c1f4cbd7730aab24838a59a59605cdcabc233056">c1f4cbd7</a>)</li>
 </ul>
@@ -38,7 +39,11 @@
 <li>subsequent calls use config defaults and not last call&#39;s options., #2088 (<a href="https://github.com/driftyco/ionic/commit/cffe631866d093226aa8b8a54122de3d21a23646">cffe6318</a>, closes <a href="https://github.com/driftyco/ionic/issues/2066">#2066</a>)</li>
 </ul>
 </li>
-<li><strong>menuClose:</strong> add resetHistory() to menuClose (<a href="https://github.com/driftyco/ionic/commit/49aaed7e7b57e76ed77f32838a72cc728afcbdde">49aaed7e</a>)</li>
+<li><strong>menuClose:</strong><ul>
+<li>expire nextViewOptions (<a href="https://github.com/driftyco/ionic/commit/bba9e795ca7550ade41a322e142e36f55db0538e">bba9e795</a>)</li>
+<li>add resetHistory() to menuClose (<a href="https://github.com/driftyco/ionic/commit/49aaed7e7b57e76ed77f32838a72cc728afcbdde">49aaed7e</a>)</li>
+</ul>
+</li>
 <li><strong>nav:</strong><ul>
 <li>correct element structure for nav-vew (<a href="https://github.com/driftyco/ionic/commit/2b23957558b19e78fc4cc50acc3ad4b96fb1c984">2b239575</a>)</li>
 <li>prevent nav-bar flicker w/ no animation (<a href="https://github.com/driftyco/ionic/commit/4366bd57e43c5205fde03079b7b2c961f07fc882">4366bd57</a>)</li>
@@ -65,6 +70,7 @@
 <li>calling ionic scroll methods blur any selected input elements. (<a href="https://github.com/driftyco/ionic/commit/8ee83777f71d41b671695230ce2d1af47760e80a">8ee83777</a>, closes <a href="https://github.com/driftyco/ionic/issues/2244">#2244</a>)</li>
 </ul>
 </li>
+<li><strong>scrollView:</strong> fix null pointer exception on scrollbar (<a href="https://github.com/driftyco/ionic/commit/037d2c368efff425d1041fef29d63d7de51ecc9f">037d2c36</a>)</li>
 <li><strong>scrolling:</strong> fix overflow scrolling when side menu and main content both use overflow scrolli (<a href="https://github.com/driftyco/ionic/commit/622667b3dec637bdd75dbf24b2d3e2a4b1142bc9">622667b3</a>)</li>
 <li><strong>sideMenu:</strong> allow expose-aside-when on the right side. (<a href="https://github.com/driftyco/ionic/commit/29d6dc8163fe744f361e2d0e357bfeea43865a16">29d6dc81</a>, closes <a href="https://github.com/driftyco/ionic/issues/2207">#2207</a>)</li>
 <li><strong>slideBox:</strong><ul>
