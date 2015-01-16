@@ -1060,11 +1060,11 @@
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.js",
+    "path":"/nightly/js/ionic.bundle.min.js",
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.min.js",
+    "path":"/nightly/js/ionic.bundle.js",
     "type":"js"
    },
    {
@@ -1128,12 +1128,12 @@
     "type":"font"
    }
   ],
-  "release_datetime":"2015-01-16 18:41:59",
+  "release_datetime":"2015-01-16 21:13:40",
   "version_number":"nightly",
   "release_date":"2015-01-16",
   "archive":"/nightly/ionic-nightly.zip",
-  "version_codename":"1.0.0-beta.14-nightly-951",
-  "version_name":"1.0.0-beta.14-nightly-951",
+  "version_codename":"1.0.0-beta.14-nightly-952",
+  "version_name":"1.0.0-beta.14-nightly-952",
   "id":"0"
  }
 ]
