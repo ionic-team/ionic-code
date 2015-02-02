@@ -8,11 +8,11 @@
     },
     {
       "name": "Add ngCordova to your project for easy device API access",
-      "url": "bower install ngCordova"
+      "action": "bower install ngCordova"
     },
     {
       "name": "Generate splash screens and icons with ionic resource",
-      "url": "http://ionicframework.com/blog/automating-icons-and-splash-screens/"
+      "action": "http://ionicframework.com/blog/automating-icons-and-splash-screens/"
     }
   ]
 }
