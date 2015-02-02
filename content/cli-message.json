@@ -1,4 +1,21 @@
 {
-  "id": 0,
-  "msg": "Free hot dogs"
+  "id": 1,
+  "name": "Ionic Dev Updates",
+  "list": [
+    {
+      "name": "The Ionic View App is alive!",
+      "url": "http://ionicframework.com/blog/view-app-is-alive/",
+      "description": "Ionic View lets you easily view, share, and test the Ionic apps you are developing across devices - your own, a client’s, or the person in the cubicle next to you."
+    },
+    {
+      "name": "Crosswalk comes to Ionic",
+      "url": "http://ionicframework.com/blog/crosswalk-comes-to-ionic/",
+      "description": "Enable your older Android devices to have an updated version of Chromium to give your users the best experience Ionic can provide!"
+    },
+    {
+      "name": "Ionic Resources",
+      "url": "http://ionicframework.com/blog/automating-icons-and-splash-screens/",
+      "description": "To save you the stress of dealing with generating icons and splash screens for all your devices, we’ve made it possible for you to generate app icons and splash screens via the Ionic CLI. Try ionic resources!"
+    }
+  ]
 }
