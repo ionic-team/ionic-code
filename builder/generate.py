@@ -6,7 +6,7 @@ MAX_VERSIONS = 10
 
 def main():
   versions = []
-  SKIP_DIRS = ('assets', 'builder', 'contrib', 'ionicons', 'collide', 'resources')
+  SKIP_DIRS = ('assets', 'builder', 'contrib', 'ionicons', 'collide', 'resources', 'content')
   ROOT_DIR = '../'
 
   for f in os.listdir(ROOT_DIR):
