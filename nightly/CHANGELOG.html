@@ -1,6 +1,7 @@
-<h3 id="1-0-0-beta-14-nightly-987-changes-since-v1-0-0-beta-14-2015-02-05-">1.0.0-beta.14-nightly-987 (changes since v1.0.0-beta.14) (2015-02-05)</h3>
+<h3 id="1-0-0-beta-14-nightly-988-changes-since-v1-0-0-beta-14-2015-02-06-">1.0.0-beta.14-nightly-988 (changes since v1.0.0-beta.14) (2015-02-06)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
+<li><strong>$ionicLoading:</strong> make <code>hideOnStateChange</code> work if loader is delayed (<a href="https://github.com/driftyco/ionic/commit/878c81706df82c183a0ead4abe20b36a0eedf32f">878c8170</a>, closes <a href="https://github.com/driftyco/ionic/issues/3022">#3022</a>)</li>
 <li><strong>collectionRepeat:</strong><ul>
 <li>don&#39;t rerender on window resize when view is cached (<a href="https://github.com/driftyco/ionic/commit/4f0598dd47d2f21b37480e12d6a4d91f325a0393">4f0598dd</a>, closes <a href="https://github.com/driftyco/ionic/issues/2677">#2677</a>)</li>
 <li>properly display sibling elements after a collection-repeat (<a href="https://github.com/driftyco/ionic/commit/7913ee0f2856117a927da2d6ba14982f173c6b4c">7913ee0f</a>)</li>
@@ -10,6 +11,7 @@
 <li><strong>css:</strong> add height to item-image and fix nav-bar (<a href="https://github.com/driftyco/ionic/commit/c1ef471883d8c93d4f8dd444664572742563c56a">c1ef4718</a>)</li>
 <li><strong>ionItem:</strong> properly hide option buttons on scroll in collection-repeat (<a href="https://github.com/driftyco/ionic/commit/7fec8480e5ab7c52de6a29c86b49c290c4d664e1">7fec8480</a>, closes <a href="https://github.com/driftyco/ionic/issues/1811">#1811</a>, <a href="https://github.com/driftyco/ionic/issues/2804">#2804</a>)</li>
 <li><strong>listView:</strong> ionic.extend not extend (<a href="https://github.com/driftyco/ionic/commit/7557c58ea6ab55f2a635775c3e0029e84c182e85">7557c58e</a>)</li>
+<li><strong>scrollDelegate:</strong> revert change that made all scroll* methods blur inputs (<a href="https://github.com/driftyco/ionic/commit/0145dc372d31a330c5754b7abd50dedd0a64136b">0145dc37</a>, closes <a href="https://github.com/driftyco/ionic/issues/2745">#2745</a>)</li>
 <li><strong>scrollView:</strong> higher velocity threshold for sliding (<a href="https://github.com/driftyco/ionic/commit/93643c4127e342fca9547796eeaf8ad096e5c028">93643c41</a>)</li>
 <li><strong>sideMenu:</strong> check whether drag is enabled before dragging (<a href="https://github.com/driftyco/ionic/commit/acd0ff8f8cb01d778781a81621fb90521e496a23">acd0ff8f</a>)</li>
 <li><strong>styles:</strong> fix to tables in _variable.scss #2949 (<a href="https://github.com/driftyco/ionic/commit/9d676b0d3025959c6854415d9ff22cbb45c1cd10">9d676b0d</a>)</li>
