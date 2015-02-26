@@ -1,9 +1,10 @@
-<h3 id="1-0-0-beta-14-nightly-1090-changes-since-v1-0-0-beta-14-2015-02-26-">1.0.0-beta.14-nightly-1090 (changes since v1.0.0-beta.14) (2015-02-26)</h3>
+<h3 id="1-0-0-beta-14-nightly-1091-changes-since-v1-0-0-beta-14-2015-02-26-">1.0.0-beta.14-nightly-1091 (changes since v1.0.0-beta.14) (2015-02-26)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li><strong>$ionicLoading:</strong> make <code>hideOnStateChange</code> work if loader is delayed (<a href="https://github.com/driftyco/ionic/commit/878c81706df82c183a0ead4abe20b36a0eedf32f">878c8170</a>, closes <a href="https://github.com/driftyco/ionic/issues/3022">#3022</a>)</li>
 <li><strong>angular:</strong> <code>.finally</code> syntax error in Android 2.3 (<a href="https://github.com/driftyco/ionic/commit/1f2d900e3c3e0845a6a7a03db9e5652a29dea7bd">1f2d900e</a>)</li>
 <li><strong>collectionRepeat:</strong><ul>
+<li>restore scrollView&#39;s normal behavior when repeater is destroyed (<a href="https://github.com/driftyco/ionic/commit/864b46aa818c3a230e77225ab704c16acbc93ac5">864b46aa</a>, closes <a href="https://github.com/driftyco/ionic/issues/2078">#2078</a>)</li>
 <li>resize scrollView when data changes (<a href="https://github.com/driftyco/ionic/commit/88aebad36e37f000c13b0f36301c28138f94c069">88aebad3</a>, closes <a href="https://github.com/driftyco/ionic/issues/2523">#2523</a>)</li>
 <li>properly resize, but only when scrollView size actually changes (<a href="https://github.com/driftyco/ionic/commit/b7a096893393a35eaf981979a7eae29320d13bf9">b7a09689</a>, closes <a href="https://github.com/driftyco/ionic/issues/2935">#2935</a>, <a href="https://github.com/driftyco/ionic/issues/3054">#3054</a>)</li>
 <li>don&#39;t rerender on window resize when view is cached (<a href="https://github.com/driftyco/ionic/commit/4f0598dd47d2f21b37480e12d6a4d91f325a0393">4f0598dd</a>, closes <a href="https://github.com/driftyco/ionic/issues/2677">#2677</a>)</li>
@@ -26,6 +27,7 @@
 </ul>
 </li>
 <li><strong>navButtons:</strong> fixed case where buttons would display under each other in 4.4 (<a href="https://github.com/driftyco/ionic/commit/eef1d32b04f341896d57a1cba319067b25614680">eef1d32b</a>)</li>
+<li><strong>popover:</strong> fix border radius styling on header bar (<a href="https://github.com/driftyco/ionic/commit/dcac56ae4906255b12c3013e2752ddc5e4aa6b7d">dcac56ae</a>, closes <a href="https://github.com/driftyco/ionic/issues/3179">#3179</a>)</li>
 <li><strong>scroll:</strong><ul>
 <li>hide the scrollbar on desktop so it matches content size of mobile (<a href="https://github.com/driftyco/ionic/commit/0e04f3910589cadf5763f2522942a9ad5725202c">0e04f391</a>)</li>
 <li>cleanup native scroll listeners only if activated (<a href="https://github.com/driftyco/ionic/commit/df6dcb96f633cef043b0b25c8a8837755f350ad9">df6dcb96</a>)</li>
