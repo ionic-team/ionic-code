@@ -148,6 +148,8 @@ def get_id(version_number):
     version_number = version_number.replace('alpha', '.1')
   elif 'beta' in version_number:
     version_number = version_number.replace('beta', '.2')
+  elif 'rc' in version_number:
+    version_number = version_number.replace('rc', '.3')
   else:
     version_number += '.99'
 
