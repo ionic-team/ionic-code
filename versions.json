@@ -2,6 +2,109 @@
  {
   "files":[
    {
+    "path":"/1.0.0-rc.1/ionic-v1.0.0-rc.1.zip",
+    "type":"zip"
+   },
+   {
+    "path":"/1.0.0-rc.1/css/ionic.css",
+    "type":"css"
+   },
+   {
+    "path":"/1.0.0-rc.1/css/ionic.min.css",
+    "type":"css"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/ionic.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/ionic.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/ionic-angular.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/ionic-angular.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/ionic.bundle.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/ionic.bundle.js",
+    "type":"js"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular-animate.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular-animate.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular-resource.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular-resource.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular-sanitize.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular-sanitize.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/js/angular-ui/angular-ui-router.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.1/fonts/ionicons.eot",
+    "type":"font"
+   },
+   {
+    "path":"/1.0.0-rc.1/fonts/ionicons.svg",
+    "type":"font"
+   },
+   {
+    "path":"/1.0.0-rc.1/fonts/ionicons.ttf",
+    "type":"font"
+   },
+   {
+    "path":"/1.0.0-rc.1/fonts/ionicons.woff",
+    "type":"font"
+   }
+  ],
+  "release_datetime":"2015-03-16 18:00:08",
+  "version_number":"1.0.0-rc.1",
+  "release_date":"2015-03-16",
+  "archive":"/1.0.0-rc.1/ionic-v1.0.0-rc.1.zip",
+  "version_codename":"osmium-ostrich",
+  "version_name":"Osmium Ostrich",
+  "id":"101100100103101"
+ },
+ {
+  "files":[
+   {
     "path":"/1.0.0-rc.0/ionic-v1.0.0-rc.0.zip",
     "type":"zip"
    },
@@ -929,109 +1032,6 @@
  {
   "files":[
    {
-    "path":"/1.0.0-beta.6/ionic-v1.0.0-beta.6.zip",
-    "type":"zip"
-   },
-   {
-    "path":"/1.0.0-beta.6/css/ionic.css",
-    "type":"css"
-   },
-   {
-    "path":"/1.0.0-beta.6/css/ionic.min.css",
-    "type":"css"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/ionic-angular.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/ionic-angular.min.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/ionic.bundle.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/ionic.bundle.min.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/ionic.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/ionic.min.js",
-    "type":"js"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular-animate.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular-animate.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular-resource.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular-resource.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular-sanitize.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular-sanitize.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/js/angular/angular.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-beta.6/fonts/ionicons.eot",
-    "type":"font"
-   },
-   {
-    "path":"/1.0.0-beta.6/fonts/ionicons.svg",
-    "type":"font"
-   },
-   {
-    "path":"/1.0.0-beta.6/fonts/ionicons.ttf",
-    "type":"font"
-   },
-   {
-    "path":"/1.0.0-beta.6/fonts/ionicons.woff",
-    "type":"font"
-   }
-  ],
-  "release_datetime":"2014-05-21 20:03:55",
-  "version_number":"1.0.0-beta.6",
-  "release_date":"2014-05-21",
-  "archive":"/1.0.0-beta.6/ionic-v1.0.0-beta.6.zip",
-  "version_codename":"darmstadtium-dingo",
-  "version_name":"Darmstadtium Dingo",
-  "id":"101100100102106"
- },
- {
-  "files":[
-   {
     "path":"/nightly/ionic-nightly.zip",
     "type":"zip"
    },
@@ -1044,14 +1044,6 @@
     "type":"css"
    },
    {
-    "path":"/nightly/js/ionic.js",
-    "type":"js"
-   },
-   {
-    "path":"/nightly/js/ionic.min.js",
-    "type":"js"
-   },
-   {
     "path":"/nightly/js/ionic-angular.js",
     "type":"js"
    },
@@ -1060,15 +1052,31 @@
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.min.js",
-    "type":"js"
-   },
-   {
     "path":"/nightly/js/ionic.bundle.js",
     "type":"js"
    },
    {
+    "path":"/nightly/js/ionic.bundle.min.js",
+    "type":"js"
+   },
+   {
+    "path":"/nightly/js/ionic.js",
+    "type":"js"
+   },
+   {
+    "path":"/nightly/js/ionic.min.js",
+    "type":"js"
+   },
+   {
     "path":"/nightly/CHANGELOG.html",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -1101,14 +1109,6 @@
    },
    {
     "path":"/nightly/js/angular/angular.min.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/nightly/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
