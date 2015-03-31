@@ -7,8 +7,8 @@
       "action": "http://view.ionic.io"
     },
     {
-      "name": "Add ngCordova to your project for easy device API access",
-      "action": "bower install ngCordova"
+      "name": "Invite anyone to preview and test your app",
+      "action": "ionic share EMAIL"
     },
     {
       "name": "Generate splash screens and icons with ionic resource",
