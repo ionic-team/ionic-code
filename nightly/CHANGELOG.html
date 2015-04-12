@@ -1,5 +1,5 @@
-<p><a name"1.0.0-rc.2-nightly-1187"></a></p>
-<h3 id="1-0-0-rc-2-nightly-1187-changes-since-v1-0-0-rc-2-2015-04-10-">1.0.0-rc.2-nightly-1187 (changes since v1.0.0-rc.2) (2015-04-10)</h3>
+<p><a name"1.0.0-rc.2-nightly-1192"></a></p>
+<h3 id="1-0-0-rc-2-nightly-1192-changes-since-v1-0-0-rc-2-2015-04-12-">1.0.0-rc.2-nightly-1192 (changes since v1.0.0-rc.2) (2015-04-12)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li>initialize $scope.$tabSelected when nested tabs selected. (<a href="https://github.com/driftyco/ionic/commit/ec7bf202">ec7bf202</a>)</li>
@@ -386,6 +386,7 @@
 </ul>
 </li>
 <li><strong>keyboard:</strong><ul>
+<li>reset modal scroll view on show (<a href="https://github.com/driftyco/ionic/commit/c64a10b1">c64a10b1</a>)</li>
 <li>enable keyboard accessory bar more quickly after focus (<a href="https://github.com/driftyco/ionic/commit/7bf1207a">7bf1207a</a>, closes <a href="https://github.com/driftyco/ionic/issues/3113">#3113</a>)</li>
 <li>shrink scrollView on date and select focus on iOS (<a href="https://github.com/driftyco/ionic/commit/4636cb0e">4636cb0e</a>)</li>
 <li>android scroll stuck (<a href="https://github.com/driftyco/ionic/commit/74de015c">74de015c</a>)</li>
@@ -438,6 +439,8 @@
 </li>
 <li><strong>menuContent:</strong> gestures do not stop_browser_behavior (<a href="https://github.com/driftyco/ionic/commit/df578585">df578585</a>, closes <a href="https://github.com/driftyco/ionic/issues/421">#421</a>)</li>
 <li><strong>modal:</strong><ul>
+<li>remove overflow: visible on modal content (<a href="https://github.com/driftyco/ionic/commit/1a4e36bc">1a4e36bc</a>)</li>
+<li>prevent ghost clicks on close (<a href="https://github.com/driftyco/ionic/commit/a416c66d">a416c66d</a>)</li>
 <li>focus on inputs under keyboard (<a href="https://github.com/driftyco/ionic/commit/12bb8de5">12bb8de5</a>)</li>
 <li>align header title after viewable (<a href="https://github.com/driftyco/ionic/commit/3bcda3f2">3bcda3f2</a>)</li>
 <li>remove iOS style header padding from inset headers in modal popups on iPad in po (<a href="https://github.com/driftyco/ionic/commit/e6dda6a5">e6dda6a5</a>, closes <a href="https://github.com/driftyco/ionic/issues/1605">#1605</a>)</li>
@@ -583,6 +586,7 @@
 <li><strong>scrollController:</strong> allow tab $historyId to remember scroll (<a href="https://github.com/driftyco/ionic/commit/9b601b55">9b601b55</a>, closes <a href="https://github.com/driftyco/ionic/issues/1654">#1654</a>)</li>
 <li><strong>scrollDelegate:</strong> revert change that made all scroll* methods blur inputs (<a href="https://github.com/driftyco/ionic/commit/0145dc37">0145dc37</a>, closes <a href="https://github.com/driftyco/ionic/issues/2745">#2745</a>)</li>
 <li><strong>scrollView:</strong><ul>
+<li>only refocus clonedInput if keyboard is still up (<a href="https://github.com/driftyco/ionic/commit/b8522390">b8522390</a>)</li>
 <li>remove bottom margin on scroll content. (<a href="https://github.com/driftyco/ionic/commit/4f9d6fe7">4f9d6fe7</a>, closes <a href="https://github.com/driftyco/ionic/issues/2910">#2910</a>)</li>
 <li>higher velocity threshold for sliding (<a href="https://github.com/driftyco/ionic/commit/93643c41">93643c41</a>)</li>
 <li>make mousewheel events firefox-compatible (<a href="https://github.com/driftyco/ionic/commit/0a8eb391">0a8eb391</a>, closes <a href="https://github.com/driftyco/ionic/issues/2616">#2616</a>)</li>
