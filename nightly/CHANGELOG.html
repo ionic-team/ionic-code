@@ -1,5 +1,5 @@
-<p><a name"1.0.0-rc.3-nightly-1203"></a></p>
-<h3 id="1-0-0-rc-3-nightly-1203-changes-since-v1-0-0-rc-3-2015-04-13-">1.0.0-rc.3-nightly-1203 (changes since v1.0.0-rc.3) (2015-04-13)</h3>
+<p><a name"1.0.0-rc.3-nightly-1204"></a></p>
+<h3 id="1-0-0-rc-3-nightly-1204-changes-since-v1-0-0-rc-3-2015-04-13-">1.0.0-rc.3-nightly-1204 (changes since v1.0.0-rc.3) (2015-04-13)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li>initialize $scope.$tabSelected when nested tabs selected. (<a href="https://github.com/driftyco/ionic/commit/ec7bf202">ec7bf202</a>)</li>
@@ -73,6 +73,7 @@
 </li>
 <li><strong>backbutton:</strong> Allow only one back button listener to run per click, (<a href="https://github.com/driftyco/ionic/commit/a491f22c">a491f22c</a>, closes <a href="https://github.com/driftyco/ionic/issues/693">#693</a>)</li>
 <li><strong>backdrop:</strong><ul>
+<li>dont allow counter to go below 0 (<a href="https://github.com/driftyco/ionic/commit/fdca73a5">fdca73a5</a>)</li>
 <li>use sass vars (<a href="https://github.com/driftyco/ionic/commit/a56bbc97">a56bbc97</a>)</li>
 <li>disable tap longer after backdrop close (<a href="https://github.com/driftyco/ionic/commit/7faeeda0">7faeeda0</a>, closes <a href="https://github.com/driftyco/ionic/issues/1536">#1536</a>)</li>
 <li>Changed z-index for loading backdrop only. (<a href="https://github.com/driftyco/ionic/commit/4c700e9c">4c700e9c</a>, closes <a href="https://github.com/driftyco/ionic/issues/1428">#1428</a>)</li>
@@ -441,6 +442,7 @@
 </li>
 <li><strong>menuContent:</strong> gestures do not stop_browser_behavior (<a href="https://github.com/driftyco/ionic/commit/df578585">df578585</a>, closes <a href="https://github.com/driftyco/ionic/issues/421">#421</a>)</li>
 <li><strong>modal:</strong><ul>
+<li>fix race conditions and memory leaks (<a href="https://github.com/driftyco/ionic/commit/008df7b9">008df7b9</a>)</li>
 <li>remove overflow: visible on modal content (<a href="https://github.com/driftyco/ionic/commit/1a4e36bc">1a4e36bc</a>)</li>
 <li>prevent ghost clicks on close (<a href="https://github.com/driftyco/ionic/commit/a416c66d">a416c66d</a>)</li>
 <li>focus on inputs under keyboard (<a href="https://github.com/driftyco/ionic/commit/12bb8de5">12bb8de5</a>)</li>
@@ -513,6 +515,7 @@
 </ul>
 </li>
 <li><strong>popup:</strong><ul>
+<li>fix race conditions and memory leaks (<a href="https://github.com/driftyco/ionic/commit/e86b331d">e86b331d</a>, closes <a href="https://github.com/driftyco/ionic/issues/2815">#2815</a>)</li>
 <li>prevent scrollbars from showing on desktop unecessarily. (<a href="https://github.com/driftyco/ionic/commit/b8df44d4">b8df44d4</a>, closes <a href="https://github.com/driftyco/ionic/issues/3204">#3204</a>)</li>
 <li>release backdrop when multiple popups (<a href="https://github.com/driftyco/ionic/commit/dd71524e">dd71524e</a>)</li>
 <li>add animation keyframes (<a href="https://github.com/driftyco/ionic/commit/083ae7b5">083ae7b5</a>)</li>
