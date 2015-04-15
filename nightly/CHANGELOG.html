@@ -1,5 +1,5 @@
-<p><a name"1.0.0-rc.3-nightly-1215"></a></p>
-<h3 id="1-0-0-rc-3-nightly-1215-changes-since-v1-0-0-rc-3-2015-04-14-">1.0.0-rc.3-nightly-1215 (changes since v1.0.0-rc.3) (2015-04-14)</h3>
+<p><a name"1.0.0-rc.3-nightly-1224"></a></p>
+<h3 id="1-0-0-rc-3-nightly-1224-changes-since-v1-0-0-rc-3-2015-04-15-">1.0.0-rc.3-nightly-1224 (changes since v1.0.0-rc.3) (2015-04-15)</h3>
 <h4 id="bug-fixes">Bug Fixes</h4>
 <ul>
 <li>initialize $scope.$tabSelected when nested tabs selected. (<a href="https://github.com/driftyco/ionic/commit/ec7bf202">ec7bf202</a>)</li>
@@ -392,6 +392,7 @@
 </ul>
 </li>
 <li><strong>keyboard:</strong><ul>
+<li>use keyboardGetHeight not ionic.keyboard.height (<a href="https://github.com/driftyco/ionic/commit/04da0fc7">04da0fc7</a>)</li>
 <li>reset modal scroll view on show (<a href="https://github.com/driftyco/ionic/commit/c64a10b1">c64a10b1</a>)</li>
 <li>enable keyboard accessory bar more quickly after focus (<a href="https://github.com/driftyco/ionic/commit/7bf1207a">7bf1207a</a>, closes <a href="https://github.com/driftyco/ionic/issues/3113">#3113</a>)</li>
 <li>shrink scrollView on date and select focus on iOS (<a href="https://github.com/driftyco/ionic/commit/4636cb0e">4636cb0e</a>)</li>
@@ -445,6 +446,7 @@
 </li>
 <li><strong>menuContent:</strong> gestures do not stop_browser_behavior (<a href="https://github.com/driftyco/ionic/commit/df578585">df578585</a>, closes <a href="https://github.com/driftyco/ionic/issues/421">#421</a>)</li>
 <li><strong>modal:</strong><ul>
+<li>clean up event listeners when hiding modal (<a href="https://github.com/driftyco/ionic/commit/218605f0">218605f0</a>)</li>
 <li>fix race conditions and memory leaks (<a href="https://github.com/driftyco/ionic/commit/008df7b9">008df7b9</a>)</li>
 <li>remove overflow: visible on modal content (<a href="https://github.com/driftyco/ionic/commit/1a4e36bc">1a4e36bc</a>)</li>
 <li>prevent ghost clicks on close (<a href="https://github.com/driftyco/ionic/commit/a416c66d">a416c66d</a>)</li>
@@ -518,6 +520,7 @@
 </ul>
 </li>
 <li><strong>popup:</strong><ul>
+<li>make sure backdrop is always released (<a href="https://github.com/driftyco/ionic/commit/31de853f">31de853f</a>, closes <a href="https://github.com/driftyco/ionic/issues/3524">#3524</a>)</li>
 <li>fix race conditions and memory leaks (<a href="https://github.com/driftyco/ionic/commit/e86b331d">e86b331d</a>, closes <a href="https://github.com/driftyco/ionic/issues/2815">#2815</a>)</li>
 <li>prevent scrollbars from showing on desktop unecessarily. (<a href="https://github.com/driftyco/ionic/commit/b8df44d4">b8df44d4</a>, closes <a href="https://github.com/driftyco/ionic/issues/3204">#3204</a>)</li>
 <li>release backdrop when multiple popups (<a href="https://github.com/driftyco/ionic/commit/dd71524e">dd71524e</a>)</li>
@@ -562,6 +565,7 @@
 </li>
 <li><strong>requirejs:</strong> fix bug with loading order of angular &amp; taps (<a href="https://github.com/driftyco/ionic/commit/36181091">36181091</a>)</li>
 <li><strong>scroll:</strong><ul>
+<li>rename &#39;scroll.resize&#39; to &#39;scroll-resize&#39; for jQuery&#39;s sake (<a href="https://github.com/driftyco/ionic/commit/e19863c3">e19863c3</a>, closes <a href="https://github.com/driftyco/ionic/issues/3384">#3384</a>)</li>
 <li>hide the scrollbar on desktop so it matches content size of mobile (<a href="https://github.com/driftyco/ionic/commit/0e04f391">0e04f391</a>)</li>
 <li>cleanup native scroll listeners only if activated (<a href="https://github.com/driftyco/ionic/commit/df6dcb96">df6dcb96</a>)</li>
 <li>fix IE mousewheel scroll (<a href="https://github.com/driftyco/ionic/commit/be094336">be094336</a>)</li>
