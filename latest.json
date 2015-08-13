@@ -13,14 +13,6 @@
    "type":"css"
   },
   {
-   "path":"/1.1.0/js/ionic.js",
-   "type":"js"
-  },
-  {
-   "path":"/1.1.0/js/ionic.min.js",
-   "type":"js"
-  },
-  {
    "path":"/1.1.0/js/ionic-angular.js",
    "type":"js"
   },
@@ -29,12 +21,28 @@
    "type":"js"
   },
   {
+   "path":"/1.1.0/js/ionic.bundle.js",
+   "type":"js"
+  },
+  {
    "path":"/1.1.0/js/ionic.bundle.min.js",
    "type":"js"
   },
   {
-   "path":"/1.1.0/js/ionic.bundle.js",
+   "path":"/1.1.0/js/ionic.js",
    "type":"js"
+  },
+  {
+   "path":"/1.1.0/js/ionic.min.js",
+   "type":"js"
+  },
+  {
+   "path":"/1.1.0/js/angular-ui/angular-ui-router.js",
+   "type":"dependency"
+  },
+  {
+   "path":"/1.1.0/js/angular-ui/angular-ui-router.min.js",
+   "type":"dependency"
   },
   {
    "path":"/1.1.0/js/angular/angular-animate.js",
@@ -66,14 +74,6 @@
   },
   {
    "path":"/1.1.0/js/angular/angular.min.js",
-   "type":"dependency"
-  },
-  {
-   "path":"/1.1.0/js/angular-ui/angular-ui-router.js",
-   "type":"dependency"
-  },
-  {
-   "path":"/1.1.0/js/angular-ui/angular-ui-router.min.js",
    "type":"dependency"
   },
   {
