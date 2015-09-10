@@ -1,5 +1,5 @@
 
-// iOS9 Patch for $browser
+// iOS9 Patch for $browser 
 // https://github.com/angular/angular.js/issues/12241#issuecomment-130744518
 
 angular.module('ng').config(['$provide', function($provide) {
