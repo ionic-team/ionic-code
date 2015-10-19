@@ -1,0 +1,37 @@
+
+// Segment
+// --------------------------------------------------
+
+
+ion-segment {
+  display: block;
+}
+
+.ion-segment {
+  display: flex;
+  flex: 1;
+  width: 100%;
+
+  button,
+  [button] {
+
+    margin-left: 0;
+    margin-right: 0;
+
+    flex: 1;
+    display: block;
+    overflow: hidden;
+
+    padding: 0 16px;
+    width: 0;
+
+    border-width: 1px 0px 1px 1px;
+    border-radius: 0;
+
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    background: none;
+  }
+}

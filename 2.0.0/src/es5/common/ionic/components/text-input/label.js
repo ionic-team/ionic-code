@@ -1,0 +1,114 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _angular2Angular2 = require('angular2/angular2');
+
+var _configConfig = require('../../config/config');
+
+var _textInput = require('./text-input');
+
+var _utilDom = require('../../util/dom');
+
+/**
+ * TODO
+ */
+var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2:
+            return decorators.reduceRight(function (o, d) {
+                return d && d(o) || o;
+            }, target);
+        case 3:
+            return decorators.reduceRight(function (o, d) {
+                return (d && d(target, key), void 0);
+            }, void 0);
+        case 4:
+            return decorators.reduceRight(function (o, d) {
+                return d && d(target, key, o) || o;
+            }, desc);
+    }
+};
+var __metadata = undefined && undefined.__metadata || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = undefined && undefined.__param || function (paramIndex, decorator) {
+    return function (target, key) {
+        decorator(target, key, paramIndex);
+    };
+};
+var Label = (function () {
+    /**
+     * TODO
+     * @param {Config} config
+     */
+
+    function Label(config, container) {
+        _classCallCheck(this, Label);
+
+        this.scrollAssist = config.get('scrollAssist');
+        if (!this.id) {
+            this.id = 'lbl-' + ++labelIds;
+        }
+        this.container = container;
+        container && container.registerLabel(this);
+    }
+
+    /**
+     * TODO
+     * @param {TODO} ev  TODO
+     */
+
+    _createClass(Label, [{
+        key: "pointerStart",
+        value: function pointerStart(ev) {
+            if (this.scrollAssist) {
+                // remember where the touchstart/mousedown started
+                this.startCoord = (0, _utilDom.pointerCoord)(ev);
+            }
+        }
+
+        /**
+         * TODO
+         * @param {TODO} ev  TODO
+         */
+    }, {
+        key: "pointerEnd",
+        value: function pointerEnd(ev) {
+            if (this.container) {
+                // get where the touchend/mouseup ended
+                var endCoord = (0, _utilDom.pointerCoord)(ev);
+                // focus this input if the pointer hasn't moved XX pixels
+                if (!(0, _utilDom.hasPointerMoved)(20, this.startCoord, endCoord)) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    this.container.initFocus();
+                }
+                this.startCoord = null;
+            }
+        }
+    }]);
+
+    return Label;
+})();
+exports.Label = Label;
+exports.Label = Label = __decorate([(0, _angular2Angular2.Directive)({
+    selector: 'ion-label',
+    inputs: ['id'],
+    host: {
+        '[attr.id]': 'id',
+        '(touchstart)': 'pointerStart($event)',
+        '(touchend)': 'pointerEnd($event)',
+        '(mousedown)': 'pointerStart($event)',
+        '(mouseup)': 'pointerEnd($event)'
+    }
+}), __param(1, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _a || Object, typeof (_b = typeof _textInput.TextInput !== 'undefined' && _textInput.TextInput) === 'function' && _b || Object])], Label);
+var labelIds = -1;
+var _a, _b;

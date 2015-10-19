@@ -1,0 +1,49 @@
+{
+  "name": "ionic-framework",
+  "version": "2.0.0-alpha.30",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/driftyco/ionic2.git"
+  },
+  "files": [
+    "css",
+    "fonts",
+    "js",
+    "src"
+  ],
+  "dependencies": {
+    "angular2": "2.0.0-alpha.44",
+    "es6-shim": "^0.33.6",
+    "@reactivex/rxjs": "5.0.0-alpha.4",
+    "reflect-metadata": "0.1.1",
+    "zone.js": "0.5.8"
+  },
+  "description": "### Bundles:",
+  "bugs": {
+    "url": "https://github.com/driftyco/ionic2/issues"
+  },
+  "homepage": "https://github.com/driftyco/ionic2#readme",
+  "_id": "ionic-framework@2.0.0-alpha.30",
+  "scripts": {},
+  "_shasum": "b88878bff9096079be861dc92d9447c4fb265449",
+  "_from": "ionic-framework@*",
+  "_npmVersion": "2.14.7",
+  "_nodeVersion": "4.2.0",
+  "_npmUser": {
+    "name": "ionic",
+    "email": "hi@ionicframework.com"
+  },
+  "dist": {
+    "shasum": "b88878bff9096079be861dc92d9447c4fb265449",
+    "tarball": "http://registry.npmjs.org/ionic-framework/-/ionic-framework-2.0.0-alpha.30.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "ionic",
+      "email": "hi@ionicframework.com"
+    }
+  ],
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/ionic-framework/-/ionic-framework-2.0.0-alpha.30.tgz"
+}

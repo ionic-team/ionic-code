@@ -1,0 +1,28 @@
+
+// Navbar
+// --------------------------------------------------
+
+
+ion-navbar.toolbar {
+  position: absolute;
+  display: none;
+
+  &.show-navbar {
+    display: flex;
+  }
+}
+
+.back-button {
+  order: map-get($toolbar-order, backButton);
+  transform: translateZ(0px);
+
+  display: none;
+  &.show-back-button {
+    display: flex;
+  }
+}
+
+.back-button-text {
+  display: flex;
+  align-items: center;
+}
