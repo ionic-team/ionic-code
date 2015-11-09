@@ -45,15 +45,6 @@
       "git_url": "git://github.com/driftyco/ionic-starter-salesforce.git"
     },
     {
-      "id": 24610601,
-      "name": "ionic-starter-tests",
-      "description": "A test of different kinds of page navigation",
-      "created_at": "2014-09-29T19:57:25Z",
-      "updated_at": "2015-01-17T17:12:18Z",
-      "pushed_at": "2015-01-17T17:12:17Z",
-      "git_url": "git://github.com/driftyco/ionic-starter-tests.git"
-    },
-    {
       "id": 27608851,
       "name": "ionic-starter-complex-list",
       "description": "A complex list starter template",
