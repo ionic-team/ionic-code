@@ -1,7 +1,7 @@
 {
  "files":[
   {
-   "path":"/1.1.1/ionic-v1.1.0.zip",
+   "path":"/1.1.1/ionic-v1.1.1.zip",
    "type":"zip"
   },
   {
@@ -37,14 +37,6 @@
    "type":"js"
   },
   {
-   "path":"/1.1.1/js/angular-ui/angular-ui-router.js",
-   "type":"dependency"
-  },
-  {
-   "path":"/1.1.1/js/angular-ui/angular-ui-router.min.js",
-   "type":"dependency"
-  },
-  {
    "path":"/1.1.1/js/angular/angular-animate.js",
    "type":"dependency"
   },
@@ -77,6 +69,14 @@
    "type":"dependency"
   },
   {
+   "path":"/1.1.1/js/angular-ui/angular-ui-router.js",
+   "type":"dependency"
+  },
+  {
+   "path":"/1.1.1/js/angular-ui/angular-ui-router.min.js",
+   "type":"dependency"
+  },
+  {
    "path":"/1.1.1/fonts/ionicons.eot",
    "type":"font"
   },
@@ -93,11 +93,11 @@
    "type":"font"
   }
  ],
- "release_datetime":"2015-11-05 19:56:29",
+ "release_datetime":"2015-11-05 21:31:24",
  "version_number":"1.1.1",
  "release_date":"2015-11-05",
  "archive":"/1.1.1/ionic-v1.1.1.zip",
  "version_codename":"yttrium-yeti",
  "version_name":"Yttrium Yeti",
- "id":"101101100199"
+ "id":"101101101199"
 }
