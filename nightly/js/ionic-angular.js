@@ -2,7 +2,7 @@
  * Copyright 2015 Drifty Co.
  * http://drifty.com/
  *
- * Ionic, v1.1.1-nightly-1640
+ * Ionic, v1.1.1-nightly-1647
  * A powerful HTML5 mobile app framework.
  * http://ionicframework.com/
  *
@@ -11825,7 +11825,7 @@ IonicModule
  * @description
  * The radio directive is no different than the HTML radio input, except it's styled differently.
  *
- * Radio behaves like any [AngularJS radio](http://docs.angularjs.org/api/ng/input/input[radio]).
+ * Radio behaves like [AngularJS radio](http://docs.angularjs.org/api/ng/input/input[radio]).
  *
  * @usage
  * ```html
