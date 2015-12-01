@@ -44,15 +44,18 @@ System.register("ionic/components/icon/icon", ["angular2/angular2", "../../confi
 
                     this.elementRef = elementRef;
                     this.renderer = renderer;
-                    this.eleRef = elementRef;
                     this.config = config;
                     this.mode = config.get('iconMode');
                 }
 
+                /**
+                 * @private
+                 */
+
                 _createClass(Icon, [{
                     key: "onInit",
                     value: function onInit() {
-                        var ele = this.eleRef.nativeElement;
+                        var ele = this.elementRef.nativeElement;
                         if (this.mode == 'ios' && this.ios) {
                             this.name = this.ios;
                         } else if (this.mode == 'md' && this.md) {
@@ -77,6 +80,10 @@ System.register("ionic/components/icon/icon", ["angular2/angular2", "../../confi
                     }
                 }, {
                     key: "update",
+
+                    /**
+                     * @private
+                     */
                     value: function update() {
                         if (this.name && this.mode == 'ios') {
                             if (this.isActive) {
@@ -101,6 +108,10 @@ System.register("ionic/components/icon/icon", ["angular2/angular2", "../../confi
                     get: function get() {
                         return this._isActive === undefined || this._isActive === true || this._isActive === 'true';
                     },
+
+                    /**
+                     * @private
+                     */
                     set: function set(val) {
                         this._isActive = val;
                         this.update();

@@ -1,17 +1,17 @@
-System.register('ionic/config/directives', ['angular2/angular2', '../components/overlay/overlay', '../components/menu/menu', '../components/menu/menu-toggle', '../components/menu/menu-close', '../components/button/button', '../components/blur/blur', '../components/content/content', '../components/scroll/scroll', '../components/scroll/pull-to-refresh', '../components/slides/slides', '../components/tabs/tabs', '../components/tabs/tab', '../components/list/list', '../components/item/item', '../components/item/item-group', '../components/item/item-sliding', '../components/toolbar/toolbar', '../components/icon/icon', '../components/checkbox/checkbox', '../components/switch/switch', '../components/text-input/text-input', '../components/text-input/label', '../components/segment/segment', '../components/radio/radio', '../components/search-bar/search-bar', '../components/nav/nav', '../components/nav/nav-push', '../components/nav/nav-router', '../components/nav-bar/nav-bar', '../components/app/id', '../components/show-hide-when/show-hide-when'], function (_export) {
+System.register('ionic/config/directives', ['angular2/angular2', '../components/overlay/overlay', '../components/menu/menu', '../components/menu/menu-toggle', '../components/menu/menu-close', '../components/button/button', '../components/blur/blur', '../components/content/content', '../components/scroll/scroll', '../components/scroll/pull-to-refresh', '../components/slides/slides', '../components/tabs/tabs', '../components/tabs/tab', '../components/list/list', '../components/item/item', '../components/item/item-sliding', '../components/toolbar/toolbar', '../components/icon/icon', '../components/checkbox/checkbox', '../components/switch/switch', '../components/text-input/text-input', '../components/text-input/label', '../components/segment/segment', '../components/radio/radio', '../components/searchbar/searchbar', '../components/nav/nav', '../components/nav/nav-push', '../components/nav/nav-router', '../components/navbar/navbar', '../components/app/id', '../components/show-hide-when/show-hide-when'], function (_export) {
     /**
      * The core Ionic directives as well as Angular's CORE_DIRECTIVES and
      * FORM_DIRECTIVES.  Automatically available in every [@Page](../Page/) template.
      */
     'use strict';
 
-    var CORE_DIRECTIVES, FORM_DIRECTIVES, OverlayAnchor, Menu, MenuToggle, MenuClose, Button, Blur, Content, Scroll, Refresher, Slides, Slide, SlideLazy, Tabs, Tab, List, ListHeader, Item, ItemGroup, ItemGroupTitle, ItemSliding, Toolbar, ToolbarTitle, ToolbarItem, Icon, Checkbox, Switch, TextInput, TextInputElement, Label, Segment, SegmentButton, SegmentControlValueAccessor, RadioGroup, RadioButton, SearchBar, Nav, NavPush, NavPop, NavRouter, NavbarTemplate, Navbar, IdRef, ShowWhen, HideWhen, IONIC_DIRECTIVES;
+    var CORE_DIRECTIVES, FORM_DIRECTIVES, OverlayNav, Menu, MenuToggle, MenuClose, Button, Blur, Content, Scroll, Refresher, Slides, Slide, SlideLazy, Tabs, Tab, List, ListHeader, Item, ItemSliding, Toolbar, ToolbarTitle, ToolbarItem, Icon, Checkbox, Switch, TextInput, TextInputElement, Label, Segment, SegmentButton, RadioGroup, RadioButton, Searchbar, Nav, NavPush, NavPop, NavRouter, NavbarTemplate, Navbar, IdRef, ShowWhen, HideWhen, IONIC_DIRECTIVES;
     return {
         setters: [function (_angular2Angular2) {
             CORE_DIRECTIVES = _angular2Angular2.CORE_DIRECTIVES;
             FORM_DIRECTIVES = _angular2Angular2.FORM_DIRECTIVES;
         }, function (_componentsOverlayOverlay) {
-            OverlayAnchor = _componentsOverlayOverlay.OverlayAnchor;
+            OverlayNav = _componentsOverlayOverlay.OverlayNav;
         }, function (_componentsMenuMenu) {
             Menu = _componentsMenuMenu.Menu;
         }, function (_componentsMenuMenuToggle) {
@@ -41,9 +41,6 @@ System.register('ionic/config/directives', ['angular2/angular2', '../components/
             ListHeader = _componentsListList.ListHeader;
         }, function (_componentsItemItem) {
             Item = _componentsItemItem.Item;
-        }, function (_componentsItemItemGroup) {
-            ItemGroup = _componentsItemItemGroup.ItemGroup;
-            ItemGroupTitle = _componentsItemItemGroup.ItemGroupTitle;
         }, function (_componentsItemItemSliding) {
             ItemSliding = _componentsItemItemSliding.ItemSliding;
         }, function (_componentsToolbarToolbar) {
@@ -64,12 +61,11 @@ System.register('ionic/config/directives', ['angular2/angular2', '../components/
         }, function (_componentsSegmentSegment) {
             Segment = _componentsSegmentSegment.Segment;
             SegmentButton = _componentsSegmentSegment.SegmentButton;
-            SegmentControlValueAccessor = _componentsSegmentSegment.SegmentControlValueAccessor;
         }, function (_componentsRadioRadio) {
             RadioGroup = _componentsRadioRadio.RadioGroup;
             RadioButton = _componentsRadioRadio.RadioButton;
-        }, function (_componentsSearchBarSearchBar) {
-            SearchBar = _componentsSearchBarSearchBar.SearchBar;
+        }, function (_componentsSearchbarSearchbar) {
+            Searchbar = _componentsSearchbarSearchbar.Searchbar;
         }, function (_componentsNavNav) {
             Nav = _componentsNavNav.Nav;
         }, function (_componentsNavNavPush) {
@@ -77,9 +73,9 @@ System.register('ionic/config/directives', ['angular2/angular2', '../components/
             NavPop = _componentsNavNavPush.NavPop;
         }, function (_componentsNavNavRouter) {
             NavRouter = _componentsNavNavRouter.NavRouter;
-        }, function (_componentsNavBarNavBar) {
-            NavbarTemplate = _componentsNavBarNavBar.NavbarTemplate;
-            Navbar = _componentsNavBarNavBar.Navbar;
+        }, function (_componentsNavbarNavbar) {
+            NavbarTemplate = _componentsNavbarNavbar.NavbarTemplate;
+            Navbar = _componentsNavbarNavbar.Navbar;
         }, function (_componentsAppId) {
             IdRef = _componentsAppId.IdRef;
         }, function (_componentsShowHideWhenShowHideWhen) {
@@ -91,9 +87,9 @@ System.register('ionic/config/directives', ['angular2/angular2', '../components/
             // Angular
             CORE_DIRECTIVES, FORM_DIRECTIVES,
             // Content
-            OverlayAnchor, Menu, MenuToggle, MenuClose, Button, Blur, Content, Scroll, Refresher,
+            OverlayNav, Menu, MenuToggle, MenuClose, Button, Blur, Content, Scroll, Refresher,
             // Lists
-            List, ListHeader, Item, ItemGroup, ItemGroupTitle, ItemSliding,
+            List, ListHeader, Item, ItemSliding,
             // Slides
             Slides, Slide, SlideLazy,
             // Tabs
@@ -103,7 +99,7 @@ System.register('ionic/config/directives', ['angular2/angular2', '../components/
             // Media
             Icon,
             // Forms
-            SearchBar, Segment, SegmentButton, SegmentControlValueAccessor, Checkbox, RadioGroup, RadioButton, Switch, TextInput, TextInputElement, Label,
+            Searchbar, Segment, SegmentButton, Checkbox, RadioGroup, RadioButton, Switch, TextInput, TextInputElement, Label,
             // Nav
             Nav, NavbarTemplate, Navbar, NavPush, NavPop, NavRouter, IdRef, ShowWhen, HideWhen];
 

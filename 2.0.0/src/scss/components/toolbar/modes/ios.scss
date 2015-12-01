@@ -1,3 +1,4 @@
+@import "../../../ionic.globals";
 
 // iOS Toolbar
 // --------------------------------------------------
@@ -59,7 +60,7 @@ $toolbar-ios-title-font-size:               1.7rem !default;
     min-height: 3.2rem;
     line-height: 1;
     order: map-get($toolbar-order-ios, 'back-button');
-    overflow: inherit;
+    overflow: visible;
   }
 
   .back-button-icon {
@@ -71,7 +72,7 @@ $toolbar-ios-title-font-size:               1.7rem !default;
 
 }
 
-.toolbar .toolbar-background {
+.toolbar toolbar-background {
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
@@ -84,6 +85,7 @@ ion-title {
   height: 100%;
   padding: 0px 90px 1px 90px;
   pointer-events: none;
+  transform: translateZ(0px);
 }
 
 .toolbar-title {
@@ -96,6 +98,7 @@ ion-title {
 ion-nav-items {
   flex: 1;
   order: map-get($toolbar-order-ios, primary);
+  transform: translateZ(0px);
 }
 
 ion-nav-items[secondary] {
@@ -103,6 +106,6 @@ ion-nav-items[secondary] {
   order: map-get($toolbar-order-ios, secondary);
 }
 
-&.hairlines .toolbar .toolbar-background {
+&.hairlines .toolbar toolbar-background {
   border-bottom-width: 0.55px;
 }

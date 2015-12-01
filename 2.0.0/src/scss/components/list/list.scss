@@ -1,24 +1,27 @@
+@import "../../ionic.globals";
 
 // List
 // --------------------------------------------------
 
+ion-list-header {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
-.list {
+ion-list {
   display: block;
   margin: 0;
   padding: 0;
   list-style-type: none;
-
-  ion-header {
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
 }
 
-.list[inset] {
-  ion-header {
+ion-list[inset] {
+  overflow: hidden;
+  transform: translateZ(0);
+
+  ion-list-header {
     background-color: $list-background-color;
   }
 }

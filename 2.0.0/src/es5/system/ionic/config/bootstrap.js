@@ -1,13 +1,16 @@
-System.register('ionic/config/bootstrap', ['angular2/angular2', 'angular2/router', 'angular2/http', '../components/app/app', './config', '../platform/platform', '../components/overlay/overlay-controller', '../util/form', '../util/keyboard', '../components/action-sheet/action-sheet', '../components/modal/modal', '../components/popup/popup', '../util/events', '../components/nav/nav-registry', '../translation/translate', '../util/feature-detect', '../components/tap-click/tap-click', '../util/dom'], function (_export) {
+System.register('ionic/config/bootstrap', ['angular2/angular2', 'angular2/router', 'angular2/http', '../components/app/app', './config', '../platform/platform', '../components/overlay/overlay-controller', '../util/form', '../util/keyboard', '../components/action-sheet/action-sheet', '../components/modal/modal', '../components/popup/popup', '../util/events', '../components/nav/nav-registry', '../translation/translate', '../util/click-block', '../util/feature-detect', '../components/tap-click/tap-click', '../util/dom'], function (_export) {
     'use strict';
 
-    var provide, ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy, HTTP_PROVIDERS, IonicApp, Config, Platform, OverlayController, Form, Keyboard, ActionSheet, Modal, Popup, Events, NavRegistry, Translate, FeatureDetect, TapClick, dom;
+    var provide, ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy, HTTP_PROVIDERS, IonicApp, Config, Platform, OverlayController, Form, Keyboard, ActionSheet, Modal, Popup, Events, NavRegistry, Translate, ClickBlock, FeatureDetect, TapClick, ready, closest;
 
     _export('ionicProviders', ionicProviders);
 
-    function ionicProviders(config) {
-        var app = new IonicApp();
+    function ionicProviders() {
+        var args = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
         var platform = new Platform();
+        var navRegistry = new NavRegistry(args.pages);
+        var config = args.config;
         if (!(config instanceof Config)) {
             config = new Config(config);
         }
@@ -16,20 +19,20 @@ System.register('ionic/config/bootstrap', ['angular2/angular2', 'angular2/router
         platform.navigatorPlatform(window.navigator.platform);
         platform.load();
         config.setPlatform(platform);
+        var clickBlock = new ClickBlock(config.get('clickBlock'));
         var events = new Events();
-        var tapClick = new TapClick(app, config, window, document);
         var featureDetect = new FeatureDetect();
-        setupDom(window, document, config, platform, featureDetect);
+        setupDom(window, document, config, platform, clickBlock, featureDetect);
         bindEvents(window, document, platform, events);
         // prepare the ready promise to fire....when ready
         platform.prepareReady(config);
-        return [provide(IonicApp, { useValue: app }), provide(Config, { useValue: config }), provide(Platform, { useValue: platform }), provide(TapClick, { useValue: tapClick }), provide(FeatureDetect, { useValue: featureDetect }), provide(Events, { useValue: events }), Form, Keyboard, OverlayController, ActionSheet, Modal, Popup, Translate, NavRegistry, ROUTER_PROVIDERS, provide(LocationStrategy, { useClass: HashLocationStrategy }), HTTP_PROVIDERS];
+        return [IonicApp, provide(ClickBlock, { useValue: clickBlock }), provide(Config, { useValue: config }), provide(Platform, { useValue: platform }), provide(FeatureDetect, { useValue: featureDetect }), provide(Events, { useValue: events }), provide(NavRegistry, { useValue: navRegistry }), TapClick, Form, Keyboard, OverlayController, ActionSheet, Modal, Popup, Translate, ROUTER_PROVIDERS, provide(LocationStrategy, { useClass: HashLocationStrategy }), HTTP_PROVIDERS];
     }
 
-    function setupDom(window, document, config, platform, featureDetect) {
+    function setupDom(window, document, config, platform, clickBlock, featureDetect) {
         var bodyEle = document.body;
         if (!bodyEle) {
-            return dom.ready(function () {
+            return ready(function () {
                 applyBodyCss(document, config, platform);
             });
         }
@@ -55,6 +58,9 @@ System.register('ionic/config/bootstrap', ['angular2/angular2', 'angular2/router
         if (config.get('hoverCSS') !== false) {
             bodyEle.classList.add('enable-hover');
         }
+        if (config.get('clickBlock')) {
+            clickBlock.enable();
+        }
         // run feature detection tests
         featureDetect.run(window, document);
     }
@@ -78,7 +84,7 @@ System.register('ionic/config/bootstrap', ['angular2/angular2', 'angular2/router
             if (!el) {
                 return;
             }
-            var content = dom.closest(el, 'scroll-content');
+            var content = closest(el, 'scroll-content');
             if (content) {
                 var scrollTo = new ScrollTo(content);
                 scrollTo.start(0, 0, 300, 0);
@@ -124,12 +130,15 @@ System.register('ionic/config/bootstrap', ['angular2/angular2', 'angular2/router
             NavRegistry = _componentsNavNavRegistry.NavRegistry;
         }, function (_translationTranslate) {
             Translate = _translationTranslate.Translate;
+        }, function (_utilClickBlock) {
+            ClickBlock = _utilClickBlock.ClickBlock;
         }, function (_utilFeatureDetect) {
             FeatureDetect = _utilFeatureDetect.FeatureDetect;
         }, function (_componentsTapClickTapClick) {
             TapClick = _componentsTapClickTapClick.TapClick;
         }, function (_utilDom) {
-            dom = _utilDom;
+            ready = _utilDom.ready;
+            closest = _utilDom.closest;
         }],
         execute: function () {}
     };

@@ -1,7 +1,7 @@
 System.register("ionic/util/keyboard", ["angular2/angular2", "../config/config", "./form", "./dom"], function (_export) {
     "use strict";
 
-    var Injectable, NgZone, Config, Form, dom, __decorate, __metadata, Keyboard, KEYBOARD_CLOSE_POLLING, _a, _b, _c;
+    var Injectable, NgZone, Config, Form, hasFocusedTextInput, raf, rafFrames, __decorate, __metadata, Keyboard, KEYBOARD_CLOSE_POLLING, _a, _b, _c;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -16,7 +16,9 @@ System.register("ionic/util/keyboard", ["angular2/angular2", "../config/config",
         }, function (_form) {
             Form = _form.Form;
         }, function (_dom) {
-            dom = _dom;
+            hasFocusedTextInput = _dom.hasFocusedTextInput;
+            raf = _dom.raf;
+            rafFrames = _dom.rafFrames;
         }],
         execute: function () {
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -57,11 +59,13 @@ System.register("ionic/util/keyboard", ["angular2/angular2", "../config/config",
                 _createClass(Keyboard, [{
                     key: "isOpen",
                     value: function isOpen() {
-                        return dom.hasFocusedTextInput();
+                        return hasFocusedTextInput();
                     }
                 }, {
                     key: "onClose",
                     value: function onClose(callback) {
+                        var pollingInternval = arguments.length <= 1 || arguments[1] === undefined ? KEYBOARD_CLOSE_POLLING : arguments[1];
+
                         var self = this;
                         var promise = null;
                         if (!callback) {
@@ -73,15 +77,17 @@ System.register("ionic/util/keyboard", ["angular2/angular2", "../config/config",
                         self.zone.runOutsideAngular(function () {
                             function checkKeyboard() {
                                 if (!self.isOpen()) {
-                                    self.zone.run(function () {
-                                        console.debug('keyboard closed');
-                                        callback();
+                                    rafFrames(30, function () {
+                                        self.zone.run(function () {
+                                            console.debug('keyboard closed');
+                                            callback();
+                                        });
                                     });
                                 } else {
-                                    setTimeout(checkKeyboard, KEYBOARD_CLOSE_POLLING);
+                                    setTimeout(checkKeyboard, pollingInternval);
                                 }
                             }
-                            setTimeout(checkKeyboard, KEYBOARD_CLOSE_POLLING);
+                            setTimeout(checkKeyboard, pollingInternval);
                         });
                         return promise;
                     }
@@ -90,8 +96,8 @@ System.register("ionic/util/keyboard", ["angular2/angular2", "../config/config",
                     value: function close() {
                         var _this2 = this;
 
-                        dom.raf(function () {
-                            if (dom.hasFocusedTextInput()) {
+                        raf(function () {
+                            if (hasFocusedTextInput()) {
                                 // only focus out when a text input has focus
                                 _this2.form.focusOut();
                             }
@@ -111,9 +117,10 @@ System.register("ionic/util/keyboard", ["angular2/angular2", "../config/config",
                          * focusOutline: true     - Always add the focus-outline
                          * focusOutline: false    - Do not add the focus-outline
                          */
+                        var self = this;
                         var isKeyInputEnabled = false;
                         function cssClass() {
-                            dom.raf(function () {
+                            raf(function () {
                                 document.body.classList[isKeyInputEnabled ? 'add' : 'remove']('focus-outline');
                             });
                         }
@@ -136,7 +143,7 @@ System.register("ionic/util/keyboard", ["angular2/angular2", "../config/config",
                         }
                         function enableKeyInput() {
                             cssClass();
-                            this.zone.runOutsideAngular(function () {
+                            self.zone.runOutsideAngular(function () {
                                 document.removeEventListener('mousedown', pointerDown);
                                 document.removeEventListener('touchstart', pointerDown);
                                 if (isKeyInputEnabled) {

@@ -1,3 +1,4 @@
+@import "../../ionic.globals";
 
 // Card
 // --------------------------------------------------
@@ -5,6 +6,8 @@
 
 ion-card {
   display: block;
+  overflow: hidden;
+  transform: translateZ(0);
 }
 
 ion-card img {

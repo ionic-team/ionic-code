@@ -53,8 +53,8 @@ System.register('ionic/platform/storage/storage', [], function (_export) {
                     }
                 }, {
                     key: 'query',
-                    value: function query(_query) {
-                        return this._strategy.query(key);
+                    value: function query(_query, params) {
+                        return this._strategy.query(_query, params);
                     }
                 }]);
 
@@ -85,7 +85,7 @@ System.register('ionic/platform/storage/storage', [], function (_export) {
                     }
                 }, {
                     key: 'query',
-                    value: function query(_query2) {
+                    value: function query(_query2, params) {
                         throw Error("query() not implemented for this storage engine");
                     }
                 }]);

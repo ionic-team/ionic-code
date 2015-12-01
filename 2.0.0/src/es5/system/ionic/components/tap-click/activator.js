@@ -1,7 +1,7 @@
 System.register('ionic/components/tap-click/activator', ['../../util/dom'], function (_export) {
     'use strict';
 
-    var raf, Activator;
+    var rafFrames, Activator;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -9,17 +9,18 @@ System.register('ionic/components/tap-click/activator', ['../../util/dom'], func
 
     return {
         setters: [function (_utilDom) {
-            raf = _utilDom.raf;
+            rafFrames = _utilDom.rafFrames;
         }],
         execute: function () {
             Activator = (function () {
-                function Activator(app, config) {
+                function Activator(app, config, zone) {
                     _classCallCheck(this, Activator);
 
                     this.app = app;
+                    this.zone = zone;
                     this.queue = [];
                     this.active = [];
-                    this.clearStateTimeout = 180;
+                    this.clearStateDefers = 5;
                     this.clearAttempt = 0;
                     this.activatedClass = config.get('activatedClass') || 'activated';
                     this.x = 0;
@@ -29,66 +30,78 @@ System.register('ionic/components/tap-click/activator', ['../../util/dom'], func
                 _createClass(Activator, [{
                     key: 'downAction',
                     value: function downAction(ev, activatableEle, pointerX, pointerY, callback) {
-                        var _this = this;
-
                         // the user just pressed down
-                        if (this.disableActivated(ev)) return;
+                        var self = this;
+                        if (self.disableActivated(ev)) return false;
                         // remember where they pressed
-                        this.x = pointerX;
-                        this.y = pointerY;
+                        self.x = pointerX;
+                        self.y = pointerY;
                         // queue to have this element activated
-                        this.queue.push(activatableEle);
-                        raf(function () {
+                        self.queue.push(activatableEle);
+                        function activateCss() {
                             var activatableEle = undefined;
-                            for (var i = 0; i < _this.queue.length; i++) {
-                                activatableEle = _this.queue[i];
+                            for (var i = 0; i < self.queue.length; i++) {
+                                activatableEle = self.queue[i];
                                 if (activatableEle && activatableEle.parentNode) {
-                                    _this.active.push(activatableEle);
-                                    activatableEle.classList.add(_this.activatedClass);
+                                    self.active.push(activatableEle);
+                                    activatableEle.classList.add(self.activatedClass);
                                 }
                             }
-                            _this.queue = [];
+                            self.queue = [];
+                        }
+                        this.zone.runOutsideAngular(function () {
+                            rafFrames(2, activateCss);
                         });
+                        return true;
                     }
                 }, {
                     key: 'upAction',
                     value: function upAction() {
-                        var _this2 = this;
-
                         // the user was pressing down, then just let up
-                        setTimeout(function () {
-                            _this2.clearState();
-                        }, this.clearStateTimeout);
+                        var self = this;
+                        function activateUp() {
+                            self.clearState();
+                        }
+                        this.zone.runOutsideAngular(function () {
+                            rafFrames(self.clearStateDefers, activateUp);
+                        });
                     }
                 }, {
                     key: 'clearState',
                     value: function clearState() {
+                        var _this = this;
+
                         // all states should return to normal
-                        if ((!this.app.isEnabled() || this.app.isTransitioning()) && this.clearAttempt < 100) {
+                        if (!this.app.isEnabled()) {
                             // the app is actively disabled, so don't bother deactivating anything.
                             // this makes it easier on the GPU so it doesn't have to redraw any
                             // buttons during a transition. This will retry in XX milliseconds.
-                            ++this.clearAttempt;
-                            this.upAction();
+                            setTimeout(function () {
+                                _this.clearState();
+                            }, 600);
                         } else {
                             // not actively transitioning, good to deactivate any elements
                             this.deactivate();
-                            this.clearAttempt = 0;
                         }
                     }
                 }, {
                     key: 'deactivate',
                     value: function deactivate() {
                         // remove the active class from all active elements
-                        for (var i = 0; i < this.active.length; i++) {
-                            this.active[i].classList.remove(this.activatedClass);
+                        var self = this;
+                        self.queue = [];
+                        function deactivate() {
+                            for (var i = 0; i < self.active.length; i++) {
+                                self.active[i].classList.remove(self.activatedClass);
+                            }
+                            self.active = [];
                         }
-                        this.queue = [];
-                        this.active = [];
+                        rafFrames(2, deactivate);
                     }
                 }, {
                     key: 'disableActivated',
                     value: function disableActivated(ev) {
+                        if (ev.defaultPrevented) return true;
                         var targetEle = ev.target;
                         for (var x = 0; x < 4; x++) {
                             if (!targetEle) break;

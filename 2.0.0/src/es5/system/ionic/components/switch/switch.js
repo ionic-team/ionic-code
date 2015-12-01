@@ -1,11 +1,10 @@
 System.register("ionic/components/switch/switch", ["angular2/angular2", "../../util/form", "../../config/config", "../../util/dom"], function (_export) {
     /**
-     * @name mediaSwitch
      * @private
      */
     "use strict";
 
-    var Component, Directive, ElementRef, Renderer, Host, Optional, NgControl, Inject, forwardRef, Form, Config, pointerCoord, __decorate, __metadata, __param, MediaSwitch, Switch, _a, _b, _c, _d, _e, _f;
+    var Component, Directive, ElementRef, Host, Optional, NgControl, Inject, forwardRef, Form, Config, pointerCoord, __decorate, __metadata, __param, MediaSwitch, Switch, _a, _b, _c, _d, _e;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -16,7 +15,6 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
             Component = _angular2Angular2.Component;
             Directive = _angular2Angular2.Directive;
             ElementRef = _angular2Angular2.ElementRef;
-            Renderer = _angular2Angular2.Renderer;
             Host = _angular2Angular2.Host;
             Optional = _angular2Angular2.Optional;
             NgControl = _angular2Angular2.NgControl;
@@ -115,20 +113,12 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
              */
 
             Switch = (function () {
-                /**
-                 * TODO
-                 * @param {ElementRef} elementRef  TODO
-                 * @param {Config} config  TODO
-                 * @param {NgControl=} ngControl  TODO
-                 */
-
-                function Switch(form, elementRef, config, renderer, ngControl) {
+                function Switch(form, elementRef, config, ngControl) {
                     _classCallCheck(this, Switch);
 
                     this.ngControl = ngControl;
                     this.form = form;
                     form.register(this);
-                    renderer.setElementClass(elementRef, 'item', true);
                     this.lastTouch = 0;
                     this.mode = config.get('mode');
                     this.onChange = function (_) {};
@@ -164,6 +154,10 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
                     };
                 }
 
+                /**
+                 * @private
+                 */
+
                 _createClass(Switch, [{
                     key: "onInit",
                     value: function onInit() {
@@ -189,11 +183,19 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
                     value: function toggle(ev) {
                         this.check(!this.checked);
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "writeValue",
                     value: function writeValue(value) {
                         this.checked = value;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "pointerDown",
                     value: function pointerDown(ev) {
@@ -206,6 +208,10 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
                         this.addMoveListener();
                         this.isActivated = true;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "pointerUp",
                     value: function pointerUp(ev) {
@@ -222,18 +228,27 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
                         this.isActivated = false;
                     }
 
-                    // Used by the view to update the model (Control)
-                    // Up to us to call it in update()
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "registerOnChange",
                     value: function registerOnChange(fn) {
                         this.onChange = fn;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "registerOnTouched",
                     value: function registerOnTouched(fn) {
                         this.onTouched = fn;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "onDestroy",
                     value: function onDestroy() {
@@ -241,6 +256,10 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
                         this.switchEle = this.addMoveListener = this.removeMoveListener = null;
                         this.form.deregister(this);
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "isDisabled",
                     value: function isDisabled(ev) {
@@ -266,11 +285,12 @@ System.register("ionic/components/switch/switch", ["angular2/angular2", "../../u
                     '(touchstart)': 'pointerDown($event)',
                     '(mousedown)': 'pointerDown($event)',
                     '(touchend)': 'pointerUp($event)',
-                    '(mouseup)': 'pointerUp($event)'
+                    '(mouseup)': 'pointerUp($event)',
+                    'class': 'item'
                 },
-                template: '<ng-content select="[item-left]"></ng-content>' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '<media-switch disable-activated>' + '<switch-icon></switch-icon>' + '</media-switch>',
+                template: '<ng-content select="[item-left]"></ng-content>' + '<div class="item-inner">' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '<media-switch disable-activated>' + '<switch-icon></switch-icon>' + '</media-switch>' + "</div>",
                 directives: [MediaSwitch]
-            }), __param(4, Optional()), __metadata('design:paramtypes', [typeof (_b = typeof Form !== 'undefined' && Form) === 'function' && _b || Object, typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c || Object, typeof (_d = typeof Config !== 'undefined' && Config) === 'function' && _d || Object, typeof (_e = typeof Renderer !== 'undefined' && Renderer) === 'function' && _e || Object, typeof (_f = typeof NgControl !== 'undefined' && NgControl) === 'function' && _f || Object])], Switch));
+            }), __param(3, Optional()), __metadata('design:paramtypes', [typeof (_b = typeof Form !== 'undefined' && Form) === 'function' && _b || Object, typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c || Object, typeof (_d = typeof Config !== 'undefined' && Config) === 'function' && _d || Object, typeof (_e = typeof NgControl !== 'undefined' && NgControl) === 'function' && _e || Object])], Switch));
         }
     };
 });

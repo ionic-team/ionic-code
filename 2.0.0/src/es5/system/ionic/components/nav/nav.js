@@ -1,4 +1,4 @@
-System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", "../../config/config", "../../config/decorators", "./nav-controller"], function (_export) {
+System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", "../../config/config", "../../util/keyboard", "../../config/decorators", "./nav-controller", "./view-controller"], function (_export) {
     /**
      * _For a quick walkthrough of navigation in Ionic, check out the
      * [Navigation section](../../../../components/#navigation) of the Component
@@ -34,7 +34,7 @@ System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", 
      *
      * Additionally, specifying the `swipe-back-enabled` property will allow you to
      * swipe to go back:
-     * ```ts
+     * ```html
      * <ion-nav swipe-back-enabled="false" [root]="rootPage"></ion-nav>
      * ```
      *
@@ -53,25 +53,23 @@ System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", 
      *                           &lt;ion-nav&gt;
      *                               |
      *                               |
-     *             Pane 3  +--------------------+                     LoginPage
-     *           Pane 2  +--------------------+ |          Has header, animates into pane 1
-     *         Pane 1  +--------------------+ | |              +--------------------+
-     *                 | | Header (Pane 1)  |&lt;-----------------|       Login        |
+     *             Page 3  +--------------------+                     LoginPage
+     *           Page 2  +--------------------+ |
+     *         Page 1  +--------------------+ | |              +--------------------+
+     *                 | | Header           |&lt;-----------------|       Login        |
      *                 +--------------------+ | |              +--------------------+
      *                 | | |                | | |              | Username:          |
      *                 | | |                | | |              | Password:          |
-     *                 | | |  Pane 3 is     | | |              |                    |
+     *                 | | |  Page 3 is     | | |              |                    |
      *                 | | |  only content  | | |              |                    |
      *                 | | |                |&lt;-----------------|                    |
      *                 | | |                | | |              |                    |
      *                 | | |                | | |              |                    |
      *                 | +------------------|-+ |              |                    |
-     *                 | | Footer (Pane 2)--|-|-+              |                    |
+     *                 | | Footer           |-|-+              |                    |
      *                 | +------------------|-+                |                    |
      *                 +--------------------+                  +--------------------+
-     *                       &lt;ion-pane&gt;                              &lt;ion-view&gt;
      *
-     *                   Pane 1                    Pane 2                    Pane 3
      *           +--------------------+    +--------------------+    +--------------------+
      *           | Header             |    | Content            |    | Content            |
      *           +--------------------+    |                    |    |                    |
@@ -90,35 +88,10 @@ System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", 
      *   </pre>
      * </div>
      *
-     * ### Panes
-     *
-     * NOTE: You don't have to do anything with panes because Ionic takes care of
-     * animated transitions for you. This is an explanation of how Nav works to
-     * accompany the diagram above.
-     *
-     * When you push a new page onto the navigation stack using [NavController.push()](../NavController/#push)
-     * or the [NavPush directive](../NavPush/), Nav animates the new page into the
-     * appropriate pane.
-     *
-     * Panes are the containers Nav creates to animate views into. They do not have
-     * any content of their own, as they are just a structural reference for where
-     * the various parts of a page (header, footer, content) should animate into.
-     *
-     * The easiest scenario is animating between pages with the same structure. If
-     * you have a page with a header and content, and navigate to another page that
-     * also has a header and content, Nav can smoothly animate the incoming page
-     * into the pane the exiting page is leaving. This allows for things like
-     * seamless header animations between pages that both have headers.
-     *
-     * But suppose you have a page with a header and content and want to navigate to
-     * a page with no header. Nav creates a new pane with no header that is directly
-     * behind the current pane. It then animates the exiting page out of the current
-     * pane and the new page into the new content-only pane.
-     *
      */
     "use strict";
 
-    var Component, Directive, ElementRef, Host, Optional, forwardRef, Inject, NgZone, Compiler, AppViewManager, DynamicComponentLoader, Renderer, ViewContainerRef, IonicApp, Config, ConfigComponent, NavController, __decorate, __metadata, __param, Nav, NavPaneAnchor, NavBarAnchor, ContentAnchor, Pane, _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var ChangeDetectorRef, ElementRef, Optional, NgZone, Compiler, AppViewManager, Renderer, IonicApp, Config, Keyboard, ConfigComponent, NavController, ViewController, __decorate, __metadata, __param, Nav, _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -130,27 +103,25 @@ System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", 
 
     return {
         setters: [function (_angular2Angular2) {
-            Component = _angular2Angular2.Component;
-            Directive = _angular2Angular2.Directive;
+            ChangeDetectorRef = _angular2Angular2.ChangeDetectorRef;
             ElementRef = _angular2Angular2.ElementRef;
-            Host = _angular2Angular2.Host;
             Optional = _angular2Angular2.Optional;
-            forwardRef = _angular2Angular2.forwardRef;
-            Inject = _angular2Angular2.Inject;
             NgZone = _angular2Angular2.NgZone;
             Compiler = _angular2Angular2.Compiler;
             AppViewManager = _angular2Angular2.AppViewManager;
-            DynamicComponentLoader = _angular2Angular2.DynamicComponentLoader;
             Renderer = _angular2Angular2.Renderer;
-            ViewContainerRef = _angular2Angular2.ViewContainerRef;
         }, function (_appApp) {
             IonicApp = _appApp.IonicApp;
         }, function (_configConfig) {
             Config = _configConfig.Config;
+        }, function (_utilKeyboard) {
+            Keyboard = _utilKeyboard.Keyboard;
         }, function (_configDecorators) {
             ConfigComponent = _configDecorators.ConfigComponent;
         }, function (_navController) {
             NavController = _navController.NavController;
+        }, function (_viewController) {
+            ViewController = _viewController.ViewController;
         }],
         execute: function () {
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -184,19 +155,16 @@ System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", 
             Nav = (function (_NavController) {
                 _inherits(Nav, _NavController);
 
-                /**
-                 * TODO
-                 * @param {NavController} hostNavCtrl  TODO
-                 * @param {Injector} injector  TODO
-                 * @param {ElementRef} elementRef  TODO
-                 * @param {NgZone} zone  TODO
-                 */
-
-                function Nav(hostNavCtrl, app, config, elementRef, compiler, loader, viewManager, zone, renderer) {
+                function Nav(hostNavCtrl, viewCtrl, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer, cd) {
                     _classCallCheck(this, Nav);
 
-                    _get(Object.getPrototypeOf(Nav.prototype), "constructor", this).call(this, hostNavCtrl, app, config, elementRef, compiler, loader, viewManager, zone, renderer);
-                    this.panes = [];
+                    _get(Object.getPrototypeOf(Nav.prototype), "constructor", this).call(this, hostNavCtrl, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer, cd);
+                    if (viewCtrl) {
+                        // an ion-nav can also act as an ion-page within a parent ion-nav
+                        // this would happen when an ion-nav nests a child ion-nav.
+                        viewCtrl.setContent(this);
+                        viewCtrl.setContentRef(elementRef);
+                    }
                 }
 
                 /**
@@ -214,176 +182,7 @@ System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", 
                             this.push(this.root);
                         }
                         // default the swipe back to be enabled
-                        var isSwipeBackEnabled = (this.swipeBackEnabled || '').toString() !== 'false';
-                        this.isSwipeBackEnabled(isSwipeBackEnabled);
-                    }
-
-                    /**
-                     * @private
-                     * TODO
-                     * @param  {TODO}   componentType    TODO
-                     * @param  {TODO}   hostProtoViewRef TODO
-                     * @param  {TODO}   viewCtrl         TODO
-                     * @param  {Function} done             TODO
-                     * @return {TODO}                    TODO
-                     */
-                }, {
-                    key: "loadContainer",
-                    value: function loadContainer(componentType, hostProtoViewRef, viewCtrl, done) {
-                        var _this = this;
-
-                        // this gets or creates the Pane which similar nav items live in
-                        // Nav items with just a navbar/content would all use the same Pane
-                        // Tabs and view's without a navbar would get a different Panes
-                        var structure = this.getStructure(hostProtoViewRef);
-                        if (structure.tabs) {
-                            // the component being loaded is an <ion-tabs>
-                            // Tabs is essentially a pane, cuz it has its own navbar and content containers
-                            this.loadNextToAnchor(componentType, this.anchorElementRef(), viewCtrl).then(function (componentRef) {
-                                componentRef.instance._paneView = true;
-                                viewCtrl.disposals.push(function () {
-                                    componentRef.dispose();
-                                });
-                                viewCtrl.onReady().then(function () {
-                                    done();
-                                });
-                            });
-                        } else {
-                            // normal ion-view going into pane
-                            this.getPane(structure, viewCtrl, function (pane) {
-                                // add the content of the view into the pane's content area
-                                _this.loadNextToAnchor(componentType, pane.contentAnchorRef, viewCtrl).then(function (componentRef) {
-                                    viewCtrl.disposals.push(function () {
-                                        componentRef.dispose();
-                                        // remove the pane if there are no view items left
-                                        pane.totalViews--;
-                                        if (pane.totalViews === 0) {
-                                            pane.dispose && pane.dispose();
-                                        }
-                                    });
-                                    // count how many ViewControllers are in this pane
-                                    pane.totalViews++;
-                                    // a new ComponentRef has been created
-                                    // set the ComponentRef's instance to this ViewController
-                                    viewCtrl.setInstance(componentRef.instance);
-                                    // remember the ElementRef to the content that was just created
-                                    viewCtrl.setContentRef(componentRef.location);
-                                    // get the NavController's container for navbars, which is
-                                    // the place this NavController will add each ViewController's navbar
-                                    var navbarContainerRef = pane.navbarContainerRef;
-                                    // get this ViewController's navbar TemplateRef, which may not
-                                    // exist if the ViewController's template didn't have an <ion-navbar *navbar>
-                                    var navbarTemplateRef = viewCtrl.getNavbarTemplateRef();
-                                    // create the navbar view if the pane has a navbar container, and the
-                                    // ViewController's instance has a navbar TemplateRef to go to inside of it
-                                    if (navbarContainerRef && navbarTemplateRef) {
-                                        (function () {
-                                            var navbarView = navbarContainerRef.createEmbeddedView(navbarTemplateRef, -1);
-                                            viewCtrl.disposals.push(function () {
-                                                var index = navbarContainerRef.indexOf(navbarView);
-                                                if (index > -1) {
-                                                    navbarContainerRef.remove(index);
-                                                }
-                                            });
-                                        })();
-                                    }
-                                    _this.addHasViews();
-                                    done();
-                                });
-                            });
-                        }
-                    }
-
-                    /**
-                     * @private
-                     * TODO
-                     * @param  {TODO}   structure TODO
-                     * @param  {TODO}   viewCtrl  TODO
-                     * @param  {Function} done      TODO
-                     * @return {TODO}             TODO
-                     */
-                }, {
-                    key: "getPane",
-                    value: function getPane(structure, viewCtrl, done) {
-                        var _this2 = this;
-
-                        var pane = this.panes[this.panes.length - 1];
-                        if (pane && pane.navbar === structure.navbar) {
-                            // the last pane's structure is the same as the one
-                            // this ViewController will need, so reuse it
-                            done(pane);
-                        } else {
-                            // create a new nav pane
-                            this._loader.loadNextToLocation(Pane, this.anchorElementRef(), this.bindings).then(function (componentRef) {
-                                // get the pane reference
-                                pane = _this2.newPane;
-                                _this2.newPane = null;
-                                pane.showNavbar(structure.navbar);
-                                pane.dispose = function () {
-                                    componentRef.dispose();
-                                    _this2.panes.splice(_this2.panes.indexOf(pane), 1);
-                                };
-                                _this2.panes.push(pane);
-                                done(pane);
-                            }, function (loaderErr) {
-                                console.error(loaderErr);
-                            })["catch"](function (err) {
-                                console.error(err);
-                            });
-                        }
-                    }
-
-                    /**
-                     * @private
-                     * TODO
-                     * @param  {TODO} pane TODO
-                     * @return {TODO}      TODO
-                     */
-                }, {
-                    key: "addPane",
-                    value: function addPane(pane) {
-                        this.newPane = pane;
-                    }
-
-                    /**
-                     * @private
-                     * TODO
-                     * @param  {TODO} componentProtoViewRef TODO
-                     * @return {TODO}                       TODO
-                     */
-                }, {
-                    key: "getStructure",
-                    value: function getStructure(componentProtoViewRef) {
-                        var templateCmds = componentProtoViewRef._protoView.templateCmds;
-                        var compiledTemplateData = undefined,
-                            directives = undefined;
-                        var i = undefined,
-                            ii = undefined,
-                            j = undefined,
-                            jj = undefined,
-                            k = undefined,
-                            kk = undefined;
-                        for (i = 0, ii = templateCmds.length; i < ii; i++) {
-                            if (templateCmds[i].template) {
-                                compiledTemplateData = templateCmds[i].template.getData(templateCmds[i].templateId);
-                                if (compiledTemplateData) {
-                                    for (j = 0, jj = compiledTemplateData.commands.length; j < jj; j++) {
-                                        directives = compiledTemplateData.commands[j].directives;
-                                        if (directives && (kk = directives.length)) {
-                                            for (k = 0; k < kk; k++) {
-                                                if (directives[k].name == 'NavbarTemplate') {
-                                                    return { navbar: true };
-                                                }
-                                                if (directives[k].name == 'Tabs') {
-                                                    return { tabs: true };
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        return {};
+                        this.isSwipeBackEnabled((this.swipeBackEnabled || '').toString() !== 'false');
                     }
                 }]);
 
@@ -398,80 +197,8 @@ System.register("ionic/components/nav/nav", ["angular2/angular2", "../app/app", 
                 defaultInputs: {
                     'swipeBackEnabled': true
                 },
-                template: '<template pane-anchor></template>',
-                directives: [forwardRef(function () {
-                    return NavPaneAnchor;
-                })]
-            }), __param(0, Optional()), __metadata('design:paramtypes', [typeof (_a = typeof NavController !== 'undefined' && NavController) === 'function' && _a || Object, typeof (_b = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _b || Object, typeof (_c = typeof Config !== 'undefined' && Config) === 'function' && _c || Object, typeof (_d = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _d || Object, typeof (_e = typeof Compiler !== 'undefined' && Compiler) === 'function' && _e || Object, typeof (_f = typeof DynamicComponentLoader !== 'undefined' && DynamicComponentLoader) === 'function' && _f || Object, typeof (_g = typeof AppViewManager !== 'undefined' && AppViewManager) === 'function' && _g || Object, typeof (_h = typeof NgZone !== 'undefined' && NgZone) === 'function' && _h || Object, typeof (_j = typeof Renderer !== 'undefined' && Renderer) === 'function' && _j || Object])], Nav));
-            /**
-             * @private
-             */
-
-            NavPaneAnchor = function NavPaneAnchor(nav, elementRef) {
-                _classCallCheck(this, NavPaneAnchor);
-
-                nav.anchorElementRef(elementRef);
-            };
-
-            NavPaneAnchor = __decorate([Directive({ selector: 'template[pane-anchor]' }), __param(0, Host()), __metadata('design:paramtypes', [Nav, typeof (_k = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _k || Object])], NavPaneAnchor);
-            /**
-             * @private
-             */
-
-            NavBarAnchor = function NavBarAnchor(pane, viewContainerRef) {
-                _classCallCheck(this, NavBarAnchor);
-
-                pane.navbarContainerRef = viewContainerRef;
-            };
-
-            NavBarAnchor = __decorate([Directive({ selector: 'template[navbar-anchor]' }), __param(0, Host()), __param(0, Inject(forwardRef(function () {
-                return Pane;
-            }))), __metadata('design:paramtypes', [Pane, typeof (_l = typeof ViewContainerRef !== 'undefined' && ViewContainerRef) === 'function' && _l || Object])], NavBarAnchor);
-            /**
-             * @private
-             */
-
-            ContentAnchor = function ContentAnchor(pane, elementRef) {
-                _classCallCheck(this, ContentAnchor);
-
-                pane.contentAnchorRef = elementRef;
-            };
-
-            ContentAnchor = __decorate([Directive({ selector: 'template[content-anchor]' }), __param(0, Host()), __param(0, Inject(forwardRef(function () {
-                return Pane;
-            }))), __metadata('design:paramtypes', [Pane, typeof (_m = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _m || Object])], ContentAnchor);
-            /**
-             * @private
-             */
-
-            Pane = (function () {
-                function Pane(nav, elementRef, renderer) {
-                    _classCallCheck(this, Pane);
-
-                    this.zIndex = nav.panes.length ? nav.panes[nav.panes.length - 1].zIndex + 1 : 0;
-                    renderer.setElementStyle(elementRef, 'zIndex', this.zIndex);
-                    nav.addPane(this);
-                    this.totalViews = 0;
-                    this.elementRef = elementRef;
-                    this.renderer = renderer;
-                }
-
-                _createClass(Pane, [{
-                    key: "showNavbar",
-                    value: function showNavbar(hasNavbar) {
-                        this.navbar = hasNavbar;
-                        this.renderer.setElementAttribute(this.elementRef, 'no-navbar', hasNavbar ? null : '');
-                    }
-                }]);
-
-                return Pane;
-            })();
-
-            Pane = __decorate([Component({
-                selector: 'ion-pane',
-                template: '<ion-navbar-section>' + '<template navbar-anchor></template>' + '</ion-navbar-section>' + '<ion-content-section>' + '<template content-anchor></template>' + '</ion-content-section>',
-                directives: [NavBarAnchor, ContentAnchor]
-            }), __metadata('design:paramtypes', [Nav, typeof (_o = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _o || Object, typeof (_p = typeof Renderer !== 'undefined' && Renderer) === 'function' && _p || Object])], Pane);
+                template: '<template #contents></template>'
+            }), __param(0, Optional()), __param(1, Optional()), __metadata('design:paramtypes', [typeof (_a = typeof NavController !== 'undefined' && NavController) === 'function' && _a || Object, typeof (_b = typeof ViewController !== 'undefined' && ViewController) === 'function' && _b || Object, typeof (_c = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _c || Object, typeof (_d = typeof Config !== 'undefined' && Config) === 'function' && _d || Object, typeof (_e = typeof Keyboard !== 'undefined' && Keyboard) === 'function' && _e || Object, typeof (_f = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _f || Object, typeof (_g = typeof Compiler !== 'undefined' && Compiler) === 'function' && _g || Object, typeof (_h = typeof AppViewManager !== 'undefined' && AppViewManager) === 'function' && _h || Object, typeof (_j = typeof NgZone !== 'undefined' && NgZone) === 'function' && _j || Object, typeof (_k = typeof Renderer !== 'undefined' && Renderer) === 'function' && _k || Object, typeof (_l = typeof ChangeDetectorRef !== 'undefined' && ChangeDetectorRef) === 'function' && _l || Object])], Nav));
         }
     };
 });

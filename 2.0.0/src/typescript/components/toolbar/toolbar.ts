@@ -1,9 +1,9 @@
-import {Component, Directive, Host, ElementRef, Renderer, Optional, forwardRef, Inject} from 'angular2/angular2';
+import {Component, Directive, Host, ElementRef, Optional, forwardRef, Inject} from 'angular2/angular2';
 
 import {Ion} from '../ion';
 import {Config} from '../../config/config';
 import {MenuToggle} from '../menu/menu-toggle';
-import {Navbar} from '../nav-bar/nav-bar';
+import {Navbar} from '../navbar/navbar';
 
 
 /**
@@ -20,23 +20,29 @@ export class ToolbarBase extends Ion  {
     this.titleRef = null;
   }
 
+  /**
+   * @private
+   */
   setTitleCmp(titleCmp) {
     this.titleCmp = titleCmp;
   }
 
+  /**
+   * @private
+   */
   getTitleText() {
     return (this.titleCmp && this.titleCmp.getTitleText()) || '';
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
   getTitleRef() {
     return this.titleCmp && this.titleCmp.elementRef;
   }
 
   /**
+   * @private
    * A toolbar items include the left and right side `ion-nav-items`,
    * and every `menu-toggle`. It does not include the `ion-title`.
    * @returns {TODO} Array of this toolbar's item ElementRefs.
@@ -45,6 +51,9 @@ export class ToolbarBase extends Ion  {
     return this.itemRefs;
   }
 
+  /**
+   * @private
+   */
   addItemRef(itemElementRef) {
     this.itemRefs.push(itemElementRef);
   }
@@ -58,22 +67,23 @@ export class ToolbarBase extends Ion  {
 @Component({
   selector: 'ion-toolbar',
   template:
-    '<div class="toolbar-inner">' +
-      '<ng-content select="[menu-toggle]"></ng-content>' +
-      '<ng-content select="ion-title"></ng-content>' +
-      '<ng-content select="ion-nav-items[primary]"></ng-content>' +
-      '<ng-content select="ion-nav-items[secondary]"></ng-content>' +
-    '</div>' +
-    '<div class="toolbar-background"></div>'
+    '<toolbar-background></toolbar-background>' +
+    '<ng-content select="[menu-toggle]"></ng-content>' +
+    '<ng-content select="ion-nav-items[primary]"></ng-content>' +
+    '<ng-content select="ion-nav-items[secondary]"></ng-content>' +
+    '<toolbar-content>' +
+      '<ng-content></ng-content>' +
+    '</toolbar-content>',
+  host: {
+    'class': 'toolbar'
+  }
 })
 export class Toolbar extends ToolbarBase {
   constructor(
     elementRef: ElementRef,
-    config: Config,
-    renderer: Renderer
+    config: Config
   ) {
     super(elementRef, config);
-    renderer.setElementClass(elementRef, 'toolbar', true);
   }
 
 }
@@ -103,6 +113,9 @@ export class ToolbarTitle extends Ion {
 }
 
 
+/**
+ * @private
+ */
 @Directive({
   selector: 'ion-nav-items,[menu-toggle]'
 })

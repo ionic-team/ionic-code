@@ -44,10 +44,6 @@ var _ionicComponentsItemItem = require('ionic/components/item/item');
 
 _defaults(exports, _interopExportWildcard(_ionicComponentsItemItem, _defaults));
 
-var _ionicComponentsItemItemGroup = require('ionic/components/item/item-group');
-
-_defaults(exports, _interopExportWildcard(_ionicComponentsItemItemGroup, _defaults));
-
 var _ionicComponentsItemItemSliding = require('ionic/components/item/item-sliding');
 
 _defaults(exports, _interopExportWildcard(_ionicComponentsItemItemSliding, _defaults));
@@ -108,9 +104,9 @@ var _ionicComponentsNavNavRouter = require('ionic/components/nav/nav-router');
 
 _defaults(exports, _interopExportWildcard(_ionicComponentsNavNavRouter, _defaults));
 
-var _ionicComponentsNavBarNavBar = require('ionic/components/nav-bar/nav-bar');
+var _ionicComponentsNavbarNavbar = require('ionic/components/navbar/navbar');
 
-_defaults(exports, _interopExportWildcard(_ionicComponentsNavBarNavBar, _defaults));
+_defaults(exports, _interopExportWildcard(_ionicComponentsNavbarNavbar, _defaults));
 
 var _ionicComponentsOverlayOverlay = require('ionic/components/overlay/overlay');
 
@@ -136,9 +132,9 @@ var _ionicComponentsScrollPullToRefresh = require('ionic/components/scroll/pull-
 
 _defaults(exports, _interopExportWildcard(_ionicComponentsScrollPullToRefresh, _defaults));
 
-var _ionicComponentsSearchBarSearchBar = require('ionic/components/search-bar/search-bar');
+var _ionicComponentsSearchbarSearchbar = require('ionic/components/searchbar/searchbar');
 
-_defaults(exports, _interopExportWildcard(_ionicComponentsSearchBarSearchBar, _defaults));
+_defaults(exports, _interopExportWildcard(_ionicComponentsSearchbarSearchbar, _defaults));
 
 var _ionicComponentsSegmentSegment = require('ionic/components/segment/segment');
 
@@ -155,6 +151,10 @@ _defaults(exports, _interopExportWildcard(_ionicComponentsTabsTabs, _defaults));
 var _ionicComponentsTabsTab = require('ionic/components/tabs/tab');
 
 _defaults(exports, _interopExportWildcard(_ionicComponentsTabsTab, _defaults));
+
+var _ionicComponentsTapClickTapClick = require('ionic/components/tap-click/tap-click');
+
+_defaults(exports, _interopExportWildcard(_ionicComponentsTapClickTapClick, _defaults));
 
 var _ionicComponentsToolbarToolbar = require('ionic/components/toolbar/toolbar');
 

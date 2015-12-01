@@ -8,8 +8,6 @@ var _get = function get(_x4, _x5, _x6) { var _again = true; _function: while (_a
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22,11 +20,11 @@ var _configConfig = require('../../config/config');
 
 var _animationsAnimation = require('../../animations/animation');
 
+var _navNavController = require('../nav/nav-controller');
+
 var _buttonButton = require('../button/button');
 
-var _ionicUtil = require('ionic/util');
-
-var util = _interopRequireWildcard(_ionicUtil);
+var _utilUtil = require('../../util/util');
 
 /**
  * The Ionic Popup service allows the creation of popup windows that require the user to respond in order to continue.
@@ -106,10 +104,7 @@ var Popup = (function () {
         _classCallCheck(this, Popup);
 
         this.ctrl = ctrl;
-        this._defaults = {
-            enterAnimation: config.get('popupPopIn'),
-            leaveAnimation: config.get('popupPopOut')
-        };
+        this.config = config;
     }
 
     /**
@@ -126,7 +121,12 @@ var Popup = (function () {
             return new Promise(function (resolve, reject) {
                 opts.promiseResolve = resolve;
                 opts.promiseReject = reject;
-                return _this.ctrl.open(OVERLAY_TYPE, PopupCmp, util.extend(_this._defaults, opts));
+                opts = (0, _utilUtil.extend)({
+                    pageType: OVERLAY_TYPE,
+                    enterAnimation: _this.config.get('popupEnter'),
+                    leaveAnimation: _this.config.get('popupLeave')
+                }, opts);
+                return _this.ctrl.open(PopupCmp, opts, opts);
             });
         }
 
@@ -168,7 +168,7 @@ var Popup = (function () {
                     //resolve();
                 }
             };
-            opts = util.extend({
+            opts = (0, _utilUtil.extend)({
                 showPrompt: false,
                 cancel: function cancel() {
                     //reject();
@@ -226,7 +226,7 @@ var Popup = (function () {
                     // Allow it to close
                 }
             };
-            opts = util.extend({
+            opts = (0, _utilUtil.extend)({
                 showPrompt: false,
                 cancel: function cancel() {},
                 buttons: [cancelButton, okButton]
@@ -284,7 +284,7 @@ var Popup = (function () {
                     // Allow it to close
                 }
             };
-            opts = util.extend({
+            opts = (0, _utilUtil.extend)({
                 showPrompt: true,
                 promptPlaceholder: '',
                 cancel: function cancel() {},
@@ -302,7 +302,7 @@ var Popup = (function () {
         key: "get",
         value: function get(handle) {
             if (handle) {
-                return this.ctrl.getByHandle(handle, OVERLAY_TYPE);
+                return this.ctrl.getByHandle(handle);
             }
             return this.ctrl.getByType(OVERLAY_TYPE);
         }
@@ -315,10 +315,14 @@ exports.Popup = Popup = __decorate([(0, _angular2Angular2.Injectable)(), __metad
 var OVERLAY_TYPE = 'popup';
 // TODO add button type to button: [type]="button.type"
 var PopupCmp = (function () {
-    function PopupCmp(elementRef) {
+    function PopupCmp(elementRef, params, renderer) {
         _classCallCheck(this, PopupCmp);
 
         this.elementRef = elementRef;
+        this.d = params.data;
+        if (this.d.cssClass) {
+            renderer.setElementClass(elementRef, this.d.cssClass, true);
+        }
     }
 
     _createClass(PopupCmp, [{
@@ -336,29 +340,29 @@ var PopupCmp = (function () {
         }
     }, {
         key: "buttonTapped",
-        value: function buttonTapped(button, event) {
+        value: function buttonTapped(button, ev) {
             var promptValue = this.promptInput && this.promptInput.value;
-            var retVal = button.onTap && button.onTap(event, this, {
+            var retVal = button.onTap && button.onTap(ev, this, {
                 promptValue: promptValue
             });
             // If the event.preventDefault() wasn't called, close
-            if (!event.defaultPrevented) {
+            if (!ev.defaultPrevented) {
                 // If this is a cancel button, reject the promise
                 if (button.isCancel) {
-                    this.promiseReject();
+                    this.d.promiseReject();
                 } else {
                     // Resolve with the prompt value
-                    this.promiseResolve(promptValue);
+                    this.d.promiseResolve(promptValue);
                 }
                 return this.close();
             }
         }
     }, {
-        key: "_cancel",
-        value: function _cancel(event) {
-            this.cancel && this.cancel(event);
-            if (!event.defaultPrevented) {
-                this.promiseReject();
+        key: "cancel",
+        value: function cancel(ev) {
+            this.d.cancel && this.d.cancel(event);
+            if (!ev.defaultPrevented) {
+                this.d.promiseReject();
                 return this.close();
             }
         }
@@ -368,90 +372,93 @@ var PopupCmp = (function () {
 })();
 PopupCmp = __decorate([(0, _angular2Angular2.Component)({
     selector: 'ion-popup',
-    template: '<backdrop (click)="_cancel($event)" tappable disable-activated></backdrop>' + '<popup-wrapper [ng-class]="cssClass">' + '<div class="popup-head">' + '<h2 class="popup-title" [inner-html]="title" *ng-if="title"></h2>' + '<h3 class="popup-sub-title" [inner-html]="subTitle" *ng-if="subTitle"></h3>' + '</div>' + '<div class="popup-body">' + '<div [inner-html]="template" *ng-if="template"></div>' + '<input type="{{inputType || \'text\'}}" placeholder="{{inputPlaceholder}}" *ng-if="showPrompt" class="prompt-input">' + '</div>' + '<div class="popup-buttons" *ng-if="buttons.length">' + '<button *ng-for="#button of buttons" (click)="buttonTapped(button, $event)" [inner-html]="button.text"></button>' + '</div>' + '</popup-wrapper>',
+    template: '<backdrop (click)="cancel($event)" tappable disable-activated></backdrop>' + '<popup-wrapper>' + '<div class="popup-head">' + '<h2 class="popup-title" [inner-html]="d.title" *ng-if="d.title"></h2>' + '<h3 class="popup-sub-title" [inner-html]="d.subTitle" *ng-if="d.subTitle"></h3>' + '</div>' + '<div class="popup-body">' + '<div [inner-html]="d.template" *ng-if="d.template"></div>' + '<input type="{{d.inputType || \'text\'}}" placeholder="{{d.inputPlaceholder}}" *ng-if="d.showPrompt" class="prompt-input">' + '</div>' + '<div class="popup-buttons" *ng-if="d.buttons.length">' + '<button *ng-for="#btn of d.buttons" (click)="buttonTapped(btn, $event)" [inner-html]="btn.text"></button>' + '</div>' + '</popup-wrapper>',
+    host: {
+        'role': 'dialog'
+    },
     directives: [_angular2Angular2.FORM_DIRECTIVES, _angular2Angular2.NgClass, _angular2Angular2.NgIf, _angular2Angular2.NgFor, _buttonButton.Button]
-}), __metadata('design:paramtypes', [typeof (_c = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _c || Object])], PopupCmp);
+}), __metadata('design:paramtypes', [typeof (_c = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _c || Object, typeof (_d = typeof _navNavController.NavParams !== 'undefined' && _navNavController.NavParams) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _e || Object])], PopupCmp);
+/**
+ * Animations for popups
+ */
 
-var PopupAnimation = (function (_Animation) {
-    _inherits(PopupAnimation, _Animation);
+var PopupPopIn = (function (_Animation) {
+    _inherits(PopupPopIn, _Animation);
 
-    function PopupAnimation(element) {
-        _classCallCheck(this, PopupAnimation);
-
-        _get(Object.getPrototypeOf(PopupAnimation.prototype), "constructor", this).call(this, element);
-        this.easing('ease-in-out').duration(200);
-        this.backdrop = new _animationsAnimation.Animation(element.querySelector('backdrop'));
-        this.wrapper = new _animationsAnimation.Animation(element.querySelector('popup-wrapper'));
-        this.add(this.backdrop, this.wrapper);
-    }
-
-    /**
-     * Animations for popups
-     */
-    return PopupAnimation;
-})(_animationsAnimation.Animation);
-
-var PopupPopIn = (function (_PopupAnimation) {
-    _inherits(PopupPopIn, _PopupAnimation);
-
-    function PopupPopIn(element) {
+    function PopupPopIn(enteringView, leavingView, opts) {
         _classCallCheck(this, PopupPopIn);
 
-        _get(Object.getPrototypeOf(PopupPopIn.prototype), "constructor", this).call(this, element);
-        this.wrapper.fromTo('opacity', '0.01', '1');
-        this.wrapper.fromTo('scale', '1.1', '1');
-        this.backdrop.fromTo('opacity', '0', '0.3');
+        _get(Object.getPrototypeOf(PopupPopIn.prototype), "constructor", this).call(this, null, opts);
+        var ele = enteringView.pageRef().nativeElement;
+        var backdrop = new _animationsAnimation.Animation(ele.querySelector('backdrop'));
+        var wrapper = new _animationsAnimation.Animation(ele.querySelector('popup-wrapper'));
+        wrapper.fromTo('opacity', '0.01', '1').fromTo('scale', '1.1', '1');
+        backdrop.fromTo('opacity', '0.01', '0.3');
+        this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
     }
 
     return PopupPopIn;
-})(PopupAnimation);
+})(_animationsAnimation.Animation);
 
 _animationsAnimation.Animation.register('popup-pop-in', PopupPopIn);
 
-var PopupPopOut = (function (_PopupAnimation2) {
-    _inherits(PopupPopOut, _PopupAnimation2);
+var PopupPopOut = (function (_Animation2) {
+    _inherits(PopupPopOut, _Animation2);
 
-    function PopupPopOut(element) {
+    function PopupPopOut(enteringView, leavingView, opts) {
         _classCallCheck(this, PopupPopOut);
 
-        _get(Object.getPrototypeOf(PopupPopOut.prototype), "constructor", this).call(this, element);
-        this.wrapper.fromTo('opacity', '1', '0');
-        this.wrapper.fromTo('scale', '1', '0.9');
-        this.backdrop.fromTo('opacity', '0.3', '0');
+        _get(Object.getPrototypeOf(PopupPopOut.prototype), "constructor", this).call(this, null, opts);
+        var ele = leavingView.pageRef().nativeElement;
+        var backdrop = new _animationsAnimation.Animation(ele.querySelector('backdrop'));
+        var wrapper = new _animationsAnimation.Animation(ele.querySelector('popup-wrapper'));
+        wrapper.fromTo('opacity', '1', '0').fromTo('scale', '1', '0.9');
+        backdrop.fromTo('opacity', '0.3', '0');
+        this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
     }
 
     return PopupPopOut;
-})(PopupAnimation);
+})(_animationsAnimation.Animation);
 
 _animationsAnimation.Animation.register('popup-pop-out', PopupPopOut);
 
-var PopupMdPopIn = (function (_PopupPopIn) {
-    _inherits(PopupMdPopIn, _PopupPopIn);
+var PopupMdPopIn = (function (_Animation3) {
+    _inherits(PopupMdPopIn, _Animation3);
 
-    function PopupMdPopIn(element) {
+    function PopupMdPopIn(enteringView, leavingView, opts) {
         _classCallCheck(this, PopupMdPopIn);
 
-        _get(Object.getPrototypeOf(PopupMdPopIn.prototype), "constructor", this).call(this, element);
-        this.backdrop.fromTo('opacity', '0.01', '0.5');
+        _get(Object.getPrototypeOf(PopupMdPopIn.prototype), "constructor", this).call(this, null, opts);
+        var ele = enteringView.pageRef().nativeElement;
+        var backdrop = new _animationsAnimation.Animation(ele.querySelector('backdrop'));
+        var wrapper = new _animationsAnimation.Animation(ele.querySelector('popup-wrapper'));
+        wrapper.fromTo('opacity', '0.01', '1').fromTo('scale', '1.1', '1');
+        backdrop.fromTo('opacity', '0.01', '0.5');
+        this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
     }
 
     return PopupMdPopIn;
-})(PopupPopIn);
+})(_animationsAnimation.Animation);
 
 _animationsAnimation.Animation.register('popup-md-pop-in', PopupMdPopIn);
 
-var PopupMdPopOut = (function (_PopupPopOut) {
-    _inherits(PopupMdPopOut, _PopupPopOut);
+var PopupMdPopOut = (function (_Animation4) {
+    _inherits(PopupMdPopOut, _Animation4);
 
-    function PopupMdPopOut(element) {
+    function PopupMdPopOut(enteringView, leavingView, opts) {
         _classCallCheck(this, PopupMdPopOut);
 
-        _get(Object.getPrototypeOf(PopupMdPopOut.prototype), "constructor", this).call(this, element);
-        this.backdrop.fromTo('opacity', '0.5', '0');
+        _get(Object.getPrototypeOf(PopupMdPopOut.prototype), "constructor", this).call(this, null, opts);
+        var ele = leavingView.pageRef().nativeElement;
+        var backdrop = new _animationsAnimation.Animation(ele.querySelector('backdrop'));
+        var wrapper = new _animationsAnimation.Animation(ele.querySelector('popup-wrapper'));
+        wrapper.fromTo('opacity', '1', '0').fromTo('scale', '1', '0.9');
+        backdrop.fromTo('opacity', '0.5', '0');
+        this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
     }
 
     return PopupMdPopOut;
-})(PopupPopOut);
+})(_animationsAnimation.Animation);
 
 _animationsAnimation.Animation.register('popup-md-pop-out', PopupMdPopOut);
-var _a, _b, _c;
+var _a, _b, _c, _d, _e;

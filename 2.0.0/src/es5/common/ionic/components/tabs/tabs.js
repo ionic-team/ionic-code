@@ -16,15 +16,21 @@ var _angular2Angular2 = require('angular2/angular2');
 
 var _ion = require('../ion');
 
-var _appApp = require('../app/app');
+var _appId = require('../app/id');
 
 var _configConfig = require('../../config/config');
+
+var _platformPlatform = require('../../platform/platform');
+
+var _navNavController = require('../nav/nav-controller');
 
 var _navViewController = require('../nav/view-controller');
 
 var _configDecorators = require('../../config/decorators');
 
 var _iconIcon = require('../icon/icon');
+
+var _utilDom = require('../../util/dom');
 
 /**
  * _For basic Tabs usage, see the [Tabs section](../../../../components/#tabs)
@@ -40,18 +46,18 @@ var _iconIcon = require('../icon/icon');
  * [properties you set on each Tab](../Tab/#tab_properties).
  *
  * To override the platform specific TabBar placement, use the
- * `tab-bar-placement` property:
+ * `tabbar-placement` property:
  *
- * ```ts
- * <ion-tabs tab-bar-placement="top">
+ * ```html
+ * <ion-tabs tabbar-placement="top">
  *   <ion-tab [root]="tabRoot"></ion-tab>
  * </ion-tabs>
  * ```
  *
- * To change the location of the icons in the TabBar, use the `tab-bar-icons`
+ * To change the location of the icons in the TabBar, use the `tabbar-icons`
  * property:
- * ```ts
- * <ion-tabs tab-bar-icons="bottom">
+ * ```html
+ * <ion-tabs tabbar-icons="bottom">
  *   <ion-tab [root]="tabRoot"></ion-tab>
  * </ion-tabs>
  * ```
@@ -113,25 +119,27 @@ var Tabs = (function (_Ion) {
      * point that "Tabs" is itself is just a page with its own instance of ViewController.
      */
 
-    function Tabs(app, config, elementRef, viewCtrl) {
+    function Tabs(config, elementRef, viewCtrl, navCtrl, platform) {
         var _this = this;
 
         _classCallCheck(this, Tabs);
 
         _get(Object.getPrototypeOf(Tabs.prototype), "constructor", this).call(this, elementRef, config);
-        this.app = app;
-        this.preload = config.get('preloadTabs');
-        // collection of children "Tab" instances, which extends NavController
+        this.platform = platform;
+        this.parent = navCtrl;
+        this.subPages = config.get('tabSubPages');
         this._tabs = [];
+        this._id = ++tabIds;
+        this._ids = -1;
+        this._onReady = null;
         // Tabs may also be an actual ViewController which was navigated to
         // if Tabs is static and not navigated to within a NavController
         // then skip this and don't treat it as it's own ViewController
         if (viewCtrl) {
-            this._ready = new Promise(function (res) {
-                _this._isReady = res;
-            });
-            viewCtrl.onReady = function () {
-                return _this._ready;
+            viewCtrl.setContent(this);
+            viewCtrl.setContentRef(elementRef);
+            viewCtrl.onReady = function (done) {
+                _this._onReady = done;
             };
         }
     }
@@ -141,11 +149,26 @@ var Tabs = (function (_Ion) {
      */
 
     _createClass(Tabs, [{
+        key: "onInit",
+        value: function onInit() {
+            var _this2 = this;
+
+            _get(Object.getPrototypeOf(Tabs.prototype), "onInit", this).call(this);
+            this.preloadTabs = this.preloadTabs !== "false" && this.preloadTabs !== false;
+            if (this._highlight) {
+                this.platform.onResize(function () {
+                    _this2._highlight.select(_this2.getSelected());
+                });
+            }
+        }
+
+        /**
+         * @private
+         */
+    }, {
         key: "add",
         value: function add(tab) {
-            tab.id = ++_tabIds;
-            tab.btnId = 'tab-' + tab.id;
-            tab.panelId = 'tabpanel-' + tab.id;
+            tab.id = this._id + '-' + ++this._ids;
             this._tabs.push(tab);
             return this._tabs.length === 1;
         }
@@ -158,15 +181,10 @@ var Tabs = (function (_Ion) {
     }, {
         key: "select",
         value: function select(tabOrIndex) {
-            var _this2 = this;
+            var _this3 = this;
 
-            var selectedTab = null;
-            if (typeof tabOrIndex === 'number') {
-                selectedTab = this.getByIndex(tabOrIndex);
-            } else {
-                selectedTab = tabOrIndex;
-            }
-            if (!selectedTab || !this.app.isEnabled()) {
+            var selectedTab = typeof tabOrIndex === 'number' ? this.getByIndex(tabOrIndex) : tabOrIndex;
+            if (!selectedTab) {
                 return Promise.reject();
             }
             var deselectedTab = this.getSelected();
@@ -174,19 +192,29 @@ var Tabs = (function (_Ion) {
                 // no change
                 return this._touchActive(selectedTab);
             }
-            console.debug('select tab', selectedTab.id);
-            selectedTab.load(function () {
-                _this2._isReady && _this2._isReady();
-                _this2._tabs.forEach(function (tab) {
-                    tab.isSelected = tab === selectedTab;
-                    tab._views.forEach(function (viewCtrl) {
-                        var navbarRef = viewCtrl.navbarRef();
-                        if (navbarRef) {
-                            navbarRef.nativeElement.classList[tab.isSelected ? 'remove' : 'add']('deselected-tab');
-                        }
-                    });
+            console.time('Tabs#select ' + selectedTab.id);
+            var opts = {
+                animate: false
+            };
+            var deselectedPage = undefined;
+            if (deselectedTab) {
+                deselectedPage = deselectedTab.getActive();
+                deselectedPage && deselectedPage.willLeave();
+            }
+            var selectedPage = selectedTab.getActive();
+            selectedPage && selectedPage.willEnter();
+            selectedTab.load(opts, function () {
+                _this3._tabs.forEach(function (tab) {
+                    tab.setSelected(tab === selectedTab);
                 });
-                _this2.highlight && _this2.highlight.select(selectedTab);
+                _this3._highlight && _this3._highlight.select(selectedTab);
+                selectedPage && selectedPage.didEnter();
+                deselectedPage && deselectedPage.didLeave();
+                if (_this3._onReady) {
+                    _this3._onReady();
+                    _this3._onReady = null;
+                }
+                console.time('Tabs#select ' + selectedTab.id);
             });
         }
 
@@ -221,17 +249,32 @@ var Tabs = (function (_Ion) {
 
         /**
          * @private
-         * "Touch" the active tab, either going back to the root view of the tab
-         * or scrolling the tab to the top
+         * "Touch" the active tab, going back to the root view of the tab
+         * or optionally letting the tab handle the event
          */
     }, {
         key: "_touchActive",
         value: function _touchActive(tab) {
-            var stateLen = tab.length();
-            if (stateLen > 1) {
+            var active = tab.getActive();
+            if (!active) {
+                return Promise.resolve();
+            }
+            var instance = active.instance;
+            // If they have a custom tab selected handler, call it
+            if (instance.tabSelected) {
+                return instance.tabSelected();
+            }
+            // If we're a few pages deep, pop to root
+            if (tab.length() > 1) {
                 // Pop to the root view
                 return tab.popToRoot();
             }
+            // Otherwise, if the page we're on is not our real root, reset it to our
+            // default root type
+            if (tab.root != active.componentType) {
+                return tab.setRoot(tab.root);
+            }
+            // And failing all of that, we do something safe and secure
             return Promise.resolve();
         }
     }]);
@@ -242,23 +285,23 @@ exports.Tabs = Tabs;
 exports.Tabs = Tabs = __decorate([(0, _configDecorators.ConfigComponent)({
     selector: 'ion-tabs',
     defaultInputs: {
-        'tabBarPlacement': 'bottom',
-        'tabBarIcons': 'top',
-        'preloadTabs': true
+        'tabbarPlacement': 'bottom',
+        'tabbarIcons': 'top',
+        'tabbarStyle': 'default',
+        'preloadTabs': false
     },
-    template: '<ion-navbar-section>' + '<template navbar-anchor></template>' + '</ion-navbar-section>' + '<ion-tab-bar-section>' + '<tab-bar role="tablist">' + '<a *ng-for="#t of _tabs" [tab]="t" class="tab-button" role="tab">' + '<icon [name]="t.tabIcon" [is-active]="t.isSelected" class="tab-button-icon"></icon>' + '<span class="tab-button-text">{{t.tabTitle}}</span>' + '</a>' + '<tab-highlight></tab-highlight>' + '</tab-bar>' + '</ion-tab-bar-section>' + '<ion-content-section>' + '<ng-content></ng-content>' + '</ion-content-section>',
-    directives: [_iconIcon.Icon, _angular2Angular2.NgFor, (0, _angular2Angular2.forwardRef)(function () {
+    template: '<ion-navbar-section>' + '<template navbar-anchor></template>' + '</ion-navbar-section>' + '<ion-tabbar-section>' + '<tabbar role="tablist" [attr]="tabbarStyle">' + '<a *ng-for="#t of _tabs" [tab]="t" class="tab-button" role="tab">' + '<icon [name]="t.tabIcon" [is-active]="t.isSelected" class="tab-button-icon"></icon>' + '<span class="tab-button-text">{{t.tabTitle}}</span>' + '</a>' + '<tab-highlight></tab-highlight>' + '</tabbar>' + '</ion-tabbar-section>' + '<ion-content-section>' + '<ng-content></ng-content>' + '</ion-content-section>',
+    directives: [_iconIcon.Icon, _angular2Angular2.NgFor, _angular2Angular2.NgIf, _appId.Attr, (0, _angular2Angular2.forwardRef)(function () {
         return TabButton;
     }), (0, _angular2Angular2.forwardRef)(function () {
         return TabHighlight;
     }), (0, _angular2Angular2.forwardRef)(function () {
         return TabNavBarAnchor;
     })]
-}), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _appApp.IonicApp !== 'undefined' && _appApp.IonicApp) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _c || Object, typeof (_d = typeof _navViewController.ViewController !== 'undefined' && _navViewController.ViewController) === 'function' && _d || Object])], Tabs);
-var _tabIds = -1;
+}), __param(2, (0, _angular2Angular2.Optional)()), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _b || Object, typeof (_c = typeof _navViewController.ViewController !== 'undefined' && _navViewController.ViewController) === 'function' && _c || Object, typeof (_d = typeof _navNavController.NavController !== 'undefined' && _navNavController.NavController) === 'function' && _d || Object, typeof (_e = typeof _platformPlatform.Platform !== 'undefined' && _platformPlatform.Platform) === 'function' && _e || Object])], Tabs);
+var tabIds = -1;
 /**
  * @private
- * TODO
  */
 var TabButton = (function (_Ion2) {
     _inherits(TabButton, _Ion2);
@@ -268,9 +311,7 @@ var TabButton = (function (_Ion2) {
 
         _get(Object.getPrototypeOf(TabButton.prototype), "constructor", this).call(this, elementRef, config);
         this.tabs = tabs;
-        if (config.get('hoverCSS') === false) {
-            elementRef.nativeElement.classList.add('disable-hover');
-        }
+        this.disHover = config.get('hoverCSS') === false;
     }
 
     _createClass(TabButton, [{
@@ -284,9 +325,7 @@ var TabButton = (function (_Ion2) {
         }
     }, {
         key: "onClick",
-        value: function onClick(ev) {
-            ev.stopPropagation();
-            ev.preventDefault();
+        value: function onClick() {
             this.tabs.select(this.tab);
         }
     }]);
@@ -297,26 +336,26 @@ TabButton = __decorate([(0, _angular2Angular2.Directive)({
     selector: '.tab-button',
     inputs: ['tab'],
     host: {
-        '[attr.id]': 'tab.btnId',
-        '[attr.aria-controls]': 'tab.panelId',
+        '[attr.id]': 'tab._btnId',
+        '[attr.aria-controls]': 'tab._panelId',
         '[attr.aria-selected]': 'tab.isSelected',
         '[class.has-title]': 'hasTitle',
         '[class.has-icon]': 'hasIcon',
         '[class.has-title-only]': 'hasTitleOnly',
         '[class.icon-only]': 'hasIconOnly',
-        '(click)': 'onClick($event)'
+        '[class.disable-hover]': 'disHover',
+        '(click)': 'onClick()'
     }
-}), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Tabs, typeof (_e = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _e || Object, typeof (_f = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _f || Object])], TabButton);
+}), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Tabs, typeof (_f = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _f || Object, typeof (_g = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _g || Object])], TabButton);
 /**
  * @private
- * TODO
  */
 var TabHighlight = (function () {
     function TabHighlight(tabs, config, elementRef) {
         _classCallCheck(this, TabHighlight);
 
-        if (config.get('mode') === 'md') {
-            tabs.highlight = this;
+        if (config.get('tabbarHighlight')) {
+            tabs._highlight = this;
             this.elementRef = elementRef;
         }
     }
@@ -324,19 +363,19 @@ var TabHighlight = (function () {
     _createClass(TabHighlight, [{
         key: "select",
         value: function select(tab) {
-            var _this3 = this;
+            var _this4 = this;
 
-            setTimeout(function () {
+            (0, _utilDom.rafFrames)(3, function () {
                 var d = tab.btn.getDimensions();
-                var ele = _this3.elementRef.nativeElement;
+                var ele = _this4.elementRef.nativeElement;
                 ele.style.transform = 'translate3d(' + d.left + 'px,0,0) scaleX(' + d.width + ')';
-                if (!_this3.init) {
-                    _this3.init = true;
-                    setTimeout(function () {
+                if (!_this4.init) {
+                    _this4.init = true;
+                    (0, _utilDom.rafFrames)(6, function () {
                         ele.classList.add('animate');
-                    }, 64);
+                    });
                 }
-            }, 32);
+            });
         }
     }]);
 
@@ -344,15 +383,14 @@ var TabHighlight = (function () {
 })();
 TabHighlight = __decorate([(0, _angular2Angular2.Directive)({
     selector: 'tab-highlight'
-}), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Tabs, typeof (_g = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _g || Object, typeof (_h = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _h || Object])], TabHighlight);
+}), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Tabs, typeof (_h = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _h || Object, typeof (_j = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _j || Object])], TabHighlight);
 /**
  * @private
- * TODO
  */
 var TabNavBarAnchor = function TabNavBarAnchor(tabs, viewContainerRef) {
     _classCallCheck(this, TabNavBarAnchor);
 
     tabs.navbarContainerRef = viewContainerRef;
 };
-TabNavBarAnchor = __decorate([(0, _angular2Angular2.Directive)({ selector: 'template[navbar-anchor]' }), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Tabs, typeof (_j = typeof _angular2Angular2.ViewContainerRef !== 'undefined' && _angular2Angular2.ViewContainerRef) === 'function' && _j || Object])], TabNavBarAnchor);
-var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+TabNavBarAnchor = __decorate([(0, _angular2Angular2.Directive)({ selector: 'template[navbar-anchor]' }), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Tabs, typeof (_k = typeof _angular2Angular2.ViewContainerRef !== 'undefined' && _angular2Angular2.ViewContainerRef) === 'function' && _k || Object])], TabNavBarAnchor);
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;

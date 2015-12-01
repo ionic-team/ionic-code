@@ -13,7 +13,7 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
      */
     "use strict";
 
-    var Component, Optional, NgControl, ElementRef, Renderer, Form, __decorate, __metadata, __param, Checkbox, _a, _b, _c, _d;
+    var Component, Optional, NgControl, ElementRef, Form, __decorate, __metadata, __param, Checkbox, _a, _b, _c;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -25,7 +25,6 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
             Optional = _angular2Angular2.Optional;
             NgControl = _angular2Angular2.NgControl;
             ElementRef = _angular2Angular2.ElementRef;
-            Renderer = _angular2Angular2.Renderer;
         }, function (_utilForm) {
             Form = _utilForm.Form;
         }],
@@ -59,10 +58,9 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
             };
 
             Checkbox = (function () {
-                function Checkbox(form, ngControl, elementRef, renderer) {
+                function Checkbox(form, ngControl, elementRef) {
                     _classCallCheck(this, Checkbox);
 
-                    renderer.setElementClass(elementRef, 'item', true);
                     this.form = form;
                     form.register(this);
                     this.onChange = function (_) {};
@@ -70,10 +68,6 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
                     this.ngControl = ngControl;
                     if (ngControl) ngControl.valueAccessor = this;
                 }
-
-                /**
-                 * TODO
-                 */
 
                 _createClass(Checkbox, [{
                     key: "onInit",
@@ -93,6 +87,7 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
                     }
 
                     /**
+                     * @private
                      * Click event handler to toggle the checkbox checked state.
                      * @param {MouseEvent} ev  The click event.
                      */
@@ -140,6 +135,10 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
                     value: function registerOnTouched(fn) {
                         this.onTouched = fn;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "onDestroy",
                     value: function onDestroy() {
@@ -162,10 +161,11 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
                     '[attr.aria-checked]': 'checked',
                     '[attr.aria-disabled]': 'disabled',
                     '[attr.aria-labelledby]': 'labelId',
-                    '(click)': 'click($event)'
+                    '(click)': 'click($event)',
+                    'class': 'item'
                 },
-                template: '<media-checkbox disable-activated>' + '<checkbox-icon></checkbox-icon>' + '</media-checkbox>' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>'
-            }), __param(1, Optional()), __metadata('design:paramtypes', [typeof (_a = typeof Form !== 'undefined' && Form) === 'function' && _a || Object, typeof (_b = typeof NgControl !== 'undefined' && NgControl) === 'function' && _b || Object, typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c || Object, typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d || Object])], Checkbox));
+                template: '<div class="item-inner">' + '<media-checkbox disable-activated>' + '<checkbox-icon></checkbox-icon>' + '</media-checkbox>' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '</div>'
+            }), __param(1, Optional()), __metadata('design:paramtypes', [typeof (_a = typeof Form !== 'undefined' && Form) === 'function' && _a || Object, typeof (_b = typeof NgControl !== 'undefined' && NgControl) === 'function' && _b || Object, typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c || Object])], Checkbox));
         }
     };
 });

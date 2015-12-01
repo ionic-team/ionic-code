@@ -1,22 +1,23 @@
 import {Menu} from './menu';
-import {SlideEdgeGesture} from 'ionic/gestures/slide-edge-gesture';
+import {SlideEdgeGesture} from '../../gestures/slide-edge-gesture';
 
+import * as util from 'ionic/util';
 
 class MenuContentGesture extends SlideEdgeGesture {
-  constructor(menu: Menu) {
+  constructor(menu: Menu, targetEl: Element, options = {}) {
 
-    super(menu.getContentElement(), {
+    super(targetEl, util.extend({
       direction: (menu.side === 'left' || menu.side === 'right') ? 'x' : 'y',
       edge: menu.side,
       threshold: 75
-    });
+    }, options));
 
     this.menu = menu;
     this.listen();
   }
 
   canStart(ev) {
-    return this.menu.isOpen ? true : super.canStart(ev);
+    return this.menu.isOpen && this.menu.isEnabled ? true : super.canStart(ev);
   }
 
   // Set CSS, then wait one frame for it to apply before sliding starts
@@ -45,15 +46,27 @@ class MenuContentGesture extends SlideEdgeGesture {
   }
 }
 
+
+/**
+ * Support dragging the target menu as well as the content.
+ */
+export class TargetGesture extends MenuContentGesture {
+  constructor(menu: Menu) {
+    super(menu, menu.getNativeElement(), {
+      threshold: 0
+    });
+  }
+}
+
 export class LeftMenuGesture extends MenuContentGesture {
   constructor(menu: Menu) {
-    super(menu);
+    super(menu, menu.getContentElement());
   }
 }
 
 export class RightMenuGesture extends MenuContentGesture {
   constructor(menu: Menu) {
-    super(menu);
+    super(menu, menu.getContentElement());
   }
 
   onSlide(slide, ev) {

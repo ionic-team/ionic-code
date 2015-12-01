@@ -22,6 +22,8 @@ var _configConfig = require('../../config/config');
 
 var _virtual = require('./virtual');
 
+var _itemItemSlidingGesture = require('../item/item-sliding-gesture');
+
 var _ionicUtil = require('ionic/util');
 
 var util = _interopRequireWildcard(_ionicUtil);
@@ -60,22 +62,17 @@ var __metadata = undefined && undefined.__metadata || function (k, v) {
 var List = (function (_Ion) {
     _inherits(List, _Ion);
 
-    /**
-     * TODO
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     */
-
-    function List(elementRef, config, renderer) {
+    function List(elementRef, config, zone) {
         _classCallCheck(this, List);
 
         _get(Object.getPrototypeOf(List.prototype), "constructor", this).call(this, elementRef, config);
-        renderer.setElementClass(elementRef, 'list', true);
+        this.zone = zone;
         this.ele = elementRef.nativeElement;
+        this._enableSliding = false;
     }
 
     /**
-     * TODO
+     * @private
      */
 
     _createClass(List, [{
@@ -92,7 +89,16 @@ var List = (function (_Ion) {
 
         /**
          * @private
-         * TODO
+         */
+    }, {
+        key: "onDestroy",
+        value: function onDestroy() {
+            this.ele = null;
+            this.slidingGesture && this.slidingGesture.unlisten();
+        }
+
+        /**
+         * @private
          */
     }, {
         key: "_initVirtualScrolling",
@@ -104,35 +110,50 @@ var List = (function (_Ion) {
         }
 
         /**
-         * TODO
-         * @param {TODO} item  TODO
+         * @private
          */
     }, {
         key: "setItemTemplate",
         value: function setItemTemplate(item) {
             this.itemTemplate = item;
         }
+    }, {
+        key: "enableSlidingItems",
+        value: function enableSlidingItems(shouldEnable) {
+            var _this = this;
 
-        /**
-         * Keeps track of any open item (a sliding item, for example), to close it later
-         */
-    }, {
-        key: "setOpenItem",
-        value: function setOpenItem(item) {
-            this.openItem = item;
-        }
-    }, {
-        key: "closeOpenItem",
-        value: function closeOpenItem() {
-            if (this.openItem) {
-                this.openItem.close(true);
-                this.openItem = null;
+            if (this._init) {
+                if (this._enableSliding !== shouldEnable) {
+                    this._enableSliding = shouldEnable;
+                    if (shouldEnable) {
+                        console.debug('enableSlidingItems');
+                        this.zone.runOutsideAngular(function () {
+                            setTimeout(function () {
+                                _this.slidingGesture = new _itemItemSlidingGesture.ItemSlidingGesture(_this, _this.ele);
+                            });
+                        });
+                    } else {
+                        this.slidingGesture && this.slidingGesture.unlisten();
+                    }
+                }
             }
         }
     }, {
-        key: "getOpenItem",
-        value: function getOpenItem() {
-            return this.openItem;
+        key: "closeSlidingItems",
+        value: function closeSlidingItems() {
+            this.slidingGesture && this.slidingGesture.closeOpened();
+        }
+
+        /**
+         * @private
+         */
+    }, {
+        key: "afterViewInit",
+        value: function afterViewInit() {
+            this._init = true;
+            if (this._enableSliding) {
+                this.enableSlidingItems(true);
+            }
         }
     }]);
 
@@ -142,16 +163,13 @@ exports.List = List;
 exports.List = List = __decorate([(0, _angular2Angular2.Directive)({
     selector: 'ion-list',
     inputs: ['items', 'virtual', 'content']
-}), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _c || Object])], List);
-/**
- * TODO
- */
+}), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _c || Object])], List);
 var ListHeader = function ListHeader() {
     _classCallCheck(this, ListHeader);
 };
 exports.ListHeader = ListHeader;
 exports.ListHeader = ListHeader = __decorate([(0, _angular2Angular2.Directive)({
-    selector: 'ion-header',
+    selector: 'ion-list-header',
     inputs: ['id'],
     host: {
         '[attr.id]': 'id'

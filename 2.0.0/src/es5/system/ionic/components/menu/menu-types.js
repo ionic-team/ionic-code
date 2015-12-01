@@ -7,7 +7,7 @@ System.register('ionic/components/menu/menu-types', ['./menu', 'ionic/animations
      */
     'use strict';
 
-    var Menu, Animation, MenuType, MenuRevealType, MenuOverlayType, OPACITY, TRANSLATE_X;
+    var Menu, Animation, MenuType, MenuRevealType, MenuPushType, MenuOverlayType, OPACITY, TRANSLATE_X;
 
     var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
@@ -133,13 +133,61 @@ System.register('ionic/components/menu/menu-types', ['./menu', 'ionic/animations
 
             Menu.register('reveal', MenuRevealType);
             /**
+             * Menu Push Type
+             * The content slides over to reveal the menu underneath.
+             * The menu itself also slides over to reveal its bad self.
+             */
+
+            MenuPushType = (function (_MenuType2) {
+                _inherits(MenuPushType, _MenuType2);
+
+                function MenuPushType(menu) {
+                    _classCallCheck(this, MenuPushType);
+
+                    _get(Object.getPrototypeOf(MenuPushType.prototype), 'constructor', this).call(this);
+                    var easing = 'ease';
+                    var duration = 250;
+                    var contentOpenedX = undefined,
+                        menuClosedX = undefined,
+                        menuOpenedX = undefined;
+                    if (menu.side == 'right') {
+                        contentOpenedX = -menu.width() + 'px';
+                        menuOpenedX = menu.platform.width() - menu.width() + 'px';
+                        menuClosedX = menu.platform.width() + 'px';
+                    } else {
+                        contentOpenedX = menu.width() + 'px';
+                        menuOpenedX = '0px';
+                        menuClosedX = -menu.width() + 'px';
+                    }
+                    // left side
+                    this.open.easing(easing).duration(duration);
+                    this.close.easing(easing).duration(duration);
+                    var menuOpen = new Animation(menu.getMenuElement());
+                    menuOpen.fromTo(TRANSLATE_X, menuClosedX, menuOpenedX);
+                    this.open.add(menuOpen);
+                    var contentOpen = new Animation(menu.getContentElement());
+                    contentOpen.fromTo(TRANSLATE_X, '0px', contentOpenedX);
+                    this.open.add(contentOpen);
+                    var menuClose = new Animation(menu.getMenuElement());
+                    menuClose.fromTo(TRANSLATE_X, menuOpenedX, menuClosedX);
+                    this.close.add(menuClose);
+                    var contentClose = new Animation(menu.getContentElement());
+                    contentClose.fromTo(TRANSLATE_X, contentOpenedX, '0px');
+                    this.close.add(contentClose);
+                }
+
+                return MenuPushType;
+            })(MenuType);
+
+            Menu.register('push', MenuPushType);
+            /**
              * Menu Overlay Type
              * The menu slides over the content. The content
              * itself, which is under the menu, does not move.
              */
 
-            MenuOverlayType = (function (_MenuType2) {
-                _inherits(MenuOverlayType, _MenuType2);
+            MenuOverlayType = (function (_MenuType3) {
+                _inherits(MenuOverlayType, _MenuType3);
 
                 function MenuOverlayType(menu) {
                     _classCallCheck(this, MenuOverlayType);

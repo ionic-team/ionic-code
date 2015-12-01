@@ -8,13 +8,99 @@
 import { Platform } from '../platform/platform';
 import { isObject, isDefined, isFunction, isArray } from '../util/util';
 /**
-* TODO
-*/
+ * Config lets you change multiple or a single value in an apps mode configuration. Things such as tab placement, icon changes, and view animations can be set here.
+ *
+ * ```ts
+ * @App({
+ *   template: `<ion-nav [root]="root"></ion-nav>`
+ *   config: {
+ *     backButtonText: 'Go Back',
+ *     iconMode: 'ios',
+ *     modalEnter: 'modal-slide-in',
+ *     modalLeave: 'modal-slide-out',
+ *     tabbarPlacement: 'bottom',
+ *     pageTransition: 'ios',
+ *   }
+ * })
+ * ```
+ *
+ * Config can be overwritting at multiple levels, allowing deeper configuration. Taking the example from earlier, we can override any setting we want based on a platform.
+ * ```ts
+ * @App({
+ *   template: `<ion-nav [root]="root"></ion-nav>`
+ *   config: {
+ *     tabbarPlacement: 'bottom',
+ *     platforms: {
+ *      ios: {
+ *        tabbarPlacement: 'top',
+ *      }
+ *     }
+ *   }
+ * })
+ * ```
+ *
+ * We could also configure these values at a component level. Take `tabbarPlacement`, we can configure this as a property on our `ion-tabs`.
+ *
+ * ```html
+ * <ion-tabs tabbar-placement="top">
+ *    <ion-tab tab-title="Dash" tab-icon="pulse" [root]="tabRoot"></ion-tab>
+ *  </ion-tabs>
+ * ```
+ *
+ * The property will override anything else set in the apps.
+ *
+ * The last way we could configure is through URL query strings. This is useful for testing while in the browser.
+ * Simply add `?ionic<PROPERTYNAME>=<value>` to the url.
+ *
+ * ```bash
+ * http://localhost:8100/?ionicTabbarPlacement=bottom
+ * ```
+ *
+ * A config value can come from anywhere and be anything, but there are a default set of values.
+ *
+ * ``` javascript
+ * // iOS
+ * activator: 'highlight',
+ * actionSheetEnter: 'action-sheet-slide-in',
+ * actionSheetLeave: 'action-sheet-slide-out',
+ * actionSheetCancelIcon: '',
+ * actionSheetDestructiveIcon: '',
+ * backButtonText: 'Back',
+ * backButtonIcon: 'ion-ios-arrow-back',
+ * iconMode: 'ios',
+ * menuType: 'reveal',
+ * modalEnter: 'modal-slide-in',
+ * modalLeave: 'modal-slide-out',
+ * pageTransition: 'ios-transition',
+ * pageTransitionDelay: 16,
+ * popupEnter: 'popup-pop-in',
+ * popupLeave: 'popup-pop-out',
+ * tabbarPlacement: 'bottom',
+
+ * // MD
+ * activator: 'ripple',
+ * actionSheetEnter: 'action-sheet-md-slide-in',
+ * actionSheetLeave: 'action-sheet-md-slide-out',
+ * actionSheetCancelIcon: 'ion-md-close',
+ * actionSheetDestructiveIcon: 'ion-md-trash',
+ * backButtonText: '',
+ * backButtonIcon: 'ion-md-arrow-back',
+ * iconMode: 'md',
+ * menuType: 'overlay',
+ * modalEnter: 'modal-md-slide-in',
+ * modalLeave: 'modal-md-slide-out',
+ * pageTransition: 'md-transition',
+ * pageTransitionDelay: 120,
+ * popupEnter: 'popup-md-pop-in',
+ * popupLeave: 'popup-md-pop-out',
+ * tabbarHighlight: true,
+ * tabbarPlacement: 'top',
+ * tabSubPages: true,
+ * ```
+ *
+ *
+**/
 export class Config {
-    /**
-     * TODO
-     * @param  {Object} config   The config for your app
-     */
     constructor(config) {
         this._s = config && isObject(config) && !isArray(config) ? config : {};
         this._c = {}; // cached values
@@ -23,27 +109,10 @@ export class Config {
      * For setting and getting multiple config values
      */
     /**
-   * @name settings()
-   * @description
-   * Config lets you change multiple or a single value in an apps mode configuration. Things such as tab placement, icon changes, and view animations can be set here.
-   *
-   *
-   * @usage
-   * ```ts
-   * import {Config} from 'ionic/ionic';
-   * @App({
-   *   template: `<ion-nav [root]="root"></ion-nav>`
-   *   config: {
-   *     backButtonText: 'Go Back',
-   *     iconMode: 'ios',
-   *     modalEnter: 'modal-slide-in',
-   *     modalLeave: 'modal-slide-out',
-   *     tabBarPlacement: 'bottom',
-   *     viewTransition: 'ios',
-   *   }
-   * })
-   * ```
-   */
+     * @private
+     * @name settings()
+     * @description
+     */
     settings() {
         const args = arguments;
         switch (args.length) {
@@ -64,7 +133,12 @@ export class Config {
         return this;
     }
     /**
-     * For setting a single config values
+    * For setting a single config values
+    */
+    /**
+     * @private
+     * @name set()
+     * @description
      */
     set() {
         const args = arguments;
@@ -93,6 +167,11 @@ export class Config {
     /**
      * For getting a single config values
      */
+    /**
+     * @private
+     * @name get()
+     * @description
+     */
     get(key) {
         if (!isDefined(this._c[key])) {
             // if the value was already set this will all be skipped
@@ -107,6 +186,10 @@ export class Config {
             let platformModeValue = undefined;
             let configObj = null;
             if (this._platform) {
+                let queryStringValue = this._platform.query('ionic' + key.toLowerCase());
+                if (isDefined(queryStringValue)) {
+                    return this._c[key] = (queryStringValue === 'true' ? true : queryStringValue === 'false' ? false : queryStringValue);
+                }
                 // check the platform settings object for this value
                 // loop though each of the active platforms
                 // array of active platforms, which also knows the hierarchy,
@@ -166,8 +249,7 @@ export class Config {
         return this._c[key];
     }
     /**
-     * TODO
-     * @param  {Object} platform   The platform
+     * @private
      */
     setPlatform(platform) {
         this._platform = platform;

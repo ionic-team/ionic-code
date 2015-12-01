@@ -69,11 +69,19 @@ var IdRef = (function () {
         this.component = appViewManager.getComponent(elementRef);
     }
 
+    /**
+     * @private
+     */
+
     _createClass(IdRef, [{
         key: "onInit",
         value: function onInit() {
             this.app.register(this.id, this.component);
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "onDestroy",
         value: function onDestroy() {
@@ -88,4 +96,30 @@ exports.IdRef = IdRef = __decorate([(0, _angular2Angular2.Directive)({
     selector: '[id]',
     inputs: ['id']
 }), __metadata('design:paramtypes', [typeof (_a = typeof _app.IonicApp !== 'undefined' && _app.IonicApp) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.AppViewManager !== 'undefined' && _angular2Angular2.AppViewManager) === 'function' && _c || Object])], IdRef);
-var _a, _b, _c;
+var Attr = (function () {
+    function Attr(renderer, elementRef) {
+        _classCallCheck(this, Attr);
+
+        this.renderer = renderer;
+        this.elementRef = elementRef;
+    }
+
+    /**
+     * @private
+     */
+
+    _createClass(Attr, [{
+        key: "onInit",
+        value: function onInit() {
+            this.renderer.setElementAttribute(this.elementRef, this.attr, '');
+        }
+    }]);
+
+    return Attr;
+})();
+exports.Attr = Attr;
+exports.Attr = Attr = __decorate([(0, _angular2Angular2.Directive)({
+    selector: '[attr]',
+    inputs: ['attr']
+}), __metadata('design:paramtypes', [typeof (_d = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _e || Object])], Attr);
+var _a, _b, _c, _d, _e;

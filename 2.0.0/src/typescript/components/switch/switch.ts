@@ -1,11 +1,11 @@
-import {Component, Directive, ElementRef, Renderer, Host, Optional, NgControl, Inject, forwardRef} from 'angular2/angular2';
+import {Component, Directive, ElementRef, Host, Optional, NgControl, Inject, forwardRef} from 'angular2/angular2';
 
 import {Form} from '../../util/form';
 import {Config} from '../../config/config';
 import {pointerCoord} from '../../util/dom';
 
+
 /**
- * @name mediaSwitch
  * @private
  */
 @Directive({
@@ -83,36 +83,31 @@ class MediaSwitch {
     '(touchstart)': 'pointerDown($event)',
     '(mousedown)': 'pointerDown($event)',
     '(touchend)': 'pointerUp($event)',
-    '(mouseup)': 'pointerUp($event)'
+    '(mouseup)': 'pointerUp($event)',
+    'class': 'item'
   },
   template:
     '<ng-content select="[item-left]"></ng-content>' +
-    '<ion-item-content id="{{labelId}}">' +
-      '<ng-content></ng-content>' +
-    '</ion-item-content>' +
-    '<media-switch disable-activated>' +
-      '<switch-icon></switch-icon>' +
-    '</media-switch>',
+    '<div class="item-inner">' +
+      '<ion-item-content id="{{labelId}}">' +
+        '<ng-content></ng-content>' +
+      '</ion-item-content>' +
+      '<media-switch disable-activated>' +
+        '<switch-icon></switch-icon>' +
+      '</media-switch>' +
+    `</div>`,
   directives: [MediaSwitch]
 })
 export class Switch {
-  /**
-   * TODO
-   * @param {ElementRef} elementRef  TODO
-   * @param {Config} config  TODO
-   * @param {NgControl=} ngControl  TODO
-   */
+
   constructor(
     form: Form,
     elementRef: ElementRef,
     config: Config,
-    renderer: Renderer,
     @Optional() private ngControl: NgControl
   ) {
     this.form = form;
     form.register(this);
-
-    renderer.setElementClass(elementRef, 'item', true);
 
     this.lastTouch = 0;
     this.mode = config.get('mode');
@@ -157,6 +152,9 @@ export class Switch {
     };
   }
 
+  /**
+   * @private
+   */
   onInit() {
     this.labelId = 'label-' + this.inputId;
   }
@@ -177,10 +175,16 @@ export class Switch {
     this.check(!this.checked);
   }
 
+  /**
+   * @private
+   */
   writeValue(value) {
     this.checked = value;
   }
 
+  /**
+   * @private
+   */
   pointerDown(ev) {
     if (/touch/.test(ev.type)) {
       this.lastTouch = Date.now();
@@ -196,6 +200,9 @@ export class Switch {
     this.isActivated = true;
   }
 
+  /**
+   * @private
+   */
   pointerUp(ev) {
     if (this.isDisabled(ev)) return;
 
@@ -213,18 +220,28 @@ export class Switch {
     this.isActivated = false;
   }
 
-  // Used by the view to update the model (Control)
-  // Up to us to call it in update()
+  /**
+   * @private
+   */
   registerOnChange(fn) { this.onChange = fn; }
 
+  /**
+   * @private
+   */
   registerOnTouched(fn) { this.onTouched = fn; }
 
+  /**
+   * @private
+   */
   onDestroy() {
     this.removeMoveListener();
     this.switchEle = this.addMoveListener = this.removeMoveListener = null;
     this.form.deregister(this);
   }
 
+  /**
+   * @private
+   */
   isDisabled(ev) {
     return (this.lastTouch + 999 > Date.now() && /mouse/.test(ev.type)) || (this.mode == 'ios' && ev.target.tagName == 'ION-SWITCH');
   }

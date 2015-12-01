@@ -9,10 +9,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, ElementRef, Renderer } from 'angular2/angular2';
+import { Directive, ElementRef, NgZone } from 'angular2/angular2';
 import { Ion } from '../ion';
 import { Config } from '../../config/config';
 import { ListVirtualScroll } from './virtual';
+import { ItemSlidingGesture } from '../item/item-sliding-gesture';
 import * as util from 'ionic/util';
 /**
  * The List is a widely used interface element in almost any mobile app, and can include
@@ -26,18 +27,14 @@ import * as util from 'ionic/util';
  *
  */
 export let List = class extends Ion {
-    /**
-     * TODO
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     */
-    constructor(elementRef, config, renderer) {
+    constructor(elementRef, config, zone) {
         super(elementRef, config);
-        renderer.setElementClass(elementRef, 'list', true);
+        this.zone = zone;
         this.ele = elementRef.nativeElement;
+        this._enableSliding = false;
     }
     /**
-     * TODO
+     * @private
      */
     onInit() {
         super.onInit();
@@ -50,7 +47,13 @@ export let List = class extends Ion {
     }
     /**
      * @private
-     * TODO
+     */
+    onDestroy() {
+        this.ele = null;
+        this.slidingGesture && this.slidingGesture.unlisten();
+    }
+    /**
+     * @private
      */
     _initVirtualScrolling() {
         if (!this.content) {
@@ -59,26 +62,40 @@ export let List = class extends Ion {
         this._virtualScrollingManager = new ListVirtualScroll(this);
     }
     /**
-     * TODO
-     * @param {TODO} item  TODO
+     * @private
      */
     setItemTemplate(item) {
         this.itemTemplate = item;
     }
-    /**
-     * Keeps track of any open item (a sliding item, for example), to close it later
-     */
-    setOpenItem(item) {
-        this.openItem = item;
-    }
-    closeOpenItem() {
-        if (this.openItem) {
-            this.openItem.close(true);
-            this.openItem = null;
+    enableSlidingItems(shouldEnable) {
+        if (this._init) {
+            if (this._enableSliding !== shouldEnable) {
+                this._enableSliding = shouldEnable;
+                if (shouldEnable) {
+                    console.debug('enableSlidingItems');
+                    this.zone.runOutsideAngular(() => {
+                        setTimeout(() => {
+                            this.slidingGesture = new ItemSlidingGesture(this, this.ele);
+                        });
+                    });
+                }
+                else {
+                    this.slidingGesture && this.slidingGesture.unlisten();
+                }
+            }
         }
     }
-    getOpenItem() {
-        return this.openItem;
+    closeSlidingItems() {
+        this.slidingGesture && this.slidingGesture.closeOpened();
+    }
+    /**
+     * @private
+     */
+    afterViewInit() {
+        this._init = true;
+        if (this._enableSliding) {
+            this.enableSlidingItems(true);
+        }
     }
 };
 List = __decorate([
@@ -90,16 +107,13 @@ List = __decorate([
             'content'
         ]
     }), 
-    __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object, (typeof (_c = typeof Renderer !== 'undefined' && Renderer) === 'function' && _c) || Object])
+    __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object, (typeof (_c = typeof NgZone !== 'undefined' && NgZone) === 'function' && _c) || Object])
 ], List);
-/**
- * TODO
- */
 export let ListHeader = class {
 };
 ListHeader = __decorate([
     Directive({
-        selector: 'ion-header',
+        selector: 'ion-list-header',
         inputs: [
             'id'
         ],

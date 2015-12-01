@@ -17,16 +17,14 @@ import { Config } from '../../config/config';
  * vertically.
  */
 export let Scroll = class extends Ion {
-    /**
-     * TODO
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     */
     constructor(elementRef, Config) {
         super(elementRef, Config);
         this.maxScale = 3;
         this.zoomDuration = 250;
     }
+    /**
+     * @private
+     */
     onInit() {
         this.scrollElement = this.getNativeElement().children[0];
     }

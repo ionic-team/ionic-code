@@ -20,7 +20,7 @@ var _appApp = require('../app/app');
 
 var _navViewController = require('../nav/view-controller');
 
-var _navBarNavBar = require('../nav-bar/nav-bar');
+var _navbarNavbar = require('../navbar/navbar');
 
 /**
 * TODO
@@ -91,7 +91,8 @@ exports.MenuToggle = MenuToggle = __decorate([(0, _angular2Angular2.Directive)({
     inputs: ['menuToggle'],
     host: {
         '(click)': 'toggle()',
-        '[hidden]': 'isHidden'
+        '[hidden]': 'isHidden',
+        'menu-toggle': '' //ensures the attr is there for css when using [menu-toggle]
     }
-}), __param(2, (0, _angular2Angular2.Optional)()), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _appApp.IonicApp !== 'undefined' && _appApp.IonicApp) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _b || Object, typeof (_c = typeof _navViewController.ViewController !== 'undefined' && _navViewController.ViewController) === 'function' && _c || Object, typeof (_d = typeof _navBarNavBar.Navbar !== 'undefined' && _navBarNavBar.Navbar) === 'function' && _d || Object])], MenuToggle);
+}), __param(2, (0, _angular2Angular2.Optional)()), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _appApp.IonicApp !== 'undefined' && _appApp.IonicApp) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _b || Object, typeof (_c = typeof _navViewController.ViewController !== 'undefined' && _navViewController.ViewController) === 'function' && _c || Object, typeof (_d = typeof _navbarNavbar.Navbar !== 'undefined' && _navbarNavbar.Navbar) === 'function' && _d || Object])], MenuToggle);
 var _a, _b, _c, _d;

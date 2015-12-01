@@ -4,7 +4,7 @@ System.register("ionic/components/nav/nav-router", ["angular2/angular2", "angula
      */
     "use strict";
 
-    var Directive, ElementRef, DynamicComponentLoader, Attribute, RouterOutlet, Router, Nav, __decorate, __metadata, __param, NavRouter, _a, _b, _c, _d;
+    var Directive, ElementRef, DynamicComponentLoader, Attribute, RouterOutlet, Router, Instruction, Nav, __decorate, __metadata, __param, NavRouter, _a, _b, _c, _d;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -23,6 +23,7 @@ System.register("ionic/components/nav/nav-router", ["angular2/angular2", "angula
         }, function (_angular2Router) {
             RouterOutlet = _angular2Router.RouterOutlet;
             Router = _angular2Router.Router;
+            Instruction = _angular2Router.Instruction;
         }, function (_nav) {
             Nav = _nav.Nav;
         }],
@@ -94,7 +95,7 @@ System.register("ionic/components/nav/nav-router", ["angular2/angular2", "angula
                         var childRouter = this._parentRouter.childRouter(componentType);
                         // prevent double navigations to the same view
                         var lastView = this.nav.last();
-                        if (lastView && lastView.componentType === componentType && lastView.params.data === nextInstruction.params) {
+                        if (this.nav.isTransitioning() || lastView && lastView.componentType === componentType && lastView.params.data === nextInstruction.params) {
                             return Promise.resolve();
                         }
                         // tell the NavController which componentType, and it's params, to navigate to
@@ -113,30 +114,29 @@ System.register("ionic/components/nav/nav-router", ["angular2/angular2", "angula
                      */
                 }, {
                     key: "stateChange",
-                    value: function stateChange(type, viewCtrl) {}
-                    // stateChange is called by Ionic's NavController
-                    // type could be "push" or "pop"
-                    // viewCtrl is Ionic's ViewController class, which has the properties "componentType" and "params"
-                    // only do an update if there's an actual view change
-                    // if (!viewCtrl || this._activeViewId === viewCtrl.id) return;
-                    // this._activeViewId = viewCtrl.id;
-                    // // get the best PathRecognizer for this view's componentType
-                    // let pathRecognizer = this.getPathRecognizerByComponent(viewCtrl.componentType);
-                    // if (pathRecognizer) {
-                    //   // generate a componentInstruction from the view's PathRecognizer and params
-                    //   let componentInstruction = pathRecognizer.generate(viewCtrl.params.data);
-                    //   // create an Instruction from the componentInstruction
-                    //   let instruction = new Instruction(componentInstruction, null);
-                    //   // update the browser's URL
-                    //   this._parentRouter.navigateInstruction(instruction);
-                    // }
+                    value: function stateChange(type, viewCtrl) {
+                        // stateChange is called by Ionic's NavController
+                        // type could be "push" or "pop"
+                        // viewCtrl is Ionic's ViewController class, which has the properties "componentType" and "params"
+                        // only do an update if there's an actual view change
+                        if (!viewCtrl || this._activeViewId === viewCtrl.id) return;
+                        this._activeViewId = viewCtrl.id;
+                        // get the best PathRecognizer for this view's componentType
+                        var pathRecognizer = this.getPathRecognizerByComponent(viewCtrl.componentType);
+                        if (pathRecognizer) {
+                            // generate a componentInstruction from the view's PathRecognizer and params
+                            var componentInstruction = pathRecognizer.generate(viewCtrl.params.data);
+                            // create an Instruction from the componentInstruction
+                            var instruction = new Instruction(componentInstruction, null);
+                            this._parentRouter.navigateByInstruction(instruction);
+                        }
+                    }
 
                     /**
                      * TODO
                      * @param {TODO} componentType  TODO
                      * @returns {TODO} TODO
                      */
-
                 }, {
                     key: "getPathRecognizerByComponent",
                     value: function getPathRecognizerByComponent(componentType) {

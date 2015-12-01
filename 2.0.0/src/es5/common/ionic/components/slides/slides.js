@@ -89,6 +89,7 @@ var Slides = (function (_Ion) {
         this.rapidUpdate = util.debounce(function () {
             _this.update();
         }, 10);
+        this.slideChanged = new _angular2Angular2.EventEmitter('slideChanged');
     }
 
     _createClass(Slides, [{
@@ -101,6 +102,7 @@ var Slides = (function (_Ion) {
             }
             this.showPager = util.isTrueProperty(this.pager);
             var options = util.defaults({
+                loop: this.loop,
                 pagination: '.swiper-pagination',
                 paginationClickable: true,
                 lazyLoading: true,
@@ -130,6 +132,7 @@ var Slides = (function (_Ion) {
                 return _this2.options.onSlideChangeStart && _this2.options.onSlideChangeStart(swiper);
             };
             options.onSlideChangeEnd = function (swiper) {
+                _this2.slideChanged.next(swiper);
                 return _this2.options.onSlideChangeEnd && _this2.options.onSlideChangeEnd(swiper);
             };
             options.onLazyImageLoad = function (swiper, slide, img) {
@@ -439,7 +442,8 @@ var Slides = (function (_Ion) {
 exports.Slides = Slides;
 exports.Slides = Slides = __decorate([(0, _angular2Angular2.Component)({
     selector: 'ion-slides',
-    inputs: ['loop', 'index', 'bounce', 'pager', 'options', 'zoom', 'zoomDuration', 'zoomMax'],
+    inputs: ['autoplay', 'loop', 'index', 'bounce', 'pager', 'options', 'zoom', 'zoomDuration', 'zoomMax'],
+    outputs: ['slideChanged'],
     template: '<div class="swiper-container">' + '<div class="swiper-wrapper">' + '<ng-content></ng-content>' + '</div>' + '<div [class.hide]="!showPager" class="swiper-pagination"></div>' + '</div>',
     directives: [_angular2Angular2.NgClass]
 }), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object])], Slides);

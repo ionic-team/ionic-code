@@ -1,0 +1,28 @@
+@import "../../ionic.globals";
+
+// Navbar
+// --------------------------------------------------
+
+
+ion-navbar.toolbar {
+  display: flex;
+  transform: translate3d(-9999px, -9999px, 0);
+}
+
+ion-navbar.toolbar.show-navbar {
+  transform: none;
+}
+
+.back-button {
+  order: map-get($toolbar-order, backButton);
+
+  display: none;
+  &.show-back-button {
+    display: flex;
+  }
+}
+
+.back-button-text {
+  display: flex;
+  align-items: center;
+}

@@ -125,7 +125,7 @@ var Refresher = (function () {
             });
             this.showSpinner = !util.isDefined(this.refreshingIcon) && this.spinner != 'none';
             this.showIcon = util.isDefined(this.refreshingIcon);
-            this._touchMoveListener = this._handleTouchMov.bind(this);
+            this._touchMoveListener = this._handleTouchMove.bind(this);
             this._touchEndListener = this._handleTouchEnd.bind(this);
             this._handleScrollListener = this._handleScroll.bind(this);
             sc.addEventListener('touchmove', this._touchMoveListener);

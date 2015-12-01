@@ -6,33 +6,45 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _ionicGesturesSlideEdgeGesture = require('ionic/gestures/slide-edge-gesture');
+var _gesturesSlideEdgeGesture = require('../../gestures/slide-edge-gesture');
+
+var _ionicUtil = require('ionic/util');
+
+var util = _interopRequireWildcard(_ionicUtil);
 
 var MenuContentGesture = (function (_SlideEdgeGesture) {
     _inherits(MenuContentGesture, _SlideEdgeGesture);
 
-    function MenuContentGesture(menu) {
+    function MenuContentGesture(menu, targetEl) {
+        var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
         _classCallCheck(this, MenuContentGesture);
 
-        _get(Object.getPrototypeOf(MenuContentGesture.prototype), 'constructor', this).call(this, menu.getContentElement(), {
+        _get(Object.getPrototypeOf(MenuContentGesture.prototype), 'constructor', this).call(this, targetEl, util.extend({
             direction: menu.side === 'left' || menu.side === 'right' ? 'x' : 'y',
             edge: menu.side,
             threshold: 75
-        });
+        }, options));
         this.menu = menu;
         this.listen();
     }
 
+    /**
+     * Support dragging the target menu as well as the content.
+     */
+
     _createClass(MenuContentGesture, [{
         key: 'canStart',
         value: function canStart(ev) {
-            return this.menu.isOpen ? true : _get(Object.getPrototypeOf(MenuContentGesture.prototype), 'canStart', this).call(this, ev);
+            return this.menu.isOpen && this.menu.isEnabled ? true : _get(Object.getPrototypeOf(MenuContentGesture.prototype), 'canStart', this).call(this, ev);
         }
 
         // Set CSS, then wait one frame for it to apply before sliding starts
@@ -68,15 +80,31 @@ var MenuContentGesture = (function (_SlideEdgeGesture) {
     }]);
 
     return MenuContentGesture;
-})(_ionicGesturesSlideEdgeGesture.SlideEdgeGesture);
+})(_gesturesSlideEdgeGesture.SlideEdgeGesture);
 
-var LeftMenuGesture = (function (_MenuContentGesture) {
-    _inherits(LeftMenuGesture, _MenuContentGesture);
+var TargetGesture = (function (_MenuContentGesture) {
+    _inherits(TargetGesture, _MenuContentGesture);
+
+    function TargetGesture(menu) {
+        _classCallCheck(this, TargetGesture);
+
+        _get(Object.getPrototypeOf(TargetGesture.prototype), 'constructor', this).call(this, menu, menu.getNativeElement(), {
+            threshold: 0
+        });
+    }
+
+    return TargetGesture;
+})(MenuContentGesture);
+
+exports.TargetGesture = TargetGesture;
+
+var LeftMenuGesture = (function (_MenuContentGesture2) {
+    _inherits(LeftMenuGesture, _MenuContentGesture2);
 
     function LeftMenuGesture(menu) {
         _classCallCheck(this, LeftMenuGesture);
 
-        _get(Object.getPrototypeOf(LeftMenuGesture.prototype), 'constructor', this).call(this, menu);
+        _get(Object.getPrototypeOf(LeftMenuGesture.prototype), 'constructor', this).call(this, menu, menu.getContentElement());
     }
 
     return LeftMenuGesture;
@@ -84,13 +112,13 @@ var LeftMenuGesture = (function (_MenuContentGesture) {
 
 exports.LeftMenuGesture = LeftMenuGesture;
 
-var RightMenuGesture = (function (_MenuContentGesture2) {
-    _inherits(RightMenuGesture, _MenuContentGesture2);
+var RightMenuGesture = (function (_MenuContentGesture3) {
+    _inherits(RightMenuGesture, _MenuContentGesture3);
 
     function RightMenuGesture(menu) {
         _classCallCheck(this, RightMenuGesture);
 
-        _get(Object.getPrototypeOf(RightMenuGesture.prototype), 'constructor', this).call(this, menu);
+        _get(Object.getPrototypeOf(RightMenuGesture.prototype), 'constructor', this).call(this, menu, menu.getContentElement());
     }
 
     _createClass(RightMenuGesture, [{

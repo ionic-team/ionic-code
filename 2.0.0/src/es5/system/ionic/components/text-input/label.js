@@ -1,7 +1,4 @@
 System.register("ionic/components/text-input/label", ["angular2/angular2", "../../config/config", "./text-input", "../../util/dom"], function (_export) {
-    /**
-     * TODO
-     */
     "use strict";
 
     var Directive, Optional, Config, TextInput, pointerCoord, hasPointerMoved, __decorate, __metadata, __param, Label, labelIds, _a, _b;
@@ -52,11 +49,6 @@ System.register("ionic/components/text-input/label", ["angular2/angular2", "../.
             };
 
             Label = (function () {
-                /**
-                 * TODO
-                 * @param {Config} config
-                 */
-
                 function Label(config, container) {
                     _classCallCheck(this, Label);
 
@@ -69,8 +61,7 @@ System.register("ionic/components/text-input/label", ["angular2/angular2", "../.
                 }
 
                 /**
-                 * TODO
-                 * @param {TODO} ev  TODO
+                 * @private
                  */
 
                 _createClass(Label, [{
@@ -83,8 +74,7 @@ System.register("ionic/components/text-input/label", ["angular2/angular2", "../.
                     }
 
                     /**
-                     * TODO
-                     * @param {TODO} ev  TODO
+                     * @private
                      */
                 }, {
                     key: "pointerEnd",

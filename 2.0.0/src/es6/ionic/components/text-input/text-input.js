@@ -12,7 +12,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Directive, NgIf, forwardRef, Host, Optional, ElementRef, Renderer, Attribute, NgZone } from 'angular2/angular2';
+import { Component, Directive, NgIf, forwardRef, Host, Optional, ElementRef, Renderer, Attribute } from 'angular2/angular2';
+import { NavController } from '../nav/nav-controller';
 import { Config } from '../../config/config';
 import { Form } from '../../util/form';
 import { IonicApp } from '../app/app';
@@ -23,8 +24,7 @@ import { Platform } from '../../platform/platform';
  * TODO
  */
 export let TextInput = class {
-    constructor(form, elementRef, config, renderer, app, zone, platform, scrollView) {
-        renderer.setElementClass(elementRef, 'item', true);
+    constructor(form, elementRef, config, renderer, app, platform, scrollView, navCtrl) {
         this.renderer = renderer;
         this.form = form;
         form.register(this);
@@ -32,19 +32,28 @@ export let TextInput = class {
         this.lastTouch = 0;
         this.app = app;
         this.elementRef = elementRef;
-        this.zone = zone;
         this.platform = platform;
+        this.navCtrl = navCtrl;
         this.scrollView = scrollView;
         this.scrollAssist = config.get('scrollAssist');
         this.keyboardHeight = config.get('keyboardHeight');
     }
+    /**
+     * @private
+     */
     registerInput(textInputElement) {
         this.input = textInputElement;
         this.type = textInputElement.type || 'text';
     }
+    /**
+     * @private
+     */
     registerLabel(label) {
         this.label = label;
     }
+    /**
+     * @private
+     */
     onInit() {
         if (this.input && this.label) {
             // if there is an input and an label
@@ -54,19 +63,32 @@ export let TextInput = class {
         }
         let self = this;
         self.scrollMove = (ev) => {
-            console.debug('content scrollMove');
-            self.deregListeners();
-            if (self.hasFocus) {
-                self.tempFocusMove();
+            if (!(this.navCtrl && this.navCtrl.isTransitioning())) {
+                self.deregMove();
+                if (self.hasFocus) {
+                    self.input.hideFocus(true);
+                    this.scrollView.onScrollEnd(() => {
+                        self.input.hideFocus(false);
+                        if (self.hasFocus) {
+                            self.regMove();
+                        }
+                    });
+                }
             }
         };
     }
+    /**
+     * @private
+     */
     pointerStart(ev) {
         if (this.scrollAssist && this.app.isEnabled()) {
             // remember where the touchstart/mousedown started
             this.startCoord = dom.pointerCoord(ev);
         }
     }
+    /**
+     * @private
+     */
     pointerEnd(ev) {
         if (!this.app.isEnabled()) {
             ev.preventDefault();
@@ -80,19 +102,21 @@ export let TextInput = class {
             if (!dom.hasPointerMoved(8, this.startCoord, endCoord) && !this.hasFocus) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                this.zone.runOutsideAngular(() => {
-                    this.initFocus();
-                    // temporarily prevent mouseup's from focusing
-                    this.lastTouch = Date.now();
-                });
+                this.initFocus();
+                // temporarily prevent mouseup's from focusing
+                this.lastTouch = Date.now();
             }
         }
-        else if (this.lastTouch + 500 < Date.now()) {
+        else if (this.lastTouch + 999 < Date.now()) {
             ev.preventDefault();
             ev.stopPropagation();
             this.setFocus();
+            this.regMove();
         }
     }
+    /**
+     * @private
+     */
     initFocus() {
         // begin the process of setting focus to the inner input element
         let scrollView = this.scrollView;
@@ -100,46 +124,51 @@ export let TextInput = class {
             // this input is inside of a scroll view
             // find out if text input should be manually scrolled into view
             let ele = this.elementRef.nativeElement;
-            let scrollData = TextInput.getScollData(ele.offsetTop, ele.offsetHeight, scrollView.getDimensions(), this.keyboardHeight, this.platform.height());
-            if (scrollData.noScroll) {
+            let scrollData = TextInput.getScrollData(ele.offsetTop, ele.offsetHeight, scrollView.getDimensions(), this.keyboardHeight, this.platform.height());
+            if (scrollData.scrollAmount > -3 && scrollData.scrollAmount < 3) {
                 // the text input is in a safe position that doesn't require
                 // it to be scrolled into view, just set focus now
-                return this.setFocus();
+                this.setFocus();
+                this.regMove();
+                return;
             }
             // add padding to the bottom of the scroll view (if needed)
             scrollView.addScrollPadding(scrollData.scrollPadding);
             // manually scroll the text input to the top
             // do not allow any clicks while it's scrolling
-            this.app.setEnabled(false, SCROLL_INTO_VIEW_DURATION);
-            this.app.setTransitioning(true, SCROLL_INTO_VIEW_DURATION);
+            let scrollDuration = getScrollAssistDuration(scrollData.scrollAmount);
+            this.app.setEnabled(false, scrollDuration);
+            this.navCtrl && this.navCtrl.setTransitioning(true, scrollDuration);
             // temporarily move the focus to the focus holder so the browser
             // doesn't freak out while it's trying to get the input in place
             // at this point the native text input still does not have focus
-            this.tempFocusMove();
+            this.input.relocate(true, scrollData.inputSafeY);
             // scroll the input into place
-            scrollView.scrollTo(0, scrollData.scrollTo, SCROLL_INTO_VIEW_DURATION, 6).then(() => {
+            scrollView.scrollTo(0, scrollData.scrollTo, scrollDuration).then(() => {
                 // the scroll view is in the correct position now
                 // give the native text input focus
-                this.setFocus();
+                this.input.relocate(false);
                 // all good, allow clicks again
                 this.app.setEnabled(true);
-                this.app.setTransitioning(false);
+                this.navCtrl && this.navCtrl.setTransitioning(false);
+                this.regMove();
             });
         }
         else {
             // not inside of a scroll view, just focus it
             this.setFocus();
+            this.regMove();
         }
     }
     /**
-     * TODO
+     * @private
      * @param {TODO} inputOffsetTop  TODO
      * @param {TODO} inputOffsetHeight  TODO
      * @param {TODO} scrollViewDimensions  TODO
      * @param {TODO} keyboardHeight  TODO
      * @returns {TODO} TODO
      */
-    static getScollData(inputOffsetTop, inputOffsetHeight, scrollViewDimensions, keyboardHeight, plaformHeight) {
+    static getScrollData(inputOffsetTop, inputOffsetHeight, scrollViewDimensions, keyboardHeight, plaformHeight) {
         // compute input's Y values relative to the body
         let inputTop = (inputOffsetTop + scrollViewDimensions.contentTop - scrollViewDimensions.scrollTop);
         let inputBottom = (inputTop + inputOffsetHeight);
@@ -164,36 +193,39 @@ export let TextInput = class {
         6) Input top within safe area, bottom below safe area, no room to scroll, input larger than safe area
         7) Input top below safe area, no room to scroll, input larger than safe area
         */
-        if (inputTopWithinSafeArea && inputBottomWithinSafeArea) {
-            // Input top within safe area, bottom within safe area
-            // no need to scroll to a position, it's good as-is
-            return { noScroll: true };
-        }
-        // looks like we'll have to do some auto-scrolling
         let scrollData = {
             scrollAmount: 0,
             scrollTo: 0,
             scrollPadding: 0,
+            inputSafeY: 0
         };
+        if (inputTopWithinSafeArea && inputBottomWithinSafeArea) {
+            // Input top within safe area, bottom within safe area
+            // no need to scroll to a position, it's good as-is
+            return scrollData;
+        }
+        // looks like we'll have to do some auto-scrolling
         if (inputTopBelowSafeArea || inputBottomBelowSafeArea) {
             // Input top and bottom below safe area
             // auto scroll the input up so at least the top of it shows
             if (safeAreaHeight > inputOffsetHeight) {
                 // safe area height is taller than the input height, so we
                 // can bring it up the input just enough to show the input bottom
-                scrollData.scrollAmount = (safeAreaBottom - inputBottom);
+                scrollData.scrollAmount = Math.round(safeAreaBottom - inputBottom);
             }
             else {
                 // safe area height is smaller than the input height, so we can
                 // only scroll it up so the input top is at the top of the safe area
                 // however the input bottom will be below the safe area
-                scrollData.scrollAmount = (safeAreaTop - inputTop);
+                scrollData.scrollAmount = Math.round(safeAreaTop - inputTop);
             }
+            scrollData.inputSafeY = -(inputTop - safeAreaTop) + 4;
         }
         else if (inputTopAboveSafeArea) {
             // Input top above safe area
             // auto scroll the input down so at least the top of it shows
-            scrollData.scrollAmount = (safeAreaTop - inputTop);
+            scrollData.scrollAmount = Math.round(safeAreaTop - inputTop);
+            scrollData.inputSafeY = (safeAreaTop - inputTop) + 4;
         }
         // figure out where it should scroll to for the best position to the input
         scrollData.scrollTo = (scrollViewDimensions.scrollTop - scrollData.scrollAmount);
@@ -212,11 +244,12 @@ export let TextInput = class {
         // if (!window.safeAreaEle) {
         //   window.safeAreaEle = document.createElement('div');
         //   window.safeAreaEle.style.position = 'absolute';
-        //   window.safeAreaEle.style.background = 'rgba(0, 128, 0, 0.3)';
-        //   window.safeAreaEle.style.padding = '10px';
-        //   window.safeAreaEle.style.textShadow = '2px 2px white';
+        //   window.safeAreaEle.style.background = 'rgba(0, 128, 0, 0.7)';
+        //   window.safeAreaEle.style.padding = '2px 5px';
+        //   window.safeAreaEle.style.textShadow = '1px 1px white';
         //   window.safeAreaEle.style.left = '0px';
         //   window.safeAreaEle.style.right = '0px';
+        //   window.safeAreaEle.style.fontWeight = 'bold';
         //   window.safeAreaEle.style.pointerEvents = 'none';
         //   document.body.appendChild(window.safeAreaEle);
         // }
@@ -226,46 +259,69 @@ export let TextInput = class {
         //   <div>scrollTo: ${scrollData.scrollTo}</div>
         //   <div>scrollAmount: ${scrollData.scrollAmount}</div>
         //   <div>scrollPadding: ${scrollData.scrollPadding}</div>
+        //   <div>inputSafeY: ${scrollData.inputSafeY}</div>
         //   <div>scrollHeight: ${scrollViewDimensions.scrollHeight}</div>
         //   <div>scrollTop: ${scrollViewDimensions.scrollTop}</div>
         //   <div>contentHeight: ${scrollViewDimensions.contentHeight}</div>
         // `;
         return scrollData;
     }
+    /**
+     * @private
+     */
     focusChange(hasFocus) {
         this.renderer.setElementClass(this.elementRef, 'has-focus', hasFocus);
+        if (!hasFocus) {
+            this.deregMove();
+            this.input.hideFocus(false);
+        }
     }
+    /**
+     * @private
+     */
     hasValue(inputValue) {
         this.renderer.setElementClass(this.elementRef, 'has-value', inputValue && inputValue !== '');
     }
+    /**
+     * @private
+     */
     setFocus() {
         if (this.input) {
-            this.zone.run(() => {
-                this.form.setAsFocused(this);
-                // set focus on the actual input element
-                this.input.setFocus();
-                // ensure the body hasn't scrolled down
-                document.body.scrollTop = 0;
-            });
-        }
-        if (this.scrollAssist && this.scrollView) {
-            this.zone.runOutsideAngular(() => {
-                this.deregListeners();
-                this.deregScroll = this.scrollView.addScrollEventListener(this.scrollMove);
-            });
+            this.form.setAsFocused(this);
+            // set focus on the actual input element
+            this.input.setFocus();
+            // ensure the body hasn't scrolled down
+            document.body.scrollTop = 0;
         }
     }
-    deregListeners() {
+    /**
+     * @private
+     */
+    regMove() {
+        if (this.scrollAssist && this.scrollView) {
+            setTimeout(() => {
+                this.deregMove();
+                this.deregScroll = this.scrollView.addScrollEventListener(this.scrollMove);
+            }, 80);
+        }
+    }
+    /**
+     * @private
+     */
+    deregMove() {
         this.deregScroll && this.deregScroll();
     }
-    tempFocusMove() {
-        this.form.setFocusHolder(this.type);
-    }
+    /**
+     * @private
+     */
     get hasFocus() {
         return !!this.input && this.input.hasFocus;
     }
+    /**
+     * @private
+     */
     onDestroy() {
-        this.deregListeners();
+        this.deregMove();
         this.form.deregister(this);
     }
 };
@@ -275,16 +331,23 @@ TextInput = __decorate([
         host: {
             '(touchstart)': 'pointerStart($event)',
             '(touchend)': 'pointerEnd($event)',
-            '(mouseup)': 'pointerEnd($event)'
+            '(mouseup)': 'pointerEnd($event)',
+            'class': 'item'
         },
-        template: '<ng-content></ng-content>' +
-            '<input [type]="type" aria-hidden="true" scroll-assist *ng-if="scrollAssist">',
+        template: '<div class="item-inner">' +
+            '<ng-content></ng-content>' +
+            '<input [type]="type" aria-hidden="true" scroll-assist *ng-if="scrollAssist">' +
+            '</div>',
         directives: [NgIf, forwardRef(() => InputScrollAssist)]
     }),
-    __param(7, Optional()),
-    __param(7, Host()), 
-    __metadata('design:paramtypes', [(typeof (_a = typeof Form !== 'undefined' && Form) === 'function' && _a) || Object, (typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof Config !== 'undefined' && Config) === 'function' && _c) || Object, (typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d) || Object, (typeof (_e = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _e) || Object, (typeof (_f = typeof NgZone !== 'undefined' && NgZone) === 'function' && _f) || Object, (typeof (_g = typeof Platform !== 'undefined' && Platform) === 'function' && _g) || Object, (typeof (_h = typeof Content !== 'undefined' && Content) === 'function' && _h) || Object])
+    __param(6, Optional()),
+    __param(6, Host()),
+    __param(7, Optional()), 
+    __metadata('design:paramtypes', [(typeof (_a = typeof Form !== 'undefined' && Form) === 'function' && _a) || Object, (typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof Config !== 'undefined' && Config) === 'function' && _c) || Object, (typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d) || Object, (typeof (_e = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _e) || Object, (typeof (_f = typeof Platform !== 'undefined' && Platform) === 'function' && _f) || Object, (typeof (_g = typeof Content !== 'undefined' && Content) === 'function' && _g) || Object, (typeof (_h = typeof NavController !== 'undefined' && NavController) === 'function' && _h) || Object])
 ], TextInput);
+/**
+ * @private
+ */
 export let TextInputElement = class {
     constructor(type, elementRef, renderer, wrapper) {
         this.type = type;
@@ -297,17 +360,58 @@ export let TextInputElement = class {
             wrapper.registerInput(this);
         }
     }
-    onKeyup(ev) {
-        this.wrapper.hasValue(ev.target.value);
-    }
     onInit() {
-        this.wrapper.hasValue(this.value);
+        this.wrapper && this.wrapper.hasValue(this.value);
+    }
+    focusChange(changed) {
+        this.wrapper && this.wrapper.focusChange(changed);
+    }
+    onKeyup(ev) {
+        this.wrapper && this.wrapper.hasValue(ev.target.value);
     }
     labelledBy(val) {
         this.renderer.setElementAttribute(this.elementRef, 'aria-labelledby', val);
     }
     setFocus() {
         this.getNativeElement().focus();
+    }
+    relocate(shouldRelocate, inputRelativeY) {
+        if (this._relocated !== shouldRelocate) {
+            let focusedInputEle = this.getNativeElement();
+            if (shouldRelocate) {
+                let clonedInputEle = cloneInput(focusedInputEle, 'cloned-input');
+                focusedInputEle.classList.add('hide-focused-input');
+                focusedInputEle.style[dom.CSS.transform] = `translate3d(-9999px,${inputRelativeY}px,0)`;
+                focusedInputEle.parentNode.insertBefore(clonedInputEle, focusedInputEle);
+                this.wrapper.setFocus();
+            }
+            else {
+                focusedInputEle.classList.remove('hide-focused-input');
+                focusedInputEle.style[dom.CSS.transform] = '';
+                let clonedInputEle = focusedInputEle.parentNode.querySelector('.cloned-input');
+                if (clonedInputEle) {
+                    clonedInputEle.parentNode.removeChild(clonedInputEle);
+                }
+            }
+            this._relocated = shouldRelocate;
+        }
+    }
+    hideFocus(shouldHideFocus) {
+        let focusedInputEle = this.getNativeElement();
+        if (shouldHideFocus) {
+            let clonedInputEle = cloneInput(focusedInputEle, 'cloned-hidden');
+            focusedInputEle.classList.add('hide-focused-input');
+            focusedInputEle.style[dom.CSS.transform] = 'translate3d(-9999px,0,0)';
+            focusedInputEle.parentNode.insertBefore(clonedInputEle, focusedInputEle);
+        }
+        else {
+            focusedInputEle.classList.remove('hide-focused-input');
+            focusedInputEle.style[dom.CSS.transform] = '';
+            let clonedInputEle = focusedInputEle.parentNode.querySelector('.cloned-hidden');
+            if (clonedInputEle) {
+                clonedInputEle.parentNode.removeChild(clonedInputEle);
+            }
+        }
     }
     get hasFocus() {
         return dom.hasFocus(this.getNativeElement());
@@ -321,8 +425,8 @@ TextInputElement = __decorate([
         selector: 'textarea,input[type=text],input[type=password],input[type=number],input[type=search],input[type=email],input[type=url],input[type=tel]',
         inputs: ['value'],
         host: {
-            '(focus)': 'wrapper.focusChange(true)',
-            '(blur)': 'wrapper.focusChange(false)',
+            '(focus)': 'focusChange(true)',
+            '(blur)': 'focusChange(false)',
             '(keyup)': 'onKeyup($event)'
         }
     }),
@@ -348,5 +452,20 @@ InputScrollAssist = __decorate([
     }), 
     __metadata('design:paramtypes', [(typeof (_l = typeof Form !== 'undefined' && Form) === 'function' && _l) || Object, TextInput])
 ], InputScrollAssist);
-const SCROLL_INTO_VIEW_DURATION = 400;
+function cloneInput(srcInput, addCssClass) {
+    let clonedInputEle = srcInput.cloneNode(true);
+    clonedInputEle.classList.add(addCssClass);
+    clonedInputEle.classList.remove('hide-focused-input');
+    clonedInputEle.setAttribute('aria-hidden', true);
+    clonedInputEle.removeAttribute('aria-labelledby');
+    clonedInputEle.tabIndex = -1;
+    return clonedInputEle;
+}
+const SCROLL_ASSIST_SPEED = 0.4;
+function getScrollAssistDuration(distanceToScroll) {
+    //return 3000;
+    distanceToScroll = Math.abs(distanceToScroll);
+    let duration = distanceToScroll / SCROLL_ASSIST_SPEED;
+    return Math.min(400, Math.max(100, duration));
+}
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;

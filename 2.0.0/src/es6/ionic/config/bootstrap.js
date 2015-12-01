@@ -13,12 +13,14 @@ import { Popup } from '../components/popup/popup';
 import { Events } from '../util/events';
 import { NavRegistry } from '../components/nav/nav-registry';
 import { Translate } from '../translation/translate';
+import { ClickBlock } from '../util/click-block';
 import { FeatureDetect } from '../util/feature-detect';
 import { TapClick } from '../components/tap-click/tap-click';
-import * as dom from '../util/dom';
-export function ionicProviders(config) {
-    let app = new IonicApp();
+import { ready, closest } from '../util/dom';
+export function ionicProviders(args = {}) {
     let platform = new Platform();
+    let navRegistry = new NavRegistry(args.pages);
+    var config = args.config;
     if (!(config instanceof Config)) {
         config = new Config(config);
     }
@@ -27,20 +29,22 @@ export function ionicProviders(config) {
     platform.navigatorPlatform(window.navigator.platform);
     platform.load();
     config.setPlatform(platform);
+    let clickBlock = new ClickBlock(config.get('clickBlock'));
     let events = new Events();
-    let tapClick = new TapClick(app, config, window, document);
     let featureDetect = new FeatureDetect();
-    setupDom(window, document, config, platform, featureDetect);
+    setupDom(window, document, config, platform, clickBlock, featureDetect);
     bindEvents(window, document, platform, events);
     // prepare the ready promise to fire....when ready
     platform.prepareReady(config);
     return [
-        provide(IonicApp, { useValue: app }),
+        IonicApp,
+        provide(ClickBlock, { useValue: clickBlock }),
         provide(Config, { useValue: config }),
         provide(Platform, { useValue: platform }),
-        provide(TapClick, { useValue: tapClick }),
         provide(FeatureDetect, { useValue: featureDetect }),
         provide(Events, { useValue: events }),
+        provide(NavRegistry, { useValue: navRegistry }),
+        TapClick,
         Form,
         Keyboard,
         OverlayController,
@@ -48,16 +52,15 @@ export function ionicProviders(config) {
         Modal,
         Popup,
         Translate,
-        NavRegistry,
         ROUTER_PROVIDERS,
         provide(LocationStrategy, { useClass: HashLocationStrategy }),
         HTTP_PROVIDERS,
     ];
 }
-function setupDom(window, document, config, platform, featureDetect) {
+function setupDom(window, document, config, platform, clickBlock, featureDetect) {
     let bodyEle = document.body;
     if (!bodyEle) {
-        return dom.ready(function () {
+        return ready(function () {
             applyBodyCss(document, config, platform);
         });
     }
@@ -83,6 +86,9 @@ function setupDom(window, document, config, platform, featureDetect) {
     if (config.get('hoverCSS') !== false) {
         bodyEle.classList.add('enable-hover');
     }
+    if (config.get('clickBlock')) {
+        clickBlock.enable();
+    }
     // run feature detection tests
     featureDetect.run(window, document);
 }
@@ -106,7 +112,7 @@ function bindEvents(window, document, platform, events) {
         if (!el) {
             return;
         }
-        var content = dom.closest(el, 'scroll-content');
+        var content = closest(el, 'scroll-content');
         if (content) {
             var scrollTo = new ScrollTo(content);
             scrollTo.start(0, 0, 300, 0);

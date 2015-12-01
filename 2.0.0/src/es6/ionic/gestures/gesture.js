@@ -28,7 +28,9 @@ export class Gesture {
         }
         this.hammertime.on(type, cb);
         (this._callbacks[type] || (this._callbacks[type] = [])).push(cb);
-        //this.element.addEventListener(type, cb);
+    }
+    off(type, cb) {
+        this.hammertime.off(type, this._callbacks[type] ? cb : null);
     }
     listen() {
         this.hammertime = Hammer(this.element, this._options);
@@ -37,7 +39,6 @@ export class Gesture {
         if (this.hammertime) {
             for (let type in this._callbacks) {
                 for (let i = 0; i < this._callbacks[type].length; i++) {
-                    //this.element.removeEventListener(type, this._callbacks[type][i]);
                     this.hammertime.off(type, this._callbacks[type]);
                 }
             }

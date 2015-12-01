@@ -14,7 +14,7 @@ export function run() {
     let userConfig =  new Config({
       mode: 'configInstance'
     })
-    let providers = ionicProviders(userConfig);
+    let providers = ionicProviders({config:userConfig});
 
     let config = providers.find(provider => provider.useValue instanceof Config).useValue;
 
@@ -22,9 +22,9 @@ export function run() {
   });
 
   it('should create new Config instance from config object in ionicProviders', () => {
-    let providers = ionicProviders({
+    let providers = ionicProviders({config: {
       mode: 'configObj'
-    });
+    }});
 
     let config = providers.find(provider => provider.useValue instanceof Config).useValue;
 
@@ -39,7 +39,7 @@ export function run() {
     config.setPlatform(platform);
 
     expect(config.get('mode')).toEqual('md');
-    expect(config.get('tabBarPlacement')).toEqual('top');
+    expect(config.get('tabbarPlacement')).toEqual('top');
   });
 
   it('should override mode settings from platforms setting', () => {
@@ -54,7 +54,43 @@ export function run() {
     config.setPlatform(platform);
 
     expect(config.get('mode')).toEqual('md');
-    expect(config.get('tabBarPlacement')).toEqual('top');
+    expect(config.get('tabbarPlacement')).toEqual('top');
+  });
+
+  it('should get boolean value from querystring', () => {
+    let config = new Config();
+    let platform = new Platform();
+    platform.url('http://biff.com/?ionicanimate=true')
+    config.setPlatform(platform);
+    expect(config.get('animate')).toEqual(true);
+
+    config = new Config();
+    platform = new Platform();
+    platform.url('http://biff.com/?ionicanimate=false')
+    config.setPlatform(platform);
+    expect(config.get('animate')).toEqual(false);
+  });
+
+  it('should get value from case insensitive querystring key', () => {
+    let config = new Config({
+      mode: 'a'
+    });
+    let platform = new Platform();
+    platform.url('http://biff.com/?ionicConfigKey=b')
+    config.setPlatform(platform);
+
+    expect(config.get('configKey')).toEqual('b');
+  });
+
+  it('should get value from querystring', () => {
+    let config = new Config({
+      mode: 'modeA'
+    });
+    let platform = new Platform();
+    platform.url('http://biff.com/?ionicmode=modeB')
+    config.setPlatform(platform);
+
+    expect(config.get('mode')).toEqual('modeB');
   });
 
   it('should override mode platform', () => {
@@ -129,27 +165,27 @@ export function run() {
 
   it('should override ios mode config with user platform setting', () => {
     let config = new Config({
-      tabBarPlacement: 'hide',
+      tabbarPlacement: 'hide',
       platforms: {
         ios: {
-          tabBarPlacement: 'top'
+          tabbarPlacement: 'top'
         }
       }
     });
     let platform = new Platform(['ios']);
     config.setPlatform(platform);
 
-    expect(config.get('tabBarPlacement')).toEqual('top');
+    expect(config.get('tabbarPlacement')).toEqual('top');
   });
 
   it('should override ios mode config with user setting', () => {
     let config = new Config({
-      tabBarPlacement: 'top'
+      tabbarPlacement: 'top'
     });
     let platform = new Platform(['ios']);
     config.setPlatform(platform);
 
-    expect(config.get('tabBarPlacement')).toEqual('top');
+    expect(config.get('tabbarPlacement')).toEqual('top');
   });
 
   it('should get setting from md mode', () => {
@@ -157,7 +193,7 @@ export function run() {
     let platform = new Platform(['android']);
     config.setPlatform(platform);
 
-    expect(config.get('tabBarPlacement')).toEqual('top');
+    expect(config.get('tabbarPlacement')).toEqual('top');
   });
 
   it('should get setting from ios mode', () => {
@@ -165,7 +201,7 @@ export function run() {
     let platform = new Platform(['ios']);
     config.setPlatform(platform);
 
-    expect(config.get('tabBarPlacement')).toEqual('bottom');
+    expect(config.get('tabbarPlacement')).toEqual('bottom');
   });
 
   it('should set/get platform setting from set()', () => {
@@ -173,10 +209,10 @@ export function run() {
     let platform = new Platform(['ios']);
     config.setPlatform(platform);
 
-    config.set('tabBarPlacement', 'bottom');
-    config.set('ios', 'tabBarPlacement', 'top');
+    config.set('tabbarPlacement', 'bottom');
+    config.set('ios', 'tabbarPlacement', 'top');
 
-    expect(config.get('tabBarPlacement')).toEqual('top');
+    expect(config.get('tabbarPlacement')).toEqual('top');
   });
 
   it('should set/get setting from set()', () => {
@@ -184,9 +220,9 @@ export function run() {
     let platform = new Platform(['ios']);
     config.setPlatform(platform);
 
-    config.set('tabBarPlacement', 'top');
+    config.set('tabbarPlacement', 'top');
 
-    expect(config.get('tabBarPlacement')).toEqual('top');
+    expect(config.get('tabbarPlacement')).toEqual('top');
   });
 
   it('should set ios platform settings from settings()', () => {

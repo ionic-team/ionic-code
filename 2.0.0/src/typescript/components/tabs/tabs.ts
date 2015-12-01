@@ -1,11 +1,14 @@
-import {Directive, ElementRef, Optional, Host, NgFor, forwardRef, ViewContainerRef} from 'angular2/angular2';
+import {Directive, ElementRef, Optional, Host, NgFor, NgIf, forwardRef, ViewContainerRef} from 'angular2/angular2';
 
 import {Ion} from '../ion';
-import {IonicApp} from '../app/app';
+import {Attr} from '../app/id';
 import {Config} from '../../config/config';
+import {Platform} from '../../platform/platform';
+import {NavController} from '../nav/nav-controller';
 import {ViewController} from '../nav/view-controller';
 import {ConfigComponent} from '../../config/decorators';
 import {Icon} from '../icon/icon';
+import {rafFrames} from '../../util/dom';
 
 
 /**
@@ -22,18 +25,18 @@ import {Icon} from '../icon/icon';
  * [properties you set on each Tab](../Tab/#tab_properties).
  *
  * To override the platform specific TabBar placement, use the
- * `tab-bar-placement` property:
+ * `tabbar-placement` property:
  *
- * ```ts
- * <ion-tabs tab-bar-placement="top">
+ * ```html
+ * <ion-tabs tabbar-placement="top">
  *   <ion-tab [root]="tabRoot"></ion-tab>
  * </ion-tabs>
  * ```
  *
- * To change the location of the icons in the TabBar, use the `tab-bar-icons`
+ * To change the location of the icons in the TabBar, use the `tabbar-icons`
  * property:
- * ```ts
- * <ion-tabs tab-bar-icons="bottom">
+ * ```html
+ * <ion-tabs tabbar-icons="bottom">
  *   <ion-tab [root]="tabRoot"></ion-tab>
  * </ion-tabs>
  * ```
@@ -61,29 +64,32 @@ import {Icon} from '../icon/icon';
 @ConfigComponent({
   selector: 'ion-tabs',
   defaultInputs: {
-    'tabBarPlacement': 'bottom',
-    'tabBarIcons': 'top',
-    'preloadTabs': true
+    'tabbarPlacement': 'bottom',
+    'tabbarIcons': 'top',
+    'tabbarStyle': 'default',
+    'preloadTabs': false
   },
   template:
     '<ion-navbar-section>' +
       '<template navbar-anchor></template>' +
     '</ion-navbar-section>' +
-    '<ion-tab-bar-section>' +
-      '<tab-bar role="tablist">' +
+    '<ion-tabbar-section>' +
+      '<tabbar role="tablist" [attr]="tabbarStyle">' +
         '<a *ng-for="#t of _tabs" [tab]="t" class="tab-button" role="tab">' +
           '<icon [name]="t.tabIcon" [is-active]="t.isSelected" class="tab-button-icon"></icon>' +
           '<span class="tab-button-text">{{t.tabTitle}}</span>' +
         '</a>' +
         '<tab-highlight></tab-highlight>' +
-      '</tab-bar>' +
-    '</ion-tab-bar-section>' +
+      '</tabbar>' +
+    '</ion-tabbar-section>' +
     '<ion-content-section>' +
       '<ng-content></ng-content>' +
     '</ion-content-section>',
   directives: [
     Icon,
     NgFor,
+    NgIf,
+    Attr,
     forwardRef(() => TabButton),
     forwardRef(() => TabHighlight),
     forwardRef(() => TabNavBarAnchor)
@@ -100,26 +106,30 @@ export class Tabs extends Ion {
    * point that "Tabs" is itself is just a page with its own instance of ViewController.
    */
  constructor(
-    app: IonicApp,
     config: Config,
     elementRef: ElementRef,
-    @Optional() viewCtrl: ViewController
+    @Optional() viewCtrl: ViewController,
+    @Optional() navCtrl: NavController,
+    private platform: Platform
   ) {
     super(elementRef, config);
-    this.app = app;
-    this.preload = config.get('preloadTabs');
+    this.parent = navCtrl;
+    this.subPages = config.get('tabSubPages');
 
-    // collection of children "Tab" instances, which extends NavController
     this._tabs = [];
+    this._id = ++tabIds;
+    this._ids = -1;
+    this._onReady = null;
 
     // Tabs may also be an actual ViewController which was navigated to
     // if Tabs is static and not navigated to within a NavController
     // then skip this and don't treat it as it's own ViewController
     if (viewCtrl) {
-      this._ready = new Promise(res => { this._isReady = res; });
+      viewCtrl.setContent(this);
+      viewCtrl.setContentRef(elementRef);
 
-      viewCtrl.onReady = () => {
-        return this._ready;
+      viewCtrl.onReady = (done) => {
+        this._onReady = done;
       };
     }
   }
@@ -127,10 +137,22 @@ export class Tabs extends Ion {
   /**
    * @private
    */
+  onInit() {
+    super.onInit();
+    this.preloadTabs = (this.preloadTabs !== "false" && this.preloadTabs !== false);
+
+    if (this._highlight) {
+      this.platform.onResize(() => {
+        this._highlight.select(this.getSelected());
+      });
+    }
+  }
+
+  /**
+   * @private
+   */
   add(tab) {
-    tab.id = ++_tabIds;
-    tab.btnId = 'tab-' + tab.id;
-    tab.panelId = 'tabpanel-' + tab.id;
+    tab.id = this._id + '-' + (++this._ids);
     this._tabs.push(tab);
 
     return (this._tabs.length === 1);
@@ -142,16 +164,8 @@ export class Tabs extends Ion {
    * @returns {TODO} TODO
    */
   select(tabOrIndex) {
-    let selectedTab = null;
-
-    if (typeof tabOrIndex === 'number') {
-      selectedTab = this.getByIndex(tabOrIndex);
-
-    } else {
-      selectedTab = tabOrIndex;
-    }
-
-    if (!selectedTab || !this.app.isEnabled()) {
+    let selectedTab = (typeof tabOrIndex === 'number' ? this.getByIndex(tabOrIndex) : tabOrIndex);
+    if (!selectedTab) {
       return Promise.reject();
     }
 
@@ -162,23 +176,38 @@ export class Tabs extends Ion {
       return this._touchActive(selectedTab);
     }
 
-    console.debug('select tab', selectedTab.id);
+    console.time('Tabs#select ' + selectedTab.id);
 
-    selectedTab.load(() => {
-      this._isReady && this._isReady();
+    let opts = {
+      animate: false
+    };
+
+    let deselectedPage;
+    if (deselectedTab) {
+      deselectedPage = deselectedTab.getActive();
+      deselectedPage && deselectedPage.willLeave();
+    }
+
+    let selectedPage = selectedTab.getActive();
+    selectedPage && selectedPage.willEnter();
+
+    selectedTab.load(opts, () => {
 
       this._tabs.forEach(tab => {
-        tab.isSelected = (tab === selectedTab);
-
-        tab._views.forEach(viewCtrl => {
-          let navbarRef = viewCtrl.navbarRef();
-          if (navbarRef) {
-            navbarRef.nativeElement.classList[tab.isSelected ? 'remove': 'add']('deselected-tab');
-          }
-        });
+        tab.setSelected(tab === selectedTab);
       });
 
-      this.highlight && this.highlight.select(selectedTab);
+      this._highlight && this._highlight.select(selectedTab);
+
+      selectedPage && selectedPage.didEnter();
+      deselectedPage && deselectedPage.didLeave();
+
+      if (this._onReady) {
+        this._onReady();
+        this._onReady = null;
+      }
+
+      console.time('Tabs#select ' + selectedTab.id);
     });
   }
 
@@ -209,51 +238,67 @@ export class Tabs extends Ion {
 
   /**
    * @private
-   * "Touch" the active tab, either going back to the root view of the tab
-   * or scrolling the tab to the top
+   * "Touch" the active tab, going back to the root view of the tab
+   * or optionally letting the tab handle the event
    */
   _touchActive(tab) {
-    let stateLen = tab.length();
+    let active = tab.getActive();
 
-    if(stateLen > 1) {
+    if (!active) {
+      return Promise.resolve();
+    }
+
+    let instance = active.instance;
+
+    // If they have a custom tab selected handler, call it
+    if (instance.tabSelected) {
+      return instance.tabSelected();
+    }
+
+    // If we're a few pages deep, pop to root
+    if (tab.length() > 1) {
       // Pop to the root view
       return tab.popToRoot();
     }
 
+    // Otherwise, if the page we're on is not our real root, reset it to our
+    // default root type
+    if (tab.root != active.componentType) {
+      return tab.setRoot(tab.root);
+    }
+
+    // And failing all of that, we do something safe and secure
     return Promise.resolve();
   }
 
 }
 
-let _tabIds = -1;
+let tabIds = -1;
 
 
 /**
  * @private
- * TODO
  */
 @Directive({
   selector: '.tab-button',
   inputs: ['tab'],
   host: {
-    '[attr.id]': 'tab.btnId',
-    '[attr.aria-controls]': 'tab.panelId',
+    '[attr.id]': 'tab._btnId',
+    '[attr.aria-controls]': 'tab._panelId',
     '[attr.aria-selected]': 'tab.isSelected',
     '[class.has-title]': 'hasTitle',
     '[class.has-icon]': 'hasIcon',
     '[class.has-title-only]': 'hasTitleOnly',
     '[class.icon-only]': 'hasIconOnly',
-    '(click)': 'onClick($event)',
+    '[class.disable-hover]': 'disHover',
+    '(click)': 'onClick()',
   }
 })
 class TabButton extends Ion {
   constructor(@Host() tabs: Tabs, config: Config, elementRef: ElementRef) {
     super(elementRef, config);
     this.tabs = tabs;
-
-    if (config.get('hoverCSS') === false) {
-      elementRef.nativeElement.classList.add('disable-hover');
-    }
+    this.disHover = (config.get('hoverCSS') === false);
   }
 
   onInit() {
@@ -264,41 +309,39 @@ class TabButton extends Ion {
     this.hasIconOnly = (this.hasIcon && !this.hasTitle);
   }
 
-  onClick(ev) {
-    ev.stopPropagation();
-    ev.preventDefault();
+  onClick() {
     this.tabs.select(this.tab);
   }
 }
 
+
 /**
  * @private
- * TODO
  */
 @Directive({
   selector: 'tab-highlight'
 })
 class TabHighlight {
   constructor(@Host() tabs: Tabs, config: Config, elementRef: ElementRef) {
-    if (config.get('mode') === 'md') {
-      tabs.highlight = this;
+    if (config.get('tabbarHighlight')) {
+      tabs._highlight = this;
       this.elementRef = elementRef;
     }
   }
 
   select(tab) {
-    setTimeout(() => {
+    rafFrames(3, () => {
       let d = tab.btn.getDimensions();
       let ele = this.elementRef.nativeElement;
       ele.style.transform = 'translate3d(' + d.left + 'px,0,0) scaleX(' + d.width + ')';
 
       if (!this.init) {
         this.init = true;
-        setTimeout(() => {
+        rafFrames(6, () => {
           ele.classList.add('animate');
-        }, 64)
+        });
       }
-    }, 32);
+    });
   }
 
 }
@@ -306,14 +349,10 @@ class TabHighlight {
 
 /**
  * @private
- * TODO
  */
 @Directive({selector: 'template[navbar-anchor]'})
 class TabNavBarAnchor {
-  constructor(
-    @Host() tabs: Tabs,
-    viewContainerRef: ViewContainerRef
-  ) {
+  constructor(@Host() tabs: Tabs, viewContainerRef: ViewContainerRef) {
     tabs.navbarContainerRef = viewContainerRef;
   }
 }

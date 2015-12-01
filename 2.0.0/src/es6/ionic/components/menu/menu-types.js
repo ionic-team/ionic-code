@@ -84,6 +84,45 @@ class MenuRevealType extends MenuType {
 }
 Menu.register('reveal', MenuRevealType);
 /**
+ * Menu Push Type
+ * The content slides over to reveal the menu underneath.
+ * The menu itself also slides over to reveal its bad self.
+ */
+class MenuPushType extends MenuType {
+    constructor(menu) {
+        super();
+        let easing = 'ease';
+        let duration = 250;
+        let contentOpenedX, menuClosedX, menuOpenedX;
+        if (menu.side == 'right') {
+            contentOpenedX = -menu.width() + 'px';
+            menuOpenedX = (menu.platform.width() - menu.width()) + 'px';
+            menuClosedX = menu.platform.width() + 'px';
+        }
+        else {
+            contentOpenedX = menu.width() + 'px';
+            menuOpenedX = '0px';
+            menuClosedX = -menu.width() + 'px';
+        }
+        // left side
+        this.open.easing(easing).duration(duration);
+        this.close.easing(easing).duration(duration);
+        let menuOpen = new Animation(menu.getMenuElement());
+        menuOpen.fromTo(TRANSLATE_X, menuClosedX, menuOpenedX);
+        this.open.add(menuOpen);
+        let contentOpen = new Animation(menu.getContentElement());
+        contentOpen.fromTo(TRANSLATE_X, '0px', contentOpenedX);
+        this.open.add(contentOpen);
+        let menuClose = new Animation(menu.getMenuElement());
+        menuClose.fromTo(TRANSLATE_X, menuOpenedX, menuClosedX);
+        this.close.add(menuClose);
+        let contentClose = new Animation(menu.getContentElement());
+        contentClose.fromTo(TRANSLATE_X, contentOpenedX, '0px');
+        this.close.add(contentClose);
+    }
+}
+Menu.register('push', MenuPushType);
+/**
  * Menu Overlay Type
  * The menu slides over the content. The content
  * itself, which is under the menu, does not move.

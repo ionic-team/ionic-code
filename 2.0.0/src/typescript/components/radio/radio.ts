@@ -1,4 +1,4 @@
-import {Component, Directive, ElementRef, Renderer, Host, Optional, NgControl, Query, QueryList} from 'angular2/angular2';
+import {Component, Directive, ElementRef, Host, Optional, NgControl, Query, QueryList} from 'angular2/angular2';
 
 import {Config} from '../../config/config';
 import {Ion} from '../ion';
@@ -16,11 +16,11 @@ import {ListHeader} from '../list/list';
  *
  * @usage
  * ```html
- * <ion-radio-group ng-control="clientside">
+ * <ion-list radio-group ng-control="clientside">
  *
- *   <ion-header>
+ *   <ion-list-header>
  *     Clientside
- *   </ion-header>
+ *   </ion-list-header>
  *
  *   <ion-radio value="ember">
  *     Ember
@@ -38,46 +38,39 @@ import {ListHeader} from '../list/list';
  *     React
  *   </ion-radio>
  *
- * </ion-radio-group>
+ * </ion-list>
  * ```
 */
-
 @Directive({
-  selector: 'ion-radio-group',
+  selector: '[radio-group]',
   host: {
     'role': 'radiogroup',
     '[attr.aria-activedescendant]': 'activeId',
-    '[attr.aria-describedby]': 'describedById'
+    '[attr.aria-describedby]': 'describedById',
   }
 })
 export class RadioGroup extends Ion {
   radios: Array<RadioButton> = [];
 
-  /**
-   * TODO
-   * @param {ElementRef} elementRef  TODO
-   * @param {Config} config  TODO
-   * @param {NgControl=} ngControl  TODO
-   * @param {QueryList<ListHeader>} headerQuery  TODO
-   */
   constructor(
     elementRef: ElementRef,
     config: Config,
-    renderer: Renderer,
     @Optional() ngControl: NgControl,
     @Query(ListHeader) private headerQuery: QueryList<ListHeader>
   ) {
     super(elementRef, config);
-    renderer.setElementClass(elementRef, 'list', true);
-
+    this.ngControl = ngControl;
     this.id = ++radioGroupIds;
     this.radioIds = -1;
     this.onChange = (_) => {};
     this.onTouched = (_) => {};
 
-    if (ngControl) ngControl.valueAccessor = this;
+    if (ngControl) this.ngControl.valueAccessor = this;
   }
 
+  /**
+   * @private
+   */
   onInit() {
     let header = this.headerQuery.first;
     if (header) {
@@ -89,6 +82,7 @@ export class RadioGroup extends Ion {
   }
 
   /**
+   * @private
    * Register the specified radio button with the radio group.
    * @param {RadioButton} radio  The radio button to register.
    */
@@ -96,13 +90,19 @@ export class RadioGroup extends Ion {
     radio.id = radio.id || ('radio-' + this.id + '-' + (++this.radioIds));
     this.radios.push(radio);
 
+    if (this.value == radio.value) {
+      radio.check(this.value);
+    }
+
     if (radio.checked) {
       this.value = radio.value;
+      this.onChange(this.value);
       this.activeId = radio.id;
     }
   }
 
   /**
+   * @private
    * Update which radio button in the group is checked, unchecking all others.
    * @param {RadioButton} checkedRadio  The radio button to check.
    */
@@ -148,8 +148,8 @@ export class RadioGroup extends Ion {
   registerOnTouched(fn) { this.onTouched = fn; }
 }
 
+
 /**
- * @name ionRadio
  * @description
  * A single radio component.
  *
@@ -179,45 +179,47 @@ export class RadioGroup extends Ion {
     '[attr.aria-checked]': 'checked',
     '[attr.aria-disabled]': 'disabled',
     '[attr.aria-labelledby]': 'labelId',
-    '(click)': 'click($event)'
+    '(click)': 'click($event)',
+    'class': 'item'
   },
   template:
-    '<ion-item-content id="{{labelId}}">' +
-      '<ng-content></ng-content>' +
-    '</ion-item-content>' +
-    '<media-radio>' +
-      '<radio-icon></radio-icon>' +
-    '</media-radio>'
+    '<div class="item-inner">' +
+      '<ion-item-content id="{{labelId}}">' +
+        '<ng-content></ng-content>' +
+      '</ion-item-content>' +
+      '<media-radio>' +
+        '<radio-icon></radio-icon>' +
+      '</media-radio>' +
+    '</div>'
 })
 export class RadioButton extends Ion {
-  /**
-   * Radio button constructor.
-   * @param {RadioGroup=} group  The parent radio group, if any.
-   * @param {ElementRef} elementRef  TODO
-   * @param {Config} config  TODO
-   */
+
   constructor(
     @Host() @Optional() group: RadioGroup,
     elementRef: ElementRef,
-    config: Config,
-    renderer: Renderer
+    config: Config
   ) {
     super(elementRef, config);
-    renderer.setElementClass(elementRef, 'item', true);
 
     this.group = group;
     this.tabIndex = 0;
   }
 
+  /**
+   * @private
+   */
   onInit() {
     super.onInit();
     this.group.registerRadio(this);
     this.labelId = 'label-' + this.id;
   }
 
-  click(ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
+  /**
+   * @private
+   */
+  click(event) {
+    event.preventDefault();
+    event.stopPropagation();
     this.check();
   }
 

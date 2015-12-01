@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { Directive, ElementRef, DynamicComponentLoader, Attribute } from 'angular2/angular2';
-import { RouterOutlet, Router } from 'angular2/router';
+import { RouterOutlet, Router, Instruction } from 'angular2/router';
 import { Nav } from './nav';
 /**
  * TODO
@@ -48,7 +48,7 @@ export let NavRouter = class extends RouterOutlet {
         var childRouter = this._parentRouter.childRouter(componentType);
         // prevent double navigations to the same view
         var lastView = this.nav.last();
-        if (lastView && lastView.componentType === componentType && lastView.params.data === nextInstruction.params) {
+        if (this.nav.isTransitioning() || lastView && lastView.componentType === componentType && lastView.params.data === nextInstruction.params) {
             return Promise.resolve();
         }
         // tell the NavController which componentType, and it's params, to navigate to
@@ -67,18 +67,18 @@ export let NavRouter = class extends RouterOutlet {
         // type could be "push" or "pop"
         // viewCtrl is Ionic's ViewController class, which has the properties "componentType" and "params"
         // only do an update if there's an actual view change
-        // if (!viewCtrl || this._activeViewId === viewCtrl.id) return;
-        // this._activeViewId = viewCtrl.id;
-        // // get the best PathRecognizer for this view's componentType
-        // let pathRecognizer = this.getPathRecognizerByComponent(viewCtrl.componentType);
-        // if (pathRecognizer) {
-        //   // generate a componentInstruction from the view's PathRecognizer and params
-        //   let componentInstruction = pathRecognizer.generate(viewCtrl.params.data);
-        //   // create an Instruction from the componentInstruction
-        //   let instruction = new Instruction(componentInstruction, null);
-        //   // update the browser's URL
-        //   this._parentRouter.navigateInstruction(instruction);
-        // }
+        if (!viewCtrl || this._activeViewId === viewCtrl.id)
+            return;
+        this._activeViewId = viewCtrl.id;
+        // get the best PathRecognizer for this view's componentType
+        let pathRecognizer = this.getPathRecognizerByComponent(viewCtrl.componentType);
+        if (pathRecognizer) {
+            // generate a componentInstruction from the view's PathRecognizer and params
+            let componentInstruction = pathRecognizer.generate(viewCtrl.params.data);
+            // create an Instruction from the componentInstruction
+            let instruction = new Instruction(componentInstruction, null);
+            this._parentRouter.navigateByInstruction(instruction);
+        }
     }
     /**
      * TODO

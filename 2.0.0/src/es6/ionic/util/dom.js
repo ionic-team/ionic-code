@@ -4,7 +4,12 @@ const nativeRaf = window.requestAnimationFrame ||
 const nativeCancelRaf = window.cancelAnimationFrame ||
     window.webkitCancelAnimationFrame ||
     window.webkitCancelRequestAnimationFrame;
-export const raf = nativeRaf || function (callback) {
+export function raf(callback) {
+    //console.log('raf', callback.toString().replace(/\s/g, '').replace('function', '').substring(0, 50));
+    //console.log('raf, isRootZone()', zone.isRootZone(), '$id', zone.$id);
+    _raf(callback);
+}
+const _raf = nativeRaf || function (callback) {
     let timeCurrent = (new Date()).getTime(), timeDelta;
     /* Dynamically set delay on a per-tick basis to match 60fps. */
     /* Technique by Erik Moller. MIT license: https://gist.github.com/paulirish/1579671 */
@@ -15,8 +20,16 @@ export const raf = nativeRaf || function (callback) {
 export const rafCancel = nativeRaf ? nativeCancelRaf : function (id) {
     return window.cancelTimeout(id);
 };
-export function rafPromise() {
-    return new Promise(resolve => raf(resolve));
+export function rafFrames(framesToWait, callback) {
+    framesToWait = Math.ceil(framesToWait);
+    if (framesToWait < 2) {
+        raf(callback);
+    }
+    else {
+        setTimeout(() => {
+            raf(callback);
+        }, (framesToWait - 1) * 17);
+    }
 }
 export let CSS = {};
 (function () {
@@ -165,23 +178,22 @@ export function hasFocusedTextInput() {
     }
     return false;
 }
-export function closest(ele, selector) {
-    var matchesFn;
-    // find vendor prefix
-    ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
-        if (typeof document.body[fn] == 'function') {
-            matchesFn = fn;
-            return true;
+let matchesFn;
+['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector'].some(fn => {
+    if (typeof document.documentElement[fn] == 'function') {
+        matchesFn = fn;
+    }
+});
+export function closest(ele, selector, checkSelf) {
+    if (ele && matchesFn) {
+        // traverse parents
+        ele = (checkSelf ? ele : ele.parentElement);
+        while (ele !== null) {
+            if (ele[matchesFn](selector)) {
+                return ele;
+            }
+            ele = ele.parentElement;
         }
-        return false;
-    });
-    // traverse parents
-    while (ele !== null) {
-        parent = ele.parentElement;
-        if (parent !== null && parent[matchesFn](selector)) {
-            return parent;
-        }
-        ele = parent;
     }
     return null;
 }
@@ -193,10 +205,10 @@ export function removeElement(ele) {
  * to reduce DOM reads. Cache is cleared on a window resize.
  * @param {TODO} ele  TODO
  */
-export function getDimensions(ion) {
+export function getDimensions(ion, ele) {
     if (!ion._dimId) {
         ion._dimId = ++dimensionIds;
-        if (ion._dimId % 100 === 0) {
+        if (ion._dimId % 1000 === 0) {
             // periodically flush dimensions
             flushDimensionCache();
         }
@@ -204,21 +216,35 @@ export function getDimensions(ion) {
     let dimensions = dimensionCache[ion._dimId];
     if (!dimensions) {
         let ele = ion.getNativeElement();
-        dimensions = dimensionCache[ion._dimId] = {
-            width: ele.offsetWidth,
-            height: ele.offsetHeight,
-            left: ele.offsetLeft,
-            top: ele.offsetTop
-        };
+        // make sure we got good values before caching
+        if (ele.offsetWidth && ele.offsetHeight) {
+            dimensions = dimensionCache[ion._dimId] = {
+                width: ele.offsetWidth,
+                height: ele.offsetHeight,
+                left: ele.offsetLeft,
+                top: ele.offsetTop
+            };
+        }
+        else {
+            // do not cache bad values
+            return { width: 0, height: 0, left: 0, top: 0 };
+        }
     }
     return dimensions;
 }
 export function windowDimensions() {
     if (!dimensionCache.win) {
-        dimensionCache.win = {
-            width: window.innerWidth,
-            height: window.innerHeight
-        };
+        // make sure we got good values before caching
+        if (window.innerWidth && window.innerHeight) {
+            dimensionCache.win = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+        }
+        else {
+            // do not cache bad values
+            return { width: 0, height: 0 };
+        }
     }
     return dimensionCache.win;
 }

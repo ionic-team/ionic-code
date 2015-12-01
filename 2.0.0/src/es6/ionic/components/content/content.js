@@ -12,12 +12,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, ElementRef, Optional } from 'angular2/angular2';
+import { Component, ElementRef, Optional, NgZone } from 'angular2/angular2';
 import { Ion } from '../ion';
 import { Config } from '../../config/config';
+import { raf } from '../../util/dom';
 import { Keyboard } from '../../util/keyboard';
 import { ViewController } from '../nav/view-controller';
-import { Animation } from '../../animations/animation';
 import { ScrollTo } from '../../animations/scroll-to';
 /**
  * The Content component provides an easy to use content area that can be configured to use Ionic's custom Scroll View, or the built in overflow scrolling of the browser.
@@ -39,16 +39,17 @@ export let Content = class extends Ion {
      * @param {ElementRef} elementRef  A reference to the component's DOM element.
      * @param {Config} config  The config object to change content's default settings.
      */
-    constructor(elementRef, config, keyboard, viewCtrl) {
+    constructor(elementRef, config, keyboard, viewCtrl, _zone) {
         super(elementRef, config);
+        this._zone = _zone;
         this.scrollPadding = 0;
         this.keyboard = keyboard;
         if (viewCtrl) {
             viewCtrl.setContent(this);
+            viewCtrl.setContentRef(elementRef);
         }
     }
     /**
-     * TODO
      * @private
      */
     onInit() {
@@ -70,6 +71,30 @@ export let Content = class extends Ion {
         return () => {
             this.scrollElement.removeEventListener('scroll', handler);
         };
+    }
+    onScrollEnd(callback) {
+        let lastScrollTop = null;
+        let framesUnchanged = 0;
+        let scrollElement = this.scrollElement;
+        function next() {
+            let currentScrollTop = scrollElement.scrollTop;
+            if (lastScrollTop !== null) {
+                if (Math.round(lastScrollTop) === Math.round(currentScrollTop)) {
+                    framesUnchanged++;
+                }
+                else {
+                    framesUnchanged = 0;
+                }
+                if (framesUnchanged > 9) {
+                    return callback();
+                }
+            }
+            lastScrollTop = currentScrollTop;
+            raf(() => {
+                raf(next);
+            });
+        }
+        setTimeout(next, 100);
     }
     /**
      * Adds the specified touchmove handler to the content's scroll element.
@@ -110,6 +135,7 @@ export let Content = class extends Ion {
         return this._scrollTo.start(0, 0, 300, 0);
     }
     /**
+     * @private
      * Returns the content and scroll elements' dimensions.
      * @returns {Object} dimensions  The content and scroll elements' dimensions
      * {Number} dimensions.contentHeight  content offsetHeight
@@ -124,7 +150,6 @@ export let Content = class extends Ion {
      * {Number} dimensions.scrollWidth  scroll scrollWidth
      * {Number} dimensions.scrollLeft  scroll scrollLeft
      * {Number} dimensions.scrollRight  scroll scrollLeft + scrollWidth
-     * TODO: figure out how to get this to work
      */
     getDimensions() {
         let scrollElement = this.scrollElement;
@@ -154,23 +179,6 @@ export let Content = class extends Ion {
             console.debug('addScrollPadding', newScrollPadding);
             this.scrollPadding = newScrollPadding;
             this.scrollElement.style.paddingBottom = newScrollPadding + 'px';
-            if (!this.keyboardPromise) {
-                console.debug('add scroll keyboard close callback', newScrollPadding);
-                this.keyboardPromise = this.keyboard.onClose(() => {
-                    console.debug('scroll keyboard closed', newScrollPadding);
-                    if (this) {
-                        if (this.scrollPadding && this.scrollElement) {
-                            let close = new Animation(this.scrollElement);
-                            close
-                                .duration(150)
-                                .fromTo('paddingBottom', this.scrollPadding + 'px', '0px')
-                                .play();
-                        }
-                        this.scrollPadding = 0;
-                        this.keyboardPromise = null;
-                    }
-                });
-            }
         }
     }
 };
@@ -182,6 +190,6 @@ Content = __decorate([
             '</scroll-content>'
     }),
     __param(3, Optional()), 
-    __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object, (typeof (_c = typeof Keyboard !== 'undefined' && Keyboard) === 'function' && _c) || Object, (typeof (_d = typeof ViewController !== 'undefined' && ViewController) === 'function' && _d) || Object])
+    __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object, (typeof (_c = typeof Keyboard !== 'undefined' && Keyboard) === 'function' && _c) || Object, (typeof (_d = typeof ViewController !== 'undefined' && ViewController) === 'function' && _d) || Object, (typeof (_e = typeof NgZone !== 'undefined' && NgZone) === 'function' && _e) || Object])
 ], Content);
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;

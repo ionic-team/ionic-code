@@ -1,11 +1,6 @@
 
-// Theme
-@import "themes/default";
-
-
-// Globals
+// Core App
 @import
-  "util/mixins",
   "components/app/normalize",
   "components/app/structure",
   "components/app/typography",
@@ -24,10 +19,10 @@
   "components/button/button-icon",
   "components/button/button-fab",
   "components/checkbox/checkbox",
-  "components/content/content",
   "components/icon/icon",
   "components/item/item",
   "components/item/item-media",
+  "components/item/item-sliding",
   "components/grid/grid",
   "components/text-input/text-input",
   "components/text-input/label",
@@ -36,25 +31,23 @@
   "components/menu/menu",
   "components/menu/menu-types",
   "components/modal/modal",
-  "components/nav-bar/nav-bar",
+  "components/navbar/navbar",
   "components/popup/popup",
   "components/slides/slides",
   "components/radio/radio",
   "components/scroll/scroll",
   "components/scroll/pull-to-refresh",
   "components/scroll/scroll",
-  "components/search-bar/search-bar",
+  "components/searchbar/searchbar",
   "components/segment/segment",
   "components/switch/switch",
   "components/tabs/tabs";
 
 
 // Ionicons
+// soon to be replaced with SVGs
+$font-path: "../fonts" !default;
 $ionicons: true !default;
 @if ($ionicons) {
   @import "fonts/ionicons";
 }
-
-
-// Engine
-@import  "platform/cordova";

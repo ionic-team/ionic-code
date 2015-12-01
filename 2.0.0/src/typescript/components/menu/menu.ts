@@ -1,9 +1,8 @@
-import {forwardRef, Directive, Host, EventEmitter, ElementRef} from 'angular2/angular2';
+import {Component, forwardRef, Directive, Host, EventEmitter, ElementRef} from 'angular2/angular2';
 
 import {Ion} from '../ion';
 import {IonicApp} from '../app/app';
 import {Config} from '../../config/config';
-import {ConfigComponent} from '../../config/decorators';
 import {Platform} from '../../platform/platform';
 import {Keyboard} from '../../util/keyboard';
 import * as gestures from  './menu-gestures';
@@ -44,20 +43,24 @@ import * as gestures from  './menu-gestures';
  * <ion-menu [content]="contentRef" type="overlay"></ion-menu>
  * ```
  */
-@ConfigComponent({
+@Component({
   selector: 'ion-menu',
   inputs: [
     'content',
     'dragThreshold',
-    'id'
+    'id',
+    'side',
+    'type'
   ],
   defaultInputs: {
     'side': 'left',
-    'type': 'reveal'
+    'menuType': 'reveal'
   },
   outputs: ['opening'],
   host: {
-    'role': 'navigation'
+    'role': 'navigation',
+    '[attr.side]': 'side',
+    '[attr.type]': 'type'
   },
   template: '<ng-content></ng-content><backdrop tappable disable-activated></backdrop>',
   directives: [forwardRef(() => MenuBackdrop)]
@@ -78,7 +81,8 @@ export class Menu extends Ion {
 
     this.opening = new EventEmitter('opening');
     this.isOpen = false;
-    this._disableTime = 0;
+    this._preventTime = 0;
+    this.isEnabled = true;
   }
 
   /**
@@ -91,6 +95,10 @@ export class Menu extends Ion {
 
     if (!this._cntEle) {
       return console.error('Menu: must have a [content] element to listen for drag events on. Example:\n\n<ion-menu [content]="content"></ion-menu>\n\n<ion-nav #content></ion-nav>');
+    }
+
+    if (this.side !== 'left' && this.side !== 'right') {
+      this.side = 'left';
     }
 
     if (!this.id) {
@@ -107,12 +115,17 @@ export class Menu extends Ion {
 
     let self = this;
     this.onContentClick = function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      self.close();
+      if (self.isEnabled) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self.close();
+      }
     };
   }
 
+  /**
+   * @private
+   */
   _initGesture() {
     switch(this.side) {
       case 'right':
@@ -123,20 +136,30 @@ export class Menu extends Ion {
         this._gesture = new gestures.LeftMenuGesture(this);
         break;
     }
+    this._targetGesture = new gestures.TargetGesture(this);
   }
 
+  /**
+   * @private
+   */
   _initType(type) {
-    type = type && type.trim().toLowerCase() || FALLBACK_MENU_TYPE;
-
-    let menuTypeCls = menuTypes[type];
-
-    if (!menuTypeCls) {
-      type = FALLBACK_MENU_TYPE;
-      menuTypeCls = menuTypes[type];
+    type = type && type.trim().toLowerCase();
+    if (!type) {
+      type = this.config.get('menuType');
     }
-
-    this._type = new menuTypeCls(this);
     this.type = type;
+  }
+
+  _getType() {
+    if (!this._type) {
+      this._type = new menuTypes[this.type](this);
+
+      if (this.config.get('animate') === false) {
+        this._type.open.duration(33);
+        this._type.close.duration(33);
+      }
+    }
+    return this._type;
   }
 
   /**
@@ -145,82 +168,108 @@ export class Menu extends Ion {
    * @return {Promise} TODO
    */
   setOpen(shouldOpen) {
-    // _isDisabled is used to prevent unwanted opening/closing after swiping open/close
+    // _isPrevented is used to prevent unwanted opening/closing after swiping open/close
     // or swiping open the menu while pressing down on the menu-toggle button
-    if (shouldOpen === this.isOpen || this._isDisabled()) {
+    if (shouldOpen === this.isOpen || this._isPrevented()) {
       return Promise.resolve();
     }
 
     this._before();
 
-    return this._type.setOpen(shouldOpen).then(() => {
+    return this._getType().setOpen(shouldOpen).then(() => {
       this._after(shouldOpen);
     });
   }
 
+  /**
+   * @private
+   */
   setProgressStart() {
     // user started swiping the menu open/close
-    if (this._isDisabled()) return;
+    if (this._isPrevented() || !this.isEnabled) return;
 
     this._before();
 
-    this._type.setProgressStart(this.isOpen);
+    this._getType().setProgressStart(this.isOpen);
   }
 
+  /**
+   * @private
+   */
   setProgess(value) {
     // user actively dragging the menu
-    this._disable();
-    this.app.setTransitioning(true);
-    this._type.setProgess(value);
-  }
-
-  setProgressEnd(shouldComplete) {
-    // user has finished dragging the menu
-    this._disable();
-    this.app.setTransitioning(true);
-    this._type.setProgressEnd(shouldComplete).then(isOpen => {
-      this._after(isOpen);
-    });
-  }
-
-  _before() {
-    // this places the menu into the correct location before it animates in
-    // this css class doesn't actually kick off any animations
-    this.getNativeElement().classList.add('show-menu');
-    this.getBackdropElement().classList.add('show-backdrop');
-
-    this._disable();
-    this.app.setTransitioning(true);
-    this.keyboard.close();
-  }
-
-  _after(isOpen) {
-    // keep opening/closing the menu disabled for a touch more yet
-    this._disable();
-    this.app.setTransitioning(false);
-
-    this.isOpen = isOpen;
-
-    this._cntEle.classList[isOpen ? 'add' : 'remove']('menu-content-open');
-
-    this._cntEle.removeEventListener('click', this.onContentClick);
-    if (isOpen) {
-      this._cntEle.addEventListener('click', this.onContentClick);
-
-    } else {
-      this.getNativeElement().classList.remove('show-menu');
-      this.getBackdropElement().classList.remove('show-backdrop');
+    if (this.isEnabled) {
+      this._prevent();
+      this._getType().setProgess(value);
+      this.opening.next(value);
     }
   }
 
-  _disable() {
-    // used to prevent unwanted opening/closing after swiping open/close
-    // or swiping open the menu while pressing down on the menu-toggle
-    this._disableTime = Date.now() + 20;
+  /**
+   * @private
+   */
+  setProgressEnd(shouldComplete) {
+    // user has finished dragging the menu
+    if (this.isEnabled) {
+      this._prevent();
+      this._getType().setProgressEnd(shouldComplete).then(isOpen => {
+        this._after(isOpen);
+      });
+    }
   }
 
-  _isDisabled() {
-    return this._disableTime > Date.now();
+  /**
+   * @private
+   */
+  _before() {
+    // this places the menu into the correct location before it animates in
+    // this css class doesn't actually kick off any animations
+    if (this.isEnabled) {
+      this.getNativeElement().classList.add('show-menu');
+      this.getBackdropElement().classList.add('show-backdrop');
+
+      this._prevent();
+      this.keyboard.close();
+    }
+  }
+
+  /**
+   * @private
+   */
+  _after(isOpen) {
+    // keep opening/closing the menu disabled for a touch more yet
+    if (this.isEnabled) {
+      this._prevent();
+
+      this.isOpen = isOpen;
+
+      this._cntEle.classList[isOpen ? 'add' : 'remove']('menu-content-open');
+
+      this._cntEle.removeEventListener('click', this.onContentClick);
+      if (isOpen) {
+        this._cntEle.addEventListener('click', this.onContentClick);
+
+      } else {
+        this.getNativeElement().classList.remove('show-menu');
+        this.getBackdropElement().classList.remove('show-backdrop');
+      }
+    }
+  }
+
+  /**
+   * @private
+   */
+  _prevent() {
+    // used to prevent unwanted opening/closing after swiping open/close
+    // or swiping open the menu while pressing down on the menu-toggle
+    this._preventTime = Date.now() + 20;
+  }
+
+  /**
+   * @private
+   */
+  _isPrevented() {
+    return this._preventTime > Date.now();
   }
 
   /**
@@ -248,24 +297,28 @@ export class Menu extends Ion {
   }
 
   /**
-   * TODO
-   * @return {Element} The Menu element.
+   * @private
+   */
+  enable(shouldEnable) {
+    this.isEnabled = shouldEnable;
+  }
+
+  /**
+   * @private
    */
   getMenuElement() {
     return this.getNativeElement();
   }
 
   /**
-   * TODO
-   * @return {Element} The Menu's associated content element.
+   * @private
    */
   getContentElement() {
     return this._cntEle;
   }
 
   /**
-   * TODO
-   * @return {Element} The Menu's backdrop element.
+   * @private
    */
   getBackdropElement() {
     return this.backdrop.elementRef.nativeElement;
@@ -275,9 +328,13 @@ export class Menu extends Ion {
     menuTypes[name] = cls;
   }
 
+  /**
+   * @private
+   */
   onDestroy() {
     this.app.unregister(this.id);
     this._gesture && this._gesture.destroy();
+    this._targetGesture && this._targetGesture.destroy();
     this._type && this._type.onDestroy();
     this._cntEle = null;
   }
@@ -285,12 +342,8 @@ export class Menu extends Ion {
 }
 
 let menuTypes = {};
-const FALLBACK_MENU_TYPE = 'reveal';
 
 
-/**
- * TODO
- */
 @Directive({
   selector: 'backdrop',
   host: {
@@ -298,10 +351,7 @@ const FALLBACK_MENU_TYPE = 'reveal';
   }
 })
 class MenuBackdrop {
-  /**
-   * TODO
-   * @param {Menu} menu  TODO
-   */
+
   constructor(@Host() menu: Menu, elementRef: ElementRef) {
     this.menu = menu;
     this.elementRef = elementRef;
@@ -309,8 +359,7 @@ class MenuBackdrop {
   }
 
   /**
-   * TODO
-   * @param {TODO} event  TODO
+   * @private
    */
   clicked(ev) {
     console.debug('backdrop clicked')

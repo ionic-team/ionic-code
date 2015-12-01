@@ -85,7 +85,7 @@ var NavRouter = (function (_RouterOutlet) {
             var childRouter = this._parentRouter.childRouter(componentType);
             // prevent double navigations to the same view
             var lastView = this.nav.last();
-            if (lastView && lastView.componentType === componentType && lastView.params.data === nextInstruction.params) {
+            if (this.nav.isTransitioning() || lastView && lastView.componentType === componentType && lastView.params.data === nextInstruction.params) {
                 return Promise.resolve();
             }
             // tell the NavController which componentType, and it's params, to navigate to
@@ -104,30 +104,29 @@ var NavRouter = (function (_RouterOutlet) {
          */
     }, {
         key: "stateChange",
-        value: function stateChange(type, viewCtrl) {}
-        // stateChange is called by Ionic's NavController
-        // type could be "push" or "pop"
-        // viewCtrl is Ionic's ViewController class, which has the properties "componentType" and "params"
-        // only do an update if there's an actual view change
-        // if (!viewCtrl || this._activeViewId === viewCtrl.id) return;
-        // this._activeViewId = viewCtrl.id;
-        // // get the best PathRecognizer for this view's componentType
-        // let pathRecognizer = this.getPathRecognizerByComponent(viewCtrl.componentType);
-        // if (pathRecognizer) {
-        //   // generate a componentInstruction from the view's PathRecognizer and params
-        //   let componentInstruction = pathRecognizer.generate(viewCtrl.params.data);
-        //   // create an Instruction from the componentInstruction
-        //   let instruction = new Instruction(componentInstruction, null);
-        //   // update the browser's URL
-        //   this._parentRouter.navigateInstruction(instruction);
-        // }
+        value: function stateChange(type, viewCtrl) {
+            // stateChange is called by Ionic's NavController
+            // type could be "push" or "pop"
+            // viewCtrl is Ionic's ViewController class, which has the properties "componentType" and "params"
+            // only do an update if there's an actual view change
+            if (!viewCtrl || this._activeViewId === viewCtrl.id) return;
+            this._activeViewId = viewCtrl.id;
+            // get the best PathRecognizer for this view's componentType
+            var pathRecognizer = this.getPathRecognizerByComponent(viewCtrl.componentType);
+            if (pathRecognizer) {
+                // generate a componentInstruction from the view's PathRecognizer and params
+                var componentInstruction = pathRecognizer.generate(viewCtrl.params.data);
+                // create an Instruction from the componentInstruction
+                var instruction = new _angular2Router.Instruction(componentInstruction, null);
+                this._parentRouter.navigateByInstruction(instruction);
+            }
+        }
 
         /**
          * TODO
          * @param {TODO} componentType  TODO
          * @returns {TODO} TODO
          */
-
     }, {
         key: "getPathRecognizerByComponent",
         value: function getPathRecognizerByComponent(componentType) {

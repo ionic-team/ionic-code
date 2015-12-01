@@ -1,31 +1,38 @@
-System.register("ionic/components/modal/modal", ["angular2/angular2", "../overlay/overlay-controller", "../../config/config", "../../animations/animation", "../../config/decorators", "ionic/util"], function (_export) {
+System.register("ionic/components/modal/modal", ["angular2/angular2", "../overlay/overlay-controller", "../../config/config", "../../animations/animation", "ionic/util"], function (_export) {
     /**
-     * The Modal is a content pane that can go over the user's main view temporarily.
-     * Usually used for making a choice or editing an item.
+     * The Modal is a content pane that can go over the user's current page.
+     * Usually used for making a choice or editing an item. A modal can be opened
+     * similar to how NavController#push works, where it is passed a Page component,
+     * along with optional Page params, and options for presenting the modal.
      *
      * @usage
      * ```ts
      * class MyApp {
      *
-     *  constructor(modal: Modal, app: IonicApp, Config: Config) {
+     *  constructor(modal: Modal) {
      *    this.modal = modal;
      *  }
      *
-     *  openModal() {
-     *    this.modal.open(ContactModal, {
+     *  openContactModal() {
+     *    this.modal.open(ContactUs);
+     *  }
+     *
+     *  openProfileModal() {
+     *    this.modal.open(Profile, { userId: 8675309 }, {
      *      enterAnimation: 'my-fade-in',
      *      leaveAnimation: 'my-fade-out',
-     *      handle: 'my-modal'
+     *      handle: 'profile-modal'
      *    });
      *  }
+     *
      * }
      * ```
      */
     "use strict";
 
-    var Injectable, OverlayController, Config, Animation, makeComponent, util, __decorate, __metadata, Modal, OVERLAY_TYPE, ModalSlideIn, ModalSlideOut, ModalMDSlideIn, ModalMDSlideOut, _a, _b;
+    var Injectable, OverlayController, Config, Animation, extend, __decorate, __metadata, Modal, OVERLAY_TYPE, ModalSlideIn, ModalSlideOut, ModalMDSlideIn, ModalMDSlideOut, _a, _b;
 
-    var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+    var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -42,10 +49,8 @@ System.register("ionic/components/modal/modal", ["angular2/angular2", "../overla
             Config = _configConfig.Config;
         }, function (_animationsAnimation) {
             Animation = _animationsAnimation.Animation;
-        }, function (_configDecorators) {
-            makeComponent = _configDecorators.makeComponent;
         }, function (_ionicUtil) {
-            util = _ionicUtil;
+            extend = _ionicUtil.extend;
         }],
         execute: function () {
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -75,40 +80,57 @@ System.register("ionic/components/modal/modal", ["angular2/angular2", "../overla
                     _classCallCheck(this, Modal);
 
                     this.ctrl = ctrl;
-                    this._defaults = {
-                        enterAnimation: config.get('modalEnter') || 'modal-slide-in',
-                        leaveAnimation: config.get('modalLeave') || 'modal-slide-out'
-                    };
+                    this.config = config;
                 }
 
                 /**
-                 * TODO
-                 * @param {Type} componentType  TODO
-                 * @param {Object} [opts={}]  TODO
-                 * @returns {TODO} TODO
+                 * Opens a new modal using the page component is was pass as the first
+                 * argument. This is similar to how NavController's `push` method works.
+                 * Currently you must have `<ion-overlay>` in the @App component's template
+                 * for the modal to work correctly. (This is something that will
+                 * be hopefully be removed in the near future.)
+                 * @param pageComponent  The Page component to load in the modal.
+                 * @param {Object} [params={}]  Optional data which can be passed to the page
+                 * component, which can be read from the constructor's `NavParams`.
+                 * @param {Object} [opts={}]  Additional options for this one modal instance of.
+                 * Options include `enterAnimation` and `leaveAnimation`, which
+                 * allows customization of which animation to use.
+                 * @returns {Promise} Returns a promise which resolves when the modal has
+                 * loaded and its entering animation has completed. The resolved promise's
+                 * value is the instance of the newly created modal.
                  */
 
                 _createClass(Modal, [{
                     key: "open",
-                    value: function open(componentType) {
-                        var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+                    value: function open(pageComponent) {
+                        var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+                        var opts = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
-                        var modalComponent = makeComponent(componentType, {
-                            selector: 'ion-modal'
-                        });
-                        return this.ctrl.open(OVERLAY_TYPE, modalComponent, util.extend(this._defaults, opts));
+                        opts = extend({
+                            pageType: OVERLAY_TYPE,
+                            enterAnimation: this.config.get('modalEnter'),
+                            leaveAnimation: this.config.get('modalLeave')
+                        }, opts);
+                        return this.ctrl.open(pageComponent, params, opts);
                     }
 
                     /**
-                     * TODO
-                     * @param {TODO} handle  TODO
-                     * @returns {TODO} TODO
+                     * Get the instance of a modal. This is usually helpful to getting ahold of a
+                     * certain modal, from anywhere within the app, and closing it. By calling
+                     * just `get()` without a `handle` argument, it'll return the active modal
+                     * on top (it is possible to have multipe modals opened at the same time).
+                     * If getting just the active modal isn't enough, when creating
+                     * a modal, it's options can be given a `handle`, which is simply a string-based
+                     * name for the modal instance. You can later get a reference to that modal's
+                     * instance by calling this method with the same handle name.
+                     * @param  [handle]  Optional string name given in the modal's options when it was opened.
+                     * @returns Returns the instance of the modal if it is found, otherwise `null`.
                      */
                 }, {
                     key: "get",
                     value: function get(handle) {
                         if (handle) {
-                            return this.ctrl.getByHandle(handle, OVERLAY_TYPE);
+                            return this.ctrl.getByHandle(handle);
                         }
                         return this.ctrl.getByType(OVERLAY_TYPE);
                     }
@@ -129,11 +151,11 @@ System.register("ionic/components/modal/modal", ["angular2/angular2", "../overla
             ModalSlideIn = (function (_Animation) {
                 _inherits(ModalSlideIn, _Animation);
 
-                function ModalSlideIn(element) {
+                function ModalSlideIn(enteringView, leavingView, opts) {
                     _classCallCheck(this, ModalSlideIn);
 
-                    _get(Object.getPrototypeOf(ModalSlideIn.prototype), "constructor", this).call(this, element);
-                    this.easing('cubic-bezier(0.36,0.66,0.04,1)').duration(400).fromTo('translateY', '100%', '0%');
+                    _get(Object.getPrototypeOf(ModalSlideIn.prototype), "constructor", this).call(this, enteringView.pageRef(), opts);
+                    this.easing('cubic-bezier(0.36,0.66,0.04,1)').duration(400).fromTo('translateY', '100%', '0%').before.addClass('show-page');
                 }
 
                 return ModalSlideIn;
@@ -144,10 +166,10 @@ System.register("ionic/components/modal/modal", ["angular2/angular2", "../overla
             ModalSlideOut = (function (_Animation2) {
                 _inherits(ModalSlideOut, _Animation2);
 
-                function ModalSlideOut(element) {
+                function ModalSlideOut(enteringView, leavingView, opts) {
                     _classCallCheck(this, ModalSlideOut);
 
-                    _get(Object.getPrototypeOf(ModalSlideOut.prototype), "constructor", this).call(this, element);
+                    _get(Object.getPrototypeOf(ModalSlideOut.prototype), "constructor", this).call(this, leavingView.pageRef(), opts);
                     this.easing('ease-out').duration(250).fromTo('translateY', '0%', '100%');
                 }
 
@@ -159,11 +181,11 @@ System.register("ionic/components/modal/modal", ["angular2/angular2", "../overla
             ModalMDSlideIn = (function (_Animation3) {
                 _inherits(ModalMDSlideIn, _Animation3);
 
-                function ModalMDSlideIn(element) {
+                function ModalMDSlideIn(enteringView, leavingView, opts) {
                     _classCallCheck(this, ModalMDSlideIn);
 
-                    _get(Object.getPrototypeOf(ModalMDSlideIn.prototype), "constructor", this).call(this, element);
-                    this.easing('cubic-bezier(0.36,0.66,0.04,1)').duration(280).fromTo('translateY', '40px', '0px').fadeIn();
+                    _get(Object.getPrototypeOf(ModalMDSlideIn.prototype), "constructor", this).call(this, enteringView.pageRef(), opts);
+                    this.easing('cubic-bezier(0.36,0.66,0.04,1)').duration(280).fromTo('translateY', '40px', '0px').fadeIn().before.addClass('show-page');
                 }
 
                 return ModalMDSlideIn;
@@ -174,10 +196,10 @@ System.register("ionic/components/modal/modal", ["angular2/angular2", "../overla
             ModalMDSlideOut = (function (_Animation4) {
                 _inherits(ModalMDSlideOut, _Animation4);
 
-                function ModalMDSlideOut(element) {
+                function ModalMDSlideOut(enteringView, leavingView, opts) {
                     _classCallCheck(this, ModalMDSlideOut);
 
-                    _get(Object.getPrototypeOf(ModalMDSlideOut.prototype), "constructor", this).call(this, element);
+                    _get(Object.getPrototypeOf(ModalMDSlideOut.prototype), "constructor", this).call(this, leavingView.pageRef(), opts);
                     this.duration(200).easing('cubic-bezier(0.47,0,0.745,0.715)').fromTo('translateY', '0px', '40px').fadeOut();
                 }
 

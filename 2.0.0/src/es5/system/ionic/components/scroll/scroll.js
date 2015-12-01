@@ -50,12 +50,6 @@ System.register("ionic/components/scroll/scroll", ["angular2/angular2", "../ion"
             Scroll = (function (_Ion) {
                 _inherits(Scroll, _Ion);
 
-                /**
-                 * TODO
-                 * @param {ElementRef} elementRef  TODO
-                 * @param {Config} config  TODO
-                 */
-
                 function Scroll(elementRef, Config) {
                     _classCallCheck(this, Scroll);
 
@@ -63,6 +57,10 @@ System.register("ionic/components/scroll/scroll", ["angular2/angular2", "../ion"
                     this.maxScale = 3;
                     this.zoomDuration = 250;
                 }
+
+                /**
+                 * @private
+                 */
 
                 _createClass(Scroll, [{
                     key: "onInit",

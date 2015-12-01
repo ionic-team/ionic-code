@@ -49,7 +49,9 @@ var Platform = (function () {
     // **********************************************
     /**
      * @param {string} platformName
-     * @returns {bool}
+     * @returns {bool} returns true/false based on platform you place
+     * @description
+     * Depending on the platform name, isPlatform will return true or flase
      *
      * ```
      * import {Platform} 'ionic/ionic';
@@ -99,21 +101,23 @@ var Platform = (function () {
         }
 
         /**
-         * TODO
-         * @param {string} platformName
-         * @returns {object}
+         * @param {string} optional platformName
+         * @returns {object} An object with various platform info
+         * - `{object=} `cordova`
+         * - `{object=}` `platformOS` {str: "9.1", num: 9.1, major: 9, minor: 1}
+         * - `{object=} `deviceName` Returns the name of the device
+         * - `{object=}` `device platform` R
          * @description
-         * Returns an object containing the os version
+         * Returns an object conta
          *
          * ```
          * import {Platform} 'ionic/ionic';
          * export MyClass {
          *    constructor(platform: Platform){
          *      this.platform = platform;
-         *      console.log(this.platform.versions('android'));
-         *      // Returns an object with the os version as a string,
-         *      // The Major version as a string
-         *      // The Minor version as a string
+         *      console.log(this.platform.versions());
+         *      // or pass in a platform name
+         *      console.log(this.platform.versions('ios'));
          *    }
          * }
          * ```
@@ -129,9 +133,18 @@ var Platform = (function () {
             // get all the platforms that have a valid parsed version
             return this._versions;
         }
+    }, {
+        key: 'version',
+        value: function version() {
+            for (var platformName in this._versions) {
+                if (this._versions[platformName]) {
+                    return this._versions[platformName];
+                }
+            }
+            return {};
+        }
 
         /**
-         * TODO
          * @returns {promise}
          * @description
          * Returns a promise when the platform is ready and native functionality can be called
@@ -229,7 +242,7 @@ var Platform = (function () {
         key: 'navigatorPlatform',
         value: function navigatorPlatform(val) {
             if (arguments.length) {
-                this._bPlt = val;
+                this._bPlt = (val || '').toLowerCase();
             }
             return this._bPlt || '';
         }

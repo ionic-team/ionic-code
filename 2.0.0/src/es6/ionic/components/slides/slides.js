@@ -12,7 +12,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Directive, Component, ElementRef, Host, NgClass } from 'angular2/angular2';
+import { Directive, Component, ElementRef, Host, NgClass, EventEmitter } from 'angular2/angular2';
 import { Ion } from '../ion';
 import { Animation } from 'ionic/animations/animation';
 import { Gesture } from 'ionic/gestures/gesture';
@@ -46,6 +46,7 @@ export let Slides = class extends Ion {
         this.rapidUpdate = util.debounce(() => {
             this.update();
         }, 10);
+        this.slideChanged = new EventEmitter('slideChanged');
     }
     onInit() {
         if (!this.options) {
@@ -53,6 +54,7 @@ export let Slides = class extends Ion {
         }
         this.showPager = util.isTrueProperty(this.pager);
         var options = util.defaults({
+            loop: this.loop,
             pagination: '.swiper-pagination',
             paginationClickable: true,
             lazyLoading: true,
@@ -82,6 +84,7 @@ export let Slides = class extends Ion {
             return this.options.onSlideChangeStart && this.options.onSlideChangeStart(swiper);
         };
         options.onSlideChangeEnd = (swiper) => {
+            this.slideChanged.next(swiper);
             return this.options.onSlideChangeEnd && this.options.onSlideChangeEnd(swiper);
         };
         options.onLazyImageLoad = (swiper, slide, img) => {
@@ -360,6 +363,7 @@ Slides = __decorate([
     Component({
         selector: 'ion-slides',
         inputs: [
+            'autoplay',
             'loop',
             'index',
             'bounce',
@@ -368,6 +372,9 @@ Slides = __decorate([
             'zoom',
             'zoomDuration',
             'zoomMax'
+        ],
+        outputs: [
+            'slideChanged'
         ],
         template: '<div class="swiper-container">' +
             '<div class="swiper-wrapper">' +

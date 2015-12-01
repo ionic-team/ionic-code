@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+exports.isActivatable = isActivatable;
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _angular2Angular2 = require('angular2/angular2');
@@ -20,6 +22,9 @@ var _activator = require('./activator');
 
 var _ripple = require('./ripple');
 
+/**
+ * @private
+ */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {
@@ -41,232 +46,189 @@ var __metadata = undefined && undefined.__metadata || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var TapClick = (function () {
-    function TapClick(app, config) {
+    function TapClick(app, config, zone) {
+        var _this = this;
+
         _classCallCheck(this, TapClick);
 
-        var self = this;
-        self.app = app;
-        self.pointerTolerance = 4;
-        self.lastTouch = 0;
-        self.lastActivated = 0;
-        self.disableClick = 0;
-        self.disableClickLimit = 1000;
-        if (config.get('mdRipple')) {
-            self.activator = new _ripple.RippleActivator(app, config);
-        } else {
-            self.activator = new _activator.Activator(app, config);
+        this.app = app;
+        this.zone = zone;
+        this.lastTouch = 0;
+        this.disableClick = 0;
+        this.lastActivated = 0;
+        if (config.get('activator') == 'ripple') {
+            this.activator = new _ripple.RippleActivator(app, config, zone);
+        } else if (config.get('activator') == 'highlight') {
+            this.activator = new _activator.Activator(app, config, zone);
         }
-        self.enable(config.get('tapPolyfill') !== false);
-        function bindDom(type, listener, useCapture) {
-            document.addEventListener(type, listener, useCapture);
-        }
-        bindDom('click', function (ev) {
-            self.click(ev);
-        }, true);
-        bindDom('touchstart', function (ev) {
-            self.lastTouch = Date.now();
-            self.pointerStart(ev);
+        this.usePolyfill = config.get('tapPolyfill') === true;
+        zone.runOutsideAngular(function () {
+            addListener('click', _this.click.bind(_this), true);
+            addListener('touchstart', _this.touchStart.bind(_this));
+            addListener('touchend', _this.touchEnd.bind(_this));
+            addListener('touchcancel', _this.pointerCancel.bind(_this));
+            addListener('mousedown', _this.mouseDown.bind(_this), true);
+            addListener('mouseup', _this.mouseUp.bind(_this), true);
         });
-        bindDom('touchend', function (ev) {
-            self.lastTouch = Date.now();
-            self.touchEnd(ev);
-        });
-        bindDom('touchcancel', function (ev) {
-            self.lastTouch = Date.now();
-            self.pointerCancel(ev);
-        });
-        bindDom('mousedown', function (ev) {
-            self.mouseDown(ev);
-        }, true);
-        bindDom('mouseup', function (ev) {
-            self.mouseUp(ev);
-        }, true);
-        self.pointerMove = function (ev) {
-            var moveCoord = (0, _utilDom.pointerCoord)(ev);
-            if ((0, _utilDom.hasPointerMoved)(10, self.start, moveCoord)) {
-                self.pointerCancel(ev);
-            }
-        };
-        self.moveListeners = function (shouldAdd) {
-            document.removeEventListener('touchmove', self.pointerMove);
-            document.removeEventListener('mousemove', self.pointerMove);
-            if (shouldAdd) {
-                bindDom('touchmove', self.pointerMove);
-                bindDom('mousemove', self.pointerMove);
+        this.pointerMove = function (ev) {
+            console.log('pointerMove');
+            if ((0, _utilDom.hasPointerMoved)(POINTER_MOVE_UNTIL_CANCEL, this.startCoord, (0, _utilDom.pointerCoord)(ev))) {
+                this.pointerCancel(ev);
             }
         };
     }
 
     _createClass(TapClick, [{
-        key: "enable",
-        value: function enable(shouldEnable) {
-            this._enabled = shouldEnable;
+        key: "touchStart",
+        value: function touchStart(ev) {
+            this.lastTouch = Date.now();
+            this.pointerStart(ev);
         }
-
-        /**
-         * TODO
-         * @param {TODO} ev  TODO
-         */
     }, {
         key: "touchEnd",
         value: function touchEnd(ev) {
-            var self = this;
-            if (self._enabled && self.start && self.app.isEnabled()) {
+            this.lastTouch = Date.now();
+            if (this.usePolyfill && this.startCoord && this.app.isEnabled()) {
                 var endCoord = (0, _utilDom.pointerCoord)(ev);
-                if (!(0, _utilDom.hasPointerMoved)(self.pointerTolerance, self.start, endCoord)) {
-                    console.debug('create click');
-                    self.disableClick = Date.now();
+                if (!(0, _utilDom.hasPointerMoved)(POINTER_TOLERANCE, this.startCoord, endCoord)) {
+                    console.debug('create click from touch');
+                    // prevent native mouse click events for XX amount of time
+                    this.disableClick = this.lastTouch + DISABLE_NATIVE_CLICK_AMOUNT;
+                    // manually dispatch the mouse click event
                     var clickEvent = document.createEvent('MouseEvents');
                     clickEvent.initMouseEvent('click', true, true, window, 1, 0, 0, endCoord.x, endCoord.y, false, false, false, false, 0, null);
                     clickEvent.isIonicTap = true;
                     ev.target.dispatchEvent(clickEvent);
                 }
             }
-            self.pointerEnd(ev);
+            this.pointerEnd(ev);
         }
-
-        /**
-         * TODO
-         * @param {TODO} ev  TODO
-         */
     }, {
         key: "mouseDown",
         value: function mouseDown(ev) {
-            if (this.isDisabledClick()) {
-                console.debug('mouseDown prevent');
-                ev.preventDefault();
+            if (this.isDisabledNativeClick()) {
+                console.debug('mouseDown prevent', ev.target.tagName);
+                // does not prevent default on purpose
+                // so native blur events from inputs can happen
                 ev.stopPropagation();
-            } else if (this.lastTouch + 999 < Date.now()) {
+            } else if (this.lastTouch + DISABLE_NATIVE_CLICK_AMOUNT < Date.now()) {
                 this.pointerStart(ev);
             }
         }
-
-        /**
-         * TODO
-         * @param {TODO} ev  TODO
-         */
     }, {
         key: "mouseUp",
         value: function mouseUp(ev) {
-            if (this.isDisabledClick()) {
-                console.debug('mouseUp prevent');
+            if (this.isDisabledNativeClick()) {
+                console.debug('mouseUp prevent', ev.target.tagName);
                 ev.preventDefault();
                 ev.stopPropagation();
             }
-            if (this.lastTouch + 999 < Date.now()) {
+            if (this.lastTouch + DISABLE_NATIVE_CLICK_AMOUNT < Date.now()) {
                 this.pointerEnd(ev);
             }
         }
-
-        /**
-         * TODO
-         * @param {TODO} ev  TODO
-         */
     }, {
         key: "pointerStart",
         value: function pointerStart(ev) {
-            var activatableEle = this.getActivatableTarget(ev.target);
+            var activatableEle = getActivatableTarget(ev.target);
             if (activatableEle) {
-                this.start = (0, _utilDom.pointerCoord)(ev);
+                this.startCoord = (0, _utilDom.pointerCoord)(ev);
                 var now = Date.now();
-                if (this.lastActivated + 100 < now) {
-                    this.activator.downAction(ev, activatableEle, this.start.x, this.start.y);
+                if (this.lastActivated + 150 < now) {
+                    this.activator && this.activator.downAction(ev, activatableEle, this.startCoord.x, this.startCoord.y);
                     this.lastActivated = now;
                 }
                 this.moveListeners(true);
             } else {
-                this.start = null;
+                this.startCoord = null;
             }
         }
-
-        /**
-         * TODO
-         */
     }, {
         key: "pointerEnd",
         value: function pointerEnd(ev) {
-            this.activator.upAction();
             this.moveListeners(false);
+            this.activator && this.activator.upAction();
         }
-
-        /**
-         * TODO
-         */
     }, {
         key: "pointerCancel",
         value: function pointerCancel(ev) {
-            console.debug('pointerCancel');
-            this.activator.clearState();
+            console.debug('pointerCancel from', ev.type);
+            this.activator && this.activator.clearState();
             this.moveListeners(false);
-            this.disableClick = Date.now();
         }
     }, {
-        key: "isDisabledClick",
-        value: function isDisabledClick() {
-            return this.disableClick + this.disableClickLimit > Date.now();
-        }
+        key: "moveListeners",
+        value: function moveListeners(shouldAdd) {
+            var _this2 = this;
 
-        /**
-         * Whether the supplied click event should be allowed or not.
-         * @param {MouseEvent} ev  The click event.
-         * @return {boolean} True if click event should be allowed, otherwise false.
-         */
-    }, {
-        key: "allowClick",
-        value: function allowClick(ev) {
-            if (!this.app.isEnabled()) {
-                return false;
-            }
-            if (!ev.isIonicTap) {
-                if (this.isDisabledClick()) {
-                    return false;
-                }
-            }
-            return true;
+            removeListener(this.usePolyfill ? 'touchmove' : 'mousemove', this.pointerMove);
+            this.zone.runOutsideAngular(function () {
+                if (shouldAdd) {
+                    addListener(_this2.usePolyfill ? 'touchmove' : 'mousemove', _this2.pointerMove);
+                } else {}
+            });
         }
-
-        /**
-         * TODO
-         * @param {MouseEvent} ev  TODO
-         */
     }, {
         key: "click",
         value: function click(ev) {
-            if (!this.allowClick(ev)) {
-                console.debug('click prevent');
+            var preventReason = null;
+            if (!this.app.isEnabled()) {
+                preventReason = 'appDisabled';
+            } else if (!ev.isIonicTap && this.isDisabledNativeClick()) {
+                preventReason = 'nativeClick';
+            }
+            if (preventReason !== null) {
+                console.debug('click prevent', preventReason);
                 ev.preventDefault();
                 ev.stopPropagation();
             }
         }
     }, {
-        key: "getActivatableTarget",
-        value: function getActivatableTarget(ele) {
-            var targetEle = ele;
-            for (var x = 0; x < 4; x++) {
-                if (!targetEle) break;
-                if (this.isActivatable(targetEle)) return targetEle;
-                targetEle = targetEle.parentElement;
-            }
-            return null;
-        }
-    }, {
-        key: "isActivatable",
-        value: function isActivatable(ele) {
-            if (/^(A|BUTTON)$/.test(ele.tagName)) {
-                return true;
-            }
-            var attributes = ele.attributes;
-            for (var i = 0, l = attributes.length; i < l; i++) {
-                if (/click|tappable/.test(attributes[i].name)) {
-                    return true;
-                }
-            }
-            return false;
+        key: "isDisabledNativeClick",
+        value: function isDisabledNativeClick() {
+            return this.disableClick > Date.now();
         }
     }]);
 
     return TapClick;
 })();
 exports.TapClick = TapClick;
-exports.TapClick = TapClick = __decorate([(0, _angular2Angular2.Injectable)(), __metadata('design:paramtypes', [typeof (_a = typeof _appApp.IonicApp !== 'undefined' && _appApp.IonicApp) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object])], TapClick);
-var _a, _b;
+exports.TapClick = TapClick = __decorate([(0, _angular2Angular2.Injectable)(), __metadata('design:paramtypes', [typeof (_a = typeof _appApp.IonicApp !== 'undefined' && _appApp.IonicApp) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _c || Object])], TapClick);
+function getActivatableTarget(ele) {
+    var targetEle = ele;
+    for (var x = 0; x < 4; x++) {
+        if (!targetEle) break;
+        if (isActivatable(targetEle)) return targetEle;
+        targetEle = targetEle.parentElement;
+    }
+    return null;
+}
+/**
+ * @private
+ */
+
+function isActivatable(ele) {
+    if (ACTIVATABLE_ELEMENTS.test(ele.tagName)) {
+        return true;
+    }
+    var attributes = ele.attributes;
+    for (var i = 0, l = attributes.length; i < l; i++) {
+        if (ACTIVATABLE_ATTRIBUTES.test(attributes[i].name)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function addListener(type, listener, useCapture) {
+    document.addEventListener(type, listener, useCapture);
+}
+function removeListener(type, listener) {
+    document.removeEventListener(type, listener);
+}
+var ACTIVATABLE_ELEMENTS = /^(A|BUTTON)$/;
+var ACTIVATABLE_ATTRIBUTES = /tappable/;
+var POINTER_TOLERANCE = 4;
+var POINTER_MOVE_UNTIL_CANCEL = 10;
+var DISABLE_NATIVE_CLICK_AMOUNT = 2500;
+var _a, _b, _c;

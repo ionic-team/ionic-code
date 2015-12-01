@@ -1,4 +1,4 @@
-System.register("ionic/components/popup/popup", ["angular2/angular2", "../overlay/overlay-controller", "../../config/config", "../../animations/animation", "../button/button", "ionic/util"], function (_export) {
+System.register("ionic/components/popup/popup", ["angular2/angular2", "../overlay/overlay-controller", "../../config/config", "../../animations/animation", "../nav/nav-controller", "../button/button", "../../util/util"], function (_export) {
     /**
      * The Ionic Popup service allows the creation of popup windows that require the user to respond in order to continue.
      *
@@ -54,7 +54,7 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
      */
     "use strict";
 
-    var FORM_DIRECTIVES, Component, ElementRef, Injectable, NgClass, NgIf, NgFor, OverlayController, Config, Animation, Button, util, __decorate, __metadata, Popup, OVERLAY_TYPE, PopupCmp, PopupAnimation, PopupPopIn, PopupPopOut, PopupMdPopIn, PopupMdPopOut, _a, _b, _c;
+    var FORM_DIRECTIVES, Component, ElementRef, Injectable, NgClass, NgIf, NgFor, Renderer, OverlayController, Config, Animation, NavParams, Button, extend, __decorate, __metadata, Popup, OVERLAY_TYPE, PopupCmp, PopupPopIn, PopupPopOut, PopupMdPopIn, PopupMdPopOut, _a, _b, _c, _d, _e;
 
     var _get = function get(_x4, _x5, _x6) { var _again = true; _function: while (_again) { var object = _x4, property = _x5, receiver = _x6; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x4 = parent; _x5 = property; _x6 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
@@ -73,16 +73,19 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
             NgClass = _angular2Angular2.NgClass;
             NgIf = _angular2Angular2.NgIf;
             NgFor = _angular2Angular2.NgFor;
+            Renderer = _angular2Angular2.Renderer;
         }, function (_overlayOverlayController) {
             OverlayController = _overlayOverlayController.OverlayController;
         }, function (_configConfig) {
             Config = _configConfig.Config;
         }, function (_animationsAnimation) {
             Animation = _animationsAnimation.Animation;
+        }, function (_navNavController) {
+            NavParams = _navNavController.NavParams;
         }, function (_buttonButton) {
             Button = _buttonButton.Button;
-        }, function (_ionicUtil) {
-            util = _ionicUtil;
+        }, function (_utilUtil) {
+            extend = _utilUtil.extend;
         }],
         execute: function () {
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -112,10 +115,7 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
                     _classCallCheck(this, Popup);
 
                     this.ctrl = ctrl;
-                    this._defaults = {
-                        enterAnimation: config.get('popupPopIn'),
-                        leaveAnimation: config.get('popupPopOut')
-                    };
+                    this.config = config;
                 }
 
                 /**
@@ -132,7 +132,12 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
                         return new Promise(function (resolve, reject) {
                             opts.promiseResolve = resolve;
                             opts.promiseReject = reject;
-                            return _this.ctrl.open(OVERLAY_TYPE, PopupCmp, util.extend(_this._defaults, opts));
+                            opts = extend({
+                                pageType: OVERLAY_TYPE,
+                                enterAnimation: _this.config.get('popupEnter'),
+                                leaveAnimation: _this.config.get('popupLeave')
+                            }, opts);
+                            return _this.ctrl.open(PopupCmp, opts, opts);
                         });
                     }
 
@@ -174,7 +179,7 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
                                 //resolve();
                             }
                         };
-                        opts = util.extend({
+                        opts = extend({
                             showPrompt: false,
                             cancel: function cancel() {
                                 //reject();
@@ -232,7 +237,7 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
                                 // Allow it to close
                             }
                         };
-                        opts = util.extend({
+                        opts = extend({
                             showPrompt: false,
                             cancel: function cancel() {},
                             buttons: [cancelButton, okButton]
@@ -290,7 +295,7 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
                                 // Allow it to close
                             }
                         };
-                        opts = util.extend({
+                        opts = extend({
                             showPrompt: true,
                             promptPlaceholder: '',
                             cancel: function cancel() {},
@@ -308,7 +313,7 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
                     key: "get",
                     value: function get(handle) {
                         if (handle) {
-                            return this.ctrl.getByHandle(handle, OVERLAY_TYPE);
+                            return this.ctrl.getByHandle(handle);
                         }
                         return this.ctrl.getByType(OVERLAY_TYPE);
                     }
@@ -325,10 +330,14 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
             // TODO add button type to button: [type]="button.type"
 
             PopupCmp = (function () {
-                function PopupCmp(elementRef) {
+                function PopupCmp(elementRef, params, renderer) {
                     _classCallCheck(this, PopupCmp);
 
                     this.elementRef = elementRef;
+                    this.d = params.data;
+                    if (this.d.cssClass) {
+                        renderer.setElementClass(elementRef, this.d.cssClass, true);
+                    }
                 }
 
                 _createClass(PopupCmp, [{
@@ -346,29 +355,29 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
                     }
                 }, {
                     key: "buttonTapped",
-                    value: function buttonTapped(button, event) {
+                    value: function buttonTapped(button, ev) {
                         var promptValue = this.promptInput && this.promptInput.value;
-                        var retVal = button.onTap && button.onTap(event, this, {
+                        var retVal = button.onTap && button.onTap(ev, this, {
                             promptValue: promptValue
                         });
                         // If the event.preventDefault() wasn't called, close
-                        if (!event.defaultPrevented) {
+                        if (!ev.defaultPrevented) {
                             // If this is a cancel button, reject the promise
                             if (button.isCancel) {
-                                this.promiseReject();
+                                this.d.promiseReject();
                             } else {
                                 // Resolve with the prompt value
-                                this.promiseResolve(promptValue);
+                                this.d.promiseResolve(promptValue);
                             }
                             return this.close();
                         }
                     }
                 }, {
-                    key: "_cancel",
-                    value: function _cancel(event) {
-                        this.cancel && this.cancel(event);
-                        if (!event.defaultPrevented) {
-                            this.promiseReject();
+                    key: "cancel",
+                    value: function cancel(ev) {
+                        this.d.cancel && this.d.cancel(event);
+                        if (!ev.defaultPrevented) {
+                            this.d.promiseReject();
                             return this.close();
                         }
                     }
@@ -379,90 +388,93 @@ System.register("ionic/components/popup/popup", ["angular2/angular2", "../overla
 
             PopupCmp = __decorate([Component({
                 selector: 'ion-popup',
-                template: '<backdrop (click)="_cancel($event)" tappable disable-activated></backdrop>' + '<popup-wrapper [ng-class]="cssClass">' + '<div class="popup-head">' + '<h2 class="popup-title" [inner-html]="title" *ng-if="title"></h2>' + '<h3 class="popup-sub-title" [inner-html]="subTitle" *ng-if="subTitle"></h3>' + '</div>' + '<div class="popup-body">' + '<div [inner-html]="template" *ng-if="template"></div>' + '<input type="{{inputType || \'text\'}}" placeholder="{{inputPlaceholder}}" *ng-if="showPrompt" class="prompt-input">' + '</div>' + '<div class="popup-buttons" *ng-if="buttons.length">' + '<button *ng-for="#button of buttons" (click)="buttonTapped(button, $event)" [inner-html]="button.text"></button>' + '</div>' + '</popup-wrapper>',
+                template: '<backdrop (click)="cancel($event)" tappable disable-activated></backdrop>' + '<popup-wrapper>' + '<div class="popup-head">' + '<h2 class="popup-title" [inner-html]="d.title" *ng-if="d.title"></h2>' + '<h3 class="popup-sub-title" [inner-html]="d.subTitle" *ng-if="d.subTitle"></h3>' + '</div>' + '<div class="popup-body">' + '<div [inner-html]="d.template" *ng-if="d.template"></div>' + '<input type="{{d.inputType || \'text\'}}" placeholder="{{d.inputPlaceholder}}" *ng-if="d.showPrompt" class="prompt-input">' + '</div>' + '<div class="popup-buttons" *ng-if="d.buttons.length">' + '<button *ng-for="#btn of d.buttons" (click)="buttonTapped(btn, $event)" [inner-html]="btn.text"></button>' + '</div>' + '</popup-wrapper>',
+                host: {
+                    'role': 'dialog'
+                },
                 directives: [FORM_DIRECTIVES, NgClass, NgIf, NgFor, Button]
-            }), __metadata('design:paramtypes', [typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c || Object])], PopupCmp);
+            }), __metadata('design:paramtypes', [typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c || Object, typeof (_d = typeof NavParams !== 'undefined' && NavParams) === 'function' && _d || Object, typeof (_e = typeof Renderer !== 'undefined' && Renderer) === 'function' && _e || Object])], PopupCmp);
+            /**
+             * Animations for popups
+             */
 
-            PopupAnimation = (function (_Animation) {
-                _inherits(PopupAnimation, _Animation);
+            PopupPopIn = (function (_Animation) {
+                _inherits(PopupPopIn, _Animation);
 
-                function PopupAnimation(element) {
-                    _classCallCheck(this, PopupAnimation);
-
-                    _get(Object.getPrototypeOf(PopupAnimation.prototype), "constructor", this).call(this, element);
-                    this.easing('ease-in-out').duration(200);
-                    this.backdrop = new Animation(element.querySelector('backdrop'));
-                    this.wrapper = new Animation(element.querySelector('popup-wrapper'));
-                    this.add(this.backdrop, this.wrapper);
-                }
-
-                /**
-                 * Animations for popups
-                 */
-                return PopupAnimation;
-            })(Animation);
-
-            PopupPopIn = (function (_PopupAnimation) {
-                _inherits(PopupPopIn, _PopupAnimation);
-
-                function PopupPopIn(element) {
+                function PopupPopIn(enteringView, leavingView, opts) {
                     _classCallCheck(this, PopupPopIn);
 
-                    _get(Object.getPrototypeOf(PopupPopIn.prototype), "constructor", this).call(this, element);
-                    this.wrapper.fromTo('opacity', '0.01', '1');
-                    this.wrapper.fromTo('scale', '1.1', '1');
-                    this.backdrop.fromTo('opacity', '0', '0.3');
+                    _get(Object.getPrototypeOf(PopupPopIn.prototype), "constructor", this).call(this, null, opts);
+                    var ele = enteringView.pageRef().nativeElement;
+                    var backdrop = new Animation(ele.querySelector('backdrop'));
+                    var wrapper = new Animation(ele.querySelector('popup-wrapper'));
+                    wrapper.fromTo('opacity', '0.01', '1').fromTo('scale', '1.1', '1');
+                    backdrop.fromTo('opacity', '0.01', '0.3');
+                    this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
                 }
 
                 return PopupPopIn;
-            })(PopupAnimation);
+            })(Animation);
 
             Animation.register('popup-pop-in', PopupPopIn);
 
-            PopupPopOut = (function (_PopupAnimation2) {
-                _inherits(PopupPopOut, _PopupAnimation2);
+            PopupPopOut = (function (_Animation2) {
+                _inherits(PopupPopOut, _Animation2);
 
-                function PopupPopOut(element) {
+                function PopupPopOut(enteringView, leavingView, opts) {
                     _classCallCheck(this, PopupPopOut);
 
-                    _get(Object.getPrototypeOf(PopupPopOut.prototype), "constructor", this).call(this, element);
-                    this.wrapper.fromTo('opacity', '1', '0');
-                    this.wrapper.fromTo('scale', '1', '0.9');
-                    this.backdrop.fromTo('opacity', '0.3', '0');
+                    _get(Object.getPrototypeOf(PopupPopOut.prototype), "constructor", this).call(this, null, opts);
+                    var ele = leavingView.pageRef().nativeElement;
+                    var backdrop = new Animation(ele.querySelector('backdrop'));
+                    var wrapper = new Animation(ele.querySelector('popup-wrapper'));
+                    wrapper.fromTo('opacity', '1', '0').fromTo('scale', '1', '0.9');
+                    backdrop.fromTo('opacity', '0.3', '0');
+                    this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
                 }
 
                 return PopupPopOut;
-            })(PopupAnimation);
+            })(Animation);
 
             Animation.register('popup-pop-out', PopupPopOut);
 
-            PopupMdPopIn = (function (_PopupPopIn) {
-                _inherits(PopupMdPopIn, _PopupPopIn);
+            PopupMdPopIn = (function (_Animation3) {
+                _inherits(PopupMdPopIn, _Animation3);
 
-                function PopupMdPopIn(element) {
+                function PopupMdPopIn(enteringView, leavingView, opts) {
                     _classCallCheck(this, PopupMdPopIn);
 
-                    _get(Object.getPrototypeOf(PopupMdPopIn.prototype), "constructor", this).call(this, element);
-                    this.backdrop.fromTo('opacity', '0.01', '0.5');
+                    _get(Object.getPrototypeOf(PopupMdPopIn.prototype), "constructor", this).call(this, null, opts);
+                    var ele = enteringView.pageRef().nativeElement;
+                    var backdrop = new Animation(ele.querySelector('backdrop'));
+                    var wrapper = new Animation(ele.querySelector('popup-wrapper'));
+                    wrapper.fromTo('opacity', '0.01', '1').fromTo('scale', '1.1', '1');
+                    backdrop.fromTo('opacity', '0.01', '0.5');
+                    this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
                 }
 
                 return PopupMdPopIn;
-            })(PopupPopIn);
+            })(Animation);
 
             Animation.register('popup-md-pop-in', PopupMdPopIn);
 
-            PopupMdPopOut = (function (_PopupPopOut) {
-                _inherits(PopupMdPopOut, _PopupPopOut);
+            PopupMdPopOut = (function (_Animation4) {
+                _inherits(PopupMdPopOut, _Animation4);
 
-                function PopupMdPopOut(element) {
+                function PopupMdPopOut(enteringView, leavingView, opts) {
                     _classCallCheck(this, PopupMdPopOut);
 
-                    _get(Object.getPrototypeOf(PopupMdPopOut.prototype), "constructor", this).call(this, element);
-                    this.backdrop.fromTo('opacity', '0.5', '0');
+                    _get(Object.getPrototypeOf(PopupMdPopOut.prototype), "constructor", this).call(this, null, opts);
+                    var ele = leavingView.pageRef().nativeElement;
+                    var backdrop = new Animation(ele.querySelector('backdrop'));
+                    var wrapper = new Animation(ele.querySelector('popup-wrapper'));
+                    wrapper.fromTo('opacity', '1', '0').fromTo('scale', '1', '0.9');
+                    backdrop.fromTo('opacity', '0.5', '0');
+                    this.easing('ease-in-out').duration(200).add(backdrop, wrapper);
                 }
 
                 return PopupMdPopOut;
-            })(PopupPopOut);
+            })(Animation);
 
             Animation.register('popup-md-pop-out', PopupMdPopOut);
         }

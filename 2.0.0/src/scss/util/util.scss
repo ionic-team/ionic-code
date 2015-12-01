@@ -1,3 +1,4 @@
+@import "../ionic.globals";
 
 .align-left {
   text-align: left;
@@ -15,13 +16,49 @@
   transition: none !important;
 }
 
-// Remove any hairline borders
-.no-border:after {
-  background: none !important;
+.hide,
+[hidden],
+template,
+root-anchor {
+  display: none !important;
 }
 
-.hide.hide.hide {
-  display: none;
+
+// Content Padding
+// --------------------------------------------------
+
+$content-padding:    16px !default;
+
+
+[padding],
+[padding] > scroll-content {
+  padding: $content-padding;
+}
+
+[padding-top] {
+  padding-top: $content-padding;
+}
+
+[padding-right] {
+  padding-right: $content-padding;
+}
+
+[padding-bottom] {
+  padding-bottom: $content-padding;
+}
+
+[padding-left] {
+  padding-left: $content-padding;
+}
+
+[padding-vertical] {
+  padding-top: $content-padding;
+  padding-bottom: $content-padding;
+}
+
+[padding-horizontal] {
+  padding-right: $content-padding;
+  padding-left: $content-padding;
 }
 
 
@@ -78,7 +115,24 @@ focus-ctrl {
     width: 9px;
     left: -9999px;
     z-index: 9999;
+    pointer-events: none;
   }
+}
+
+.hide-focused-input {
+  flex: 0 0 8px !important;
+  margin: 0 !important;
+  transform: translate3d(-9999px,0,0);
+  pointer-events: none;
+}
+
+[floating-label] .hide-focused-input,
+[stacked-label] .hide-focused-input {
+  margin-top: -8px !important;
+}
+
+.cloned-input {
+  pointer-events: none;
 }
 
 
@@ -107,7 +161,8 @@ backdrop {
 // Fill the screen to block clicks (a better pointer-events: none)
 // to avoid full-page reflows and paints which can cause flickers
 
-.click-block {
+click-block {
+  display: block;
   position: absolute;
   top: 0;
   right: 0;
@@ -115,10 +170,11 @@ backdrop {
   left: 0;
   opacity: 0;
   z-index: $z-index-click-block;
-  transform: translate3d(-9999px, 0px, 0px);;
+  transform: translate3d(0px, -100%, 0px);
+  transform: translate3d(0px, calc(-100% + 1px), 0px);
 
-  //background: red;
-  //opacity: .3;
+  // background: red;
+  // opacity: .3;
 }
 
 .click-block-active {

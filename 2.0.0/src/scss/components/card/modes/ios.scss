@@ -1,3 +1,4 @@
+@import "../../../ionic.globals";
 
 // iOS Card
 // --------------------------------------------------
@@ -13,7 +14,7 @@ $card-ios-padding-bottom:              14px !default;
 $card-ios-padding-left:                16px !default;
 
 $card-ios-padding-media-top:           10px !default;
-$card-ios-padding-media-bottom:        10px !default;
+$card-ios-padding-media-bottom:        9px !default;
 
 $card-ios-background-color:            $list-background-color !default;
 $card-ios-box-shadow:                  0 1px 2px rgba(0,0,0,.3) !default;
@@ -38,16 +39,26 @@ ion-card {
   background: $card-ios-background-color;
   box-shadow: $card-ios-box-shadow;
   border-radius: $card-ios-border-radius;
-  overflow: hidden;
 
-  .item {
-    padding-right: ($card-ios-padding-right / 2);
-    padding-left: ($card-ios-padding-left / 2);
-    font-size: $item-ios-font-size;
+  ion-list {
+    margin-bottom: 0;
+
+    .item {
+      padding-right: 0;
+    }
+
+    ion-item-content {
+      padding: 0;
+    }
+
+    > .item:last-child,
+    > ion-item-sliding:last-child .item {
+      border-bottom: none;
+    }
   }
 
-  ion-item-content {
-    padding: $card-ios-padding-top ($card-ios-padding-right / 2) $card-ios-padding-bottom ($card-ios-padding-left / 2);
+  .item-inner {
+    border: none;
   }
 
   ion-card-content {
@@ -68,18 +79,8 @@ ion-card {
     padding-top: 0;
   }
 
-  [item-left],
-  [item-right] {
-    margin: $card-ios-padding-media-top ($card-ios-padding-right / 2) $card-ios-padding-media-bottom ($card-ios-padding-left / 2);
-  }
-
-  button[item-left],
-  button[item-right],
-  [button][item-left],
-  [button][item-right], {
-    margin: $item-ios-padding-icon-top ($item-ios-padding-right / 2) $item-ios-padding-icon-bottom ($item-ios-padding-left / 2);
-    padding: 2px 6px;
-    min-height: 26px;
+  ion-note[item-left],
+  ion-note[item-right], {
     font-size: 1.3rem;
   }
 
@@ -87,25 +88,6 @@ ion-card {
     padding: $card-ios-title-padding;
     font-size: $card-ios-title-font-size;
     color: $card-ios-title-text-color;
-  }
-
-  ion-avatar {
-    min-width: $item-ios-avatar-size;
-
-    img {
-      max-width: $item-ios-avatar-size;
-      max-height: $item-ios-avatar-size;
-      border-radius: $item-ios-avatar-size / 2;
-    }
-  }
-
-  ion-thumbnail  {
-    min-width: $item-ios-thumbnail-size;
-
-    img {
-      max-width: $item-ios-thumbnail-size;
-      max-height: $item-ios-thumbnail-size;
-    }
   }
 
   h1 {

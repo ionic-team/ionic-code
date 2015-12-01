@@ -16,9 +16,6 @@ var _textInput = require('./text-input');
 
 var _utilDom = require('../../util/dom');
 
-/**
- * TODO
- */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {
@@ -45,11 +42,6 @@ var __param = undefined && undefined.__param || function (paramIndex, decorator)
     };
 };
 var Label = (function () {
-    /**
-     * TODO
-     * @param {Config} config
-     */
-
     function Label(config, container) {
         _classCallCheck(this, Label);
 
@@ -62,8 +54,7 @@ var Label = (function () {
     }
 
     /**
-     * TODO
-     * @param {TODO} ev  TODO
+     * @private
      */
 
     _createClass(Label, [{
@@ -76,8 +67,7 @@ var Label = (function () {
         }
 
         /**
-         * TODO
-         * @param {TODO} ev  TODO
+         * @private
          */
     }, {
         key: "pointerEnd",

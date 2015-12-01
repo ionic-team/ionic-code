@@ -9,8 +9,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable, NgZone } from 'angular2/angular2';
-import { Config } from '../config/config';
+import { Injectable } from 'angular2/angular2';
 /**
  * The Input component is used to focus text input elements.
  *
@@ -23,14 +22,10 @@ import { Config } from '../config/config';
  * ```
  */
 export let Form = class {
-    constructor(config, zone) {
-        this._config = config;
-        this._zone = zone;
+    constructor() {
         this._inputs = [];
         this._focused = null;
-        zone.runOutsideAngular(() => {
-            this.focusCtrl(document);
-        });
+        this.focusCtrl(document);
     }
     register(input) {
         this._inputs.push(input);
@@ -45,36 +40,17 @@ export let Form = class {
         }
     }
     focusCtrl(document) {
-        let scrollAssist = this._config.get('scrollAssist');
         // raw DOM fun
         let focusCtrl = document.createElement('focus-ctrl');
         focusCtrl.setAttribute('aria-hidden', true);
-        if (scrollAssist) {
-            this._tmp = document.createElement('input');
-            this._tmp.tabIndex = -1;
-            focusCtrl.appendChild(this._tmp);
-        }
         this._blur = document.createElement('button');
         this._blur.tabIndex = -1;
         focusCtrl.appendChild(this._blur);
         document.body.appendChild(focusCtrl);
-        if (scrollAssist) {
-            this._tmp.addEventListener('keydown', (ev) => {
-                ev.preventDefault();
-                ev.stopPropagation();
-            });
-        }
     }
     focusOut() {
         console.debug('focusOut');
         this._blur.focus();
-    }
-    setFocusHolder(type) {
-        if (this._tmp && this._config.get('scrollAssist')) {
-            this._tmp.type = type;
-            console.debug('setFocusHolder', this._tmp.type);
-            this._tmp.focus();
-        }
     }
     setAsFocused(input) {
         this._focused = input;
@@ -102,6 +78,5 @@ export let Form = class {
 };
 Form = __decorate([
     Injectable(), 
-    __metadata('design:paramtypes', [(typeof (_a = typeof Config !== 'undefined' && Config) === 'function' && _a) || Object, (typeof (_b = typeof NgZone !== 'undefined' && NgZone) === 'function' && _b) || Object])
+    __metadata('design:paramtypes', [])
 ], Form);
-var _a, _b;

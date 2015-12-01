@@ -1,4 +1,4 @@
-import {Directive, Component, ElementRef, Host, NgClass} from 'angular2/angular2';
+import {Directive, Component, ElementRef, Host, NgClass, EventEmitter} from 'angular2/angular2';
 
 import {Ion} from '../ion';
 import {Animation} from 'ionic/animations/animation';
@@ -31,6 +31,7 @@ import {Scroll} from '../scroll/scroll';
 @Component({
   selector: 'ion-slides',
   inputs: [
+    'autoplay',
     'loop',
     'index',
     'bounce',
@@ -39,6 +40,9 @@ import {Scroll} from '../scroll/scroll';
     'zoom',
     'zoomDuration',
     'zoomMax'
+  ],
+  outputs: [
+    'slideChanged'
   ],
   template:
     '<div class="swiper-container">' +
@@ -60,6 +64,8 @@ export class Slides extends Ion {
     this.rapidUpdate = util.debounce(() => {
       this.update();
     }, 10);
+
+    this.slideChanged = new EventEmitter('slideChanged');
   }
   onInit() {
     if(!this.options) {
@@ -70,6 +76,7 @@ export class Slides extends Ion {
 
 
     var options = util.defaults({
+      loop: this.loop,
       pagination: '.swiper-pagination',
       paginationClickable: true,
       lazyLoading: true,
@@ -100,6 +107,7 @@ export class Slides extends Ion {
       return this.options.onSlideChangeStart && this.options.onSlideChangeStart(swiper);
     };
     options.onSlideChangeEnd = (swiper) => {
+      this.slideChanged.next(swiper);
       return this.options.onSlideChangeEnd && this.options.onSlideChangeEnd(swiper);
     };
     options.onLazyImageLoad = (swiper, slide, img) => {

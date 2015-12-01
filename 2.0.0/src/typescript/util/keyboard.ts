@@ -2,7 +2,7 @@ import {Injectable, NgZone} from 'angular2/angular2';
 
 import {Config} from '../config/config';
 import {Form} from './form';
-import * as dom from './dom';
+import {hasFocusedTextInput, raf, rafFrames} from './dom';
 
 
 @Injectable()
@@ -18,10 +18,10 @@ export class Keyboard {
   }
 
   isOpen() {
-    return dom.hasFocusedTextInput();
+    return hasFocusedTextInput();
   }
 
-  onClose(callback) {
+  onClose(callback, pollingInternval=KEYBOARD_CLOSE_POLLING) {
     const self = this;
 
     let promise = null;
@@ -35,26 +35,27 @@ export class Keyboard {
 
       function checkKeyboard() {
         if (!self.isOpen()) {
-          self.zone.run(() => {
-            console.debug('keyboard closed');
-            callback();
+          rafFrames(30, () => {
+            self.zone.run(() => {
+              console.debug('keyboard closed');
+              callback();
+            });
           });
 
         } else {
-          setTimeout(checkKeyboard, KEYBOARD_CLOSE_POLLING);
+          setTimeout(checkKeyboard, pollingInternval);
         }
       }
 
-      setTimeout(checkKeyboard, KEYBOARD_CLOSE_POLLING);
-
+      setTimeout(checkKeyboard, pollingInternval);
     });
 
     return promise;
   }
 
   close() {
-    dom.raf(() => {
-      if (dom.hasFocusedTextInput()) {
+    raf(() => {
+      if (hasFocusedTextInput()) {
         // only focus out when a text input has focus
         this.form.focusOut();
       }
@@ -74,11 +75,11 @@ export class Keyboard {
      * focusOutline: false    - Do not add the focus-outline
      */
 
-
+    let self = this;
     let isKeyInputEnabled = false;
 
     function cssClass() {
-      dom.raf(() => {
+      raf(() => {
         document.body.classList[isKeyInputEnabled ? 'add' : 'remove']('focus-outline');
       });
     }
@@ -107,7 +108,7 @@ export class Keyboard {
     function enableKeyInput() {
       cssClass();
 
-      this.zone.runOutsideAngular(() => {
+      self.zone.runOutsideAngular(() => {
         document.removeEventListener('mousedown', pointerDown);
         document.removeEventListener('touchstart', pointerDown);
 

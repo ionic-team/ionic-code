@@ -9,7 +9,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { AppViewManager, ElementRef, Directive } from 'angular2/angular2';
+import { AppViewManager, ElementRef, Directive, Renderer } from 'angular2/angular2';
 import { IonicApp } from './app';
 /**
  * IdRef is an easy way to identify unique components in an app and access them
@@ -45,9 +45,15 @@ export let IdRef = class {
         // Grab the component this directive is attached to
         this.component = appViewManager.getComponent(elementRef);
     }
+    /**
+     * @private
+     */
     onInit() {
         this.app.register(this.id, this.component);
     }
+    /**
+     * @private
+     */
     onDestroy() {
         this.app.unregister(this.id);
     }
@@ -59,4 +65,23 @@ IdRef = __decorate([
     }), 
     __metadata('design:paramtypes', [(typeof (_a = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _a) || Object, (typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof AppViewManager !== 'undefined' && AppViewManager) === 'function' && _c) || Object])
 ], IdRef);
-var _a, _b, _c;
+export let Attr = class {
+    constructor(renderer, elementRef) {
+        this.renderer = renderer;
+        this.elementRef = elementRef;
+    }
+    /**
+     * @private
+     */
+    onInit() {
+        this.renderer.setElementAttribute(this.elementRef, this.attr, '');
+    }
+};
+Attr = __decorate([
+    Directive({
+        selector: '[attr]',
+        inputs: ['attr']
+    }), 
+    __metadata('design:paramtypes', [(typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d) || Object, (typeof (_e = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _e) || Object])
+], Attr);
+var _a, _b, _c, _d, _e;

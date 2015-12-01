@@ -3,7 +3,7 @@ import {Directive, ElementRef, Optional} from 'angular2/angular2';
 import {Ion} from '../ion';
 import {IonicApp} from '../app/app';
 import {ViewController} from '../nav/view-controller';
-import {Navbar} from '../nav-bar/nav-bar';
+import {Navbar} from '../navbar/navbar';
 
 
 /**
@@ -16,7 +16,8 @@ import {Navbar} from '../nav-bar/nav-bar';
   ],
   host: {
     '(click)': 'toggle()',
-    '[hidden]': 'isHidden'
+    '[hidden]': 'isHidden',
+    'menu-toggle': '' //ensures the attr is there for css when using [menu-toggle]
   }
 })
 export class MenuToggle extends Ion {

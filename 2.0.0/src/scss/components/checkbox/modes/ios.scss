@@ -1,3 +1,4 @@
+@import "../../../ionic.globals";
 
 // iOS Checkbox Structure
 // --------------------------------------------------
@@ -30,11 +31,15 @@ ion-checkbox {
     transform: rotate(45deg);
   }
 
+  &.item.activated {
+    background-color: $list-background-color;
+  }
+
 }
 
 media-checkbox {
   display: block;
-  margin: $item-ios-padding-media-top ($item-ios-padding-right / 2) $item-ios-padding-media-bottom ($item-ios-padding-left / 2);
+  margin: $item-ios-padding-media-top $item-ios-padding-right $item-ios-padding-media-bottom 2px;
 }
 
 checkbox-icon {

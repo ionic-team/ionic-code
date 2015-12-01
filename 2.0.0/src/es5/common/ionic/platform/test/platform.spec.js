@@ -23,6 +23,16 @@ function run() {
         expect(platform.is('android')).toEqual(true);
         expect(platform.is('ios')).toEqual(false);
     });
+    it('should get case insensitive querystring value', function () {
+        var platform = new _ionicIonic.Platform();
+        platform.url('/?KEY=value');
+        expect(platform.query('key')).toEqual('value');
+    });
+    it('should get querystring value', function () {
+        var platform = new _ionicIonic.Platform();
+        platform.url('/?key=value');
+        expect(platform.query('key')).toEqual('value');
+    });
     it('should set ios via platformOverride, despite android querystring', function () {
         var platform = new _ionicIonic.Platform();
         platform.url('/?ionicplatform=android');

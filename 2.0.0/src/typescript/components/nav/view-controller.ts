@@ -10,55 +10,14 @@ export class ViewController {
     this.navCtrl = navCtrl;
     this.componentType = componentType;
     this.params = new NavParams(params);
-    this.instance = null;
+    this.instance = {};
     this.state = 0;
-    this.disposals = [];
-  }
-
-  setContent(content) {
-    this._content = content;
-  }
-
-  getContent() {
-    return this._content;
+    this._destroys = [];
+    this._loaded = false;
   }
 
   /**
-   * @private
-   */
-  stage(done) {
-    let navCtrl = this.navCtrl;
-
-    if (this.instance || !navCtrl || this.shouldDestroy) {
-      // already compiled this view
-      return done();
-    }
-
-    // compile the component and create a ProtoViewRef
-    navCtrl.compileView(this.componentType).then(hostProtoViewRef => {
-
-      if (this.shouldDestroy) return done();
-
-      // get the pane the NavController wants to use
-      // the pane is where all this content will be placed into
-      navCtrl.loadContainer(this.componentType, hostProtoViewRef, this, () => {
-
-        // this ViewController instance has finished loading
-        try {
-          this.loaded();
-        } catch (e) {
-          console.error(e);
-        }
-
-        done();
-      });
-
-    });
-  }
-
-  /**
-   * TODO
-   * @returns {boolean} TODO
+   * @returns {boolean} Returns if it's possible to go back from this Page.
    */
   enableBack() {
     // update if it's possible to go back from this nav item
@@ -72,28 +31,41 @@ export class ViewController {
   }
 
   /**
-   * TODO
-   * @param {TODO} instance  TODO
+   * @private
    */
   setInstance(instance) {
     this.instance = instance;
   }
 
+  /**
+   * @returns {Number} Returns the index of this page within its NavController.
+   */
   get index() {
     return (this.navCtrl ? this.navCtrl.indexOf(this) : -1);
   }
 
+  /**
+   * @returns {boolean} Returns if this Page is the root page of the NavController.
+   */
   isRoot() {
-    return this.index === 0;
+    return (this.index === 0);
   }
 
   /**
-   * TODO
+   * @private
+   */
+  addDestroy(destroyFn) {
+    this._destroys.push(destroyFn);
+  }
+
+  /**
+   * @private
    */
   destroy() {
-    for (let i = 0; i < this.disposals.length; i++) {
-      this.disposals[i]();
+    for (let i = 0; i < this._destroys.length; i++) {
+      this._destroys[i]();
     }
+    this._destroys = [];
   }
 
   /**
@@ -111,44 +83,84 @@ export class ViewController {
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
-  setContentRef(contentElementRef) {
-    this._cntRef = contentElementRef;
+  getNavbarViewRef() {
+    return this._nbVwRef;
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
+   */
+  setNavbarViewRef(viewContainerRef) {
+    this._nbVwRef = viewContainerRef;
+  }
+
+  /**
+   * @private
+   */
+  setPageRef(elementRef) {
+    this._pgRef = elementRef;
+  }
+
+  /**
+   * @returns {ElementRef} Returns the Page's ElementRef
+   */
+  pageRef() {
+    return this._pgRef;
+  }
+
+  /**
+   * @private
+   */
+  setContentRef(elementRef) {
+    this._cntRef = elementRef;
+  }
+
+  /**
+   * @returns {ElementRef} Returns the Page's Content ElementRef
    */
   contentRef() {
     return this._cntRef;
   }
 
-  setNavbar(navbarView) {
-    this._nbVw = navbarView;
+  /**
+   * @private
+   */
+  setContent(directive) {
+    this._cntDir = directive;
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @returns {Component} Returns the Page's Content component reference.
+   */
+  getContent() {
+    return this._cntDir;
+  }
+
+  /**
+   * @private
+   */
+  setNavbar(directive) {
+    this._nbDir = directive;
+  }
+
+  /**
+   * @private
    */
   getNavbar() {
-    return this._nbVw;
+    return this._nbDir;
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @returns {boolean} Returns a boolean if this Page has a navbar or not.
    */
   hasNavbar() {
     return !!this.getNavbar();
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
   navbarRef() {
     let navbar = this.getNavbar();
@@ -156,8 +168,7 @@ export class ViewController {
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
   titleRef() {
     let navbar = this.getNavbar();
@@ -165,8 +176,7 @@ export class ViewController {
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
   navbarItemRefs() {
     let navbar = this.getNavbar();
@@ -174,8 +184,7 @@ export class ViewController {
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
   backBtnRef() {
     let navbar = this.getNavbar();
@@ -183,8 +192,7 @@ export class ViewController {
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
   backBtnTextRef() {
     let navbar = this.getNavbar();
@@ -192,16 +200,42 @@ export class ViewController {
   }
 
   /**
-   * TODO
-   * @returns {TODO} TODO
+   * @private
    */
   navbarBgRef() {
     let navbar = this.getNavbar();
-    return navbar && navbar.getNativeElement().querySelector('.toolbar-background');
+    return navbar && navbar.getBackgroundRef();
   }
 
+  /**
+   * @param {string} Set the back button text.
+   */
+  setBackButtonText(val) {
+    let navbar = this.getNavbar();
+    if (navbar) {
+      navbar.bbText = val;
+    }
+  }
 
   /**
+   * @param {boolean} Set if this Page's back button should show or not.
+   */
+  showBackButton(shouldShow) {
+    let navbar = this.getNavbar();
+    if (navbar) {
+      navbar.hideBackButton = !shouldShow;
+    }
+  }
+
+  /**
+   * @private
+   */
+  isLoaded() {
+    return this._loaded;
+  }
+
+  /**
+   * @private
    * The view has loaded. This event only happens once per view being
    * created. If a view leaves but is cached, then this will not
    * fire again on a subsequent viewing. This method is a good place
@@ -209,73 +243,83 @@ export class ViewController {
    * recommended method to use when a view becomes active.
    */
   loaded() {
+    this._loaded = true;
     if (!this.shouldDestroy) {
-      this.instance && this.instance.onPageLoaded && this.instance.onPageLoaded();
+      ctrlFn(this, 'onPageLoaded');
     }
   }
 
   /**
+   * @private
+   */
+  postRender() {
+    // let navbar = this.getNavbar();
+    // navbar && navbar.postRender();
+    // ctrlFn(this, 'onPagePostRender');
+  }
+
+  /**
+   * @private
    * The view is about to enter and become the active view.
    */
   willEnter() {
     if (!this.shouldDestroy) {
-      this.instance && this.instance.onPageWillEnter && this.instance.onPageWillEnter();
+      ctrlFn(this, 'onPageWillEnter');
     }
   }
 
   /**
+   * @private
    * The view has fully entered and is now the active view. This
    * will fire, whether it was the first load or loaded from the cache.
    */
   didEnter() {
     let navbar = this.getNavbar();
     navbar && navbar.didEnter();
-    this.instance && this.instance.onPageDidEnter && this.instance.onPageDidEnter();
+    ctrlFn(this, 'onPageDidEnter');
   }
 
   /**
+   * @private
    * The view has is about to leave and no longer be the active view.
    */
   willLeave() {
-    this.instance && this.instance.onPageWillLeave && this.instance.onPageWillLeave();
+    ctrlFn(this, 'onPageWillLeave');
   }
 
   /**
+   * @private
    * The view has finished leaving and is no longer the active view. This
    * will fire, whether it is cached or unloaded.
    */
   didLeave() {
-    this.instance && this.instance.onPageDidLeave && this.instance.onPageDidLeave();
+    ctrlFn(this, 'onPageDidLeave');
   }
 
   /**
+   * @private
    * The view is about to be destroyed and have its elements removed.
    */
   willUnload() {
-    this.instance && this.instance.onPageWillUnload && this.instance.onPageWillUnload();
+    ctrlFn(this, 'onPageWillUnload');
   }
 
   /**
+   * @private
    * The view has been destroyed and its elements have been removed.
    */
   didUnload() {
-    this.instance && this.instance.onPageDidUnload && this.instance.onPageDidUnload();
+    ctrlFn(this, 'onPageDidUnload');
   }
 
-  domCache(isActiveView, isPreviousView) {
-    let renderInDom = (isActiveView || isPreviousView);
+}
 
-    let contentRef = this.contentRef();
-    if (contentRef) {
-      // the active view, and the previous view should have the 'show-view' css class
-      // all others, like a cached page 2 back, should now have 'show-view' so it's not rendered
-      contentRef.nativeElement.classList[renderInDom ? 'add' : 'remove' ]('show-view');
-    }
-
-    let navbarRef = this.getNavbar();
-    if (navbarRef) {
-      navbarRef.elementRef.nativeElement.classList[renderInDom ? 'add' : 'remove' ]('show-navbar');
+function ctrlFn(viewCtrl, fnName) {
+  if (viewCtrl.instance && viewCtrl.instance[fnName]) {
+    try {
+      viewCtrl.instance[fnName]();
+    } catch(e) {
+      console.error(fnName + ': ' + e.message);
     }
   }
-
 }

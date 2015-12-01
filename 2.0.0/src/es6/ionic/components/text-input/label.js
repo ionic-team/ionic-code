@@ -16,14 +16,7 @@ import { Directive, Optional } from 'angular2/angular2';
 import { Config } from '../../config/config';
 import { TextInput } from './text-input';
 import { pointerCoord, hasPointerMoved } from '../../util/dom';
-/**
- * TODO
- */
 export let Label = class {
-    /**
-     * TODO
-     * @param {Config} config
-     */
     constructor(config, container) {
         this.scrollAssist = config.get('scrollAssist');
         if (!this.id) {
@@ -33,8 +26,7 @@ export let Label = class {
         container && container.registerLabel(this);
     }
     /**
-     * TODO
-     * @param {TODO} ev  TODO
+     * @private
      */
     pointerStart(ev) {
         if (this.scrollAssist) {
@@ -43,8 +35,7 @@ export let Label = class {
         }
     }
     /**
-     * TODO
-     * @param {TODO} ev  TODO
+     * @private
      */
     pointerEnd(ev) {
         if (this.container) {

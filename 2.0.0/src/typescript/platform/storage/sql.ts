@@ -22,7 +22,7 @@ const DB_NAME = '__ionicstorage';
  * });
  *
  * // Sql storage also exposes the full engine underneath
- * storage.query('insert into projects(name, data) values('Cool Project', 'blah')');'
+ * storage.query('insert into projects(name, data) values('Cool Project', 'blah');'
  * storage.query('select * from projects').then((resp) => {})
  * ```
  *
@@ -42,15 +42,14 @@ export class SqlStorage extends StorageEngine {
   constructor(options) {
     super();
 
-    let dbOptions = util.defaults({
+    let dbOptions = util.defaults(options, {
       name: DB_NAME,
       backupFlag: SqlStorage.BACKUP_LOCAL,
       existingDatabase: false
-    }, options);
-
+    });
 
     if(window.sqlitePlugin) {
-      let location = this._getBackupLocation(dbOptions);
+      let location = this._getBackupLocation(dbOptions.backupFlag);
 
       this._db = window.sqlitePlugin.openDatabase(util.extend({
         name: dbOptions.name,
@@ -100,7 +99,7 @@ export class SqlStorage extends StorageEngine {
   query(query, ...params) {
     return new Promise((resolve, reject) => {
       this._db.transaction((tx) => {
-        ts.executeSql(query, params, (tx, res) => {
+        tx.executeSql(query, params, (tx, res) => {
           resolve({
             tx: tx,
             res: res

@@ -1,4 +1,4 @@
-System.register("ionic/components/menu/menu-toggle", ["angular2/angular2", "../ion", "../app/app", "../nav/view-controller", "../nav-bar/nav-bar"], function (_export) {
+System.register("ionic/components/menu/menu-toggle", ["angular2/angular2", "../ion", "../app/app", "../nav/view-controller", "../navbar/navbar"], function (_export) {
     /**
     * TODO
     */
@@ -25,8 +25,8 @@ System.register("ionic/components/menu/menu-toggle", ["angular2/angular2", "../i
             IonicApp = _appApp.IonicApp;
         }, function (_navViewController) {
             ViewController = _navViewController.ViewController;
-        }, function (_navBarNavBar) {
-            Navbar = _navBarNavBar.Navbar;
+        }, function (_navbarNavbar) {
+            Navbar = _navbarNavbar.Navbar;
         }],
         execute: function () {
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -100,7 +100,8 @@ System.register("ionic/components/menu/menu-toggle", ["angular2/angular2", "../i
                 inputs: ['menuToggle'],
                 host: {
                     '(click)': 'toggle()',
-                    '[hidden]': 'isHidden'
+                    '[hidden]': 'isHidden',
+                    'menu-toggle': '' //ensures the attr is there for css when using [menu-toggle]
                 }
             }), __param(2, Optional()), __param(3, Optional()), __metadata('design:paramtypes', [typeof (_a = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _a || Object, typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b || Object, typeof (_c = typeof ViewController !== 'undefined' && ViewController) === 'function' && _c || Object, typeof (_d = typeof Navbar !== 'undefined' && Navbar) === 'function' && _d || Object])], MenuToggle));
         }

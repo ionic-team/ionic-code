@@ -56,14 +56,12 @@ class DisplayWhen {
  * TODO
  */
 export let ShowWhen = class extends DisplayWhen {
-    /**
-     * TODO
-     * @param {string} showWhen  The value of the element's 'show-when' attribute
-     * @param {NgZone} ngZone  TODO
-     */
     constructor(showWhen, platform, ngZone) {
         super(showWhen, platform, ngZone);
     }
+    /**
+     * @private
+     */
     get hidden() {
         return !this.isMatch;
     }
@@ -82,14 +80,12 @@ ShowWhen = __decorate([
  * TODO
  */
 export let HideWhen = class extends DisplayWhen {
-    /**
-     * TODO
-     * @param {string} showWhen  The value of the element's 'hide-when' attribute
-     * @param {NgZone} ngZone  TODO
-     */
     constructor(hideWhen, platform, ngZone) {
         super(hideWhen, platform, ngZone);
     }
+    /**
+     * @private
+     */
     get hidden() {
         return this.isMatch;
     }

@@ -31,11 +31,11 @@ var _listList = require('../list/list');
  *
  * @usage
  * ```html
- * <ion-radio-group ng-control="clientside">
+ * <ion-list radio-group ng-control="clientside">
  *
- *   <ion-header>
+ *   <ion-list-header>
  *     Clientside
- *   </ion-header>
+ *   </ion-list-header>
  *
  *   <ion-radio value="ember">
  *     Ember
@@ -53,7 +53,7 @@ var _listList = require('../list/list');
  *     React
  *   </ion-radio>
  *
- * </ion-radio-group>
+ * </ion-list>
  * ```
 */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -84,27 +84,23 @@ var __param = undefined && undefined.__param || function (paramIndex, decorator)
 var RadioGroup = (function (_Ion) {
     _inherits(RadioGroup, _Ion);
 
-    /**
-     * TODO
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     * @param {NgControl=} ngControl  TODO
-     * @param {QueryList<ListHeader>} headerQuery  TODO
-     */
-
-    function RadioGroup(elementRef, config, renderer, ngControl, headerQuery) {
+    function RadioGroup(elementRef, config, ngControl, headerQuery) {
         _classCallCheck(this, RadioGroup);
 
         _get(Object.getPrototypeOf(RadioGroup.prototype), "constructor", this).call(this, elementRef, config);
         this.headerQuery = headerQuery;
         this.radios = [];
-        renderer.setElementClass(elementRef, 'list', true);
+        this.ngControl = ngControl;
         this.id = ++radioGroupIds;
         this.radioIds = -1;
         this.onChange = function (_) {};
         this.onTouched = function (_) {};
-        if (ngControl) ngControl.valueAccessor = this;
+        if (ngControl) this.ngControl.valueAccessor = this;
     }
+
+    /**
+     * @private
+     */
 
     _createClass(RadioGroup, [{
         key: "onInit",
@@ -119,6 +115,7 @@ var RadioGroup = (function (_Ion) {
         }
 
         /**
+         * @private
          * Register the specified radio button with the radio group.
          * @param {RadioButton} radio  The radio button to register.
          */
@@ -127,13 +124,18 @@ var RadioGroup = (function (_Ion) {
         value: function registerRadio(radio) {
             radio.id = radio.id || 'radio-' + this.id + '-' + ++this.radioIds;
             this.radios.push(radio);
+            if (this.value == radio.value) {
+                radio.check(this.value);
+            }
             if (radio.checked) {
                 this.value = radio.value;
+                this.onChange(this.value);
                 this.activeId = radio.id;
             }
         }
 
         /**
+         * @private
          * Update which radio button in the group is checked, unchecking all others.
          * @param {RadioButton} checkedRadio  The radio button to check.
          */
@@ -236,15 +238,14 @@ var RadioGroup = (function (_Ion) {
 })(_ion.Ion);
 exports.RadioGroup = RadioGroup;
 exports.RadioGroup = RadioGroup = __decorate([(0, _angular2Angular2.Directive)({
-    selector: 'ion-radio-group',
+    selector: '[radio-group]',
     host: {
         'role': 'radiogroup',
         '[attr.aria-activedescendant]': 'activeId',
         '[attr.aria-describedby]': 'describedById'
     }
-}), __param(3, (0, _angular2Angular2.Optional)()), __param(4, (0, _angular2Angular2.Query)(_listList.ListHeader)), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _c || Object, typeof (_d = typeof _angular2Angular2.NgControl !== 'undefined' && _angular2Angular2.NgControl) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.QueryList !== 'undefined' && _angular2Angular2.QueryList) === 'function' && _e || Object])], RadioGroup);
+}), __param(2, (0, _angular2Angular2.Optional)()), __param(3, (0, _angular2Angular2.Query)(_listList.ListHeader)), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.NgControl !== 'undefined' && _angular2Angular2.NgControl) === 'function' && _c || Object, typeof (_d = typeof _angular2Angular2.QueryList !== 'undefined' && _angular2Angular2.QueryList) === 'function' && _d || Object])], RadioGroup);
 /**
- * @name ionRadio
  * @description
  * A single radio component.
  *
@@ -261,21 +262,17 @@ exports.RadioGroup = RadioGroup = __decorate([(0, _angular2Angular2.Directive)({
 var RadioButton = (function (_Ion2) {
     _inherits(RadioButton, _Ion2);
 
-    /**
-     * Radio button constructor.
-     * @param {RadioGroup=} group  The parent radio group, if any.
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     */
-
-    function RadioButton(group, elementRef, config, renderer) {
+    function RadioButton(group, elementRef, config) {
         _classCallCheck(this, RadioButton);
 
         _get(Object.getPrototypeOf(RadioButton.prototype), "constructor", this).call(this, elementRef, config);
-        renderer.setElementClass(elementRef, 'item', true);
         this.group = group;
         this.tabIndex = 0;
     }
+
+    /**
+     * @private
+     */
 
     _createClass(RadioButton, [{
         key: "onInit",
@@ -284,11 +281,15 @@ var RadioButton = (function (_Ion2) {
             this.group.registerRadio(this);
             this.labelId = 'label-' + this.id;
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "click",
-        value: function click(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
+        value: function click(event) {
+            event.preventDefault();
+            event.stopPropagation();
             this.check();
         }
 
@@ -318,9 +319,10 @@ exports.RadioButton = RadioButton = __decorate([(0, _angular2Angular2.Component)
         '[attr.aria-checked]': 'checked',
         '[attr.aria-disabled]': 'disabled',
         '[attr.aria-labelledby]': 'labelId',
-        '(click)': 'click($event)'
+        '(click)': 'click($event)',
+        'class': 'item'
     },
-    template: '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '<media-radio>' + '<radio-icon></radio-icon>' + '</media-radio>'
-}), __param(0, (0, _angular2Angular2.Host)()), __param(0, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [RadioGroup, typeof (_f = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _f || Object, typeof (_g = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _g || Object, typeof (_h = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _h || Object])], RadioButton);
+    template: '<div class="item-inner">' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '<media-radio>' + '<radio-icon></radio-icon>' + '</media-radio>' + '</div>'
+}), __param(0, (0, _angular2Angular2.Host)()), __param(0, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [RadioGroup, typeof (_e = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _e || Object, typeof (_f = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _f || Object])], RadioButton);
 var radioGroupIds = -1;
-var _a, _b, _c, _d, _e, _f, _g, _h;
+var _a, _b, _c, _d, _e, _f;

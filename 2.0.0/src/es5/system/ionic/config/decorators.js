@@ -1,32 +1,7 @@
-System.register('ionic/config/decorators', ['angular2/angular2', 'ionic/util', './bootstrap', './directives'], function (_export) {
-    /**
-     * @private
-     */
-    'use strict';
-
-    var Component, View, bootstrap, util, ionicProviders, IONIC_DIRECTIVES, PageImpl;
-
-    var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-    /**
-     * TODO
-     */
-
-    _export('Page', Page);
-
-    _export('ConfigComponent', ConfigComponent);
-
-    _export('makeComponent', makeComponent);
-
-    _export('App', App);
-
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-    function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
+System.register('ionic/config/decorators', ['angular2/angular2', '../components/tap-click/tap-click', '../util/util', './bootstrap', './directives'], function (_export) {
     /**
      * _For more information on how pages are created, see the [NavController API
-     * reference](../../Nav/NavController/#creating_pages)._
+     * reference](../../components/nav/NavController/#creating_pages)._
      *
      * The Page decorator indicates that the decorated class is an Ionic
      * navigation component, meaning it can be navigated to using a NavController.
@@ -82,11 +57,46 @@ System.register('ionic/config/decorators', ['angular2/angular2', 'ionic/util', '
      * you may see these tags if you inspect your markup, you don't need to include
      * them in your templates.
      */
+    'use strict';
 
-    function Page(args) {
+    var Component, bootstrap, TapClick, pascalCaseToDashCase, ionicProviders, IONIC_DIRECTIVES;
+
+    /**
+     * @private
+     */
+
+    _export('Page', Page);
+
+    /**
+     * @private
+     */
+
+    _export('ConfigComponent', ConfigComponent);
+
+    _export('App', App);
+
+    /**
+    * @ngdoc service
+    * @name App
+    * @module ionic
+    * @param {object} [config] - the app's [../Config](Config) object
+    * @param {string} [template] - the template to use for the app root
+    * @param {string} [templateUrl] - a relative URL pointing to the template to use for the app root
+    * @description
+    * App is an Ionic decorator that bootstraps an application. It can be passed a number of arguments, that act as global config variables for the app.
+    */
+
+    function Page() {
+        var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
         return function (cls) {
+            config.selector = 'ion-page';
+            config.directives = config.directives ? config.directives.concat(IONIC_DIRECTIVES) : IONIC_DIRECTIVES;
+            config.host = config.host || {};
+            config.host['[hidden]'] = '_hidden';
+            config.host['[class.tab-subpage]'] = '_tabSubPage';
             var annotations = Reflect.getMetadata('annotations', cls) || [];
-            annotations.push(new PageImpl(args));
+            annotations.push(new Component(config));
             Reflect.defineMetadata('annotations', annotations, cls);
             return cls;
         };
@@ -94,15 +104,11 @@ System.register('ionic/config/decorators', ['angular2/angular2', 'ionic/util', '
 
     function ConfigComponent(config) {
         return function (cls) {
-            return makeComponent(cls, appendConfig(cls, config));
+            var annotations = Reflect.getMetadata('annotations', cls) || [];
+            annotations.push(new Component(appendConfig(cls, config)));
+            Reflect.defineMetadata('annotations', annotations, cls);
+            return cls;
         };
-    }
-
-    function makeComponent(cls, config) {
-        var annotations = Reflect.getMetadata('annotations', cls) || [];
-        annotations.push(new Component(config));
-        Reflect.defineMetadata('annotations', annotations, cls);
-        return cls;
     }
 
     function appendConfig(cls, config) {
@@ -114,23 +120,18 @@ System.register('ionic/config/decorators', ['angular2/angular2', 'ionic/util', '
             config.inputs.push(prop);
             // set the component "hostProperties", so the instance's
             // input value will be used to set the element's attribute
-            config.host['[attr.' + util.pascalCaseToDashCase(prop) + ']'] = prop;
+            config.host['[attr.' + pascalCaseToDashCase(prop) + ']'] = prop;
         }
         cls.delegates = config.delegates;
         return config;
     }
-    /**
-     * TODO
-     */
-
     function App() {
         var args = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
         return function (cls) {
             // get current annotations
             var annotations = Reflect.getMetadata('annotations', cls) || [];
-            // default to select <ion-app>
-            args.selector = args.selector || 'ion-app';
+            args.selector = 'ion-app';
             // auto add Ionic directives
             args.directives = args.directives ? args.directives.concat(IONIC_DIRECTIVES) : IONIC_DIRECTIVES;
             // if no template was provided, default so it has a root <ion-nav>
@@ -141,7 +142,9 @@ System.register('ionic/config/decorators', ['angular2/angular2', 'ionic/util', '
             annotations.push(new Component(args));
             // redefine with added annotations
             Reflect.defineMetadata('annotations', annotations, cls);
-            bootstrap(cls, ionicProviders(args.config));
+            bootstrap(cls, ionicProviders(args)).then(function (appRef) {
+                appRef.injector.get(TapClick);
+            });
             return cls;
         };
     }
@@ -149,30 +152,16 @@ System.register('ionic/config/decorators', ['angular2/angular2', 'ionic/util', '
     return {
         setters: [function (_angular2Angular2) {
             Component = _angular2Angular2.Component;
-            View = _angular2Angular2.View;
             bootstrap = _angular2Angular2.bootstrap;
-        }, function (_ionicUtil) {
-            util = _ionicUtil;
+        }, function (_componentsTapClickTapClick) {
+            TapClick = _componentsTapClickTapClick.TapClick;
+        }, function (_utilUtil) {
+            pascalCaseToDashCase = _utilUtil.pascalCaseToDashCase;
         }, function (_bootstrap) {
             ionicProviders = _bootstrap.ionicProviders;
         }, function (_directives) {
             IONIC_DIRECTIVES = _directives.IONIC_DIRECTIVES;
         }],
-        execute: function () {
-            PageImpl = (function (_View) {
-                _inherits(PageImpl, _View);
-
-                function PageImpl() {
-                    var args = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-                    _classCallCheck(this, PageImpl);
-
-                    args.directives = (args.directives || []).concat(IONIC_DIRECTIVES);
-                    _get(Object.getPrototypeOf(PageImpl.prototype), 'constructor', this).call(this, args);
-                }
-
-                return PageImpl;
-            })(View);
-        }
+        execute: function () {}
     };
 });

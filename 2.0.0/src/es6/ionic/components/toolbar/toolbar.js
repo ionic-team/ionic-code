@@ -12,10 +12,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Directive, ElementRef, Renderer, Optional, forwardRef, Inject } from 'angular2/angular2';
+import { Component, Directive, ElementRef, Optional, forwardRef, Inject } from 'angular2/angular2';
 import { Ion } from '../ion';
 import { Config } from '../../config/config';
-import { Navbar } from '../nav-bar/nav-bar';
+import { Navbar } from '../navbar/navbar';
 /**
  * TODO
  */
@@ -25,20 +25,26 @@ export class ToolbarBase extends Ion {
         this.itemRefs = [];
         this.titleRef = null;
     }
+    /**
+     * @private
+     */
     setTitleCmp(titleCmp) {
         this.titleCmp = titleCmp;
     }
+    /**
+     * @private
+     */
     getTitleText() {
         return (this.titleCmp && this.titleCmp.getTitleText()) || '';
     }
     /**
-     * TODO
-     * @returns {TODO} TODO
+     * @private
      */
     getTitleRef() {
         return this.titleCmp && this.titleCmp.elementRef;
     }
     /**
+     * @private
      * A toolbar items include the left and right side `ion-nav-items`,
      * and every `menu-toggle`. It does not include the `ion-title`.
      * @returns {TODO} Array of this toolbar's item ElementRefs.
@@ -46,6 +52,9 @@ export class ToolbarBase extends Ion {
     getItemRefs() {
         return this.itemRefs;
     }
+    /**
+     * @private
+     */
     addItemRef(itemElementRef) {
         this.itemRefs.push(itemElementRef);
     }
@@ -54,23 +63,25 @@ export class ToolbarBase extends Ion {
  * TODO
  */
 export let Toolbar = class extends ToolbarBase {
-    constructor(elementRef, config, renderer) {
+    constructor(elementRef, config) {
         super(elementRef, config);
-        renderer.setElementClass(elementRef, 'toolbar', true);
     }
 };
 Toolbar = __decorate([
     Component({
         selector: 'ion-toolbar',
-        template: '<div class="toolbar-inner">' +
+        template: '<toolbar-background></toolbar-background>' +
             '<ng-content select="[menu-toggle]"></ng-content>' +
-            '<ng-content select="ion-title"></ng-content>' +
             '<ng-content select="ion-nav-items[primary]"></ng-content>' +
             '<ng-content select="ion-nav-items[secondary]"></ng-content>' +
-            '</div>' +
-            '<div class="toolbar-background"></div>'
+            '<toolbar-content>' +
+            '<ng-content></ng-content>' +
+            '</toolbar-content>',
+        host: {
+            'class': 'toolbar'
+        }
     }), 
-    __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object, (typeof (_c = typeof Renderer !== 'undefined' && Renderer) === 'function' && _c) || Object])
+    __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object])
 ], Toolbar);
 export let ToolbarTitle = class extends Ion {
     constructor(elementRef, toolbar, navbar) {
@@ -92,8 +103,11 @@ ToolbarTitle = __decorate([
     __param(1, Optional()),
     __param(2, Optional()),
     __param(2, Inject(forwardRef(() => Navbar))), 
-    __metadata('design:paramtypes', [(typeof (_d = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _d) || Object, Toolbar, (typeof (_e = typeof Navbar !== 'undefined' && Navbar) === 'function' && _e) || Object])
+    __metadata('design:paramtypes', [(typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c) || Object, Toolbar, (typeof (_d = typeof Navbar !== 'undefined' && Navbar) === 'function' && _d) || Object])
 ], ToolbarTitle);
+/**
+ * @private
+ */
 export let ToolbarItem = class extends Ion {
     constructor(elementRef, toolbar, navbar) {
         super(elementRef, null);
@@ -108,6 +122,6 @@ ToolbarItem = __decorate([
     __param(1, Optional()),
     __param(2, Optional()),
     __param(2, Inject(forwardRef(() => Navbar))), 
-    __metadata('design:paramtypes', [(typeof (_f = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _f) || Object, Toolbar, (typeof (_g = typeof Navbar !== 'undefined' && Navbar) === 'function' && _g) || Object])
+    __metadata('design:paramtypes', [(typeof (_e = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _e) || Object, Toolbar, (typeof (_f = typeof Navbar !== 'undefined' && Navbar) === 'function' && _f) || Object])
 ], ToolbarItem);
-var _a, _b, _c, _d, _e, _f, _g;
+var _a, _b, _c, _d, _e, _f;

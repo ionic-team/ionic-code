@@ -20,7 +20,7 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
     **/
     'use strict';
 
-    var CSS, extend, Animation, Animate, TRANSFORMS, ANIMATE_PROPERTIES, CUBIC_BEZIERS, EASING_FN, AnimationRegistry;
+    var CSS, rafFrames, extend, Animation, Animate, TRANSFORMS, ANIMATE_PROPERTIES, CUBIC_BEZIERS, EASING_FN, AnimationRegistry;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -116,9 +116,28 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
     function roundValue(val) {
         return Math.round(val * 10000) / 10000;
     }
+
+    function parallel(tasks, done) {
+        var l = tasks.length;
+        if (!l) {
+            done && done();
+            return;
+        }
+        var completed = 0;
+        function taskCompleted() {
+            completed++;
+            if (completed === l) {
+                done && done();
+            }
+        }
+        for (var i = 0; i < l; i++) {
+            tasks[i](taskCompleted);
+        }
+    }
     return {
         setters: [function (_utilDom) {
             CSS = _utilDom.CSS;
+            rafFrames = _utilDom.rafFrames;
         }, function (_utilUtil) {
             extend = _utilUtil.extend;
         }],
@@ -131,7 +150,7 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
 
                     this.reset();
                     this._opts = extend({
-                        renderDelay: 36
+                        renderDelay: 16
                     }, opts);
                     this.elements(ele);
                     if (!document.documentElement.animate) {
@@ -197,10 +216,10 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
                 }, {
                     key: 'add',
                     value: function add(childAnimations) {
-                        childAnimations = Array.isArray(childAnimations) ? childAnimations : arguments;
-                        for (var i = 0; i < childAnimations.length; i++) {
-                            childAnimations[i].parent(this);
-                            this._chld.push(childAnimations[i]);
+                        var _childAnimations = Array.isArray(childAnimations) ? childAnimations : arguments;
+                        for (var i = 0; i < _childAnimations.length; i++) {
+                            _childAnimations[i].parent(this);
+                            this._chld.push(_childAnimations[i]);
                         }
                         return this;
                     }
@@ -285,71 +304,67 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
                 }, {
                     key: 'fadeIn',
                     value: function fadeIn() {
-                        return this.fromTo('opacity', 0.01, 1);
+                        return this.fromTo('opacity', 0.001, 1);
                     }
                 }, {
                     key: 'fadeOut',
                     value: function fadeOut() {
-                        return this.fromTo('opacity', 1, 0);
+                        return this.fromTo('opacity', 0.999, 0);
                     }
                 }, {
                     key: 'play',
-                    value: function play() {
-                        var _this = this;
-
+                    value: function play(done) {
                         var self = this;
                         // the actual play() method which may or may not start async
-                        function beginPlay() {
-                            var promises = [];
-                            for (var i = 0, l = self._chld.length; i < l; i++) {
-                                promises.push(self._chld[i].play());
-                            }
-                            self._ani.forEach(function (animation) {
-                                promises.push(new Promise(function (resolve) {
-                                    animation.play(resolve);
-                                }));
+                        function beginPlay(beginPlayDone) {
+                            var tasks = [];
+                            self._chld.forEach(function (childAnimation) {
+                                tasks.push(function (taskDone) {
+                                    childAnimation.play(taskDone);
+                                });
                             });
-                            return Promise.all(promises);
+                            self._ani.forEach(function (animation) {
+                                tasks.push(function (taskDone) {
+                                    animation.play(taskDone);
+                                });
+                            });
+                            parallel(tasks, beginPlayDone);
                         }
                         if (!self._parent) {
-                            var _ret = (function () {
-                                var kickoff = function kickoff() {
-                                    // synchronously call all onPlay()'s before play()
-                                    self._onPlay();
-                                    beginPlay().then(function () {
-                                        self._onFinish();
-                                        resolve();
-                                    });
-                                };
-
-                                // this is the top level animation and is in full control
-                                // of when the async play() should actually kick off
-                                // stage all animations and child animations at their starting point
-                                self.stage();
-                                var resolve = undefined;
-                                var promise = new Promise(function (res) {
-                                    resolve = res;
+                            var kickoff = function kickoff() {
+                                // synchronously call all onPlay()'s before play()
+                                self._onPlay();
+                                beginPlay(function () {
+                                    self._onFinish();
+                                    done();
                                 });
+                            };
 
-                                if (self._duration > 64) {
-                                    // begin each animation when everything is rendered in their starting point
-                                    // give the browser some time to render everything in place before starting
-                                    setTimeout(kickoff, _this._opts.renderDelay);
-                                } else {
-                                    // no need to render everything in there place before animating in
-                                    // just kick it off immediately to render them in their "to" locations
-                                    kickoff();
-                                }
-                                return {
-                                    v: promise
-                                };
-                            })();
+                            // this is the top level animation and is in full control
+                            // of when the async play() should actually kick off
+                            // stage all animations and child animations at their starting point
+                            self.stage();
+                            var promise = undefined;
+                            if (!done) {
+                                promise = new Promise(function (res) {
+                                    done = res;
+                                });
+                            }
 
-                            if (typeof _ret === 'object') return _ret.v;
+                            if (self._duration > 16 && self._opts.renderDelay > 0) {
+                                // begin each animation when everything is rendered in their starting point
+                                // give the browser some time to render everything in place before starting
+                                rafFrames(self._opts.renderDelay / 16, kickoff);
+                            } else {
+                                // no need to render everything in there place before animating in
+                                // just kick it off immediately to render them in their "to" locations
+                                kickoff();
+                            }
+                            return promise;
                         }
                         // this is a child animation, it is told exactly when to
                         // start by the top level animation
-                        return beginPlay();
+                        beginPlay(done);
                     }
                 }, {
                     key: 'stage',
@@ -566,13 +581,18 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
                     }
                 }, {
                     key: 'dispose',
-                    value: function dispose() {
+                    value: function dispose(removeElement) {
                         var i = undefined;
                         for (i = 0; i < this._chld.length; i++) {
-                            this._chld[i].dispose();
+                            this._chld[i].dispose(removeElement);
                         }
                         for (i = 0; i < this._ani.length; i++) {
-                            this._ani[i].dispose();
+                            this._ani[i].dispose(removeElement);
+                        }
+                        if (removeElement) {
+                            for (i = 0; i < this._el.length; i++) {
+                                this._el[i].parentNode && this._el[i].parentNode.removeChild(this._el[i]);
+                            }
                         }
                         this.reset();
                     }
@@ -583,36 +603,36 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
                 }, {
                     key: 'before',
                     get: function get() {
-                        var _this2 = this;
+                        var _this = this;
 
                         return {
                             addClass: function addClass(className) {
-                                _this2._bfAdd.push(className);
-                                return _this2;
+                                _this._bfAdd.push(className);
+                                return _this;
                             },
                             removeClass: function removeClass(className) {
-                                _this2._bfRmv.push(className);
-                                return _this2;
+                                _this._bfRmv.push(className);
+                                return _this;
                             },
                             setStyles: function setStyles(styles) {
-                                _this2._bfSty = styles;
-                                return _this2;
+                                _this._bfSty = styles;
+                                return _this;
                             }
                         };
                     }
                 }, {
                     key: 'after',
                     get: function get() {
-                        var _this3 = this;
+                        var _this2 = this;
 
                         return {
                             addClass: function addClass(className) {
-                                _this3._afAdd.push(className);
-                                return _this3;
+                                _this2._afAdd.push(className);
+                                return _this2;
                             },
                             removeClass: function removeClass(className) {
-                                _this3._afRmv.push(className);
-                                return _this3;
+                                _this2._afRmv.push(className);
+                                return _this2;
                             }
                         };
                     }
@@ -626,6 +646,18 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
                             AnimationClass = Animation;
                         }
                         return new AnimationClass(element);
+                    }
+                }, {
+                    key: 'createTransition',
+                    value: function createTransition(enteringView, leavingView) {
+                        var opts = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+                        var name = opts.animation || 'ios-transition';
+                        var TransitionClass = AnimationRegistry[name];
+                        if (!TransitionClass) {
+                            TransitionClass = Animation;
+                        }
+                        return new TransitionClass(enteringView, leavingView, opts);
                     }
                 }, {
                     key: 'register',
@@ -651,7 +683,7 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
                         return console.error(ele.tagName, 'animation fromEffect required, toEffect:', toEffect);
                     }
                     this.toEffect = parseEffect(toEffect);
-                    this.shouldAnimate = duration > 64;
+                    this.shouldAnimate = duration > 32;
                     if (!this.shouldAnimate) {
                         return inlineStyle(ele, this.toEffect);
                     }
@@ -673,7 +705,7 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
 
                 _createClass(Animate, [{
                     key: 'play',
-                    value: function play(callback) {
+                    value: function play(done) {
                         var self = this;
                         if (self.ani) {
                             self.ani.play();
@@ -692,9 +724,11 @@ System.register('ionic/animations/animation', ['../util/dom', '../util/util'], f
                             // lock in where the element will stop at
                             // if the playbackRate is negative then it needs to return
                             // to its "from" effects
-                            inlineStyle(self.ele, self.rate < 0 ? self.fromEffect : self.toEffect);
-                            self.ani = null;
-                            callback && callback();
+                            if (self.ani) {
+                                inlineStyle(self.ele, self.rate < 0 ? self.fromEffect : self.toEffect);
+                                self.ani = self.ani.onfinish = null;
+                                done && done();
+                            }
                         };
                     }
                 }, {

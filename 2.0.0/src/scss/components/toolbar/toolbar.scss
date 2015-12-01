@@ -1,3 +1,4 @@
+@import "../../ionic.globals";
 
 // Toolbar
 // --------------------------------------------------
@@ -7,7 +8,7 @@ $toolbar-padding:        4px !default;
 $toolbar-order: (
   backButton: 10,
   menu-toggle-primary: 20,
-  title: 30,
+  content: 30,
   primary: 40,
   secondary: 50,
   menu-toggle-secondary: 60,
@@ -37,7 +38,7 @@ $toolbar-order: (
   }
 }
 
-.toolbar .toolbar-background {
+.toolbar toolbar-background {
   position: absolute;
   left: 0;
   top: 0;
@@ -52,6 +53,12 @@ $toolbar-order: (
   pointer-events: none;
 }
 
+toolbar-content {
+  display: block;
+  flex: 1;
+  order: map-get($toolbar-order, content);
+}
+
 .toolbar button:hover:not(.disable-hover),
 .toolbar [button]:hover:not(.disable-hover),
 .toolbar button.activated,
@@ -64,18 +71,10 @@ $toolbar-order: (
   order: $flex-order-toolbar-bottom;
 }
 
-.toolbar-inner {
-  position: relative;
-  display: flex;
-  width: 100%;
-}
-
 ion-title {
   flex: 1;
-  order: map-get($toolbar-order, title);
   display: flex;
   align-items: center;
-  transform: translateZ(0px);
 }
 
 .toolbar-title {
@@ -109,7 +108,6 @@ ion-title {
 ion-nav-items {
   display: block;
   margin: 0 0.2rem;
-  transform: translateZ(0px);
   pointer-events: none;
   order: map-get($toolbar-order, primary);
 }
@@ -126,6 +124,12 @@ ion-nav-items div {
   pointer-events: auto;
 }
 
+// TODO this is a temp hack to fix segment overlapping ion-nav-item
+ion-nav-items,
+[menu-toggle] {
+  z-index: 99;
+}
+
 
 // Toolbar Color Generation
 // --------------------------------------------------
@@ -134,7 +138,7 @@ ion-nav-items div {
 
   .toolbar[#{$color-name}] {
 
-    .toolbar-background {
+    toolbar-background {
       background-color: $color-value;
       border-color: darken($color-value, 10%);
     }

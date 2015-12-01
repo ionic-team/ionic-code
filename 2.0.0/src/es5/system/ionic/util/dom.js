@@ -1,9 +1,11 @@
 System.register('ionic/util/dom', [], function (_export) {
     'use strict';
 
-    var nativeRaf, nativeCancelRaf, raf, rafCancel, CSS, dimensionCache, dimensionIds;
+    var nativeRaf, nativeCancelRaf, _raf, rafCancel, CSS, matchesFn, dimensionCache, dimensionIds;
 
-    _export('rafPromise', rafPromise);
+    _export('raf', raf);
+
+    _export('rafFrames', rafFrames);
 
     _export('transitionEnd', transitionEnd);
 
@@ -56,10 +58,21 @@ System.register('ionic/util/dom', [], function (_export) {
 
     _export('offset', offset);
 
-    function rafPromise() {
-        return new Promise(function (resolve) {
-            return raf(resolve);
-        });
+    function raf(callback) {
+        //console.log('raf', callback.toString().replace(/\s/g, '').replace('function', '').substring(0, 50));
+        //console.log('raf, isRootZone()', zone.isRootZone(), '$id', zone.$id);
+        _raf(callback);
+    }
+
+    function rafFrames(framesToWait, callback) {
+        framesToWait = Math.ceil(framesToWait);
+        if (framesToWait < 2) {
+            raf(callback);
+        } else {
+            setTimeout(function () {
+                raf(callback);
+            }, (framesToWait - 1) * 17);
+        }
     }
 
     function transitionEnd(el) {
@@ -187,23 +200,16 @@ System.register('ionic/util/dom', [], function (_export) {
         return false;
     }
 
-    function closest(ele, selector) {
-        var matchesFn;
-        // find vendor prefix
-        ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
-            if (typeof document.body[fn] == 'function') {
-                matchesFn = fn;
-                return true;
+    function closest(ele, selector, checkSelf) {
+        if (ele && matchesFn) {
+            // traverse parents
+            ele = checkSelf ? ele : ele.parentElement;
+            while (ele !== null) {
+                if (ele[matchesFn](selector)) {
+                    return ele;
+                }
+                ele = ele.parentElement;
             }
-            return false;
-        });
-        // traverse parents
-        while (ele !== null) {
-            parent = ele.parentElement;
-            if (parent !== null && parent[matchesFn](selector)) {
-                return parent;
-            }
-            ele = parent;
         }
         return null;
     }
@@ -212,33 +218,45 @@ System.register('ionic/util/dom', [], function (_export) {
         ele && ele.parentNode && ele.parentNode.removeChild(ele);
     }
 
-    function getDimensions(ion) {
+    function getDimensions(ion, ele) {
         if (!ion._dimId) {
             ion._dimId = ++dimensionIds;
-            if (ion._dimId % 100 === 0) {
+            if (ion._dimId % 1000 === 0) {
                 // periodically flush dimensions
                 flushDimensionCache();
             }
         }
         var dimensions = dimensionCache[ion._dimId];
         if (!dimensions) {
-            var ele = ion.getNativeElement();
-            dimensions = dimensionCache[ion._dimId] = {
-                width: ele.offsetWidth,
-                height: ele.offsetHeight,
-                left: ele.offsetLeft,
-                top: ele.offsetTop
-            };
+            var _ele = ion.getNativeElement();
+            // make sure we got good values before caching
+            if (_ele.offsetWidth && _ele.offsetHeight) {
+                dimensions = dimensionCache[ion._dimId] = {
+                    width: _ele.offsetWidth,
+                    height: _ele.offsetHeight,
+                    left: _ele.offsetLeft,
+                    top: _ele.offsetTop
+                };
+            } else {
+                // do not cache bad values
+                return { width: 0, height: 0, left: 0, top: 0 };
+            }
         }
         return dimensions;
     }
 
     function windowDimensions() {
         if (!dimensionCache.win) {
-            dimensionCache.win = {
-                width: window.innerWidth,
-                height: window.innerHeight
-            };
+            // make sure we got good values before caching
+            if (window.innerWidth && window.innerHeight) {
+                dimensionCache.win = {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                };
+            } else {
+                // do not cache bad values
+                return { width: 0, height: 0 };
+            }
         }
         return dimensionCache.win;
     }
@@ -304,7 +322,7 @@ System.register('ionic/util/dom', [], function (_export) {
             nativeRaf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
             nativeCancelRaf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame;
 
-            raf = nativeRaf || function (callback) {
+            _raf = nativeRaf || function (callback) {
                 var timeCurrent = new Date().getTime(),
                     timeDelta = undefined;
                 /* Dynamically set delay on a per-tick basis to match 60fps. */
@@ -315,8 +333,6 @@ System.register('ionic/util/dom', [], function (_export) {
                     callback(timeCurrent + timeDelta);
                 }, timeDelta);
             };
-
-            _export('raf', raf);
 
             rafCancel = nativeRaf ? nativeCancelRaf : function (id) {
                 return window.cancelTimeout(id);
@@ -363,6 +379,13 @@ System.register('ionic/util/dom', [], function (_export) {
                 CSS.animationStart = 'animationstart';
                 CSS.animationEnd = 'animationend';
             }
+            matchesFn = undefined;
+
+            ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector'].some(function (fn) {
+                if (typeof document.documentElement[fn] == 'function') {
+                    matchesFn = fn;
+                }
+            });
             dimensionCache = {};
             dimensionIds = 0;
 

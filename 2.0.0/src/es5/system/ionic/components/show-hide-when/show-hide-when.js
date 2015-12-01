@@ -103,17 +103,15 @@ System.register("ionic/components/show-hide-when/show-hide-when", ["angular2/ang
             ShowWhen = (function (_DisplayWhen) {
                 _inherits(ShowWhen, _DisplayWhen);
 
-                /**
-                 * TODO
-                 * @param {string} showWhen  The value of the element's 'show-when' attribute
-                 * @param {NgZone} ngZone  TODO
-                 */
-
                 function ShowWhen(showWhen, platform, ngZone) {
                     _classCallCheck(this, ShowWhen);
 
                     _get(Object.getPrototypeOf(ShowWhen.prototype), "constructor", this).call(this, showWhen, platform, ngZone);
                 }
+
+                /**
+                 * @private
+                 */
 
                 _createClass(ShowWhen, [{
                     key: "hidden",
@@ -140,17 +138,15 @@ System.register("ionic/components/show-hide-when/show-hide-when", ["angular2/ang
             HideWhen = (function (_DisplayWhen2) {
                 _inherits(HideWhen, _DisplayWhen2);
 
-                /**
-                 * TODO
-                 * @param {string} showWhen  The value of the element's 'hide-when' attribute
-                 * @param {NgZone} ngZone  TODO
-                 */
-
                 function HideWhen(hideWhen, platform, ngZone) {
                     _classCallCheck(this, HideWhen);
 
                     _get(Object.getPrototypeOf(HideWhen.prototype), "constructor", this).call(this, hideWhen, platform, ngZone);
                 }
+
+                /**
+                 * @private
+                 */
 
                 _createClass(HideWhen, [{
                     key: "hidden",

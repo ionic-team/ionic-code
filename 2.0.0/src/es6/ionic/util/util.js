@@ -112,23 +112,6 @@ let uid = 0;
 export function nextUid() {
     return ++uid;
 }
-/**
- * A simple logger class.
- */
-export class Log {
-    static log(...args) {
-        console.log.apply(console, args);
-    }
-    static info(...args) {
-        console.info.apply(console, args);
-    }
-    static warn(...args) {
-        console.warn.apply(console, args);
-    }
-    static error(...args) {
-        console.error.apply(console, args);
-    }
-}
 export const array = {
     find(arr, cb) {
         for (let i = 0, ii = arr.length; i < ii; i++) {
@@ -161,12 +144,10 @@ export function getQuerystring(url, key) {
         const startIndex = url.indexOf('?');
         if (startIndex !== -1) {
             const queries = url.slice(startIndex + 1).split('&');
-            if (queries.length) {
-                queries.forEach((param) => {
-                    var split = param.split('=');
-                    queryParams[split[0]] = split[1].split('#')[0];
-                });
-            }
+            queries.forEach((param) => {
+                var split = param.split('=');
+                queryParams[split[0].toLowerCase()] = split[1].split('#')[0];
+            });
         }
         if (key) {
             return queryParams[key] || '';

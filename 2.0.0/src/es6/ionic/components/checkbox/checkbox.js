@@ -12,7 +12,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Optional, NgControl, ElementRef, Renderer } from 'angular2/angular2';
+import { Component, Optional, NgControl, ElementRef } from 'angular2/angular2';
 import { Form } from '../../util/form';
 /**
  * The checkbox is no different than the HTML checkbox input, except it's styled differently
@@ -27,8 +27,7 @@ import { Form } from '../../util/form';
  * ```
  */
 export let Checkbox = class {
-    constructor(form, ngControl, elementRef, renderer) {
-        renderer.setElementClass(elementRef, 'item', true);
+    constructor(form, ngControl, elementRef) {
         this.form = form;
         form.register(this);
         this.onChange = (_) => { };
@@ -37,9 +36,6 @@ export let Checkbox = class {
         if (ngControl)
             ngControl.valueAccessor = this;
     }
-    /**
-     * TODO
-     */
     onInit() {
         this.labelId = 'label-' + this.inputId;
     }
@@ -52,6 +48,7 @@ export let Checkbox = class {
         this.onChange(this.checked);
     }
     /**
+     * @private
      * Click event handler to toggle the checkbox checked state.
      * @param {MouseEvent} ev  The click event.
      */
@@ -84,6 +81,9 @@ export let Checkbox = class {
      * @param {Function} fn  onTouched event handler.
      */
     registerOnTouched(fn) { this.onTouched = fn; }
+    /**
+     * @private
+     */
     onDestroy() {
         this.form.deregister(this);
     }
@@ -104,16 +104,19 @@ Checkbox = __decorate([
             '[attr.aria-checked]': 'checked',
             '[attr.aria-disabled]': 'disabled',
             '[attr.aria-labelledby]': 'labelId',
-            '(click)': 'click($event)'
+            '(click)': 'click($event)',
+            'class': 'item'
         },
-        template: '<media-checkbox disable-activated>' +
+        template: '<div class="item-inner">' +
+            '<media-checkbox disable-activated>' +
             '<checkbox-icon></checkbox-icon>' +
             '</media-checkbox>' +
             '<ion-item-content id="{{labelId}}">' +
             '<ng-content></ng-content>' +
-            '</ion-item-content>'
+            '</ion-item-content>' +
+            '</div>'
     }),
     __param(1, Optional()), 
-    __metadata('design:paramtypes', [(typeof (_a = typeof Form !== 'undefined' && Form) === 'function' && _a) || Object, (typeof (_b = typeof NgControl !== 'undefined' && NgControl) === 'function' && _b) || Object, (typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c) || Object, (typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d) || Object])
+    __metadata('design:paramtypes', [(typeof (_a = typeof Form !== 'undefined' && Form) === 'function' && _a) || Object, (typeof (_b = typeof NgControl !== 'undefined' && NgControl) === 'function' && _b) || Object, (typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c) || Object])
 ], Checkbox);
-var _a, _b, _c, _d;
+var _a, _b, _c;

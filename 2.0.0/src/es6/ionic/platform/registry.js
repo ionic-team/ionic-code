@@ -37,10 +37,13 @@ Platform.register({
         'tablet'
     ],
     settings: {
-        mode: 'md',
-        keyboardHeight: 290,
-        scrollAssist: true,
+        activator: function (p) {
+            return (p.version().major < 5 && p.navigatorPlatform().indexOf('linux') > -1) ? 'none' : 'ripple';
+        },
         hoverCSS: false,
+        keyboardHeight: 300,
+        mode: 'md',
+        scrollAssist: true,
     },
     isMatch(p) {
         return p.isPlatform('android', 'android|silk');
@@ -57,17 +60,14 @@ Platform.register({
         'iphone'
     ],
     settings: {
-        mode: 'ios',
-        scrollAssist: function (p) {
-            return /iphone|ipad|ipod/i.test(p.navigatorPlatform());
-        },
-        keyboardHeight: 290,
+        clickBlock: true,
         hoverCSS: false,
-        swipeBackEnabled: function (p) {
-            return true; // TODO: remove me! Force it to always work for iOS mode for now
-            return /iphone|ipad|ipod/i.test(p.navigatorPlatform());
-        },
+        keyboardHeight: 300,
+        mode: 'ios',
+        scrollAssist: isIOSDevice,
+        swipeBackEnabled: isIOSDevice,
         swipeBackThreshold: 40,
+        tapPolyfill: isIOSDevice,
     },
     isMatch(p) {
         return p.isPlatform('ios', 'iphone|ipad|ipod');
@@ -130,3 +130,10 @@ Platform.register({
         return !!(window.cordova || window.PhoneGap || window.phonegap);
     }
 });
+function isIOSDevice(p) {
+    // shortcut function to be reused internally
+    // checks navigator.platform to see if it's an actual iOS device
+    // this does not use the user-agent string because it is often spoofed
+    // an actual iPad will return true, a chrome dev tools iPad will return false
+    return /iphone|ipad|ipod/i.test(p.navigatorPlatform());
+}

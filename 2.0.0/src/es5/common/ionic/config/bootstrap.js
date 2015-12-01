@@ -5,8 +5,6 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.ionicProviders = ionicProviders;
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
 var _angular2Angular2 = require('angular2/angular2');
 
 var _angular2Router = require('angular2/router');
@@ -37,17 +35,20 @@ var _componentsNavNavRegistry = require('../components/nav/nav-registry');
 
 var _translationTranslate = require('../translation/translate');
 
+var _utilClickBlock = require('../util/click-block');
+
 var _utilFeatureDetect = require('../util/feature-detect');
 
 var _componentsTapClickTapClick = require('../components/tap-click/tap-click');
 
 var _utilDom = require('../util/dom');
 
-var dom = _interopRequireWildcard(_utilDom);
+function ionicProviders() {
+    var args = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-function ionicProviders(config) {
-    var app = new _componentsAppApp.IonicApp();
     var platform = new _platformPlatform.Platform();
+    var navRegistry = new _componentsNavNavRegistry.NavRegistry(args.pages);
+    var config = args.config;
     if (!(config instanceof _config.Config)) {
         config = new _config.Config(config);
     }
@@ -56,20 +57,20 @@ function ionicProviders(config) {
     platform.navigatorPlatform(window.navigator.platform);
     platform.load();
     config.setPlatform(platform);
+    var clickBlock = new _utilClickBlock.ClickBlock(config.get('clickBlock'));
     var events = new _utilEvents.Events();
-    var tapClick = new _componentsTapClickTapClick.TapClick(app, config, window, document);
     var featureDetect = new _utilFeatureDetect.FeatureDetect();
-    setupDom(window, document, config, platform, featureDetect);
+    setupDom(window, document, config, platform, clickBlock, featureDetect);
     bindEvents(window, document, platform, events);
     // prepare the ready promise to fire....when ready
     platform.prepareReady(config);
-    return [(0, _angular2Angular2.provide)(_componentsAppApp.IonicApp, { useValue: app }), (0, _angular2Angular2.provide)(_config.Config, { useValue: config }), (0, _angular2Angular2.provide)(_platformPlatform.Platform, { useValue: platform }), (0, _angular2Angular2.provide)(_componentsTapClickTapClick.TapClick, { useValue: tapClick }), (0, _angular2Angular2.provide)(_utilFeatureDetect.FeatureDetect, { useValue: featureDetect }), (0, _angular2Angular2.provide)(_utilEvents.Events, { useValue: events }), _utilForm.Form, _utilKeyboard.Keyboard, _componentsOverlayOverlayController.OverlayController, _componentsActionSheetActionSheet.ActionSheet, _componentsModalModal.Modal, _componentsPopupPopup.Popup, _translationTranslate.Translate, _componentsNavNavRegistry.NavRegistry, _angular2Router.ROUTER_PROVIDERS, (0, _angular2Angular2.provide)(_angular2Router.LocationStrategy, { useClass: _angular2Router.HashLocationStrategy }), _angular2Http.HTTP_PROVIDERS];
+    return [_componentsAppApp.IonicApp, (0, _angular2Angular2.provide)(_utilClickBlock.ClickBlock, { useValue: clickBlock }), (0, _angular2Angular2.provide)(_config.Config, { useValue: config }), (0, _angular2Angular2.provide)(_platformPlatform.Platform, { useValue: platform }), (0, _angular2Angular2.provide)(_utilFeatureDetect.FeatureDetect, { useValue: featureDetect }), (0, _angular2Angular2.provide)(_utilEvents.Events, { useValue: events }), (0, _angular2Angular2.provide)(_componentsNavNavRegistry.NavRegistry, { useValue: navRegistry }), _componentsTapClickTapClick.TapClick, _utilForm.Form, _utilKeyboard.Keyboard, _componentsOverlayOverlayController.OverlayController, _componentsActionSheetActionSheet.ActionSheet, _componentsModalModal.Modal, _componentsPopupPopup.Popup, _translationTranslate.Translate, _angular2Router.ROUTER_PROVIDERS, (0, _angular2Angular2.provide)(_angular2Router.LocationStrategy, { useClass: _angular2Router.HashLocationStrategy }), _angular2Http.HTTP_PROVIDERS];
 }
 
-function setupDom(window, document, config, platform, featureDetect) {
+function setupDom(window, document, config, platform, clickBlock, featureDetect) {
     var bodyEle = document.body;
     if (!bodyEle) {
-        return dom.ready(function () {
+        return (0, _utilDom.ready)(function () {
             applyBodyCss(document, config, platform);
         });
     }
@@ -95,6 +96,9 @@ function setupDom(window, document, config, platform, featureDetect) {
     if (config.get('hoverCSS') !== false) {
         bodyEle.classList.add('enable-hover');
     }
+    if (config.get('clickBlock')) {
+        clickBlock.enable();
+    }
     // run feature detection tests
     featureDetect.run(window, document);
 }
@@ -118,7 +122,7 @@ function bindEvents(window, document, platform, events) {
         if (!el) {
             return;
         }
-        var content = dom.closest(el, 'scroll-content');
+        var content = (0, _utilDom.closest)(el, 'scroll-content');
         if (content) {
             var scrollTo = new ScrollTo(content);
             scrollTo.start(0, 0, 300, 0);

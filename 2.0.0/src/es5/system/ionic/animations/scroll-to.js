@@ -7,6 +7,10 @@ System.register('ionic/animations/scroll-to', ['../util/dom'], function (_export
 
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+    // decelerating to zero velocity
+    function easeOutCubic(t) {
+        return --t * t * t + 1;
+    }
     return {
         setters: [function (_utilDom) {
             raf = _utilDom.raf;
@@ -55,14 +59,14 @@ System.register('ionic/animations/scroll-to', ['../util/dom'], function (_export
                             return Promise.resolve();
                         }
                         return new Promise(function (resolve, reject) {
-                            var start = Date.now();
+                            var start = undefined;
                             // start scroll loop
                             self.isPlaying = true;
-                            raf(step);
-                            // decelerating to zero velocity
-                            function easeOutCubic(t) {
-                                return --t * t * t + 1;
-                            }
+                            // chill out for a frame first
+                            raf(function () {
+                                start = Date.now();
+                                raf(step);
+                            });
                             // scroll loop
                             function step() {
                                 var time = Math.min(1, (Date.now() - start) / duration);

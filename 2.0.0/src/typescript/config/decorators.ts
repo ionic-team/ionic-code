@@ -1,22 +1,14 @@
-import {Component, Directive, View, bootstrap} from 'angular2/angular2'
+import {Component, bootstrap} from 'angular2/angular2'
 
-import * as util from 'ionic/util';
+import {TapClick} from '../components/tap-click/tap-click';
+import {pascalCaseToDashCase} from '../util/util';
 import {ionicProviders} from './bootstrap';
 import {IONIC_DIRECTIVES} from './directives';
 
-/**
- * @private
- */
-class PageImpl extends View {
-  constructor(args = {}) {
-    args.directives = (args.directives || []).concat(IONIC_DIRECTIVES);
-    super(args);
-  }
-}
 
 /**
  * _For more information on how pages are created, see the [NavController API
- * reference](../../Nav/NavController/#creating_pages)._
+ * reference](../../components/nav/NavController/#creating_pages)._
  *
  * The Page decorator indicates that the decorated class is an Ionic
  * navigation component, meaning it can be navigated to using a NavController.
@@ -72,31 +64,35 @@ class PageImpl extends View {
  * you may see these tags if you inspect your markup, you don't need to include
  * them in your templates.
  */
-export function Page(args) {
+export function Page(config={}) {
   return function(cls) {
+    config.selector = 'ion-page';
+    config.directives = config.directives ? config.directives.concat(IONIC_DIRECTIVES) : IONIC_DIRECTIVES;
+    config.host = config.host || {};
+    config.host['[hidden]'] = '_hidden';
+    config.host['[class.tab-subpage]'] = '_tabSubPage';
     var annotations = Reflect.getMetadata('annotations', cls) || [];
-    annotations.push(new PageImpl(args));
+    annotations.push(new Component(config));
     Reflect.defineMetadata('annotations', annotations, cls);
     return cls;
   }
 }
 
 /**
- * TODO
+ * @private
  */
 export function ConfigComponent(config) {
   return function(cls) {
-    return makeComponent(cls, appendConfig(cls, config));
+    var annotations = Reflect.getMetadata('annotations', cls) || [];
+    annotations.push(new Component(appendConfig(cls, config)));
+    Reflect.defineMetadata('annotations', annotations, cls);
+    return cls;
   }
 }
 
-export function makeComponent(cls, config) {
-  var annotations = Reflect.getMetadata('annotations', cls) || [];
-  annotations.push(new Component(config));
-  Reflect.defineMetadata('annotations', annotations, cls);
-  return cls;
-}
-
+/**
+ * @private
+ */
 function appendConfig(cls, config) {
   config.host = config.host || {};
 
@@ -110,7 +106,7 @@ function appendConfig(cls, config) {
 
     // set the component "hostProperties", so the instance's
     // input value will be used to set the element's attribute
-    config.host['[attr.' + util.pascalCaseToDashCase(prop) + ']'] = prop;
+    config.host['[attr.' + pascalCaseToDashCase(prop) + ']'] = prop;
   }
 
   cls.delegates = config.delegates;
@@ -119,15 +115,22 @@ function appendConfig(cls, config) {
 }
 
 /**
- * TODO
- */
+* @ngdoc service
+* @name App
+* @module ionic
+* @param {object} [config] - the app's [../Config](Config) object
+* @param {string} [template] - the template to use for the app root
+* @param {string} [templateUrl] - a relative URL pointing to the template to use for the app root
+* @description
+* App is an Ionic decorator that bootstraps an application. It can be passed a number of arguments, that act as global config variables for the app.
+*/
 export function App(args={}) {
+
   return function(cls) {
     // get current annotations
     let annotations = Reflect.getMetadata('annotations', cls) || [];
 
-    // default to select <ion-app>
-    args.selector = args.selector || 'ion-app';
+    args.selector = 'ion-app';
 
     // auto add Ionic directives
     args.directives = args.directives ? args.directives.concat(IONIC_DIRECTIVES) : IONIC_DIRECTIVES;
@@ -143,7 +146,9 @@ export function App(args={}) {
     // redefine with added annotations
     Reflect.defineMetadata('annotations', annotations, cls);
 
-    bootstrap(cls, ionicProviders(args.config));
+    bootstrap(cls, ionicProviders(args)).then(appRef => {
+      appRef.injector.get(TapClick);
+    });
 
     return cls;
   }

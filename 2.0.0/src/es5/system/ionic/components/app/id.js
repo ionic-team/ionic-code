@@ -27,7 +27,7 @@ System.register("ionic/components/app/id", ["angular2/angular2", "./app"], funct
      */
     "use strict";
 
-    var AppViewManager, ElementRef, Directive, IonicApp, __decorate, __metadata, IdRef, _a, _b, _c;
+    var AppViewManager, ElementRef, Directive, Renderer, IonicApp, __decorate, __metadata, IdRef, Attr, _a, _b, _c, _d, _e;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -38,6 +38,7 @@ System.register("ionic/components/app/id", ["angular2/angular2", "./app"], funct
             AppViewManager = _angular2Angular2.AppViewManager;
             ElementRef = _angular2Angular2.ElementRef;
             Directive = _angular2Angular2.Directive;
+            Renderer = _angular2Angular2.Renderer;
         }, function (_app) {
             IonicApp = _app.IonicApp;
         }],
@@ -75,11 +76,19 @@ System.register("ionic/components/app/id", ["angular2/angular2", "./app"], funct
                     this.component = appViewManager.getComponent(elementRef);
                 }
 
+                /**
+                 * @private
+                 */
+
                 _createClass(IdRef, [{
                     key: "onInit",
                     value: function onInit() {
                         this.app.register(this.id, this.component);
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "onDestroy",
                     value: function onDestroy() {
@@ -96,6 +105,35 @@ System.register("ionic/components/app/id", ["angular2/angular2", "./app"], funct
                 selector: '[id]',
                 inputs: ['id']
             }), __metadata('design:paramtypes', [typeof (_a = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _a || Object, typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b || Object, typeof (_c = typeof AppViewManager !== 'undefined' && AppViewManager) === 'function' && _c || Object])], IdRef));
+
+            Attr = (function () {
+                function Attr(renderer, elementRef) {
+                    _classCallCheck(this, Attr);
+
+                    this.renderer = renderer;
+                    this.elementRef = elementRef;
+                }
+
+                /**
+                 * @private
+                 */
+
+                _createClass(Attr, [{
+                    key: "onInit",
+                    value: function onInit() {
+                        this.renderer.setElementAttribute(this.elementRef, this.attr, '');
+                    }
+                }]);
+
+                return Attr;
+            })();
+
+            _export("Attr", Attr);
+
+            _export("Attr", Attr = __decorate([Directive({
+                selector: '[attr]',
+                inputs: ['attr']
+            }), __metadata('design:paramtypes', [typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d || Object, typeof (_e = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _e || Object])], Attr));
         }
     };
 });

@@ -24,6 +24,10 @@ var _configDecorators = require('./config/decorators');
 
 _defaults(exports, _interopExportWildcard(_configDecorators, _defaults));
 
+var _configDirectives = require('./config/directives');
+
+_defaults(exports, _interopExportWildcard(_configDirectives, _defaults));
+
 var _components = require('./components');
 
 _defaults(exports, _interopExportWildcard(_components, _defaults));
@@ -35,10 +39,6 @@ _defaults(exports, _interopExportWildcard(_platformPlatform, _defaults));
 var _platformRegistry = require('./platform/registry');
 
 _defaults(exports, _interopExportWildcard(_platformRegistry, _defaults));
-
-var _platformPlugins = require('./platform/plugins');
-
-_defaults(exports, _interopExportWildcard(_platformPlugins, _defaults));
 
 var _platformStorage = require('./platform/storage');
 
@@ -52,6 +52,10 @@ var _utilEvents = require('./util/events');
 
 _defaults(exports, _interopExportWildcard(_utilEvents, _defaults));
 
+var _utilKeyboard = require('./util/keyboard');
+
+_defaults(exports, _interopExportWildcard(_utilKeyboard, _defaults));
+
 var _animationsAnimation = require('./animations/animation');
 
 _defaults(exports, _interopExportWildcard(_animationsAnimation, _defaults));
@@ -60,19 +64,13 @@ var _animationsBuiltins = require('./animations/builtins');
 
 _defaults(exports, _interopExportWildcard(_animationsBuiltins, _defaults));
 
-var _transitionsTransition = require('./transitions/transition');
+var _animationsIosTransition = require('./animations/ios-transition');
 
-_defaults(exports, _interopExportWildcard(_transitionsTransition, _defaults));
+_defaults(exports, _interopExportWildcard(_animationsIosTransition, _defaults));
 
-var _transitionsIosTransition = require('./transitions/ios-transition');
+var _animationsMdTransition = require('./animations/md-transition');
 
-_defaults(exports, _interopExportWildcard(_transitionsIosTransition, _defaults));
-
-var _transitionsMdTransition = require('./transitions/md-transition');
-
-_defaults(exports, _interopExportWildcard(_transitionsMdTransition, _defaults));
-
-_defaults(exports, _interopExportWildcard(_platformPlugins, _defaults));
+_defaults(exports, _interopExportWildcard(_animationsMdTransition, _defaults));
 
 var _translationTranslate = require('./translation/translate');
 

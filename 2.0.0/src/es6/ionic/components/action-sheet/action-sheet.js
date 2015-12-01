@@ -1,10 +1,3 @@
-/**
-* @ngdoc service
-* @name ActionSheet
-* @module ionic
-* @description
-* The ActionSheet is a modal menu with options to select based on an action.
-*/
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {
@@ -16,17 +9,69 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, Injectable, NgFor, NgIf } from 'angular2/angular2';
+import { Component, Injectable, Renderer, NgFor, NgIf } from 'angular2/angular2';
 import { OverlayController } from '../overlay/overlay-controller';
 import { Config } from '../../config/config';
 import { Icon } from '../icon/icon';
 import { Animation } from '../../animations/animation';
-import * as util from 'ionic/util';
+import { NavParams } from '../nav/nav-controller';
+import { extend } from '../../util/util';
+let ActionSheetCmp = class {
+    constructor(params, renderer) {
+        this.d = params.data;
+        if (this.d.cssClass) {
+            renderer.setElementClass(elementRef, this.d.cssClass, true);
+        }
+    }
+    cancel() {
+        this.d.cancel && this.d.cancel();
+        return this.close();
+    }
+    destructive() {
+        if (this.d.destructiveButtonClicked()) {
+            return this.close();
+        }
+    }
+    buttonClicked(index) {
+        if (this.d.buttonClicked(index)) {
+            return this.close();
+        }
+    }
+};
+ActionSheetCmp = __decorate([
+    Component({
+        selector: 'ion-action-sheet',
+        template: '<backdrop (click)="cancel()" tappable disable-activated></backdrop>' +
+            '<action-sheet-wrapper>' +
+            '<div class="action-sheet-container">' +
+            '<div class="action-sheet-group action-sheet-options">' +
+            '<div class="action-sheet-title" *ng-if="d.titleText">{{d.titleText}}</div>' +
+            '<button (click)="buttonClicked(i)" *ng-for="#b of d.buttons; #i=index" class="action-sheet-option disable-hover">' +
+            '<icon [name]="b.icon" *ng-if="b.icon"></icon> ' +
+            '{{b.text}}' +
+            '</button>' +
+            '<button *ng-if="d.destructiveText" (click)="destructive()" class="action-sheet-destructive disable-hover">' +
+            '<icon [name]="d.destructiveIcon" *ng-if="d.destructiveIcon"></icon> ' +
+            '{{d.destructiveText}}</button>' +
+            '</div>' +
+            '<div class="action-sheet-group action-sheet-cancel" *ng-if="d.cancelText">' +
+            '<button (click)="cancel()" class="disable-hover">' +
+            '<icon [name]="d.cancelIcon" *ng-if="d.cancelIcon"></icon> ' +
+            '{{d.cancelText}}</button>' +
+            '</div>' +
+            '</div>' +
+            '</action-sheet-wrapper>',
+        host: {
+            'role': 'dialog'
+        },
+        directives: [NgFor, NgIf, Icon]
+    }), 
+    __metadata('design:paramtypes', [(typeof (_a = typeof NavParams !== 'undefined' && NavParams) === 'function' && _a) || Object, (typeof (_b = typeof Renderer !== 'undefined' && Renderer) === 'function' && _b) || Object])
+], ActionSheetCmp);
 /**
  * @name ActionSheet
  * @description
  * The Action Sheet is a slide-up pane that lets the user choose from a set of options. Dangerous options are made obvious.
- *
  * There are easy ways to cancel out of the action sheet, such as tapping the backdrop or even hitting escape on the keyboard for desktop testing.
  *
  * @usage
@@ -60,131 +105,95 @@ import * as util from 'ionic/util';
  * }
  * ```
  */
-let ActionSheetCmp = class {
-    _cancel() {
-        this.cancel && this.cancel();
-        return this.close();
-    }
-    _destructive() {
-        let shouldClose = this.destructiveButtonClicked();
-        if (shouldClose === true) {
-            return this.close();
-        }
-    }
-    _buttonClicked(index) {
-        let shouldClose = this.buttonClicked(index);
-        if (shouldClose === true) {
-            return this.close();
-        }
-    }
-};
-ActionSheetCmp = __decorate([
-    Component({
-        selector: 'ion-action-sheet',
-        template: '<backdrop (click)="_cancel()" tappable disable-activated></backdrop>' +
-            '<action-sheet-wrapper>' +
-            '<div class="action-sheet-container">' +
-            '<div class="action-sheet-group action-sheet-options">' +
-            '<div class="action-sheet-title" *ng-if="titleText">{{titleText}}</div>' +
-            '<button (click)="_buttonClicked(i)" *ng-for="#b of buttons; #i=index" class="action-sheet-option disable-hover">' +
-            '<icon [name]="b.icon" *ng-if="b.icon"></icon> ' +
-            '{{b.text}}' +
-            '</button>' +
-            '<button *ng-if="destructiveText" (click)="_destructive()" class="action-sheet-destructive disable-hover">' +
-            '<icon [name]="destructiveIcon" *ng-if="destructiveIcon"></icon> ' +
-            '{{destructiveText}}</button>' +
-            '</div>' +
-            '<div class="action-sheet-group action-sheet-cancel" *ng-if="cancelText">' +
-            '<button (click)="_cancel()" class=" disable-hover">' +
-            '<icon [name]="cancelIcon"></icon> ' +
-            '{{cancelText}}</button>' +
-            '</div>' +
-            '</div>' +
-            '</action-sheet-wrapper>',
-        directives: [NgFor, NgIf, Icon]
-    }), 
-    __metadata('design:paramtypes', [])
-], ActionSheetCmp);
 export let ActionSheet = class {
     constructor(ctrl, config) {
         this.ctrl = ctrl;
-        this._defaults = {
-            enterAnimation: config.get('actionSheetEnter'),
-            leaveAnimation: config.get('actionSheetLeave'),
-            cancelIcon: config.get('actionSheetCancelIcon'),
-            destructiveIcon: config.get('actionSheetDestructiveIcon')
-        };
+        this.config = config;
     }
     /**
      * Create and open a new Action Sheet. This is the
      * public API, and most often you will only use ActionSheet.open()
      *
-     * @param {Object} [opts={}]  TODO
+     * @param {Object} [opts={}]  An object containing optional settings.
+     * @param {String} [opts.pageType='action-sheet'] The page type that determines how the page renders and animates.
+     * @param {String} [opts.enterAnimation='action-sheet-slide-in'] The class used to animate an actionSheet that is entering.
+     * @param {String} [opts.leaveAnimation='action-sheet-slide-out'] The class used to animate an actionSheet that is leaving.
      * @return {Promise} Promise that resolves when the action sheet is open.
      */
     open(opts = {}) {
-        return this.ctrl.open(OVERLAY_TYPE, ActionSheetCmp, util.extend(this._defaults, opts));
+        opts = extend({
+            pageType: OVERLAY_TYPE,
+            enterAnimation: this.config.get('actionSheetEnter'),
+            leaveAnimation: this.config.get('actionSheetLeave'),
+            cancelIcon: this.config.get('actionSheetCancelIcon'),
+            destructiveIcon: this.config.get('actionSheetDestructiveIcon')
+        }, opts);
+        return this.ctrl.open(ActionSheetCmp, opts, opts);
     }
     /**
-     * TODO
-     * @returns {TODO} TODO
+     * Retrieves an actionSheet instance.
+     *
+     * @param {String} [handle]  The handle used to open the instance to be retrieved.
+     * @returns {ActionSheet} An actionSheet instance.
      */
     get(handle) {
         if (handle) {
-            return this.ctrl.getByHandle(handle, OVERLAY_TYPE);
+            return this.ctrl.getByHandle(handle);
         }
         return this.ctrl.getByType(OVERLAY_TYPE);
     }
 };
 ActionSheet = __decorate([
     Injectable(), 
-    __metadata('design:paramtypes', [(typeof (_a = typeof OverlayController !== 'undefined' && OverlayController) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object])
+    __metadata('design:paramtypes', [(typeof (_c = typeof OverlayController !== 'undefined' && OverlayController) === 'function' && _c) || Object, (typeof (_d = typeof Config !== 'undefined' && Config) === 'function' && _d) || Object])
 ], ActionSheet);
 const OVERLAY_TYPE = 'action-sheet';
-/**
- * Animations for action sheet
- */
-class ActionSheetAnimation extends Animation {
-    constructor(element) {
-        super(element);
-        this.easing('cubic-bezier(.36, .66, .04, 1)');
-        this.backdrop = new Animation(element.querySelector('backdrop'));
-        this.wrapper = new Animation(element.querySelector('action-sheet-wrapper'));
-        this.add(this.backdrop, this.wrapper);
-    }
-}
-class ActionSheetSlideIn extends ActionSheetAnimation {
-    constructor(element) {
-        super(element);
-        this.duration(400);
-        this.backdrop.fromTo('opacity', 0.01, 0.4);
-        this.wrapper.fromTo('translateY', '100%', '0%');
+class ActionSheetSlideIn extends Animation {
+    constructor(enteringView, leavingView, opts) {
+        super(null, opts);
+        let ele = enteringView.pageRef().nativeElement;
+        let backdrop = new Animation(ele.querySelector('backdrop'));
+        let wrapper = new Animation(ele.querySelector('action-sheet-wrapper'));
+        backdrop.fromTo('opacity', 0.01, 0.4);
+        wrapper.fromTo('translateY', '100%', '0%');
+        this.easing('cubic-bezier(.36,.66,.04,1)').duration(400).add([backdrop, wrapper]);
     }
 }
 Animation.register('action-sheet-slide-in', ActionSheetSlideIn);
-class ActionSheetSlideOut extends ActionSheetAnimation {
-    constructor(element) {
-        super(element);
-        this.duration(300);
-        this.backdrop.fromTo('opacity', 0.4, 0.01);
-        this.wrapper.fromTo('translateY', '0%', '100%');
+class ActionSheetSlideOut extends Animation {
+    constructor(enteringView, leavingView, opts) {
+        super(null, opts);
+        let ele = leavingView.pageRef().nativeElement;
+        let backdrop = new Animation(ele.querySelector('backdrop'));
+        let wrapper = new Animation(ele.querySelector('action-sheet-wrapper'));
+        backdrop.fromTo('opacity', 0.4, 0);
+        wrapper.fromTo('translateY', '0%', '100%');
+        this.easing('cubic-bezier(.36,.66,.04,1)').duration(300).add([backdrop, wrapper]);
     }
 }
 Animation.register('action-sheet-slide-out', ActionSheetSlideOut);
-class ActionSheetMdSlideIn extends ActionSheetSlideIn {
-    constructor(element) {
-        super(element);
-        this.duration(450);
-        this.backdrop.fromTo('opacity', 0.01, 0.26);
+class ActionSheetMdSlideIn extends Animation {
+    constructor(enteringView, leavingView, opts) {
+        super(null, opts);
+        let ele = enteringView.pageRef().nativeElement;
+        let backdrop = new Animation(ele.querySelector('backdrop'));
+        let wrapper = new Animation(ele.querySelector('action-sheet-wrapper'));
+        backdrop.fromTo('opacity', 0.01, 0.26);
+        wrapper.fromTo('translateY', '100%', '0%');
+        this.easing('cubic-bezier(.36,.66,.04,1)').duration(450).add([backdrop, wrapper]);
     }
 }
 Animation.register('action-sheet-md-slide-in', ActionSheetMdSlideIn);
-class ActionSheetMdSlideOut extends ActionSheetSlideOut {
-    constructor(element) {
-        super(element);
-        this.duration(450);
-        this.backdrop.fromTo('opacity', 0.26, 0.01);
+class ActionSheetMdSlideOut extends Animation {
+    constructor(enteringView, leavingView, opts) {
+        super(null, opts);
+        let ele = leavingView.pageRef().nativeElement;
+        let backdrop = new Animation(ele.querySelector('backdrop'));
+        let wrapper = new Animation(ele.querySelector('action-sheet-wrapper'));
+        backdrop.fromTo('opacity', 0.26, 0);
+        wrapper.fromTo('translateY', '0%', '100%');
+        this.easing('cubic-bezier(.36,.66,.04,1)').duration(450).add([backdrop, wrapper]);
     }
 }
 Animation.register('action-sheet-md-slide-out', ActionSheetMdSlideOut);
-var _a, _b;
+var _a, _b, _c, _d;

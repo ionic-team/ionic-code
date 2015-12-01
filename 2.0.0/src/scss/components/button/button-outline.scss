@@ -1,3 +1,4 @@
+@import "../../ionic.globals";
 
 // Outline Button
 // --------------------------------------------------
@@ -7,7 +8,7 @@ button,
 
   &[outline] {
     border: 1px solid $button-color;
-    background: $background-color;
+    background: transparent;
     color: $button-color;
 
     &.activated {
@@ -27,7 +28,7 @@ button,
 
   &[outline] {
     border-color: $fg-color;
-    background: $background-color;
+    background: transparent;
     color: $fg-color;
 
     &.activated {
@@ -42,12 +43,12 @@ button,
 // Outline Clear Button Colors
 // --------------------------------------------------
 
-@each $color, $value in auxiliary-colors() {
+@each $color-name, $color-value in auxiliary-colors() {
 
-  button[#{$color}],
-  [button][#{$color}] {
+  button[#{$color-name}],
+  [button][#{$color-name}] {
 
-    $fg-color: darken-or-lighten($value, 5%);
+    $fg-color: color-shade($color-value, 5%);
     @include button-outline($fg-color);
 
   }

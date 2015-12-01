@@ -38,7 +38,7 @@ System.register('ionic/platform/storage/sql', ['./storage', 'ionic/util'], funct
              * });
              *
              * // Sql storage also exposes the full engine underneath
-             * storage.query('insert into projects(name, data) values('Cool Project', 'blah')');'
+             * storage.query('insert into projects(name, data) values('Cool Project', 'blah');'
              * storage.query('select * from projects').then((resp) => {})
              * ```
              *
@@ -58,13 +58,13 @@ System.register('ionic/platform/storage/sql', ['./storage', 'ionic/util'], funct
                     _classCallCheck(this, SqlStorage);
 
                     _get(Object.getPrototypeOf(SqlStorage.prototype), 'constructor', this).call(this);
-                    var dbOptions = util.defaults({
+                    var dbOptions = util.defaults(options, {
                         name: DB_NAME,
                         backupFlag: SqlStorage.BACKUP_LOCAL,
                         existingDatabase: false
-                    }, options);
+                    });
                     if (window.sqlitePlugin) {
-                        var _location = this._getBackupLocation(dbOptions);
+                        var _location = this._getBackupLocation(dbOptions.backupFlag);
                         this._db = window.sqlitePlugin.openDatabase(util.extend({
                             name: dbOptions.name,
                             location: _location,
@@ -123,7 +123,7 @@ System.register('ionic/platform/storage/sql', ['./storage', 'ionic/util'], funct
 
                         return new Promise(function (resolve, reject) {
                             _this._db.transaction(function (tx) {
-                                ts.executeSql(_query, params, function (tx, res) {
+                                tx.executeSql(_query, params, function (tx, res) {
                                     resolve({
                                         tx: tx,
                                         res: res

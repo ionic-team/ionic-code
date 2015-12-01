@@ -6,8 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _angular2Angular2 = require('angular2/angular2');
@@ -17,8 +15,6 @@ var _configConfig = require('../config/config');
 var _form = require('./form');
 
 var _dom = require('./dom');
-
-var dom = _interopRequireWildcard(_dom);
 
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -56,11 +52,13 @@ var Keyboard = (function () {
     _createClass(Keyboard, [{
         key: "isOpen",
         value: function isOpen() {
-            return dom.hasFocusedTextInput();
+            return (0, _dom.hasFocusedTextInput)();
         }
     }, {
         key: "onClose",
         value: function onClose(callback) {
+            var pollingInternval = arguments.length <= 1 || arguments[1] === undefined ? KEYBOARD_CLOSE_POLLING : arguments[1];
+
             var self = this;
             var promise = null;
             if (!callback) {
@@ -72,15 +70,17 @@ var Keyboard = (function () {
             self.zone.runOutsideAngular(function () {
                 function checkKeyboard() {
                     if (!self.isOpen()) {
-                        self.zone.run(function () {
-                            console.debug('keyboard closed');
-                            callback();
+                        (0, _dom.rafFrames)(30, function () {
+                            self.zone.run(function () {
+                                console.debug('keyboard closed');
+                                callback();
+                            });
                         });
                     } else {
-                        setTimeout(checkKeyboard, KEYBOARD_CLOSE_POLLING);
+                        setTimeout(checkKeyboard, pollingInternval);
                     }
                 }
-                setTimeout(checkKeyboard, KEYBOARD_CLOSE_POLLING);
+                setTimeout(checkKeyboard, pollingInternval);
             });
             return promise;
         }
@@ -89,8 +89,8 @@ var Keyboard = (function () {
         value: function close() {
             var _this2 = this;
 
-            dom.raf(function () {
-                if (dom.hasFocusedTextInput()) {
+            (0, _dom.raf)(function () {
+                if ((0, _dom.hasFocusedTextInput)()) {
                     // only focus out when a text input has focus
                     _this2.form.focusOut();
                 }
@@ -110,9 +110,10 @@ var Keyboard = (function () {
              * focusOutline: true     - Always add the focus-outline
              * focusOutline: false    - Do not add the focus-outline
              */
+            var self = this;
             var isKeyInputEnabled = false;
             function cssClass() {
-                dom.raf(function () {
+                (0, _dom.raf)(function () {
                     document.body.classList[isKeyInputEnabled ? 'add' : 'remove']('focus-outline');
                 });
             }
@@ -135,7 +136,7 @@ var Keyboard = (function () {
             }
             function enableKeyInput() {
                 cssClass();
-                this.zone.runOutsideAngular(function () {
+                self.zone.runOutsideAngular(function () {
                     document.removeEventListener('mousedown', pointerDown);
                     document.removeEventListener('touchstart', pointerDown);
                     if (isKeyInputEnabled) {

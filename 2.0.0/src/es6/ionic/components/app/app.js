@@ -1,17 +1,30 @@
-import { Title } from 'angular2/angular2';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { Injectable, NgZone, Title } from 'angular2/angular2';
+import { Config } from '../../config/config';
 import { ClickBlock } from '../../util/click-block';
+import { rafFrames } from '../../util/dom';
 /**
  * Component registry service.  For more information on registering
  * components see the [IdRef API reference](../id/IdRef/).
  */
-export class IonicApp {
-    /**
-     * TODO
-     */
-    constructor() {
-        this._title = new Title();
+export let IonicApp = class {
+    constructor(config, clickBlock, zone) {
+        this._config = config;
+        this._zone = zone;
+        this._titleSrv = new Title();
+        this._title = '';
         this._disTime = 0;
-        this._trnsTime = 0;
+        this._clickBlock = clickBlock;
         // Our component registry map
         this.components = {};
     }
@@ -20,10 +33,16 @@ export class IonicApp {
      * @param {string} val  Value to set the document title to.
      */
     setTitle(val) {
-        this._title.setTitle(val);
-    }
-    getTitle() {
-        return this._title.getTitle(val);
+        let self = this;
+        if (val !== self._title) {
+            self._title = val;
+            this._zone.runOutsideAngular(() => {
+                function setAppTitle() {
+                    self._titleSrv.setTitle(self._title);
+                }
+                rafFrames(4, setAppTitle);
+            });
+        }
     }
     /**
      * Sets if the app is currently enabled or not, meaning if it's
@@ -38,7 +57,7 @@ export class IonicApp {
      */
     setEnabled(isEnabled, fallback = 700) {
         this._disTime = (isEnabled ? 0 : Date.now() + fallback);
-        ClickBlock(!isEnabled, fallback + 100);
+        this._clickBlock.show(!isEnabled, fallback + 100);
     }
     /**
      * Boolean if the app is actively enabled or not.
@@ -46,16 +65,6 @@ export class IonicApp {
      */
     isEnabled() {
         return (this._disTime < Date.now());
-    }
-    setTransitioning(isTransitioning, fallback = 700) {
-        this._trnsTime = (isTransitioning ? Date.now() + fallback : 0);
-    }
-    /**
-     * Boolean if the app is actively transitioning or not.
-     * @return {bool}
-     */
-    isTransitioning() {
-        return (this._trnsTime > Date.now());
     }
     /**
      * Register a known component with a key, for easy lookups later.
@@ -94,4 +103,9 @@ export class IonicApp {
     getComponent(id) {
         return this.components[id];
     }
-}
+};
+IonicApp = __decorate([
+    Injectable(), 
+    __metadata('design:paramtypes', [(typeof (_a = typeof Config !== 'undefined' && Config) === 'function' && _a) || Object, (typeof (_b = typeof ClickBlock !== 'undefined' && ClickBlock) === 'function' && _b) || Object, (typeof (_c = typeof NgZone !== 'undefined' && NgZone) === 'function' && _c) || Object])
+], IonicApp);
+var _a, _b, _c;

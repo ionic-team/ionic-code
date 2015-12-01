@@ -1,8 +1,9 @@
-import {Directive, ElementRef, Renderer} from 'angular2/angular2';
+import {Directive, ElementRef, NgZone} from 'angular2/angular2';
 
 import {Ion} from '../ion';
 import {Config} from '../../config/config';
 import {ListVirtualScroll} from './virtual';
+import {ItemSlidingGesture} from '../item/item-sliding-gesture';
 import * as util from 'ionic/util';
 
 /**
@@ -25,18 +26,15 @@ import * as util from 'ionic/util';
   ]
 })
 export class List extends Ion {
-  /**
-   * TODO
-   * @param {ElementRef} elementRef  TODO
-   * @param {Config} config  TODO
-   */
-  constructor(elementRef: ElementRef, config: Config, renderer: Renderer) {
+
+  constructor(elementRef: ElementRef, config: Config, private zone: NgZone) {
     super(elementRef, config);
-    renderer.setElementClass(elementRef, 'list', true);
     this.ele = elementRef.nativeElement;
+    this._enableSliding = false;
   }
+
   /**
-   * TODO
+   * @private
    */
   onInit() {
     super.onInit();
@@ -48,9 +46,17 @@ export class List extends Ion {
       this._initVirtualScrolling();
     }
   }
+
   /**
    * @private
-   * TODO
+   */
+  onDestroy() {
+    this.ele = null;
+    this.slidingGesture && this.slidingGesture.unlisten();
+  }
+
+  /**
+   * @private
    */
   _initVirtualScrolling() {
     if(!this.content) {
@@ -61,35 +67,51 @@ export class List extends Ion {
   }
 
   /**
-   * TODO
-   * @param {TODO} item  TODO
+   * @private
    */
   setItemTemplate(item) {
     this.itemTemplate = item;
   }
 
-  /**
-   * Keeps track of any open item (a sliding item, for example), to close it later
-   */
-  setOpenItem(item) {
-    this.openItem = item;
-  }
-  closeOpenItem() {
-    if(this.openItem) {
-      this.openItem.close(true);
-      this.openItem = null;
+  enableSlidingItems(shouldEnable) {
+    if (this._init) {
+
+      if (this._enableSliding !== shouldEnable) {
+        this._enableSliding = shouldEnable;
+
+        if (shouldEnable) {
+          console.debug('enableSlidingItems');
+          this.zone.runOutsideAngular(() => {
+            setTimeout(() => {
+              this.slidingGesture = new ItemSlidingGesture(this, this.ele);
+            });
+          });
+
+        } else {
+          this.slidingGesture && this.slidingGesture.unlisten();
+        }
+      }
     }
   }
-  getOpenItem() {
-    return this.openItem;
+
+  closeSlidingItems() {
+    this.slidingGesture && this.slidingGesture.closeOpened();
+  }
+
+  /**
+   * @private
+   */
+  afterViewInit() {
+    this._init = true;
+    if (this._enableSliding) {
+      this.enableSlidingItems(true);
+    }
   }
 }
 
-/**
- * TODO
- */
+
 @Directive({
-  selector: 'ion-header',
+  selector: 'ion-list-header',
   inputs: [
     'id'
   ],
@@ -97,6 +119,4 @@ export class List extends Ion {
     '[attr.id]': 'id'
   }
 })
-export class ListHeader {
-
-}
+export class ListHeader {}

@@ -17,7 +17,6 @@ var _configConfig = require('../../config/config');
 var _utilDom = require('../../util/dom');
 
 /**
- * @name mediaSwitch
  * @private
  */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -100,20 +99,12 @@ MediaSwitch = __decorate([(0, _angular2Angular2.Directive)({
  *
  */
 var Switch = (function () {
-    /**
-     * TODO
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     * @param {NgControl=} ngControl  TODO
-     */
-
-    function Switch(form, elementRef, config, renderer, ngControl) {
+    function Switch(form, elementRef, config, ngControl) {
         _classCallCheck(this, Switch);
 
         this.ngControl = ngControl;
         this.form = form;
         form.register(this);
-        renderer.setElementClass(elementRef, 'item', true);
         this.lastTouch = 0;
         this.mode = config.get('mode');
         this.onChange = function (_) {};
@@ -149,6 +140,10 @@ var Switch = (function () {
         };
     }
 
+    /**
+     * @private
+     */
+
     _createClass(Switch, [{
         key: "onInit",
         value: function onInit() {
@@ -174,11 +169,19 @@ var Switch = (function () {
         value: function toggle(ev) {
             this.check(!this.checked);
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "writeValue",
         value: function writeValue(value) {
             this.checked = value;
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "pointerDown",
         value: function pointerDown(ev) {
@@ -191,6 +194,10 @@ var Switch = (function () {
             this.addMoveListener();
             this.isActivated = true;
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "pointerUp",
         value: function pointerUp(ev) {
@@ -207,18 +214,27 @@ var Switch = (function () {
             this.isActivated = false;
         }
 
-        // Used by the view to update the model (Control)
-        // Up to us to call it in update()
+        /**
+         * @private
+         */
     }, {
         key: "registerOnChange",
         value: function registerOnChange(fn) {
             this.onChange = fn;
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "registerOnTouched",
         value: function registerOnTouched(fn) {
             this.onTouched = fn;
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "onDestroy",
         value: function onDestroy() {
@@ -226,6 +242,10 @@ var Switch = (function () {
             this.switchEle = this.addMoveListener = this.removeMoveListener = null;
             this.form.deregister(this);
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "isDisabled",
         value: function isDisabled(ev) {
@@ -249,9 +269,10 @@ exports.Switch = Switch = __decorate([(0, _angular2Angular2.Component)({
         '(touchstart)': 'pointerDown($event)',
         '(mousedown)': 'pointerDown($event)',
         '(touchend)': 'pointerUp($event)',
-        '(mouseup)': 'pointerUp($event)'
+        '(mouseup)': 'pointerUp($event)',
+        'class': 'item'
     },
-    template: '<ng-content select="[item-left]"></ng-content>' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '<media-switch disable-activated>' + '<switch-icon></switch-icon>' + '</media-switch>',
+    template: '<ng-content select="[item-left]"></ng-content>' + '<div class="item-inner">' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '<media-switch disable-activated>' + '<switch-icon></switch-icon>' + '</media-switch>' + "</div>",
     directives: [MediaSwitch]
-}), __param(4, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_b = typeof _utilForm.Form !== 'undefined' && _utilForm.Form) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _c || Object, typeof (_d = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _e || Object, typeof (_f = typeof _angular2Angular2.NgControl !== 'undefined' && _angular2Angular2.NgControl) === 'function' && _f || Object])], Switch);
-var _a, _b, _c, _d, _e, _f;
+}), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_b = typeof _utilForm.Form !== 'undefined' && _utilForm.Form) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _c || Object, typeof (_d = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.NgControl !== 'undefined' && _angular2Angular2.NgControl) === 'function' && _e || Object])], Switch);
+var _a, _b, _c, _d, _e;

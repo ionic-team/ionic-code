@@ -1,3 +1,4 @@
+@import "../../../ionic.globals";
 
 // iOS Radio
 // --------------------------------------------------
@@ -22,6 +23,10 @@ ion-radio {
 
   &[aria-checked=true] {
     color: $radio-ios-color-on;
+  }
+
+  &.item.activated {
+    background-color: $list-background-color;
   }
 
 }

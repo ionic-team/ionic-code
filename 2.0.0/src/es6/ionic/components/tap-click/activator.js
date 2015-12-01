@@ -1,10 +1,11 @@
-import { raf } from '../../util/dom';
+import { rafFrames } from '../../util/dom';
 export class Activator {
-    constructor(app, config) {
+    constructor(app, config, zone) {
         this.app = app;
+        this.zone = zone;
         this.queue = [];
         this.active = [];
-        this.clearStateTimeout = 180;
+        this.clearStateDefers = 5;
         this.clearAttempt = 0;
         this.activatedClass = config.get('activatedClass') || 'activated';
         this.x = 0;
@@ -12,55 +13,70 @@ export class Activator {
     }
     downAction(ev, activatableEle, pointerX, pointerY, callback) {
         // the user just pressed down
-        if (this.disableActivated(ev))
-            return;
+        let self = this;
+        if (self.disableActivated(ev))
+            return false;
         // remember where they pressed
-        this.x = pointerX;
-        this.y = pointerY;
+        self.x = pointerX;
+        self.y = pointerY;
         // queue to have this element activated
-        this.queue.push(activatableEle);
-        raf(() => {
+        self.queue.push(activatableEle);
+        function activateCss() {
             let activatableEle;
-            for (let i = 0; i < this.queue.length; i++) {
-                activatableEle = this.queue[i];
+            for (let i = 0; i < self.queue.length; i++) {
+                activatableEle = self.queue[i];
                 if (activatableEle && activatableEle.parentNode) {
-                    this.active.push(activatableEle);
-                    activatableEle.classList.add(this.activatedClass);
+                    self.active.push(activatableEle);
+                    activatableEle.classList.add(self.activatedClass);
                 }
             }
-            this.queue = [];
+            self.queue = [];
+        }
+        this.zone.runOutsideAngular(() => {
+            rafFrames(2, activateCss);
         });
+        return true;
     }
     upAction() {
         // the user was pressing down, then just let up
-        setTimeout(() => {
-            this.clearState();
-        }, this.clearStateTimeout);
+        let self = this;
+        function activateUp() {
+            self.clearState();
+        }
+        this.zone.runOutsideAngular(() => {
+            rafFrames(self.clearStateDefers, activateUp);
+        });
     }
     clearState() {
         // all states should return to normal
-        if ((!this.app.isEnabled() || this.app.isTransitioning()) && this.clearAttempt < 100) {
+        if (!this.app.isEnabled()) {
             // the app is actively disabled, so don't bother deactivating anything.
             // this makes it easier on the GPU so it doesn't have to redraw any
             // buttons during a transition. This will retry in XX milliseconds.
-            ++this.clearAttempt;
-            this.upAction();
+            setTimeout(() => {
+                this.clearState();
+            }, 600);
         }
         else {
             // not actively transitioning, good to deactivate any elements
             this.deactivate();
-            this.clearAttempt = 0;
         }
     }
     deactivate() {
         // remove the active class from all active elements
-        for (let i = 0; i < this.active.length; i++) {
-            this.active[i].classList.remove(this.activatedClass);
+        let self = this;
+        self.queue = [];
+        function deactivate() {
+            for (let i = 0; i < self.active.length; i++) {
+                self.active[i].classList.remove(self.activatedClass);
+            }
+            self.active = [];
         }
-        this.queue = [];
-        this.active = [];
+        rafFrames(2, deactivate);
     }
     disableActivated(ev) {
+        if (ev.defaultPrevented)
+            return true;
         let targetEle = ev.target;
         for (let x = 0; x < 4; x++) {
             if (!targetEle)

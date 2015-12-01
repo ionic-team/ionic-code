@@ -4,6 +4,7 @@ import {Config} from './config';
 
 // iOS Mode Settings
 Config.setModeConfig('ios', {
+  activator: 'highlight',
 
   actionSheetEnter: 'action-sheet-slide-in',
   actionSheetLeave: 'action-sheet-slide-out',
@@ -15,19 +16,24 @@ Config.setModeConfig('ios', {
 
   iconMode: 'ios',
 
+  menuType: 'reveal',
+
   modalEnter: 'modal-slide-in',
   modalLeave: 'modal-slide-out',
 
-  tabBarPlacement: 'bottom',
-  viewTransition: 'ios',
+  pageTransition: 'ios-transition',
+  pageTransitionDelay: 16,
 
-  popupPopIn: 'popup-pop-in',
-  popupPopOut: 'popup-pop-out',
+  popupEnter: 'popup-pop-in',
+  popupLeave: 'popup-pop-out',
+
+  tabbarPlacement: 'bottom',
 });
 
 
 // Material Design Mode Settings
 Config.setModeConfig('md', {
+  activator: 'ripple',
 
   actionSheetEnter: 'action-sheet-md-slide-in',
   actionSheetLeave: 'action-sheet-md-slide-out',
@@ -39,15 +45,19 @@ Config.setModeConfig('md', {
 
   iconMode: 'md',
 
+  menuType: 'overlay',
+
   modalEnter: 'modal-md-slide-in',
   modalLeave: 'modal-md-slide-out',
 
-  tabBarPlacement: 'top',
-  viewTransition: 'md',
+  pageTransition: 'md-transition',
+  pageTransitionDelay: 120,
 
-  popupPopIn: 'popup-md-pop-in',
-  popupPopOut: 'popup-md-pop-out',
+  popupEnter: 'popup-md-pop-in',
+  popupLeave: 'popup-md-pop-out',
 
-  type: 'overlay',
-  mdRipple: true,
+  tabbarHighlight: true,
+  tabbarPlacement: 'top',
+
+  tabSubPages: true,
 });

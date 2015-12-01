@@ -1,8 +1,9 @@
+@import "../../ionic.globals";
 
 // Tabs
 // --------------------------------------------------
 
-$tab-bar-background-color:        $toolbar-background-color !default;
+$tabbar-background-color:        $toolbar-background-color !default;
 
 $tab-button-text-color:           $toolbar-text-color !default;
 $tab-button-active-color:         $toolbar-active-color !default;
@@ -43,28 +44,24 @@ ion-tab {
 }
 
 ion-tabs > ion-navbar-section {
-  order: $flex-order-tab-bar-navbar;
+  order: $flex-order-tabbar-navbar;
 }
 
-ion-tabs ion-navbar.toolbar.deselected-tab {
-  display: none;
-}
-
-ion-tab-bar-section {
+ion-tabbar-section {
   position: relative;
-  order: $flex-order-tab-bar-bottom;
+  order: $flex-order-tabbar-bottom;
 }
 
-[tab-bar-placement=top] ion-tab-bar-section {
-  order: $flex-order-tab-bar-top;
+[tabbar-placement=top] ion-tabbar-section {
+  order: $flex-order-tabbar-top;
 }
 
-tab-bar {
+tabbar {
   position: relative;
   display: flex;
   justify-content: center;
   overflow: hidden;
-  background: $tab-bar-background-color;
+  background: $tabbar-background-color;
 }
 
 .tab-button {
@@ -91,10 +88,11 @@ tab-bar {
   border: 0;
   border-radius: 0;
   background: none;
+}
 
-  &:hover:not(.disable-hover) {
-    color: $tab-button-active-color;
-  }
+.tab-button:hover:not(.disable-hover),
+.tab-button[aria-selected=true] {
+  color: $tab-button-active-color;
 }
 
 .tab-button-text {
@@ -125,21 +123,17 @@ tab-bar {
   white-space: normal;
 }
 
-.tab-button[aria-selected=true] {
-  color: $tab-button-active-color;
-}
-
 tab-highlight {
   display: none;
 }
 
-[tab-bar-icons=bottom] .tab-button {
+[tabbar-icons=bottom] .tab-button {
   .tab-button-icon {
     order: 10;
   }
 }
 
-[tab-bar-icons=left] .tab-button {
+[tabbar-icons=left] .tab-button {
   flex-direction: row;
 
   .tab-button-icon {
@@ -148,7 +142,7 @@ tab-highlight {
   }
 }
 
-[tab-bar-icons=right] .tab-button {
+[tabbar-icons=right] .tab-button {
   flex-direction: row;
 
   .tab-button-icon {
@@ -158,7 +152,27 @@ tab-highlight {
   }
 }
 
-[tab-bar-icons=hide] .tab-button-icon {
+[tabbar-icons=hide] .tab-button-icon {
   display: none;
 }
 
+
+// Tabbar Color Generation
+// --------------------------------------------------
+
+@each $color-name, $color-value in $colors {
+
+  tabbar[#{$color-name}] {
+    background-color: $color-value;
+
+    .tab-button {
+      color: inverse($color-value);
+    }
+
+    .tab-button:hover:not(.disable-hover),
+    .tab-button[aria-selected=true] {
+      color: inverse($color-value);
+    }
+  }
+
+}

@@ -37,14 +37,14 @@ export class ScrollTo {
             return Promise.resolve();
         }
         return new Promise((resolve, reject) => {
-            let start = Date.now();
+            let start;
             // start scroll loop
             self.isPlaying = true;
-            raf(step);
-            // decelerating to zero velocity
-            function easeOutCubic(t) {
-                return (--t) * t * t + 1;
-            }
+            // chill out for a frame first
+            raf(() => {
+                start = Date.now();
+                raf(step);
+            });
             // scroll loop
             function step() {
                 let time = Math.min(1, ((Date.now() - start) / duration));
@@ -80,4 +80,8 @@ export class ScrollTo {
         this.stop();
         this._el = null;
     }
+}
+// decelerating to zero velocity
+function easeOutCubic(t) {
+    return (--t) * t * t + 1;
 }

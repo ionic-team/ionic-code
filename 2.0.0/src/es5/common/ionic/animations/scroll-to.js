@@ -29,6 +29,8 @@ var ScrollTo = (function () {
         }
     }
 
+    // decelerating to zero velocity
+
     _createClass(ScrollTo, [{
         key: 'start',
         value: function start(x, y, duration, tolerance) {
@@ -53,14 +55,14 @@ var ScrollTo = (function () {
                 return Promise.resolve();
             }
             return new Promise(function (resolve, reject) {
-                var start = Date.now();
+                var start = undefined;
                 // start scroll loop
                 self.isPlaying = true;
-                (0, _utilDom.raf)(step);
-                // decelerating to zero velocity
-                function easeOutCubic(t) {
-                    return --t * t * t + 1;
-                }
+                // chill out for a frame first
+                (0, _utilDom.raf)(function () {
+                    start = Date.now();
+                    (0, _utilDom.raf)(step);
+                });
                 // scroll loop
                 function step() {
                     var time = Math.min(1, (Date.now() - start) / duration);
@@ -104,3 +106,6 @@ var ScrollTo = (function () {
 })();
 
 exports.ScrollTo = ScrollTo;
+function easeOutCubic(t) {
+    return --t * t * t + 1;
+}

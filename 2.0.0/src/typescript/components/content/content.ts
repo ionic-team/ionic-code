@@ -1,12 +1,12 @@
-import {Component, ElementRef, Optional} from 'angular2/angular2';
+import {Component, ElementRef, Optional, NgZone} from 'angular2/angular2';
 
 import {Ion} from '../ion';
 import {Config} from '../../config/config';
+import {raf}  from '../../util/dom';
 import {Keyboard} from '../../util/keyboard';
 import {ViewController} from '../nav/view-controller';
 import {Animation} from '../../animations/animation';
 import {ScrollTo} from '../../animations/scroll-to';
-
 
 /**
  * The Content component provides an easy to use content area that can be configured to use Ionic's custom Scroll View, or the built in overflow scrolling of the browser.
@@ -35,18 +35,18 @@ export class Content extends Ion {
    * @param {ElementRef} elementRef  A reference to the component's DOM element.
    * @param {Config} config  The config object to change content's default settings.
    */
-  constructor(elementRef: ElementRef, config: Config, keyboard: Keyboard, @Optional() viewCtrl: ViewController) {
+  constructor(elementRef: ElementRef, config: Config, keyboard: Keyboard, @Optional() viewCtrl: ViewController, private _zone: NgZone) {
     super(elementRef, config);
     this.scrollPadding = 0;
     this.keyboard = keyboard;
 
     if (viewCtrl) {
       viewCtrl.setContent(this);
+      viewCtrl.setContentRef(elementRef);
     }
   }
 
   /**
-   * TODO
    * @private
    */
   onInit() {
@@ -70,6 +70,36 @@ export class Content extends Ion {
     return () => {
       this.scrollElement.removeEventListener('scroll', handler);
     }
+  }
+
+  onScrollEnd(callback) {
+    let lastScrollTop = null;
+    let framesUnchanged = 0;
+    let scrollElement = this.scrollElement;
+
+    function next() {
+      let currentScrollTop = scrollElement.scrollTop;
+      if (lastScrollTop !== null) {
+
+        if (Math.round(lastScrollTop) === Math.round(currentScrollTop)) {
+          framesUnchanged++;
+        } else {
+          framesUnchanged = 0;
+        }
+
+        if (framesUnchanged > 9) {
+          return callback();
+        }
+      }
+
+      lastScrollTop = currentScrollTop;
+
+      raf(() => {
+        raf(next);
+      });
+    }
+
+    setTimeout(next, 100);
   }
 
   /**
@@ -119,6 +149,7 @@ export class Content extends Ion {
   }
 
   /**
+   * @private
    * Returns the content and scroll elements' dimensions.
    * @returns {Object} dimensions  The content and scroll elements' dimensions
    * {Number} dimensions.contentHeight  content offsetHeight
@@ -133,7 +164,6 @@ export class Content extends Ion {
    * {Number} dimensions.scrollWidth  scroll scrollWidth
    * {Number} dimensions.scrollLeft  scroll scrollLeft
    * {Number} dimensions.scrollRight  scroll scrollLeft + scrollWidth
-   * TODO: figure out how to get this to work
    */
   getDimensions() {
     let scrollElement = this.scrollElement;
@@ -170,27 +200,27 @@ export class Content extends Ion {
       this.scrollPadding = newScrollPadding;
       this.scrollElement.style.paddingBottom = newScrollPadding + 'px';
 
-      if (!this.keyboardPromise) {
-        console.debug('add scroll keyboard close callback', newScrollPadding);
-
-        this.keyboardPromise = this.keyboard.onClose(() => {
-          console.debug('scroll keyboard closed', newScrollPadding);
-
-          if (this) {
-            if (this.scrollPadding && this.scrollElement) {
-              let close = new Animation(this.scrollElement);
-              close
-                .duration(150)
-                .fromTo('paddingBottom', this.scrollPadding + 'px', '0px')
-                .play();
-            }
-
-            this.scrollPadding = 0;
-            this.keyboardPromise = null;
-          }
-        });
-
-      }
+      // if (!this.keyboardPromise) {
+      //   console.debug('add scroll keyboard close callback', newScrollPadding);
+      //
+      //   this.keyboardPromise = this.keyboard.onClose(() => {
+      //     console.debug('scroll keyboard closed', newScrollPadding);
+      //
+      //     if (this) {
+      //       if (this.scrollPadding && this.scrollElement) {
+      //         let close = new Animation(this.scrollElement);
+      //         close
+      //           .duration(250)
+      //           .fromTo('paddingBottom', this.scrollPadding + 'px', '0px')
+      //           .play();
+      //       }
+      //
+      //       this.scrollPadding = 0;
+      //       this.keyboardPromise = null;
+      //     }
+      //   });
+      //
+      // }
     }
   }
 

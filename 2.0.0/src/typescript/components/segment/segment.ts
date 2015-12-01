@@ -1,63 +1,83 @@
-import {Component, Directive, Renderer, ElementRef, EventEmitter, Host, forwardRef, Optional} from 'angular2/angular2';
-import {Control, NgControl, NgFormControl, ControlGroup, ControlDirective} from 'angular2/angular2';
+import {Directive, Renderer, ElementRef, Host, Optional, NgControl} from 'angular2/angular2';
 
 import {Ion} from '../ion';
 import {Config} from '../../config/config';
-import {dom} from 'ionic/util';
+
 
 /**
- * TODO
+ * @description
+ * A Segment is a group of buttons, sometimes known as Segmented Controls, that allow the user to interact with a compact group of a number of controls.
+ *
+ * Segments provide functionality similar to tabs, selecting one will unselect all others. You should use a tab bar instead of a segmented control when you want to let the user move back and forth between distinct pages in your app.
+ *
+ * @usage
+ * ```html
+ * <ion-segment [(ng-model)]="relationship" danger>
+ *   <ion-segment-button value="friends">
+ *     Friends
+ *   </ion-segment-button>
+ *   <ion-segment-button value="enemies">
+ *     Enemies
+ *   </ion-segment-button>
+ * </ion-segment>
+ *
+ *
+ * <form [ng-form-model]="myForm">
+ *   <ion-segment ng-control="mapStyle" danger>
+ *     <ion-segment-button value="standard">
+ *       Standard
+ *     </ion-segment-button>
+ *     <ion-segment-button value="hybrid">
+ *       Hybrid
+ *     </ion-segment-button>
+ *     <ion-segment-button value="sat">
+ *       Satellite
+ *     </ion-segment-button>
+ *   </ion-segment>
+ * </form>
+ * ```
  */
-@Component({
-  selector: 'ion-segment',
-  inputs: [
-    'value'
-  ],
-  host: {
-    //'(click)': 'buttonClicked($event)',
-    '(change)': 'onChange($event)',
-    //'[value]': 'value',
-    /*
-    '[class.ng-untouched]': 'cd.control?.untouched == true',
-    '[class.ng-touched]': 'cd.control?.touched == true',
-    '[class.ng-pristine]': 'cd.control?.pristine == true',
-    '[class.ng-dirty]': 'cd.control?.dirty == true',
-    '[class.ng-valid]': 'cd.control?.valid == true',
-    '[class.ng-invalid]': 'cd.control?.valid == false'
-    */
-  },
-  template: '<div class="ion-segment"><ng-content></ng-content></div>',
-  directives: [forwardRef(() => SegmentButton)]
+@Directive({
+  selector: 'ion-segment'
 })
 export class Segment extends Ion {
   /**
-   * TODO
-   * @param {NgControl} ngControl  TODO
-   * @param {ElementRef} elementRef  TODO
-   * @param {Config} config  TODO
-   * @param {Renderer} renderer  TODO
+   * @private
    */
+  buttons: Array<SegmentButton> = [];
+
   constructor(
     @Optional() ngControl: NgControl,
     elementRef: ElementRef,
-    config: Config,
-    renderer: Renderer
+    config: Config
   ) {
     super(elementRef, config);
 
-    this.ele = elementRef.nativeElement
-    this.elementRef = elementRef;
-    this.renderer = renderer;
+    this.onChange = (_) => {};
+    this.onTouched = (_) => {};
 
-    this.change = new EventEmitter('change');
-    this.input = new EventEmitter('input');
-
-    this.ngControl = ngControl;
-
-    this.buttons = [];
+    if (ngControl) ngControl.valueAccessor = this;
   }
 
   /**
+   * @private
+   */
+  writeValue(value) {
+    this.value = !value ? '' : value;
+  }
+
+  /**
+   * @private
+   */
+  registerOnChange(fn) { this.onChange = fn; }
+
+  /**
+   * @private
+   */
+  registerOnTouched(fn) { this.onTouched = fn; }
+
+  /**
+   * @private
    * Called by child SegmentButtons to bind themselves to
    * the Segment.
    * @param {SegmentButton} segmentButton  The child SegmentButton to register.
@@ -67,12 +87,13 @@ export class Segment extends Ion {
 
     // If this button is registered and matches our value,
     // make sure to select it
-    if(this.value == segmentButton.value) {
+    if (this.value == segmentButton.value) {
       this.selected(segmentButton);
     }
   }
 
   /**
+   * @private
    * Select the button with the given value.
    * @param {string} value  Value of the button to select.
    */
@@ -81,13 +102,14 @@ export class Segment extends Ion {
       return;
     }
     this.buttons.forEach(function(button) {
-      if(button.value === value) {
+      if (button.value === value) {
         button.isActive = true;
       }
     });
   }
 
   /**
+   * @private
    * Indicate a button should be selected.
    * @param {SegmentButton} segmentButton  The button to select.
    */
@@ -97,169 +119,46 @@ export class Segment extends Ion {
     });
     segmentButton.isActive = true;
 
-    //this.onChange();
-
-    if(!this.ngControl) { return; }
-
-    setTimeout(() => {
-      this.value = segmentButton.value;
-      this.ngControl.valueAccessor.writeValue(segmentButton.value);
-      this.selectFromValue(segmentButton.value);
-
-      this.ngControl.control.updateValue(segmentButton.value);
-
-      // Trigger on change
-      this.change.next();
-    })
-
-
-    //this.ngControl.control().updateValue(this.value);
-    // TODO: Better way to do this?
-    //this.controlDirective._control().updateValue(this.value);
+    this.value = segmentButton.value;
+    this.onChange(segmentButton.value);
   }
 }
 
-/**
- * TODO
- */
-@Directive({
-  selector: 'ion-segment',
-  //inputs: ['value'],
-  host: {
-    '(change)': 'onChange($event.target.value)',
-    '(input)': 'onChange($event.target.value)',
-    '(blur)': 'onTouched()',
-    //'[value]': 'value',
-    /*
-    '[class.ng-untouched]': 'cd.control?.untouched == true',
-    '[class.ng-touched]': 'cd.control?.touched == true',
-    '[class.ng-pristine]': 'cd.control?.pristine == true',
-    '[class.ng-dirty]': 'cd.control?.dirty == true',
-    '[class.ng-valid]': 'cd.control?.valid == true',
-    '[class.ng-invalid]': 'cd.control?.valid == false'
-    */
-  }
-})
-export class SegmentControlValueAccessor {
-  /**
-   * TODO
-   * @param {NgControl} ngControl  TODO
-   * @param {Renderer} renderer  TODO
-   * @param {ElementRef} elementRef  TODO
-   * @param {Segment} segment  TODO
-   */
-  constructor(
-    @Optional() ngControl: NgControl,
-    renderer: Renderer,
-    elementRef: ElementRef,
-    segment: Segment
-  ) {
-    this.onChange = (_) => {};
-    this.onTouched = (_) => {};
 
-    if(!ngControl) {
-      // They don't want to do anything that works, so we won't do anything that breaks
-      return;
-    }
-
-    this.ngControl = ngControl;
-    this.renderer = renderer;
-    this.elementRef = elementRef;
-    this.segment = segment;
-
-    ngControl.valueAccessor = this;
-  }
-
-  writeValue(value) {
-    // both this.value and setProperty are required at the moment
-    // remove when a proper imperative API is provided
-    this.value = !value ? '' : value;
-
-    this.renderer.setElementProperty(this.elementRef, 'value', this.value);
-
-    this.segment.value = this.value;
-    this.segment.selectFromValue(value);
-  }
-
-  registerOnChange(fn) { this.onChange = fn; }
-
-  registerOnTouched(fn) { this.onTouched = fn; }
-}
-
-/**
- * TODO
- */
 @Directive({
   selector: 'ion-segment-button',
   inputs: [
     'value'
   ],
   host: {
-    '(click)': 'buttonClicked($event)',
+    '(click)': 'click($event)',
     '[class.activated]': 'isActive',
   }
 })
 export class SegmentButton {
-  /**
-   * TODO
-   * @param {Segment} segment  TODO
-   * @param {ElementRef} elementRef  TODO
-   */
+
   constructor(
     @Host() segment: Segment,
     elementRef: ElementRef,
     renderer: Renderer
   ) {
     this.segment = segment;
-    this.renderer = renderer;
-    this.isButton = true;
 
-    // This is a button, and it's outlined
-    this.renderer.setElementAttribute(elementRef, 'button', '');
-    this.renderer.setElementAttribute(elementRef, 'outline', '');
+    renderer.setElementAttribute(elementRef, 'button', '');
+    renderer.setElementAttribute(elementRef, 'outline', '');
   }
 
+  /**
+   * @private
+   */
   onInit() {
     this.segment.register(this);
   }
 
-  buttonClicked(event) {
+  /**
+   * @private
+   */
+  click(event) {
     this.segment.selected(this, event);
-    event.preventDefault();
   }
-
 }
-
-// TODO Android animation similar to tabs
-
-// /**
-//  * @private
-//  * TODO
-//  */
-// @Directive({
-//   selector: 'tab-highlight'
-// })
-// class TabHighlight {
-//   constructor(@Host() tabs: Tabs, config: Config, elementRef: ElementRef) {
-//     if (config.get('mode') === 'md') {
-//       tabs.highlight = this;
-//       this.elementRef = elementRef;
-//     }
-//   }
-//
-//   select(tab) {
-//     setTimeout(() => {
-//       let d = tab.btn.getDimensions();
-//       let ele = this.elementRef.nativeElement;
-//       ele.style.transform = 'translate3d(' + d.left + 'px,0,0) scaleX(' + d.width + ')';
-//
-//       if (!this.init) {
-//         this.init = true;
-//         setTimeout(() => {
-//           ele.classList.add('animate');
-//         }, 64)
-//       }
-//     }, 32);
-//   }
-//
-// }

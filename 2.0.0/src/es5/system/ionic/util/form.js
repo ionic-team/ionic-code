@@ -1,4 +1,4 @@
-System.register("ionic/util/form", ["angular2/angular2", "../config/config"], function (_export) {
+System.register("ionic/util/form", ["angular2/angular2"], function (_export) {
     /**
      * The Input component is used to focus text input elements.
      *
@@ -12,7 +12,7 @@ System.register("ionic/util/form", ["angular2/angular2", "../config/config"], fu
      */
     "use strict";
 
-    var Injectable, NgZone, Config, __decorate, __metadata, Form, _a, _b;
+    var Injectable, __decorate, __metadata, Form;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -21,9 +21,6 @@ System.register("ionic/util/form", ["angular2/angular2", "../config/config"], fu
     return {
         setters: [function (_angular2Angular2) {
             Injectable = _angular2Angular2.Injectable;
-            NgZone = _angular2Angular2.NgZone;
-        }, function (_configConfig) {
-            Config = _configConfig.Config;
         }],
         execute: function () {
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -49,18 +46,12 @@ System.register("ionic/util/form", ["angular2/angular2", "../config/config"], fu
             };
 
             Form = (function () {
-                function Form(config, zone) {
-                    var _this = this;
-
+                function Form() {
                     _classCallCheck(this, Form);
 
-                    this._config = config;
-                    this._zone = zone;
                     this._inputs = [];
                     this._focused = null;
-                    zone.runOutsideAngular(function () {
-                        _this.focusCtrl(document);
-                    });
+                    this.focusCtrl(document);
                 }
 
                 _createClass(Form, [{
@@ -82,40 +73,19 @@ System.register("ionic/util/form", ["angular2/angular2", "../config/config"], fu
                 }, {
                     key: "focusCtrl",
                     value: function focusCtrl(document) {
-                        var scrollAssist = this._config.get('scrollAssist');
                         // raw DOM fun
                         var focusCtrl = document.createElement('focus-ctrl');
                         focusCtrl.setAttribute('aria-hidden', true);
-                        if (scrollAssist) {
-                            this._tmp = document.createElement('input');
-                            this._tmp.tabIndex = -1;
-                            focusCtrl.appendChild(this._tmp);
-                        }
                         this._blur = document.createElement('button');
                         this._blur.tabIndex = -1;
                         focusCtrl.appendChild(this._blur);
                         document.body.appendChild(focusCtrl);
-                        if (scrollAssist) {
-                            this._tmp.addEventListener('keydown', function (ev) {
-                                ev.preventDefault();
-                                ev.stopPropagation();
-                            });
-                        }
                     }
                 }, {
                     key: "focusOut",
                     value: function focusOut() {
                         console.debug('focusOut');
                         this._blur.focus();
-                    }
-                }, {
-                    key: "setFocusHolder",
-                    value: function setFocusHolder(type) {
-                        if (this._tmp && this._config.get('scrollAssist')) {
-                            this._tmp.type = type;
-                            console.debug('setFocusHolder', this._tmp.type);
-                            this._tmp.focus();
-                        }
                     }
                 }, {
                     key: "setAsFocused",
@@ -152,7 +122,7 @@ System.register("ionic/util/form", ["angular2/angular2", "../config/config"], fu
 
             _export("Form", Form);
 
-            _export("Form", Form = __decorate([Injectable(), __metadata('design:paramtypes', [typeof (_a = typeof Config !== 'undefined' && Config) === 'function' && _a || Object, typeof (_b = typeof NgZone !== 'undefined' && NgZone) === 'function' && _b || Object])], Form));
+            _export("Form", Form = __decorate([Injectable(), __metadata('design:paramtypes', [])], Form));
         }
     };
 });

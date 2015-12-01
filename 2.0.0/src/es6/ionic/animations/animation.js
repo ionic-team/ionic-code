@@ -1,4 +1,4 @@
-import { CSS } from '../util/dom';
+import { CSS, rafFrames } from '../util/dom';
 import { extend } from '../util/util';
 /**
   Animation Steps/Process
@@ -23,7 +23,7 @@ export class Animation {
     constructor(ele, opts = {}) {
         this.reset();
         this._opts = extend({
-            renderDelay: 36
+            renderDelay: 16
         }, opts);
         this.elements(ele);
         if (!document.documentElement.animate) {
@@ -79,10 +79,10 @@ export class Animation {
         return this;
     }
     add(childAnimations) {
-        childAnimations = Array.isArray(childAnimations) ? childAnimations : arguments;
-        for (let i = 0; i < childAnimations.length; i++) {
-            childAnimations[i].parent(this);
-            this._chld.push(childAnimations[i]);
+        var _childAnimations = Array.isArray(childAnimations) ? childAnimations : arguments;
+        for (let i = 0; i < _childAnimations.length; i++) {
+            _childAnimations[i].parent(this);
+            this._chld.push(_childAnimations[i]);
         }
         return this;
     }
@@ -147,10 +147,10 @@ export class Animation {
         return this.from(property, from).to(property, to);
     }
     fadeIn() {
-        return this.fromTo('opacity', 0.01, 1);
+        return this.fromTo('opacity', 0.001, 1);
     }
     fadeOut() {
-        return this.fromTo('opacity', 1, 0);
+        return this.fromTo('opacity', 0.999, 0);
     }
     get before() {
         return {
@@ -180,40 +180,44 @@ export class Animation {
             }
         };
     }
-    play() {
+    play(done) {
         const self = this;
         // the actual play() method which may or may not start async
-        function beginPlay() {
-            let promises = [];
-            for (let i = 0, l = self._chld.length; i < l; i++) {
-                promises.push(self._chld[i].play());
-            }
-            self._ani.forEach(animation => {
-                promises.push(new Promise(resolve => {
-                    animation.play(resolve);
-                }));
+        function beginPlay(beginPlayDone) {
+            let tasks = [];
+            self._chld.forEach(childAnimation => {
+                tasks.push(taskDone => {
+                    childAnimation.play(taskDone);
+                });
             });
-            return Promise.all(promises);
+            self._ani.forEach(animation => {
+                tasks.push(taskDone => {
+                    animation.play(taskDone);
+                });
+            });
+            parallel(tasks, beginPlayDone);
         }
         if (!self._parent) {
             // this is the top level animation and is in full control
             // of when the async play() should actually kick off
             // stage all animations and child animations at their starting point
             self.stage();
-            let resolve;
-            let promise = new Promise(res => { resolve = res; });
+            let promise;
+            if (!done) {
+                promise = new Promise(res => { done = res; });
+            }
             function kickoff() {
                 // synchronously call all onPlay()'s before play()
                 self._onPlay();
-                beginPlay().then(() => {
+                beginPlay(() => {
                     self._onFinish();
-                    resolve();
+                    done();
                 });
             }
-            if (self._duration > 64) {
+            if (self._duration > 16 && self._opts.renderDelay > 0) {
                 // begin each animation when everything is rendered in their starting point
                 // give the browser some time to render everything in place before starting
-                setTimeout(kickoff, this._opts.renderDelay);
+                rafFrames(self._opts.renderDelay / 16, kickoff);
             }
             else {
                 // no need to render everything in there place before animating in
@@ -224,7 +228,7 @@ export class Animation {
         }
         // this is a child animation, it is told exactly when to
         // start by the top level animation
-        return beginPlay();
+        beginPlay(done);
     }
     stage() {
         // before the RENDER_DELAY
@@ -407,13 +411,18 @@ export class Animation {
         }
         return copy(new Animation(), this);
     }
-    dispose() {
+    dispose(removeElement) {
         let i;
         for (i = 0; i < this._chld.length; i++) {
-            this._chld[i].dispose();
+            this._chld[i].dispose(removeElement);
         }
         for (i = 0; i < this._ani.length; i++) {
-            this._ani[i].dispose();
+            this._ani[i].dispose(removeElement);
+        }
+        if (removeElement) {
+            for (i = 0; i < this._el.length; i++) {
+                this._el[i].parentNode && this._el[i].parentNode.removeChild(this._el[i]);
+            }
         }
         this.reset();
     }
@@ -429,6 +438,14 @@ export class Animation {
         }
         return new AnimationClass(element);
     }
+    static createTransition(enteringView, leavingView, opts = {}) {
+        const name = opts.animation || 'ios-transition';
+        let TransitionClass = AnimationRegistry[name];
+        if (!TransitionClass) {
+            TransitionClass = Animation;
+        }
+        return new TransitionClass(enteringView, leavingView, opts);
+    }
     static register(name, AnimationClass) {
         AnimationRegistry[name] = AnimationClass;
     }
@@ -443,7 +460,7 @@ class Animate {
             return console.error(ele.tagName, 'animation fromEffect required, toEffect:', toEffect);
         }
         this.toEffect = parseEffect(toEffect);
-        this.shouldAnimate = (duration > 64);
+        this.shouldAnimate = (duration > 32);
         if (!this.shouldAnimate) {
             return inlineStyle(ele, this.toEffect);
         }
@@ -463,7 +480,7 @@ class Animate {
         }
         this.effects.push(convertProperties(this.toEffect));
     }
-    play(callback) {
+    play(done) {
         const self = this;
         if (self.ani) {
             self.ani.play();
@@ -483,9 +500,11 @@ class Animate {
             // lock in where the element will stop at
             // if the playbackRate is negative then it needs to return
             // to its "from" effects
-            inlineStyle(self.ele, self.rate < 0 ? self.fromEffect : self.toEffect);
-            self.ani = null;
-            callback && callback();
+            if (self.ani) {
+                inlineStyle(self.ele, self.rate < 0 ? self.fromEffect : self.toEffect);
+                self.ani = self.ani.onfinish = null;
+                done && done();
+            }
         };
     }
     pause() {
@@ -719,3 +738,20 @@ const EASING_FN = {
     }
 };
 let AnimationRegistry = {};
+function parallel(tasks, done) {
+    var l = tasks.length;
+    if (!l) {
+        done && done();
+        return;
+    }
+    var completed = 0;
+    function taskCompleted() {
+        completed++;
+        if (completed === l) {
+            done && done();
+        }
+    }
+    for (var i = 0; i < l; i++) {
+        tasks[i](taskCompleted);
+    }
+}

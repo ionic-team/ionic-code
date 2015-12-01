@@ -3,7 +3,8 @@
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
-exports.rafPromise = rafPromise;
+exports.raf = raf;
+exports.rafFrames = rafFrames;
 exports.transitionEnd = transitionEnd;
 exports.animationStart = animationStart;
 exports.animationEnd = animationEnd;
@@ -25,7 +26,14 @@ exports.position = position;
 exports.offset = offset;
 var nativeRaf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
 var nativeCancelRaf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame;
-var raf = nativeRaf || function (callback) {
+
+function raf(callback) {
+    //console.log('raf', callback.toString().replace(/\s/g, '').replace('function', '').substring(0, 50));
+    //console.log('raf, isRootZone()', zone.isRootZone(), '$id', zone.$id);
+    _raf(callback);
+}
+
+var _raf = nativeRaf || function (callback) {
     var timeCurrent = new Date().getTime(),
         timeDelta = undefined;
     /* Dynamically set delay on a per-tick basis to match 60fps. */
@@ -36,16 +44,20 @@ var raf = nativeRaf || function (callback) {
         callback(timeCurrent + timeDelta);
     }, timeDelta);
 };
-exports.raf = raf;
 var rafCancel = nativeRaf ? nativeCancelRaf : function (id) {
     return window.cancelTimeout(id);
 };
 exports.rafCancel = rafCancel;
 
-function rafPromise() {
-    return new Promise(function (resolve) {
-        return raf(resolve);
-    });
+function rafFrames(framesToWait, callback) {
+    framesToWait = Math.ceil(framesToWait);
+    if (framesToWait < 2) {
+        raf(callback);
+    } else {
+        setTimeout(function () {
+            raf(callback);
+        }, (framesToWait - 1) * 17);
+    }
 }
 
 var CSS = {};
@@ -211,23 +223,23 @@ function hasFocusedTextInput() {
     return false;
 }
 
-function closest(ele, selector) {
-    var matchesFn;
-    // find vendor prefix
-    ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
-        if (typeof document.body[fn] == 'function') {
-            matchesFn = fn;
-            return true;
+var matchesFn = undefined;
+['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector'].some(function (fn) {
+    if (typeof document.documentElement[fn] == 'function') {
+        matchesFn = fn;
+    }
+});
+
+function closest(ele, selector, checkSelf) {
+    if (ele && matchesFn) {
+        // traverse parents
+        ele = checkSelf ? ele : ele.parentElement;
+        while (ele !== null) {
+            if (ele[matchesFn](selector)) {
+                return ele;
+            }
+            ele = ele.parentElement;
         }
-        return false;
-    });
-    // traverse parents
-    while (ele !== null) {
-        parent = ele.parentElement;
-        if (parent !== null && parent[matchesFn](selector)) {
-            return parent;
-        }
-        ele = parent;
     }
     return null;
 }
@@ -242,33 +254,45 @@ function removeElement(ele) {
  * @param {TODO} ele  TODO
  */
 
-function getDimensions(ion) {
+function getDimensions(ion, ele) {
     if (!ion._dimId) {
         ion._dimId = ++dimensionIds;
-        if (ion._dimId % 100 === 0) {
+        if (ion._dimId % 1000 === 0) {
             // periodically flush dimensions
             flushDimensionCache();
         }
     }
     var dimensions = dimensionCache[ion._dimId];
     if (!dimensions) {
-        var ele = ion.getNativeElement();
-        dimensions = dimensionCache[ion._dimId] = {
-            width: ele.offsetWidth,
-            height: ele.offsetHeight,
-            left: ele.offsetLeft,
-            top: ele.offsetTop
-        };
+        var _ele = ion.getNativeElement();
+        // make sure we got good values before caching
+        if (_ele.offsetWidth && _ele.offsetHeight) {
+            dimensions = dimensionCache[ion._dimId] = {
+                width: _ele.offsetWidth,
+                height: _ele.offsetHeight,
+                left: _ele.offsetLeft,
+                top: _ele.offsetTop
+            };
+        } else {
+            // do not cache bad values
+            return { width: 0, height: 0, left: 0, top: 0 };
+        }
     }
     return dimensions;
 }
 
 function windowDimensions() {
     if (!dimensionCache.win) {
-        dimensionCache.win = {
-            width: window.innerWidth,
-            height: window.innerHeight
-        };
+        // make sure we got good values before caching
+        if (window.innerWidth && window.innerHeight) {
+            dimensionCache.win = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+        } else {
+            // do not cache bad values
+            return { width: 0, height: 0 };
+        }
     }
     return dimensionCache.win;
 }

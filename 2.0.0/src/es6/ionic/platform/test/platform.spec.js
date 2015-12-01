@@ -15,6 +15,16 @@ export function run() {
         expect(platform.is('android')).toEqual(true);
         expect(platform.is('ios')).toEqual(false);
     });
+    it('should get case insensitive querystring value', () => {
+        let platform = new Platform();
+        platform.url('/?KEY=value');
+        expect(platform.query('key')).toEqual('value');
+    });
+    it('should get querystring value', () => {
+        let platform = new Platform();
+        platform.url('/?key=value');
+        expect(platform.query('key')).toEqual('value');
+    });
     it('should set ios via platformOverride, despite android querystring', () => {
         let platform = new Platform();
         platform.url('/?ionicplatform=android');

@@ -10,8 +10,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _angular2Angular2 = require('angular2/angular2');
 
-var _configConfig = require('../config/config');
-
 /**
  * The Input component is used to focus text input elements.
  *
@@ -44,18 +42,12 @@ var __metadata = undefined && undefined.__metadata || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Form = (function () {
-    function Form(config, zone) {
-        var _this = this;
-
+    function Form() {
         _classCallCheck(this, Form);
 
-        this._config = config;
-        this._zone = zone;
         this._inputs = [];
         this._focused = null;
-        zone.runOutsideAngular(function () {
-            _this.focusCtrl(document);
-        });
+        this.focusCtrl(document);
     }
 
     _createClass(Form, [{
@@ -77,40 +69,19 @@ var Form = (function () {
     }, {
         key: "focusCtrl",
         value: function focusCtrl(document) {
-            var scrollAssist = this._config.get('scrollAssist');
             // raw DOM fun
             var focusCtrl = document.createElement('focus-ctrl');
             focusCtrl.setAttribute('aria-hidden', true);
-            if (scrollAssist) {
-                this._tmp = document.createElement('input');
-                this._tmp.tabIndex = -1;
-                focusCtrl.appendChild(this._tmp);
-            }
             this._blur = document.createElement('button');
             this._blur.tabIndex = -1;
             focusCtrl.appendChild(this._blur);
             document.body.appendChild(focusCtrl);
-            if (scrollAssist) {
-                this._tmp.addEventListener('keydown', function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                });
-            }
         }
     }, {
         key: "focusOut",
         value: function focusOut() {
             console.debug('focusOut');
             this._blur.focus();
-        }
-    }, {
-        key: "setFocusHolder",
-        value: function setFocusHolder(type) {
-            if (this._tmp && this._config.get('scrollAssist')) {
-                this._tmp.type = type;
-                console.debug('setFocusHolder', this._tmp.type);
-                this._tmp.focus();
-            }
         }
     }, {
         key: "setAsFocused",
@@ -145,5 +116,4 @@ var Form = (function () {
     return Form;
 })();
 exports.Form = Form;
-exports.Form = Form = __decorate([(0, _angular2Angular2.Injectable)(), __metadata('design:paramtypes', [typeof (_a = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _b || Object])], Form);
-var _a, _b;
+exports.Form = Form = __decorate([(0, _angular2Angular2.Injectable)(), __metadata('design:paramtypes', [])], Form);

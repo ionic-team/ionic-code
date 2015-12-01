@@ -40,21 +40,19 @@ System.register('ionic/gestures/drag-gesture', ['ionic/gestures/gesture', 'ionic
                             if (_this.onDragStart(ev) !== false) {
                                 _this.dragging = true;
                             }
-                            // ev.stopPropagation();
                         });
                         this.on('panmove', function (ev) {
                             if (!_this.dragging) return;
                             if (_this.onDrag(ev) === false) {
                                 _this.dragging = false;
                             }
-                            // ev.stopPropagation()
                         });
                         this.on('panend', function (ev) {
                             if (!_this.dragging) return;
                             _this.onDragEnd(ev);
                             _this.dragging = false;
-                            // ev.stopPropagation()
                         });
+                        this.hammertime.get('pan').set(this._options);
                     }
                 }, {
                     key: 'onDrag',

@@ -1,10 +1,10 @@
-System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../ion", "../../config/config", "../nav-bar/nav-bar"], function (_export) {
+System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../ion", "../../config/config", "../navbar/navbar"], function (_export) {
     /**
      * TODO
      */
     "use strict";
 
-    var Component, Directive, ElementRef, Renderer, Optional, forwardRef, Inject, Ion, Config, Navbar, __decorate, __metadata, __param, ToolbarBase, Toolbar, ToolbarTitle, ToolbarItem, _a, _b, _c, _d, _e, _f, _g;
+    var Component, Directive, ElementRef, Optional, forwardRef, Inject, Ion, Config, Navbar, __decorate, __metadata, __param, ToolbarBase, Toolbar, ToolbarTitle, ToolbarItem, _a, _b, _c, _d, _e, _f;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -19,7 +19,6 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
             Component = _angular2Angular2.Component;
             Directive = _angular2Angular2.Directive;
             ElementRef = _angular2Angular2.ElementRef;
-            Renderer = _angular2Angular2.Renderer;
             Optional = _angular2Angular2.Optional;
             forwardRef = _angular2Angular2.forwardRef;
             Inject = _angular2Angular2.Inject;
@@ -27,8 +26,8 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
             Ion = _ion.Ion;
         }, function (_configConfig) {
             Config = _configConfig.Config;
-        }, function (_navBarNavBar) {
-            Navbar = _navBarNavBar.Navbar;
+        }, function (_navbarNavbar) {
+            Navbar = _navbarNavbar.Navbar;
         }],
         execute: function () {
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -74,11 +73,19 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                  * TODO
                  */
 
+                /**
+                 * @private
+                 */
+
                 _createClass(ToolbarBase, [{
                     key: "setTitleCmp",
                     value: function setTitleCmp(titleCmp) {
                         this.titleCmp = titleCmp;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "getTitleText",
                     value: function getTitleText() {
@@ -86,8 +93,7 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                     }
 
                     /**
-                     * TODO
-                     * @returns {TODO} TODO
+                     * @private
                      */
                 }, {
                     key: "getTitleRef",
@@ -96,6 +102,7 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                     }
 
                     /**
+                     * @private
                      * A toolbar items include the left and right side `ion-nav-items`,
                      * and every `menu-toggle`. It does not include the `ion-title`.
                      * @returns {TODO} Array of this toolbar's item ElementRefs.
@@ -105,6 +112,10 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                     value: function getItemRefs() {
                         return this.itemRefs;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "addItemRef",
                     value: function addItemRef(itemElementRef) {
@@ -120,11 +131,10 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
             Toolbar = (function (_ToolbarBase) {
                 _inherits(Toolbar, _ToolbarBase);
 
-                function Toolbar(elementRef, config, renderer) {
+                function Toolbar(elementRef, config) {
                     _classCallCheck(this, Toolbar);
 
                     _get(Object.getPrototypeOf(Toolbar.prototype), "constructor", this).call(this, elementRef, config);
-                    renderer.setElementClass(elementRef, 'toolbar', true);
                 }
 
                 return Toolbar;
@@ -134,8 +144,11 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
 
             _export("Toolbar", Toolbar = __decorate([Component({
                 selector: 'ion-toolbar',
-                template: '<div class="toolbar-inner">' + '<ng-content select="[menu-toggle]"></ng-content>' + '<ng-content select="ion-title"></ng-content>' + '<ng-content select="ion-nav-items[primary]"></ng-content>' + '<ng-content select="ion-nav-items[secondary]"></ng-content>' + '</div>' + '<div class="toolbar-background"></div>'
-            }), __metadata('design:paramtypes', [typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object, typeof (_c = typeof Renderer !== 'undefined' && Renderer) === 'function' && _c || Object])], Toolbar));
+                template: '<toolbar-background></toolbar-background>' + '<ng-content select="[menu-toggle]"></ng-content>' + '<ng-content select="ion-nav-items[primary]"></ng-content>' + '<ng-content select="ion-nav-items[secondary]"></ng-content>' + '<toolbar-content>' + '<ng-content></ng-content>' + '</toolbar-content>',
+                host: {
+                    'class': 'toolbar'
+                }
+            }), __metadata('design:paramtypes', [typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object])], Toolbar));
 
             ToolbarTitle = (function (_Ion2) {
                 _inherits(ToolbarTitle, _Ion2);
@@ -165,7 +178,10 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                 template: '<div class="toolbar-title">' + '<ng-content></ng-content>' + '</div>'
             }), __param(1, Optional()), __param(2, Optional()), __param(2, Inject(forwardRef(function () {
                 return Navbar;
-            }))), __metadata('design:paramtypes', [typeof (_d = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _d || Object, Toolbar, typeof (_e = typeof Navbar !== 'undefined' && Navbar) === 'function' && _e || Object])], ToolbarTitle));
+            }))), __metadata('design:paramtypes', [typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c || Object, Toolbar, typeof (_d = typeof Navbar !== 'undefined' && Navbar) === 'function' && _d || Object])], ToolbarTitle));
+            /**
+             * @private
+             */
 
             ToolbarItem = (function (_Ion3) {
                 _inherits(ToolbarItem, _Ion3);
@@ -187,7 +203,7 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                 selector: 'ion-nav-items,[menu-toggle]'
             }), __param(1, Optional()), __param(2, Optional()), __param(2, Inject(forwardRef(function () {
                 return Navbar;
-            }))), __metadata('design:paramtypes', [typeof (_f = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _f || Object, Toolbar, typeof (_g = typeof Navbar !== 'undefined' && Navbar) === 'function' && _g || Object])], ToolbarItem));
+            }))), __metadata('design:paramtypes', [typeof (_e = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _e || Object, Toolbar, typeof (_f = typeof Navbar !== 'undefined' && Navbar) === 'function' && _f || Object])], ToolbarItem));
         }
     };
 });

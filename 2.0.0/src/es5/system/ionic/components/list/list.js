@@ -1,4 +1,4 @@
-System.register("ionic/components/list/list", ["angular2/angular2", "../ion", "../../config/config", "./virtual", "ionic/util"], function (_export) {
+System.register("ionic/components/list/list", ["angular2/angular2", "../ion", "../../config/config", "./virtual", "../item/item-sliding-gesture", "ionic/util"], function (_export) {
     /**
      * The List is a widely used interface element in almost any mobile app, and can include
      * content ranging from basic text all the way to buttons, toggles, icons, and thumbnails.
@@ -12,7 +12,7 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
      */
     "use strict";
 
-    var Directive, ElementRef, Renderer, Ion, Config, ListVirtualScroll, util, __decorate, __metadata, List, ListHeader, _a, _b, _c;
+    var Directive, ElementRef, NgZone, Ion, Config, ListVirtualScroll, ItemSlidingGesture, util, __decorate, __metadata, List, ListHeader, _a, _b, _c;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -26,13 +26,15 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
         setters: [function (_angular2Angular2) {
             Directive = _angular2Angular2.Directive;
             ElementRef = _angular2Angular2.ElementRef;
-            Renderer = _angular2Angular2.Renderer;
+            NgZone = _angular2Angular2.NgZone;
         }, function (_ion) {
             Ion = _ion.Ion;
         }, function (_configConfig) {
             Config = _configConfig.Config;
         }, function (_virtual) {
             ListVirtualScroll = _virtual.ListVirtualScroll;
+        }, function (_itemItemSlidingGesture) {
+            ItemSlidingGesture = _itemItemSlidingGesture.ItemSlidingGesture;
         }, function (_ionicUtil) {
             util = _ionicUtil;
         }],
@@ -62,22 +64,17 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
             List = (function (_Ion) {
                 _inherits(List, _Ion);
 
-                /**
-                 * TODO
-                 * @param {ElementRef} elementRef  TODO
-                 * @param {Config} config  TODO
-                 */
-
-                function List(elementRef, config, renderer) {
+                function List(elementRef, config, zone) {
                     _classCallCheck(this, List);
 
                     _get(Object.getPrototypeOf(List.prototype), "constructor", this).call(this, elementRef, config);
-                    renderer.setElementClass(elementRef, 'list', true);
+                    this.zone = zone;
                     this.ele = elementRef.nativeElement;
+                    this._enableSliding = false;
                 }
 
                 /**
-                 * TODO
+                 * @private
                  */
 
                 _createClass(List, [{
@@ -94,7 +91,16 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
 
                     /**
                      * @private
-                     * TODO
+                     */
+                }, {
+                    key: "onDestroy",
+                    value: function onDestroy() {
+                        this.ele = null;
+                        this.slidingGesture && this.slidingGesture.unlisten();
+                    }
+
+                    /**
+                     * @private
                      */
                 }, {
                     key: "_initVirtualScrolling",
@@ -106,35 +112,50 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
                     }
 
                     /**
-                     * TODO
-                     * @param {TODO} item  TODO
+                     * @private
                      */
                 }, {
                     key: "setItemTemplate",
                     value: function setItemTemplate(item) {
                         this.itemTemplate = item;
                     }
+                }, {
+                    key: "enableSlidingItems",
+                    value: function enableSlidingItems(shouldEnable) {
+                        var _this = this;
 
-                    /**
-                     * Keeps track of any open item (a sliding item, for example), to close it later
-                     */
-                }, {
-                    key: "setOpenItem",
-                    value: function setOpenItem(item) {
-                        this.openItem = item;
-                    }
-                }, {
-                    key: "closeOpenItem",
-                    value: function closeOpenItem() {
-                        if (this.openItem) {
-                            this.openItem.close(true);
-                            this.openItem = null;
+                        if (this._init) {
+                            if (this._enableSliding !== shouldEnable) {
+                                this._enableSliding = shouldEnable;
+                                if (shouldEnable) {
+                                    console.debug('enableSlidingItems');
+                                    this.zone.runOutsideAngular(function () {
+                                        setTimeout(function () {
+                                            _this.slidingGesture = new ItemSlidingGesture(_this, _this.ele);
+                                        });
+                                    });
+                                } else {
+                                    this.slidingGesture && this.slidingGesture.unlisten();
+                                }
+                            }
                         }
                     }
                 }, {
-                    key: "getOpenItem",
-                    value: function getOpenItem() {
-                        return this.openItem;
+                    key: "closeSlidingItems",
+                    value: function closeSlidingItems() {
+                        this.slidingGesture && this.slidingGesture.closeOpened();
+                    }
+
+                    /**
+                     * @private
+                     */
+                }, {
+                    key: "afterViewInit",
+                    value: function afterViewInit() {
+                        this._init = true;
+                        if (this._enableSliding) {
+                            this.enableSlidingItems(true);
+                        }
                     }
                 }]);
 
@@ -146,10 +167,7 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
             _export("List", List = __decorate([Directive({
                 selector: 'ion-list',
                 inputs: ['items', 'virtual', 'content']
-            }), __metadata('design:paramtypes', [typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object, typeof (_c = typeof Renderer !== 'undefined' && Renderer) === 'function' && _c || Object])], List));
-            /**
-             * TODO
-             */
+            }), __metadata('design:paramtypes', [typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object, typeof (_c = typeof NgZone !== 'undefined' && NgZone) === 'function' && _c || Object])], List));
 
             ListHeader = function ListHeader() {
                 _classCallCheck(this, ListHeader);
@@ -158,7 +176,7 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
             _export("ListHeader", ListHeader);
 
             _export("ListHeader", ListHeader = __decorate([Directive({
-                selector: 'ion-header',
+                selector: 'ion-list-header',
                 inputs: ['id'],
                 host: {
                     '[attr.id]': 'id'

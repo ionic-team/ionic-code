@@ -1,10 +1,40 @@
 System.register("ionic/components/segment/segment", ["angular2/angular2", "../ion", "../../config/config"], function (_export) {
     /**
-     * TODO
+     * @description
+     * A Segment is a group of buttons, sometimes known as Segmented Controls, that allow the user to interact with a compact group of a number of controls.
+     *
+     * Segments provide functionality similar to tabs, selecting one will unselect all others. You should use a tab bar instead of a segmented control when you want to let the user move back and forth between distinct pages in your app.
+     *
+     * @usage
+     * ```html
+     * <ion-segment [(ng-model)]="relationship" danger>
+     *   <ion-segment-button value="friends">
+     *     Friends
+     *   </ion-segment-button>
+     *   <ion-segment-button value="enemies">
+     *     Enemies
+     *   </ion-segment-button>
+     * </ion-segment>
+     *
+     *
+     * <form [ng-form-model]="myForm">
+     *   <ion-segment ng-control="mapStyle" danger>
+     *     <ion-segment-button value="standard">
+     *       Standard
+     *     </ion-segment-button>
+     *     <ion-segment-button value="hybrid">
+     *       Hybrid
+     *     </ion-segment-button>
+     *     <ion-segment-button value="sat">
+     *       Satellite
+     *     </ion-segment-button>
+     *   </ion-segment>
+     * </form>
+     * ```
      */
     "use strict";
 
-    var Component, Directive, Renderer, ElementRef, EventEmitter, Host, forwardRef, Optional, NgControl, Ion, Config, __decorate, __metadata, __param, Segment, SegmentControlValueAccessor, SegmentButton, _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var Directive, Renderer, ElementRef, Host, Optional, NgControl, Ion, Config, __decorate, __metadata, __param, Segment, SegmentButton, _a, _b, _c, _d, _e;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -16,13 +46,10 @@ System.register("ionic/components/segment/segment", ["angular2/angular2", "../io
 
     return {
         setters: [function (_angular2Angular2) {
-            Component = _angular2Angular2.Component;
             Directive = _angular2Angular2.Directive;
             Renderer = _angular2Angular2.Renderer;
             ElementRef = _angular2Angular2.ElementRef;
-            EventEmitter = _angular2Angular2.EventEmitter;
             Host = _angular2Angular2.Host;
-            forwardRef = _angular2Angular2.forwardRef;
             Optional = _angular2Angular2.Optional;
             NgControl = _angular2Angular2.NgControl;
         }, function (_ion) {
@@ -62,34 +89,54 @@ System.register("ionic/components/segment/segment", ["angular2/angular2", "../io
             Segment = (function (_Ion) {
                 _inherits(Segment, _Ion);
 
-                /**
-                 * TODO
-                 * @param {NgControl} ngControl  TODO
-                 * @param {ElementRef} elementRef  TODO
-                 * @param {Config} config  TODO
-                 * @param {Renderer} renderer  TODO
-                 */
-
-                function Segment(ngControl, elementRef, config, renderer) {
+                function Segment(ngControl, elementRef, config) {
                     _classCallCheck(this, Segment);
 
                     _get(Object.getPrototypeOf(Segment.prototype), "constructor", this).call(this, elementRef, config);
-                    this.ele = elementRef.nativeElement;
-                    this.elementRef = elementRef;
-                    this.renderer = renderer;
-                    this.change = new EventEmitter('change');
-                    this.input = new EventEmitter('input');
-                    this.ngControl = ngControl;
+                    /**
+                     * @private
+                     */
                     this.buttons = [];
+                    this.onChange = function (_) {};
+                    this.onTouched = function (_) {};
+                    if (ngControl) ngControl.valueAccessor = this;
                 }
 
                 /**
-                 * Called by child SegmentButtons to bind themselves to
-                 * the Segment.
-                 * @param {SegmentButton} segmentButton  The child SegmentButton to register.
+                 * @private
                  */
 
                 _createClass(Segment, [{
+                    key: "writeValue",
+                    value: function writeValue(value) {
+                        this.value = !value ? '' : value;
+                    }
+
+                    /**
+                     * @private
+                     */
+                }, {
+                    key: "registerOnChange",
+                    value: function registerOnChange(fn) {
+                        this.onChange = fn;
+                    }
+
+                    /**
+                     * @private
+                     */
+                }, {
+                    key: "registerOnTouched",
+                    value: function registerOnTouched(fn) {
+                        this.onTouched = fn;
+                    }
+
+                    /**
+                     * @private
+                     * Called by child SegmentButtons to bind themselves to
+                     * the Segment.
+                     * @param {SegmentButton} segmentButton  The child SegmentButton to register.
+                     */
+                }, {
                     key: "register",
                     value: function register(segmentButton) {
                         this.buttons.push(segmentButton);
@@ -101,6 +148,7 @@ System.register("ionic/components/segment/segment", ["angular2/angular2", "../io
                     }
 
                     /**
+                     * @private
                      * Select the button with the given value.
                      * @param {string} value  Value of the button to select.
                      */
@@ -118,33 +166,19 @@ System.register("ionic/components/segment/segment", ["angular2/angular2", "../io
                     }
 
                     /**
+                     * @private
                      * Indicate a button should be selected.
                      * @param {SegmentButton} segmentButton  The button to select.
                      */
                 }, {
                     key: "selected",
                     value: function selected(segmentButton) {
-                        var _this = this;
-
                         this.buttons.forEach(function (button) {
                             button.isActive = false;
                         });
                         segmentButton.isActive = true;
-                        //this.onChange();
-                        if (!this.ngControl) {
-                            return;
-                        }
-                        setTimeout(function () {
-                            _this.value = segmentButton.value;
-                            _this.ngControl.valueAccessor.writeValue(segmentButton.value);
-                            _this.selectFromValue(segmentButton.value);
-                            _this.ngControl.control.updateValue(segmentButton.value);
-                            // Trigger on change
-                            _this.change.next();
-                        });
-                        //this.ngControl.control().updateValue(this.value);
-                        // TODO: Better way to do this?
-                        //this.controlDirective._control().updateValue(this.value);
+                        this.value = segmentButton.value;
+                        this.onChange(segmentButton.value);
                     }
                 }]);
 
@@ -153,115 +187,36 @@ System.register("ionic/components/segment/segment", ["angular2/angular2", "../io
 
             _export("Segment", Segment);
 
-            _export("Segment", Segment = __decorate([Component({
-                selector: 'ion-segment',
-                inputs: ['value'],
-                host: {
-                    //'(click)': 'buttonClicked($event)',
-                    '(change)': 'onChange($event)'
-                },
-                template: '<div class="ion-segment"><ng-content></ng-content></div>',
-                directives: [forwardRef(function () {
-                    return SegmentButton;
-                })]
-            }), __param(0, Optional()), __metadata('design:paramtypes', [typeof (_a = typeof NgControl !== 'undefined' && NgControl) === 'function' && _a || Object, typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b || Object, typeof (_c = typeof Config !== 'undefined' && Config) === 'function' && _c || Object, typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d || Object])], Segment));
-            /**
-             * TODO
-             */
-
-            SegmentControlValueAccessor = (function () {
-                /**
-                 * TODO
-                 * @param {NgControl} ngControl  TODO
-                 * @param {Renderer} renderer  TODO
-                 * @param {ElementRef} elementRef  TODO
-                 * @param {Segment} segment  TODO
-                 */
-
-                function SegmentControlValueAccessor(ngControl, renderer, elementRef, segment) {
-                    _classCallCheck(this, SegmentControlValueAccessor);
-
-                    this.onChange = function (_) {};
-                    this.onTouched = function (_) {};
-                    if (!ngControl) {
-                        // They don't want to do anything that works, so we won't do anything that breaks
-                        return;
-                    }
-                    this.ngControl = ngControl;
-                    this.renderer = renderer;
-                    this.elementRef = elementRef;
-                    this.segment = segment;
-                    ngControl.valueAccessor = this;
-                }
-
-                _createClass(SegmentControlValueAccessor, [{
-                    key: "writeValue",
-                    value: function writeValue(value) {
-                        // both this.value and setProperty are required at the moment
-                        // remove when a proper imperative API is provided
-                        this.value = !value ? '' : value;
-                        this.renderer.setElementProperty(this.elementRef, 'value', this.value);
-                        this.segment.value = this.value;
-                        this.segment.selectFromValue(value);
-                    }
-                }, {
-                    key: "registerOnChange",
-                    value: function registerOnChange(fn) {
-                        this.onChange = fn;
-                    }
-                }, {
-                    key: "registerOnTouched",
-                    value: function registerOnTouched(fn) {
-                        this.onTouched = fn;
-                    }
-                }]);
-
-                return SegmentControlValueAccessor;
-            })();
-
-            _export("SegmentControlValueAccessor", SegmentControlValueAccessor);
-
-            _export("SegmentControlValueAccessor", SegmentControlValueAccessor = __decorate([Directive({
-                selector: 'ion-segment',
-                //inputs: ['value'],
-                host: {
-                    '(change)': 'onChange($event.target.value)',
-                    '(input)': 'onChange($event.target.value)',
-                    '(blur)': 'onTouched()'
-                }
-            }), __param(0, Optional()), __metadata('design:paramtypes', [typeof (_e = typeof NgControl !== 'undefined' && NgControl) === 'function' && _e || Object, typeof (_f = typeof Renderer !== 'undefined' && Renderer) === 'function' && _f || Object, typeof (_g = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _g || Object, Segment])], SegmentControlValueAccessor));
-            /**
-             * TODO
-             */
+            _export("Segment", Segment = __decorate([Directive({
+                selector: 'ion-segment'
+            }), __param(0, Optional()), __metadata('design:paramtypes', [typeof (_a = typeof NgControl !== 'undefined' && NgControl) === 'function' && _a || Object, typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b || Object, typeof (_c = typeof Config !== 'undefined' && Config) === 'function' && _c || Object])], Segment));
 
             SegmentButton = (function () {
-                /**
-                 * TODO
-                 * @param {Segment} segment  TODO
-                 * @param {ElementRef} elementRef  TODO
-                 */
-
                 function SegmentButton(segment, elementRef, renderer) {
                     _classCallCheck(this, SegmentButton);
 
                     this.segment = segment;
-                    this.renderer = renderer;
-                    this.isButton = true;
-                    // This is a button, and it's outlined
-                    this.renderer.setElementAttribute(elementRef, 'button', '');
-                    this.renderer.setElementAttribute(elementRef, 'outline', '');
+                    renderer.setElementAttribute(elementRef, 'button', '');
+                    renderer.setElementAttribute(elementRef, 'outline', '');
                 }
+
+                /**
+                 * @private
+                 */
 
                 _createClass(SegmentButton, [{
                     key: "onInit",
                     value: function onInit() {
                         this.segment.register(this);
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
-                    key: "buttonClicked",
-                    value: function buttonClicked(event) {
+                    key: "click",
+                    value: function click(event) {
                         this.segment.selected(this, event);
-                        event.preventDefault();
                     }
                 }]);
 
@@ -274,43 +229,10 @@ System.register("ionic/components/segment/segment", ["angular2/angular2", "../io
                 selector: 'ion-segment-button',
                 inputs: ['value'],
                 host: {
-                    '(click)': 'buttonClicked($event)',
+                    '(click)': 'click($event)',
                     '[class.activated]': 'isActive'
                 }
-            }), __param(0, Host()), __metadata('design:paramtypes', [Segment, typeof (_h = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _h || Object, typeof (_j = typeof Renderer !== 'undefined' && Renderer) === 'function' && _j || Object])], SegmentButton));
+            }), __param(0, Host()), __metadata('design:paramtypes', [Segment, typeof (_d = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _d || Object, typeof (_e = typeof Renderer !== 'undefined' && Renderer) === 'function' && _e || Object])], SegmentButton));
         }
     };
 });
-
-// TODO Android animation similar to tabs
-// /**
-//  * @private
-//  * TODO
-//  */
-// @Directive({
-//   selector: 'tab-highlight'
-// })
-// class TabHighlight {
-//   constructor(@Host() tabs: Tabs, config: Config, elementRef: ElementRef) {
-//     if (config.get('mode') === 'md') {
-//       tabs.highlight = this;
-//       this.elementRef = elementRef;
-//     }
-//   }
-//
-//   select(tab) {
-//     setTimeout(() => {
-//       let d = tab.btn.getDimensions();
-//       let ele = this.elementRef.nativeElement;
-//       ele.style.transform = 'translate3d(' + d.left + 'px,0,0) scaleX(' + d.width + ')';
-//
-//       if (!this.init) {
-//         this.init = true;
-//         setTimeout(() => {
-//           ele.classList.add('animate');
-//         }, 64)
-//       }
-//     }, 32);
-//   }
-//
-// }

@@ -50,10 +50,9 @@ var __param = undefined && undefined.__param || function (paramIndex, decorator)
     };
 };
 var Checkbox = (function () {
-    function Checkbox(form, ngControl, elementRef, renderer) {
+    function Checkbox(form, ngControl, elementRef) {
         _classCallCheck(this, Checkbox);
 
-        renderer.setElementClass(elementRef, 'item', true);
         this.form = form;
         form.register(this);
         this.onChange = function (_) {};
@@ -61,10 +60,6 @@ var Checkbox = (function () {
         this.ngControl = ngControl;
         if (ngControl) ngControl.valueAccessor = this;
     }
-
-    /**
-     * TODO
-     */
 
     _createClass(Checkbox, [{
         key: "onInit",
@@ -84,6 +79,7 @@ var Checkbox = (function () {
         }
 
         /**
+         * @private
          * Click event handler to toggle the checkbox checked state.
          * @param {MouseEvent} ev  The click event.
          */
@@ -131,6 +127,10 @@ var Checkbox = (function () {
         value: function registerOnTouched(fn) {
             this.onTouched = fn;
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "onDestroy",
         value: function onDestroy() {
@@ -151,8 +151,9 @@ exports.Checkbox = Checkbox = __decorate([(0, _angular2Angular2.Component)({
         '[attr.aria-checked]': 'checked',
         '[attr.aria-disabled]': 'disabled',
         '[attr.aria-labelledby]': 'labelId',
-        '(click)': 'click($event)'
+        '(click)': 'click($event)',
+        'class': 'item'
     },
-    template: '<media-checkbox disable-activated>' + '<checkbox-icon></checkbox-icon>' + '</media-checkbox>' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>'
-}), __param(1, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _utilForm.Form !== 'undefined' && _utilForm.Form) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.NgControl !== 'undefined' && _angular2Angular2.NgControl) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _c || Object, typeof (_d = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _d || Object])], Checkbox);
-var _a, _b, _c, _d;
+    template: '<div class="item-inner">' + '<media-checkbox disable-activated>' + '<checkbox-icon></checkbox-icon>' + '</media-checkbox>' + '<ion-item-content id="{{labelId}}">' + '<ng-content></ng-content>' + '</ion-item-content>' + '</div>'
+}), __param(1, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _utilForm.Form !== 'undefined' && _utilForm.Form) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.NgControl !== 'undefined' && _angular2Angular2.NgControl) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _c || Object])], Checkbox);
+var _a, _b, _c;

@@ -2,6 +2,15 @@ System.register('ionic/platform/registry', ['./platform', '../util/dom'], functi
     'use strict';
 
     var Platform, windowLoad;
+
+    function isIOSDevice(p) {
+        // shortcut function to be reused internally
+        // checks navigator.platform to see if it's an actual iOS device
+        // this does not use the user-agent string because it is often spoofed
+        // an actual iPad will return true, a chrome dev tools iPad will return false
+        return (/iphone|ipad|ipod/i.test(p.navigatorPlatform())
+        );
+    }
     return {
         setters: [function (_platform) {
             Platform = _platform.Platform;
@@ -41,10 +50,13 @@ System.register('ionic/platform/registry', ['./platform', '../util/dom'], functi
                 superset: 'mobile',
                 subsets: ['phablet', 'tablet'],
                 settings: {
+                    activator: function activator(p) {
+                        return p.version().major < 5 && p.navigatorPlatform().indexOf('linux') > -1 ? 'none' : 'ripple';
+                    },
+                    hoverCSS: false,
+                    keyboardHeight: 300,
                     mode: 'md',
-                    keyboardHeight: 290,
-                    scrollAssist: true,
-                    hoverCSS: false
+                    scrollAssist: true
                 },
                 isMatch: function isMatch(p) {
                     return p.isPlatform('android', 'android|silk');
@@ -58,19 +70,14 @@ System.register('ionic/platform/registry', ['./platform', '../util/dom'], functi
                 superset: 'mobile',
                 subsets: ['ipad', 'iphone'],
                 settings: {
-                    mode: 'ios',
-                    scrollAssist: function scrollAssist(p) {
-                        return (/iphone|ipad|ipod/i.test(p.navigatorPlatform())
-                        );
-                    },
-                    keyboardHeight: 290,
+                    clickBlock: true,
                     hoverCSS: false,
-                    swipeBackEnabled: function swipeBackEnabled(p) {
-                        return true; // TODO: remove me! Force it to always work for iOS mode for now
-                        return (/iphone|ipad|ipod/i.test(p.navigatorPlatform())
-                        );
-                    },
-                    swipeBackThreshold: 40
+                    keyboardHeight: 300,
+                    mode: 'ios',
+                    scrollAssist: isIOSDevice,
+                    swipeBackEnabled: isIOSDevice,
+                    swipeBackThreshold: 40,
+                    tapPolyfill: isIOSDevice
                 },
                 isMatch: function isMatch(p) {
                     return p.isPlatform('ios', 'iphone|ipad|ipod');

@@ -51,8 +51,8 @@ var Storage = (function () {
         }
     }, {
         key: 'query',
-        value: function query(_query) {
-            return this._strategy.query(key);
+        value: function query(_query, params) {
+            return this._strategy.query(_query, params);
         }
     }]);
 
@@ -83,7 +83,7 @@ var StorageEngine = (function () {
         }
     }, {
         key: 'query',
-        value: function query(_query2) {
+        value: function query(_query2, params) {
             throw Error("query() not implemented for this storage engine");
         }
     }]);

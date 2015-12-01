@@ -1,3 +1,4 @@
+@import "../../../ionic.globals";
 
 // Material Design Card
 // --------------------------------------------------
@@ -41,16 +42,30 @@ ion-card {
   background: $card-md-background-color;
   box-shadow: $card-md-box-shadow;
   border-radius: $card-md-border-radius;
-  overflow: hidden;
+
+  ion-list {
+    margin-bottom: 0;
+
+    ion-item-content {
+      padding: 0;
+    }
+
+    .item-inner {
+      border-bottom: 1px solid $list-md-border-color;
+    }
+
+    > .item:last-child,
+    > ion-item-sliding:last-child .item {
+      border-bottom: none;
+    }
+  }
 
   .item {
-    padding-right: ($card-md-padding-right / 2);
-    padding-left: ($card-md-padding-left / 2);
     font-size: $item-md-font-size;
   }
 
-  ion-item-content {
-    padding: $card-md-padding-top ($card-md-padding-right / 2) $card-md-padding-bottom ($card-md-padding-left / 2);
+  .item-inner {
+    border: none;
   }
 
   ion-card-content {
@@ -70,44 +85,15 @@ ion-card {
     padding-top: 0;
   }
 
-  [item-left],
-  [item-right] {
-    margin: $card-md-padding-media-top ($card-md-padding-right / 2) $card-md-padding-media-bottom ($card-md-padding-left / 2);
-  }
-
-  button[item-left],
-  button[item-right],
-  [button][item-left],
-  [button][item-right], {
-    margin: 0 ($card-md-padding-right / 4) 0 ($card-md-padding-left / 4);
-    min-height: 26px;
+  ion-note[item-left],
+  ion-note[item-right], {
     font-size: 1.3rem;
-    border-color: transparent;
   }
 
   .card-title {
     padding: $card-md-title-padding;
     font-size: $card-md-title-font-size;
     color: $card-md-title-text-color;
-  }
-
-  ion-avatar {
-    min-width: $card-md-avatar-size;
-
-    img {
-      max-width: $card-md-avatar-size;
-      max-height: $card-md-avatar-size;
-      border-radius: $card-md-avatar-size / 2;
-    }
-  }
-
-  ion-thumbnail {
-    min-width: $card-md-thumbnail-size;
-
-    img {
-      max-width: $card-md-thumbnail-size;
-      max-height: $card-md-thumbnail-size;
-    }
   }
 
   h1 {

@@ -12,12 +12,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Directive, ElementRef, Renderer, Host, Optional, NgControl, Inject, forwardRef } from 'angular2/angular2';
+import { Component, Directive, ElementRef, Host, Optional, NgControl, Inject, forwardRef } from 'angular2/angular2';
 import { Form } from '../../util/form';
 import { Config } from '../../config/config';
 import { pointerCoord } from '../../util/dom';
 /**
- * @name mediaSwitch
  * @private
  */
 let MediaSwitch = class {
@@ -77,17 +76,10 @@ MediaSwitch = __decorate([
  *
  */
 export let Switch = class {
-    /**
-     * TODO
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     * @param {NgControl=} ngControl  TODO
-     */
-    constructor(form, elementRef, config, renderer, ngControl) {
+    constructor(form, elementRef, config, ngControl) {
         this.ngControl = ngControl;
         this.form = form;
         form.register(this);
-        renderer.setElementClass(elementRef, 'item', true);
         this.lastTouch = 0;
         this.mode = config.get('mode');
         this.onChange = (_) => { };
@@ -124,6 +116,9 @@ export let Switch = class {
             elementRef.nativeElement.removeEventListener('mouseout', pointerOut);
         };
     }
+    /**
+     * @private
+     */
     onInit() {
         this.labelId = 'label-' + this.inputId;
     }
@@ -141,9 +136,15 @@ export let Switch = class {
     toggle(ev) {
         this.check(!this.checked);
     }
+    /**
+     * @private
+     */
     writeValue(value) {
         this.checked = value;
     }
+    /**
+     * @private
+     */
     pointerDown(ev) {
         if (/touch/.test(ev.type)) {
             this.lastTouch = Date.now();
@@ -155,6 +156,9 @@ export let Switch = class {
         this.addMoveListener();
         this.isActivated = true;
     }
+    /**
+     * @private
+     */
     pointerUp(ev) {
         if (this.isDisabled(ev))
             return;
@@ -170,15 +174,25 @@ export let Switch = class {
         this.removeMoveListener();
         this.isActivated = false;
     }
-    // Used by the view to update the model (Control)
-    // Up to us to call it in update()
+    /**
+     * @private
+     */
     registerOnChange(fn) { this.onChange = fn; }
+    /**
+     * @private
+     */
     registerOnTouched(fn) { this.onTouched = fn; }
+    /**
+     * @private
+     */
     onDestroy() {
         this.removeMoveListener();
         this.switchEle = this.addMoveListener = this.removeMoveListener = null;
         this.form.deregister(this);
     }
+    /**
+     * @private
+     */
     isDisabled(ev) {
         return (this.lastTouch + 999 > Date.now() && /mouse/.test(ev.type)) || (this.mode == 'ios' && ev.target.tagName == 'ION-SWITCH');
     }
@@ -202,18 +216,21 @@ Switch = __decorate([
             '(touchstart)': 'pointerDown($event)',
             '(mousedown)': 'pointerDown($event)',
             '(touchend)': 'pointerUp($event)',
-            '(mouseup)': 'pointerUp($event)'
+            '(mouseup)': 'pointerUp($event)',
+            'class': 'item'
         },
         template: '<ng-content select="[item-left]"></ng-content>' +
+            '<div class="item-inner">' +
             '<ion-item-content id="{{labelId}}">' +
             '<ng-content></ng-content>' +
             '</ion-item-content>' +
             '<media-switch disable-activated>' +
             '<switch-icon></switch-icon>' +
-            '</media-switch>',
+            '</media-switch>' +
+            `</div>`,
         directives: [MediaSwitch]
     }),
-    __param(4, Optional()), 
-    __metadata('design:paramtypes', [(typeof (_b = typeof Form !== 'undefined' && Form) === 'function' && _b) || Object, (typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c) || Object, (typeof (_d = typeof Config !== 'undefined' && Config) === 'function' && _d) || Object, (typeof (_e = typeof Renderer !== 'undefined' && Renderer) === 'function' && _e) || Object, (typeof (_f = typeof NgControl !== 'undefined' && NgControl) === 'function' && _f) || Object])
+    __param(3, Optional()), 
+    __metadata('design:paramtypes', [(typeof (_b = typeof Form !== 'undefined' && Form) === 'function' && _b) || Object, (typeof (_c = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _c) || Object, (typeof (_d = typeof Config !== 'undefined' && Config) === 'function' && _d) || Object, (typeof (_e = typeof NgControl !== 'undefined' && NgControl) === 'function' && _e) || Object])
 ], Switch);
-var _a, _b, _c, _d, _e, _f;
+var _a, _b, _c, _d, _e;

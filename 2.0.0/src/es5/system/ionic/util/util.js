@@ -2,9 +2,7 @@ System.register('ionic/util/util', [], function (_export) {
     // Simple noop function
     'use strict';
 
-    var isBoolean, isString, isNumber, isFunction, isDefined, isUndefined, isBlank, isObject, isArray, isTrueProperty, uid, Log, array;
-
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    var isBoolean, isString, isNumber, isFunction, isDefined, isUndefined, isBlank, isObject, isArray, isTrueProperty, uid, array;
 
     _export('noop', noop);
 
@@ -38,10 +36,6 @@ System.register('ionic/util/util', [], function (_export) {
 
     _export('pascalCaseToDashCase', pascalCaseToDashCase);
 
-    /**
-     * A simple logger class.
-     */
-
     _export('nextUid', nextUid);
 
     /**
@@ -52,8 +46,6 @@ System.register('ionic/util/util', [], function (_export) {
     _export('getQuerystring', getQuerystring);
 
     _export('throttle', throttle);
-
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
     function noop() {}
 
@@ -159,12 +151,10 @@ System.register('ionic/util/util', [], function (_export) {
             var startIndex = url.indexOf('?');
             if (startIndex !== -1) {
                 var queries = url.slice(startIndex + 1).split('&');
-                if (queries.length) {
-                    queries.forEach(function (param) {
-                        var split = param.split('=');
-                        queryParams[split[0]] = split[1].split('#')[0];
-                    });
-                }
+                queries.forEach(function (param) {
+                    var split = param.split('=');
+                    queryParams[split[0].toLowerCase()] = split[1].split('#')[0];
+                });
             }
             if (key) {
                 return queryParams[key] || '';
@@ -264,55 +254,6 @@ System.register('ionic/util/util', [], function (_export) {
             _export('isTrueProperty', isTrueProperty);
 
             uid = 0;
-
-            Log = (function () {
-                function Log() {
-                    _classCallCheck(this, Log);
-                }
-
-                _createClass(Log, null, [{
-                    key: 'log',
-                    value: function log() {
-                        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-                            args[_key] = arguments[_key];
-                        }
-
-                        console.log.apply(console, args);
-                    }
-                }, {
-                    key: 'info',
-                    value: function info() {
-                        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                            args[_key2] = arguments[_key2];
-                        }
-
-                        console.info.apply(console, args);
-                    }
-                }, {
-                    key: 'warn',
-                    value: function warn() {
-                        for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                            args[_key3] = arguments[_key3];
-                        }
-
-                        console.warn.apply(console, args);
-                    }
-                }, {
-                    key: 'error',
-                    value: function error() {
-                        for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                            args[_key4] = arguments[_key4];
-                        }
-
-                        console.error.apply(console, args);
-                    }
-                }]);
-
-                return Log;
-            })();
-
-            _export('Log', Log);
-
             array = {
                 find: function find(arr, cb) {
                     for (var i = 0, ii = arr.length; i < ii; i++) {

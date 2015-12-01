@@ -45,12 +45,6 @@ var __metadata = undefined && undefined.__metadata || function (k, v) {
 var Scroll = (function (_Ion) {
     _inherits(Scroll, _Ion);
 
-    /**
-     * TODO
-     * @param {ElementRef} elementRef  TODO
-     * @param {Config} config  TODO
-     */
-
     function Scroll(elementRef, Config) {
         _classCallCheck(this, Scroll);
 
@@ -58,6 +52,10 @@ var Scroll = (function (_Ion) {
         this.maxScale = 3;
         this.zoomDuration = 250;
     }
+
+    /**
+     * @private
+     */
 
     _createClass(Scroll, [{
         key: "onInit",

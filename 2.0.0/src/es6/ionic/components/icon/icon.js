@@ -15,12 +15,14 @@ export let Icon = class {
     constructor(elementRef, config, renderer) {
         this.elementRef = elementRef;
         this.renderer = renderer;
-        this.eleRef = elementRef;
         this.config = config;
         this.mode = config.get('iconMode');
     }
+    /**
+     * @private
+     */
     onInit() {
-        let ele = this.eleRef.nativeElement;
+        let ele = this.elementRef.nativeElement;
         if (this.mode == 'ios' && this.ios) {
             this.name = this.ios;
         }
@@ -49,10 +51,16 @@ export let Icon = class {
     get isActive() {
         return (this._isActive === undefined || this._isActive === true || this._isActive === 'true');
     }
+    /**
+     * @private
+     */
     set isActive(val) {
         this._isActive = val;
         this.update();
     }
+    /**
+     * @private
+     */
     update() {
         if (this.name && this.mode == 'ios') {
             if (this.isActive) {

@@ -19,16 +19,16 @@ function run() {
         var userConfig = new _ionicIonic.Config({
             mode: 'configInstance'
         });
-        var providers = (0, _ionicIonic.ionicProviders)(userConfig);
+        var providers = (0, _ionicIonic.ionicProviders)({ config: userConfig });
         var config = providers.find(function (provider) {
             return provider.useValue instanceof _ionicIonic.Config;
         }).useValue;
         expect(config.get('mode')).toEqual('configInstance');
     });
     it('should create new Config instance from config object in ionicProviders', function () {
-        var providers = (0, _ionicIonic.ionicProviders)({
-            mode: 'configObj'
-        });
+        var providers = (0, _ionicIonic.ionicProviders)({ config: {
+                mode: 'configObj'
+            } });
         var config = providers.find(function (provider) {
             return provider.useValue instanceof _ionicIonic.Config;
         }).useValue;
@@ -41,7 +41,7 @@ function run() {
         var platform = new _ionicIonic.Platform(['ios']);
         config.setPlatform(platform);
         expect(config.get('mode')).toEqual('md');
-        expect(config.get('tabBarPlacement')).toEqual('top');
+        expect(config.get('tabbarPlacement')).toEqual('top');
     });
     it('should override mode settings from platforms setting', function () {
         var config = new _ionicIonic.Config({
@@ -54,7 +54,37 @@ function run() {
         var platform = new _ionicIonic.Platform(['ios']);
         config.setPlatform(platform);
         expect(config.get('mode')).toEqual('md');
-        expect(config.get('tabBarPlacement')).toEqual('top');
+        expect(config.get('tabbarPlacement')).toEqual('top');
+    });
+    it('should get boolean value from querystring', function () {
+        var config = new _ionicIonic.Config();
+        var platform = new _ionicIonic.Platform();
+        platform.url('http://biff.com/?ionicanimate=true');
+        config.setPlatform(platform);
+        expect(config.get('animate')).toEqual(true);
+        config = new _ionicIonic.Config();
+        platform = new _ionicIonic.Platform();
+        platform.url('http://biff.com/?ionicanimate=false');
+        config.setPlatform(platform);
+        expect(config.get('animate')).toEqual(false);
+    });
+    it('should get value from case insensitive querystring key', function () {
+        var config = new _ionicIonic.Config({
+            mode: 'a'
+        });
+        var platform = new _ionicIonic.Platform();
+        platform.url('http://biff.com/?ionicConfigKey=b');
+        config.setPlatform(platform);
+        expect(config.get('configKey')).toEqual('b');
+    });
+    it('should get value from querystring', function () {
+        var config = new _ionicIonic.Config({
+            mode: 'modeA'
+        });
+        var platform = new _ionicIonic.Platform();
+        platform.url('http://biff.com/?ionicmode=modeB');
+        config.setPlatform(platform);
+        expect(config.get('mode')).toEqual('modeB');
     });
     it('should override mode platform', function () {
         var config = new _ionicIonic.Config({
@@ -114,51 +144,51 @@ function run() {
     });
     it('should override ios mode config with user platform setting', function () {
         var config = new _ionicIonic.Config({
-            tabBarPlacement: 'hide',
+            tabbarPlacement: 'hide',
             platforms: {
                 ios: {
-                    tabBarPlacement: 'top'
+                    tabbarPlacement: 'top'
                 }
             }
         });
         var platform = new _ionicIonic.Platform(['ios']);
         config.setPlatform(platform);
-        expect(config.get('tabBarPlacement')).toEqual('top');
+        expect(config.get('tabbarPlacement')).toEqual('top');
     });
     it('should override ios mode config with user setting', function () {
         var config = new _ionicIonic.Config({
-            tabBarPlacement: 'top'
+            tabbarPlacement: 'top'
         });
         var platform = new _ionicIonic.Platform(['ios']);
         config.setPlatform(platform);
-        expect(config.get('tabBarPlacement')).toEqual('top');
+        expect(config.get('tabbarPlacement')).toEqual('top');
     });
     it('should get setting from md mode', function () {
         var config = new _ionicIonic.Config();
         var platform = new _ionicIonic.Platform(['android']);
         config.setPlatform(platform);
-        expect(config.get('tabBarPlacement')).toEqual('top');
+        expect(config.get('tabbarPlacement')).toEqual('top');
     });
     it('should get setting from ios mode', function () {
         var config = new _ionicIonic.Config();
         var platform = new _ionicIonic.Platform(['ios']);
         config.setPlatform(platform);
-        expect(config.get('tabBarPlacement')).toEqual('bottom');
+        expect(config.get('tabbarPlacement')).toEqual('bottom');
     });
     it('should set/get platform setting from set()', function () {
         var config = new _ionicIonic.Config();
         var platform = new _ionicIonic.Platform(['ios']);
         config.setPlatform(platform);
-        config.set('tabBarPlacement', 'bottom');
-        config.set('ios', 'tabBarPlacement', 'top');
-        expect(config.get('tabBarPlacement')).toEqual('top');
+        config.set('tabbarPlacement', 'bottom');
+        config.set('ios', 'tabbarPlacement', 'top');
+        expect(config.get('tabbarPlacement')).toEqual('top');
     });
     it('should set/get setting from set()', function () {
         var config = new _ionicIonic.Config();
         var platform = new _ionicIonic.Platform(['ios']);
         config.setPlatform(platform);
-        config.set('tabBarPlacement', 'top');
-        expect(config.get('tabBarPlacement')).toEqual('top');
+        config.set('tabbarPlacement', 'top');
+        expect(config.get('tabbarPlacement')).toEqual('top');
     });
     it('should set ios platform settings from settings()', function () {
         var config = new _ionicIonic.Config();

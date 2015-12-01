@@ -1,3 +1,4 @@
+@import "../../ionic.globals";
 
 // Item
 // --------------------------------------------------
@@ -5,7 +6,6 @@
 
 
 .item {
-  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,20 +19,44 @@
 
   background-color: $list-background-color;
   color: $list-text-color;
+
+  box-sizing: border-box;
+
+  &[no-lines] {
+    border: none;
+
+    .item-inner {
+      border: none;
+    }
+  }
 }
 
-.item-group {
+.item-inner {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  flex: 1;
+  flex-direction: inherit;
+  align-items: inherit;
+  align-self: stretch;
+}
+
+ion-item-group {
   display: block;
 }
 
-.item-group-title {
+ion-item-divider {
   display: block;
   min-height: 30px;
   font-weight: 500;
   width: 100%;
-  z-index: 100;
   z-index: 1000;
-  &.sticky {
+
+  &[sticky] {
     position: -webkit-sticky;
     position: sticky;
   	top: 0px;
@@ -40,7 +64,7 @@
 }
 
 a.item,
-button.item.item {
+button.item {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -72,10 +96,6 @@ ion-item-content {
 
 [text-wrap] ion-item-content {
   white-space: normal;
-}
-
-.list .item {
-  border-radius: 0;
 }
 
 .item {
@@ -129,35 +149,6 @@ ion-input.item {
   align-items: flex-start;
 }
 
-.item.item.item.no-border-bottom:after,
-.item.item.item.no-border-bottom + .item:before {
-  border: none;
-}
-
-.item.item.item.no-border-bottom + .item {
-  margin-top: -13px;
-}
-
-/**
- * The hidden right-side buttons that can be exposed under a list item
- * with dragging.
- */
-ion-item-sliding-content {
-  display: block;
-  z-index: $z-index-item-options + 1;
-  flex: 1;
-}
-ion-item-options {
-  display: flex;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: $z-index-item-options;
-  height: 100%;
-}
-
-
-// TEMP hack for https://github.com/angular/angular/issues/4582
-[item-right] {
-  order: 1;
+ion-item-content + ion-item-content[cnt] {
+  display: none;
 }

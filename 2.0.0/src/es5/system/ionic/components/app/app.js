@@ -1,34 +1,61 @@
-System.register('ionic/components/app/app', ['angular2/angular2', '../../util/click-block'], function (_export) {
+System.register("ionic/components/app/app", ["angular2/angular2", "../../config/config", "../../util/click-block", "../../util/dom"], function (_export) {
     /**
      * Component registry service.  For more information on registering
      * components see the [IdRef API reference](../id/IdRef/).
      */
-    'use strict';
+    "use strict";
 
-    var Title, ClickBlock, IonicApp;
+    var Injectable, NgZone, Title, Config, ClickBlock, rafFrames, __decorate, __metadata, IonicApp, _a, _b, _c;
 
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
     return {
         setters: [function (_angular2Angular2) {
+            Injectable = _angular2Angular2.Injectable;
+            NgZone = _angular2Angular2.NgZone;
             Title = _angular2Angular2.Title;
+        }, function (_configConfig) {
+            Config = _configConfig.Config;
         }, function (_utilClickBlock) {
             ClickBlock = _utilClickBlock.ClickBlock;
+        }, function (_utilDom) {
+            rafFrames = _utilDom.rafFrames;
         }],
         execute: function () {
-            IonicApp = (function () {
-                /**
-                 * TODO
-                 */
+            __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+                switch (arguments.length) {
+                    case 2:
+                        return decorators.reduceRight(function (o, d) {
+                            return d && d(o) || o;
+                        }, target);
+                    case 3:
+                        return decorators.reduceRight(function (o, d) {
+                            return (d && d(target, key), void 0);
+                        }, void 0);
+                    case 4:
+                        return decorators.reduceRight(function (o, d) {
+                            return d && d(target, key, o) || o;
+                        }, desc);
+                }
+            };
 
-                function IonicApp() {
+            __metadata = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
+            IonicApp = (function () {
+                function IonicApp(config, clickBlock, zone) {
                     _classCallCheck(this, IonicApp);
 
-                    this._title = new Title();
+                    this._config = config;
+                    this._zone = zone;
+                    this._titleSrv = new Title();
+                    this._title = '';
                     this._disTime = 0;
-                    this._trnsTime = 0;
+                    this._clickBlock = clickBlock;
                     // Our component registry map
                     this.components = {};
                 }
@@ -39,14 +66,18 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                  */
 
                 _createClass(IonicApp, [{
-                    key: 'setTitle',
+                    key: "setTitle",
                     value: function setTitle(val) {
-                        this._title.setTitle(val);
-                    }
-                }, {
-                    key: 'getTitle',
-                    value: function getTitle() {
-                        return this._title.getTitle(val);
+                        var self = this;
+                        if (val !== self._title) {
+                            self._title = val;
+                            this._zone.runOutsideAngular(function () {
+                                function setAppTitle() {
+                                    self._titleSrv.setTitle(self._title);
+                                }
+                                rafFrames(4, setAppTitle);
+                            });
+                        }
                     }
 
                     /**
@@ -61,12 +92,12 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                      * something goes wrong during a transition and the app wasn't re-enabled correctly.
                      */
                 }, {
-                    key: 'setEnabled',
+                    key: "setEnabled",
                     value: function setEnabled(isEnabled) {
                         var fallback = arguments.length <= 1 || arguments[1] === undefined ? 700 : arguments[1];
 
                         this._disTime = isEnabled ? 0 : Date.now() + fallback;
-                        ClickBlock(!isEnabled, fallback + 100);
+                        this._clickBlock.show(!isEnabled, fallback + 100);
                     }
 
                     /**
@@ -74,26 +105,9 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                      * @return {bool}
                      */
                 }, {
-                    key: 'isEnabled',
+                    key: "isEnabled",
                     value: function isEnabled() {
                         return this._disTime < Date.now();
-                    }
-                }, {
-                    key: 'setTransitioning',
-                    value: function setTransitioning(isTransitioning) {
-                        var fallback = arguments.length <= 1 || arguments[1] === undefined ? 700 : arguments[1];
-
-                        this._trnsTime = isTransitioning ? Date.now() + fallback : 0;
-                    }
-
-                    /**
-                     * Boolean if the app is actively transitioning or not.
-                     * @return {bool}
-                     */
-                }, {
-                    key: 'isTransitioning',
-                    value: function isTransitioning() {
-                        return this._trnsTime > Date.now();
                     }
 
                     /**
@@ -102,7 +116,7 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                      * @param {TODO} component  The component to register
                      */
                 }, {
-                    key: 'register',
+                    key: "register",
                     value: function register(id, component) {
                         if (this.components[id] && this.components[id] !== component) {}
                         this.components[id] = component;
@@ -113,7 +127,7 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                      * @param {TODO} id  The id to use to unregister
                      */
                 }, {
-                    key: 'unregister',
+                    key: "unregister",
                     value: function unregister(id) {
                         delete this.components[id];
                     }
@@ -124,7 +138,7 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                      * @return the matching component, or undefined if none was found
                      */
                 }, {
-                    key: 'getRegisteredComponent',
+                    key: "getRegisteredComponent",
                     value: function getRegisteredComponent(cls) {
                         var _iteratorNormalCompletion = true;
                         var _didIteratorError = false;
@@ -143,8 +157,8 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                             _iteratorError = err;
                         } finally {
                             try {
-                                if (!_iteratorNormalCompletion && _iterator['return']) {
-                                    _iterator['return']();
+                                if (!_iteratorNormalCompletion && _iterator["return"]) {
+                                    _iterator["return"]();
                                 }
                             } finally {
                                 if (_didIteratorError) {
@@ -160,7 +174,7 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                      * @return {TODO} TODO
                      */
                 }, {
-                    key: 'getComponent',
+                    key: "getComponent",
                     value: function getComponent(id) {
                         return this.components[id];
                     }
@@ -169,7 +183,9 @@ System.register('ionic/components/app/app', ['angular2/angular2', '../../util/cl
                 return IonicApp;
             })();
 
-            _export('IonicApp', IonicApp);
+            _export("IonicApp", IonicApp);
+
+            _export("IonicApp", IonicApp = __decorate([Injectable(), __metadata('design:paramtypes', [typeof (_a = typeof Config !== 'undefined' && Config) === 'function' && _a || Object, typeof (_b = typeof ClickBlock !== 'undefined' && ClickBlock) === 'function' && _b || Object, typeof (_c = typeof NgZone !== 'undefined' && NgZone) === 'function' && _c || Object])], IonicApp));
         }
     };
 });

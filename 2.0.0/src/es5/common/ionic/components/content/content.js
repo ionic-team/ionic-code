@@ -18,11 +18,11 @@ var _ion = require('../ion');
 
 var _configConfig = require('../../config/config');
 
+var _utilDom = require('../../util/dom');
+
 var _utilKeyboard = require('../../util/keyboard');
 
 var _navViewController = require('../nav/view-controller');
-
-var _animationsAnimation = require('../../animations/animation');
 
 var _animationsScrollTo = require('../../animations/scroll-to');
 
@@ -74,19 +74,20 @@ var Content = (function (_Ion) {
      * @param {Config} config  The config object to change content's default settings.
      */
 
-    function Content(elementRef, config, keyboard, viewCtrl) {
+    function Content(elementRef, config, keyboard, viewCtrl, _zone) {
         _classCallCheck(this, Content);
 
         _get(Object.getPrototypeOf(Content.prototype), "constructor", this).call(this, elementRef, config);
+        this._zone = _zone;
         this.scrollPadding = 0;
         this.keyboard = keyboard;
         if (viewCtrl) {
             viewCtrl.setContent(this);
+            viewCtrl.setContentRef(elementRef);
         }
     }
 
     /**
-     * TODO
      * @private
      */
 
@@ -116,6 +117,31 @@ var Content = (function (_Ion) {
             return function () {
                 _this.scrollElement.removeEventListener('scroll', handler);
             };
+        }
+    }, {
+        key: "onScrollEnd",
+        value: function onScrollEnd(callback) {
+            var lastScrollTop = null;
+            var framesUnchanged = 0;
+            var scrollElement = this.scrollElement;
+            function next() {
+                var currentScrollTop = scrollElement.scrollTop;
+                if (lastScrollTop !== null) {
+                    if (Math.round(lastScrollTop) === Math.round(currentScrollTop)) {
+                        framesUnchanged++;
+                    } else {
+                        framesUnchanged = 0;
+                    }
+                    if (framesUnchanged > 9) {
+                        return callback();
+                    }
+                }
+                lastScrollTop = currentScrollTop;
+                (0, _utilDom.raf)(function () {
+                    (0, _utilDom.raf)(next);
+                });
+            }
+            setTimeout(next, 100);
         }
 
         /**
@@ -167,6 +193,7 @@ var Content = (function (_Ion) {
         }
 
         /**
+         * @private
          * Returns the content and scroll elements' dimensions.
          * @returns {Object} dimensions  The content and scroll elements' dimensions
          * {Number} dimensions.contentHeight  content offsetHeight
@@ -181,7 +208,6 @@ var Content = (function (_Ion) {
          * {Number} dimensions.scrollWidth  scroll scrollWidth
          * {Number} dimensions.scrollLeft  scroll scrollLeft
          * {Number} dimensions.scrollRight  scroll scrollLeft + scrollWidth
-         * TODO: figure out how to get this to work
          */
     }, {
         key: "getDimensions",
@@ -212,26 +238,10 @@ var Content = (function (_Ion) {
     }, {
         key: "addScrollPadding",
         value: function addScrollPadding(newScrollPadding) {
-            var _this3 = this;
-
             if (newScrollPadding > this.scrollPadding) {
                 console.debug('addScrollPadding', newScrollPadding);
                 this.scrollPadding = newScrollPadding;
                 this.scrollElement.style.paddingBottom = newScrollPadding + 'px';
-                if (!this.keyboardPromise) {
-                    console.debug('add scroll keyboard close callback', newScrollPadding);
-                    this.keyboardPromise = this.keyboard.onClose(function () {
-                        console.debug('scroll keyboard closed', newScrollPadding);
-                        if (_this3) {
-                            if (_this3.scrollPadding && _this3.scrollElement) {
-                                var _close = new _animationsAnimation.Animation(_this3.scrollElement);
-                                _close.duration(150).fromTo('paddingBottom', _this3.scrollPadding + 'px', '0px').play();
-                            }
-                            _this3.scrollPadding = 0;
-                            _this3.keyboardPromise = null;
-                        }
-                    });
-                }
             }
         }
     }]);
@@ -242,5 +252,5 @@ exports.Content = Content;
 exports.Content = Content = __decorate([(0, _angular2Angular2.Component)({
     selector: 'ion-content',
     template: '<scroll-content>' + '<ng-content></ng-content>' + '</scroll-content>'
-}), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _utilKeyboard.Keyboard !== 'undefined' && _utilKeyboard.Keyboard) === 'function' && _c || Object, typeof (_d = typeof _navViewController.ViewController !== 'undefined' && _navViewController.ViewController) === 'function' && _d || Object])], Content);
-var _a, _b, _c, _d;
+}), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _utilKeyboard.Keyboard !== 'undefined' && _utilKeyboard.Keyboard) === 'function' && _c || Object, typeof (_d = typeof _navViewController.ViewController !== 'undefined' && _navViewController.ViewController) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _e || Object])], Content);
+var _a, _b, _c, _d, _e;

@@ -18,6 +18,8 @@ var _appApp = require('../app/app');
 
 var _configConfig = require('../../config/config');
 
+var _utilKeyboard = require('../../util/keyboard');
+
 var _navNavController = require('../nav/nav-controller');
 
 var _tabs = require('./tabs');
@@ -94,77 +96,105 @@ var __param = undefined && undefined.__param || function (paramIndex, decorator)
 var Tab = (function (_NavController) {
     _inherits(Tab, _NavController);
 
-    function Tab(tabs, app, config, elementRef, compiler, loader, viewManager, zone, renderer) {
+    function Tab(parentTabs, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer, cd) {
         _classCallCheck(this, Tab);
 
         // A Tab is a NavController for its child pages
-        _get(Object.getPrototypeOf(Tab.prototype), "constructor", this).call(this, tabs, app, config, elementRef, compiler, loader, viewManager, zone, renderer);
-        this.tabs = tabs;
-        this._isInitial = tabs.add(this);
+        _get(Object.getPrototypeOf(Tab.prototype), "constructor", this).call(this, parentTabs, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer, cd);
+        this._isInitial = parentTabs.add(this);
+        this._panelId = 'tabpanel-' + this.id;
+        this._btnId = 'tab-' + this.id;
     }
+
+    /**
+     * @private
+     */
 
     _createClass(Tab, [{
         key: "onInit",
         value: function onInit() {
-            console.debug('Tab onInit', this.getIndex());
-            if (this._isInitial) {
-                this.tabs.select(this);
-            } else if (this.tabs.preloadTabs) {}
-        }
-    }, {
-        key: "load",
-        value: function load(callback) {
-            if (!this._loaded && this.root) {
-                var opts = {
-                    animate: false
-                };
-                this.push(this.root, null, opts).then(callback);
-                this._loaded = true;
-            } else {
-                callback();
-            }
-        }
-    }, {
-        key: "loadContainer",
-        value: function loadContainer(componentType, hostProtoViewRef, viewCtrl, done) {
             var _this = this;
 
-            this.loadNextToAnchor(componentType, this.contentAnchorRef, viewCtrl).then(function (componentRef) {
-                viewCtrl.disposals.push(function () {
-                    componentRef.dispose();
-                });
-                // a new ComponentRef has been created
-                // set the ComponentRef's instance to this ViewController
-                viewCtrl.setInstance(componentRef.instance);
-                // remember the ElementRef to the content that was just created
-                viewCtrl.setContentRef(componentRef.location);
-                // get the NavController's container for navbars, which is
-                // the place this NavController will add each ViewController's navbar
-                var navbarContainerRef = _this.tabs.navbarContainerRef;
-                // get this ViewController's navbar TemplateRef, which may not
-                // exist if the ViewController's template didn't have an <ion-navbar *navbar>
-                var navbarTemplateRef = viewCtrl.getNavbarTemplateRef();
-                // create the navbar view if the pane has a navbar container, and the
-                // ViewController's instance has a navbar TemplateRef to go to inside of it
-                if (navbarContainerRef && navbarTemplateRef) {
-                    (function () {
-                        var navbarView = navbarContainerRef.createEmbeddedView(navbarTemplateRef, -1);
-                        viewCtrl.disposals.push(function () {
-                            var index = navbarContainerRef.indexOf(navbarView);
-                            if (index > -1) {
-                                navbarContainerRef.remove(index);
+            if (this._isInitial) {
+                this.parent.select(this);
+            } else if (this.parent.preloadTabs) {
+                this._loadTimer = setTimeout(function () {
+                    if (!_this._loaded) {
+                        _this.load({
+                            animate: false,
+                            preload: true,
+                            postLoad: function postLoad(viewCtrl) {
+                                var navbar = viewCtrl.getNavbar();
+                                navbar && navbar.setHidden(true);
                             }
-                        });
-                    })();
+                        }, function () {});
+                    }
+                }, 1000 * this.index);
+            }
+        }
+
+        /**
+         * @private
+         */
+    }, {
+        key: "load",
+        value: function load(opts, done) {
+            if (!this._loaded && this.root) {
+                this.push(this.root, null, opts, done);
+                this._loaded = true;
+            } else {
+                done();
+            }
+        }
+
+        /**
+         * @private
+         */
+    }, {
+        key: "loadPage",
+        value: function loadPage(viewCtrl, navbarContainerRef, opts, done) {
+            // by default a page's navbar goes into the shared tab's navbar section
+            navbarContainerRef = this.parent.navbarContainerRef;
+            var isTabSubPage = this.parent.subPages && viewCtrl.index > 0;
+            if (isTabSubPage) {
+                // a subpage, that's not the first index
+                // should not use the shared tabs navbar section, but use it's own
+                navbarContainerRef = null;
+            }
+            _get(Object.getPrototypeOf(Tab.prototype), "loadPage", this).call(this, viewCtrl, navbarContainerRef, opts, function () {
+                if (viewCtrl.instance) {
+                    viewCtrl.instance._tabSubPage = isTabSubPage;
                 }
-                _this.addHasViews();
                 done();
             });
         }
     }, {
-        key: "getIndex",
-        value: function getIndex() {
-            return this.tabs.getIndex(this);
+        key: "setSelected",
+        value: function setSelected(isSelected) {
+            this.isSelected = isSelected;
+            this.hideNavbars(!isSelected);
+        }
+
+        /**
+         * @private
+         */
+    }, {
+        key: "hideNavbars",
+        value: function hideNavbars(shouldHideNavbars) {
+            this._views.forEach(function (viewCtrl) {
+                var navbar = viewCtrl.getNavbar();
+                navbar && navbar.setHidden(shouldHideNavbars);
+            });
+        }
+    }, {
+        key: "onDestroy",
+        value: function onDestroy() {
+            clearTimeout(this._loadTimer);
+        }
+    }, {
+        key: "index",
+        get: function get() {
+            return this.parent.getIndex(this);
         }
     }]);
 
@@ -175,20 +205,11 @@ exports.Tab = Tab = __decorate([(0, _angular2Angular2.Component)({
     selector: 'ion-tab',
     inputs: ['root', 'tabTitle', 'tabIcon'],
     host: {
-        '[attr.id]': 'panelId',
-        '[attr.aria-labelledby]': 'btnId',
         '[class.show-tab]': 'isSelected',
+        '[attr.id]': '_panelId',
+        '[attr.aria-labelledby]': '_btnId',
         'role': 'tabpanel'
     },
-    template: '<template content-anchor></template><ng-content></ng-content>',
-    directives: [(0, _angular2Angular2.forwardRef)(function () {
-        return TabContentAnchor;
-    })]
-}), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [typeof (_a = typeof _tabs.Tabs !== 'undefined' && _tabs.Tabs) === 'function' && _a || Object, typeof (_b = typeof _appApp.IonicApp !== 'undefined' && _appApp.IonicApp) === 'function' && _b || Object, typeof (_c = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _c || Object, typeof (_d = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.Compiler !== 'undefined' && _angular2Angular2.Compiler) === 'function' && _e || Object, typeof (_f = typeof _angular2Angular2.DynamicComponentLoader !== 'undefined' && _angular2Angular2.DynamicComponentLoader) === 'function' && _f || Object, typeof (_g = typeof _angular2Angular2.AppViewManager !== 'undefined' && _angular2Angular2.AppViewManager) === 'function' && _g || Object, typeof (_h = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _h || Object, typeof (_j = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _j || Object])], Tab);
-var TabContentAnchor = function TabContentAnchor(tab, elementRef) {
-    _classCallCheck(this, TabContentAnchor);
-
-    tab.contentAnchorRef = elementRef;
-};
-TabContentAnchor = __decorate([(0, _angular2Angular2.Directive)({ selector: 'template[content-anchor]' }), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Tab, typeof (_k = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _k || Object])], TabContentAnchor);
+    template: '<template #contents></template>'
+}), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [typeof (_a = typeof _tabs.Tabs !== 'undefined' && _tabs.Tabs) === 'function' && _a || Object, typeof (_b = typeof _appApp.IonicApp !== 'undefined' && _appApp.IonicApp) === 'function' && _b || Object, typeof (_c = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _c || Object, typeof (_d = typeof _utilKeyboard.Keyboard !== 'undefined' && _utilKeyboard.Keyboard) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _e || Object, typeof (_f = typeof _angular2Angular2.Compiler !== 'undefined' && _angular2Angular2.Compiler) === 'function' && _f || Object, typeof (_g = typeof _angular2Angular2.AppViewManager !== 'undefined' && _angular2Angular2.AppViewManager) === 'function' && _g || Object, typeof (_h = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _h || Object, typeof (_j = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _j || Object, typeof (_k = typeof _angular2Angular2.ChangeDetectorRef !== 'undefined' && _angular2Angular2.ChangeDetectorRef) === 'function' && _k || Object])], Tab);
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;

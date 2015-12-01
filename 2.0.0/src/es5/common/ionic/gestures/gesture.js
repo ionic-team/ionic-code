@@ -54,7 +54,11 @@ var Gesture = (function () {
             }
             this.hammertime.on(type, cb);
             (this._callbacks[type] || (this._callbacks[type] = [])).push(cb);
-            //this.element.addEventListener(type, cb);
+        }
+    }, {
+        key: 'off',
+        value: function off(type, cb) {
+            this.hammertime.off(type, this._callbacks[type] ? cb : null);
         }
     }, {
         key: 'listen',
@@ -67,7 +71,6 @@ var Gesture = (function () {
             if (this.hammertime) {
                 for (var type in this._callbacks) {
                     for (var i = 0; i < this._callbacks[type].length; i++) {
-                        //this.element.removeEventListener(type, this._callbacks[type][i]);
                         this.hammertime.off(type, this._callbacks[type]);
                     }
                 }
