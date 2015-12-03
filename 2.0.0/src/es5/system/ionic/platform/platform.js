@@ -12,7 +12,7 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
      */
     'use strict';
 
-    var util, dom, Platform, PlatformNode, platformRegistry, platformDefault;
+    var getQuerystring, extend, ready, windowDimensions, flushDimensionCache, Platform, PlatformNode, platformRegistry, platformDefault;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -34,9 +34,12 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
     }
     return {
         setters: [function (_utilUtil) {
-            util = _utilUtil;
+            getQuerystring = _utilUtil.getQuerystring;
+            extend = _utilUtil.extend;
         }, function (_utilDom) {
-            dom = _utilDom;
+            ready = _utilDom.ready;
+            windowDimensions = _utilDom.windowDimensions;
+            flushDimensionCache = _utilDom.flushDimensionCache;
         }],
         execute: function () {
             Platform = (function () {
@@ -197,7 +200,7 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
                         } else {
                             // there is no custom ready method from the engine
                             // use the default dom ready
-                            dom.ready(resolve);
+                            ready(resolve);
                         }
                     }
 
@@ -231,7 +234,7 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
                     value: function url(val) {
                         if (arguments.length) {
                             this._url = val;
-                            this._qs = util.getQuerystring(val);
+                            this._qs = getQuerystring(val);
                         }
                         return this._url;
                     }
@@ -252,19 +255,19 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
                     key: 'navigatorPlatform',
                     value: function navigatorPlatform(val) {
                         if (arguments.length) {
-                            this._bPlt = (val || '').toLowerCase();
+                            this._bPlt = val;
                         }
                         return this._bPlt || '';
                     }
                 }, {
                     key: 'width',
                     value: function width() {
-                        return dom.windowDimensions().width;
+                        return windowDimensions().width;
                     }
                 }, {
                     key: 'height',
                     value: function height() {
-                        return dom.windowDimensions().height;
+                        return windowDimensions().height;
                     }
                 }, {
                     key: 'isPortrait',
@@ -282,7 +285,7 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
                         var self = this;
                         clearTimeout(self._resizeTimer);
                         self._resizeTimer = setTimeout(function () {
-                            dom.flushDimensionCache();
+                            flushDimensionCache();
                             for (var i = 0; i < self._onResizes.length; i++) {
                                 try {
                                     self._onResizes[i]();
@@ -327,6 +330,18 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
                     value: function testUserAgent(userAgentExpression) {
                         var rgx = new RegExp(userAgentExpression, 'i');
                         return rgx.test(this._ua || '');
+                    }
+
+                    /**
+                     * TODO
+                     * @param {TODO} navigatorPlatformExpression  TODO
+                     * @returns {boolean} TODO
+                     */
+                }, {
+                    key: 'testNavigatorPlatform',
+                    value: function testNavigatorPlatform(navigatorPlatformExpression) {
+                        var rgx = new RegExp(navigatorPlatformExpression, 'i');
+                        return rgx.test(this._bPlt || '');
                     }
 
                     /**
@@ -416,7 +431,7 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
                                 var engineMethods = engineNode.methods();
                                 engineMethods._engineReady = engineMethods.ready;
                                 delete engineMethods.ready;
-                                util.extend(this, engineMethods);
+                                extend(this, engineMethods);
                             }
                             var platformNode = rootPlatformNode;
                             while (platformNode) {

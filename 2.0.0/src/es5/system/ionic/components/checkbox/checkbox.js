@@ -1,8 +1,11 @@
 System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../../util/form"], function (_export) {
     /**
-     * The checkbox is no different than the HTML checkbox input, except it's styled differently
+     * The checkbox is no different than the HTML checkbox input, except it's styled differently.
      *
      * See the [Angular 2 Docs](https://angular.io/docs/js/latest/api/core/Form-interface.html) for more info on forms and input.
+     *
+     * @property [checked] - whether or not the checkbox is checked (defaults to false)
+     * @property [value] - the value of the checkbox component
      *
      * @usage
      * ```html
@@ -76,8 +79,7 @@ System.register("ionic/components/checkbox/checkbox", ["angular2/angular2", "../
                     }
 
                     /**
-                     * Toggle the checked state of the checkbox. Calls onChange to pass the
-                     * updated checked state to the model (Control).
+                     * Toggle the checked state of the checkbox. Calls onChange to pass the updated checked state to the model (Control).
                      */
                 }, {
                     key: "toggle",

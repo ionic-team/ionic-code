@@ -1,4 +1,7 @@
 System.register("ionic/components/overlay/overlay", ["angular2/angular2", "../app/app", "../../config/config", "../../util/keyboard", "./overlay-controller", "../nav/nav-controller"], function (_export) {
+    /**
+     * @private
+     */
     "use strict";
 
     var ChangeDetectorRef, Component, ElementRef, Compiler, AppViewManager, NgZone, Renderer, IonicApp, Config, Keyboard, OverlayController, NavController, __decorate, __metadata, OverlayNav, _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;

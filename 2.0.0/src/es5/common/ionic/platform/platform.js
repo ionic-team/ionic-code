@@ -13,17 +13,11 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _utilUtil = require('../util/util');
 
-var util = _interopRequireWildcard(_utilUtil);
-
 var _utilDom = require('../util/dom');
-
-var dom = _interopRequireWildcard(_utilDom);
 
 /**
  * TODO
@@ -187,7 +181,7 @@ var Platform = (function () {
             } else {
                 // there is no custom ready method from the engine
                 // use the default dom ready
-                dom.ready(resolve);
+                (0, _utilDom.ready)(resolve);
             }
         }
 
@@ -221,7 +215,7 @@ var Platform = (function () {
         value: function url(val) {
             if (arguments.length) {
                 this._url = val;
-                this._qs = util.getQuerystring(val);
+                this._qs = (0, _utilUtil.getQuerystring)(val);
             }
             return this._url;
         }
@@ -242,19 +236,19 @@ var Platform = (function () {
         key: 'navigatorPlatform',
         value: function navigatorPlatform(val) {
             if (arguments.length) {
-                this._bPlt = (val || '').toLowerCase();
+                this._bPlt = val;
             }
             return this._bPlt || '';
         }
     }, {
         key: 'width',
         value: function width() {
-            return dom.windowDimensions().width;
+            return (0, _utilDom.windowDimensions)().width;
         }
     }, {
         key: 'height',
         value: function height() {
-            return dom.windowDimensions().height;
+            return (0, _utilDom.windowDimensions)().height;
         }
     }, {
         key: 'isPortrait',
@@ -272,7 +266,7 @@ var Platform = (function () {
             var self = this;
             clearTimeout(self._resizeTimer);
             self._resizeTimer = setTimeout(function () {
-                dom.flushDimensionCache();
+                (0, _utilDom.flushDimensionCache)();
                 for (var i = 0; i < self._onResizes.length; i++) {
                     try {
                         self._onResizes[i]();
@@ -317,6 +311,18 @@ var Platform = (function () {
         value: function testUserAgent(userAgentExpression) {
             var rgx = new RegExp(userAgentExpression, 'i');
             return rgx.test(this._ua || '');
+        }
+
+        /**
+         * TODO
+         * @param {TODO} navigatorPlatformExpression  TODO
+         * @returns {boolean} TODO
+         */
+    }, {
+        key: 'testNavigatorPlatform',
+        value: function testNavigatorPlatform(navigatorPlatformExpression) {
+            var rgx = new RegExp(navigatorPlatformExpression, 'i');
+            return rgx.test(this._bPlt || '');
         }
 
         /**
@@ -406,7 +412,7 @@ var Platform = (function () {
                     var engineMethods = engineNode.methods();
                     engineMethods._engineReady = engineMethods.ready;
                     delete engineMethods.ready;
-                    util.extend(this, engineMethods);
+                    (0, _utilUtil.extend)(this, engineMethods);
                 }
                 var platformNode = rootPlatformNode;
                 while (platformNode) {

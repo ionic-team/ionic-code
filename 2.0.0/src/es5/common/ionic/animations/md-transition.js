@@ -39,7 +39,6 @@ var MDTransition = (function (_Animation) {
         if (enteringHasNavbar) {
             var enteringNavBar = new _animation.Animation(enteringView.navbarRef());
             this.add(enteringNavBar);
-            enteringNavBar.before.addClass('show-navbar');
             var enteringBackButton = new _animation.Animation(enteringView.backBtnRef());
             this.add(enteringBackButton);
             if (enteringView.enableBack()) {

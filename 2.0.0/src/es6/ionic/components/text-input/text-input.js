@@ -21,7 +21,35 @@ import { Content } from '../content/content';
 import * as dom from '../../util/dom';
 import { Platform } from '../../platform/platform';
 /**
- * TODO
+ * @name Input
+ * @module ionic
+ * @description
+ * `ionInput` is a generic wrapper for both inputs and textareas. You can give `ion-input` to tell it how to handle a chile `ion-label` component
+ * @property [fixed-labels] - a persistant label that sits next the the input
+ * @property [floating-labels] - a label that will float about the input if the input is empty of looses focus
+ * @property [stacked-labels] - A stacked label will always appear on top of the input
+ * @usage
+ * ```html
+ *  <ion-input>
+ *    <ion-label>Username</ion-label>
+ *    <input type="text" value="">
+ *  </ion-input>
+ *
+ *  <ion-input>
+ *    <input type="text" placeholder="Username">
+ *  </ion-input>
+ *
+ *  <ion-input fixed-label>
+ *    <ion-label>Username</ion-label>
+ *    <input type="text" value="">
+ *  </ion-input>
+ *
+ *  <ion-input floating-label>
+ *    <ion-label>Username</ion-label>
+ *    <input type="text" value="">
+ *  </ion-input>
+ * ```
+ *
  */
 export let TextInput = class {
     constructor(form, elementRef, config, renderer, app, platform, scrollView, navCtrl) {
@@ -37,6 +65,13 @@ export let TextInput = class {
         this.scrollView = scrollView;
         this.scrollAssist = config.get('scrollAssist');
         this.keyboardHeight = config.get('keyboardHeight');
+    }
+    /**
+     * @private
+     * This function is used to add the Angular css classes associated with inputs in forms
+     */
+    addNgClass(className) {
+        return this.input.elementRef.nativeElement.classList.contains(className);
     }
     /**
      * @private
@@ -332,7 +367,13 @@ TextInput = __decorate([
             '(touchstart)': 'pointerStart($event)',
             '(touchend)': 'pointerEnd($event)',
             '(mouseup)': 'pointerEnd($event)',
-            'class': 'item'
+            'class': 'item',
+            '[class.ng-untouched]': 'addNgClass("ng-untouched")',
+            '[class.ng-touched]': 'addNgClass("ng-touched")',
+            '[class.ng-pristine]': 'addNgClass("ng-pristine")',
+            '[class.ng-dirty]': 'addNgClass("ng-dirty")',
+            '[class.ng-valid]': 'addNgClass("ng-valid")',
+            '[class.ng-invalid]': 'addNgClass("ng-invalid")'
         },
         template: '<div class="item-inner">' +
             '<ng-content></ng-content>' +
@@ -434,6 +475,9 @@ TextInputElement = __decorate([
     __param(3, Optional()), 
     __metadata('design:paramtypes', [String, (typeof (_j = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _j) || Object, (typeof (_k = typeof Renderer !== 'undefined' && Renderer) === 'function' && _k) || Object, TextInput])
 ], TextInputElement);
+/**
+ * @private
+ */
 let InputScrollAssist = class {
     constructor(form, textInput) {
         this.form = form;

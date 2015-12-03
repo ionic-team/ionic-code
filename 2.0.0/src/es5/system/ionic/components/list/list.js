@@ -8,6 +8,8 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
      *
      * Using the List and Item components make it easy to support various
      * interaction modes such as swipe to edit, drag to reorder, and removing items.
+     * @demo /docs/v2/demos/list/
+     *
      *
      */
     "use strict";
@@ -168,6 +170,9 @@ System.register("ionic/components/list/list", ["angular2/angular2", "../ion", ".
                 selector: 'ion-list',
                 inputs: ['items', 'virtual', 'content']
             }), __metadata('design:paramtypes', [typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object, typeof (_c = typeof NgZone !== 'undefined' && NgZone) === 'function' && _c || Object])], List));
+            /**
+             * @private
+             */
 
             ListHeader = function ListHeader() {
                 _classCallCheck(this, ListHeader);

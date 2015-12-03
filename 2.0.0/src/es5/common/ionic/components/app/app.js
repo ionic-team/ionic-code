@@ -88,10 +88,13 @@ var IonicApp = (function () {
     }, {
         key: "setEnabled",
         value: function setEnabled(isEnabled) {
-            var fallback = arguments.length <= 1 || arguments[1] === undefined ? 700 : arguments[1];
+            var duration = arguments.length <= 1 || arguments[1] === undefined ? 700 : arguments[1];
 
-            this._disTime = isEnabled ? 0 : Date.now() + fallback;
-            this._clickBlock.show(!isEnabled, fallback + 100);
+            this._disTime = isEnabled ? 0 : Date.now() + duration;
+            if (duration > 32 || isEnabled) {
+                // only do a click block if the duration is longer than XXms
+                this._clickBlock.show(!isEnabled, duration + 64);
+            }
         }
 
         /**

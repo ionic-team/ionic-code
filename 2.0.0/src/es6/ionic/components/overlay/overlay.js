@@ -15,6 +15,9 @@ import { Config } from '../../config/config';
 import { Keyboard } from '../../util/keyboard';
 import { OverlayController } from './overlay-controller';
 import { NavController } from '../nav/nav-controller';
+/**
+ * @private
+ */
 export let OverlayNav = class extends NavController {
     constructor(overlayCtrl, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer, cd) {
         super(null, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer, cd);

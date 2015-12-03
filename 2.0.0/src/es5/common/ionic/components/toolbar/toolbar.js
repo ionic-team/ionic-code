@@ -21,7 +21,7 @@ var _configConfig = require('../../config/config');
 var _navbarNavbar = require('../navbar/navbar');
 
 /**
- * TODO
+ * @private
  */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -61,7 +61,18 @@ var ToolbarBase = (function (_Ion) {
     }
 
     /**
-     * TODO
+     * @name Toolbar
+     * @description
+     * The toolbar is generic bar that sits above content.
+     * Unlike an `ionNavbar`, `ionToolbar` can be used for a subheader as well.
+     * @usage
+     * ```html
+     * <ion-toolbar>
+     *   <ion-title>My Toolbar Title</ion-title>
+     * </ion-toolbar>
+     *
+     *  <ion-content></ion-content>
+     *  ```
      */
 
     /**
@@ -137,6 +148,22 @@ exports.Toolbar = Toolbar = __decorate([(0, _angular2Angular2.Component)({
         'class': 'toolbar'
     }
 }), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object])], Toolbar);
+/**
+ * @name ToolbarTitle
+ * @description
+ * `ion-title` is a component that sets the title of the `ionToolbar` or `ionNavbar`
+ * @usage
+ * ```html
+ * <ion-navbar *navbar>
+ *    <ion-title>Tab 1</ion-title>
+ * </ion-navbar>
+ *
+ *<!-- or if you wanted to crate a subheader title-->
+ * <ion-toolbar>
+ *   <ion-title>SubHeader</ion-title>
+ * </ion-toolbar>
+ *  ```
+ */
 var ToolbarTitle = (function (_Ion2) {
     _inherits(ToolbarTitle, _Ion2);
 
@@ -147,6 +174,10 @@ var ToolbarTitle = (function (_Ion2) {
         toolbar && toolbar.setTitleCmp(this);
         navbar && navbar.setTitleCmp(this);
     }
+
+    /**
+     * @private
+     */
 
     _createClass(ToolbarTitle, [{
         key: "getTitleText",

@@ -13,6 +13,9 @@ var DEFAULT_EXPIRE = 330;
 var cbEle = undefined,
     fallbackTimerId = undefined;
 var isShowing = false;
+/**
+ * @private
+ */
 
 var ClickBlock = (function () {
     function ClickBlock() {

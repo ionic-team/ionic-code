@@ -1,12 +1,19 @@
 System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", "../ion", "../../config/config", "../../config/decorators", "../icon/icon"], function (_export) {
     /**
+     * @name Searchbar
+     * @module ionic
      * @description
-     * The Search Bar service adds an input field which can be used to search or filter items.
+     * Manages the display of a search bar which can be used to search or filter items.
      *
      * @usage
      * ```html
-     * <ion-searchbar ng-control="searchQuery"></ion-searchbar>
+     * <ion-searchbar [(ng-model)]="defaultSearch"></ion-searchbar>
      * ```
+     *
+     * @property [placeholder] - sets input placeholder to value passed in
+     * @property [show-cancel] - shows the cancel button based on boolean value passed in
+     * @property [cancel-text] - sets the cancel button text to the value passed in
+     * @property [cancel-action] - the function that gets called by clicking the cancel button
      */
     "use strict";
 
@@ -69,16 +76,16 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
                     _get(Object.getPrototypeOf(Searchbar.prototype), "constructor", this).call(this, elementRef, config);
                     this.renderer = renderer;
                     this.elementRef = elementRef;
-                    if (!ngControl) {
-                        // They don't want to do anything that works, so we won't do anything that breaks
-                        return;
-                    }
+                    // If there is no control then we shouldn't do anything
+                    if (!ngControl) return;
                     this.ngControl = ngControl;
                     this.ngControl.valueAccessor = this;
                 }
 
                 /**
                  * @private
+                 * After the view has initialized check if the searchbar has a value
+                 * and then store that value in query
                  */
 
                 _createClass(Searchbar, [{
@@ -91,8 +98,7 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
 
                     /**
                      * @private
-                     * Much like ngModel, this is called from our valueAccessor for the attached
-                     * ControlDirective to update the value internally.
+                     * Write a new value to the element.
                      */
                 }, {
                     key: "writeValue",
@@ -102,6 +108,7 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
 
                     /**
                      * @private
+                     * Set the function to be called when the control receives a change event.
                      */
                 }, {
                     key: "registerOnChange",
@@ -111,6 +118,7 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
 
                     /**
                      * @private
+                     * Set the function to be called when the control receives a touch event.
                      */
                 }, {
                     key: "registerOnTouched",
@@ -120,6 +128,7 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
 
                     /**
                      * @private
+                     * Updates the value of the control when the searchbar input changes.
                      */
                 }, {
                     key: "inputChanged",
@@ -130,6 +139,7 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
 
                     /**
                      * @private
+                     * Sets the searchbar to focused and aligned left on input focus.
                      */
                 }, {
                     key: "inputFocused",
@@ -140,6 +150,8 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
 
                     /**
                      * @private
+                     * Sets the searchbar to not focused and checks if it should align left
+                     * based on whether there is a value in the searchbar or not on input blur.
                      */
                 }, {
                     key: "inputBlurred",
@@ -147,11 +159,31 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
                         this.isFocused = false;
                         this.shouldLeftAlign = this.ngControl.value && this.ngControl.value.trim() != '';
                     }
+
+                    /**
+                     * @private
+                     * Clears the input field and triggers the control change.
+                     */
                 }, {
                     key: "clearInput",
                     value: function clearInput(event) {
                         this.writeValue('');
                         this.onChange('');
+                    }
+
+                    /**
+                     * @private
+                     * Blurs the input field, clears the input field and removes the left align
+                     * then calls the custom cancel function if the user passed one in.
+                     */
+                }, {
+                    key: "cancelSearchbar",
+                    value: function cancelSearchbar(event, query) {
+                        this.element = this.elementRef.nativeElement.querySelector('input');
+                        this.element.blur();
+                        this.clearInput();
+                        this.shouldLeftAlign = false;
+                        this.cancelAction && this.cancelAction(event, query);
                     }
                 }]);
 
@@ -165,19 +197,14 @@ System.register("ionic/components/searchbar/searchbar", ["angular2/angular2", ".
                 defaultInputs: {
                     'showCancel': false,
                     'cancelText': 'Cancel',
-                    'placeholder': 'Search',
-                    'cancelAction': function cancelAction(event, query) {
-                        this.element = this.elementRef.nativeElement.querySelector('input');
-                        this.element.blur();
-                        this.clearInput();
-                        this.shouldLeftAlign = false;
-                    }
+                    'placeholder': 'Search'
                 },
+                inputs: ['cancelAction'],
                 host: {
                     '[class.left-align]': 'shouldLeftAlign',
                     '[class.focused]': 'isFocused'
                 },
-                template: '<div class="searchbar-input-container">' + '<button (click)="cancelAction($event, query)" clear dark class="searchbar-cancel-icon"><icon arrow-back></icon></button>' + '<div class="searchbar-search-icon"></div>' + '<input [(value)]="query" (focus)="inputFocused()" (blur)="inputBlurred()" ' + '(input)="inputChanged($event)" class="searchbar-input" type="search" [attr.placeholder]="placeholder">' + '<button clear *ng-if="query" class="searchbar-close-icon" (click)="clearInput($event)"></button>' + '</div>' + '<button *ng-if="showCancel" (click)="cancelAction($event, query)" class="searchbar-cancel">{{cancelText}}</button>',
+                template: '<div class="searchbar-input-container">' + '<button (click)="cancelSearchbar($event, query)" clear dark class="searchbar-cancel-icon"><icon arrow-back></icon></button>' + '<div class="searchbar-search-icon"></div>' + '<input [(value)]="query" (focus)="inputFocused()" (blur)="inputBlurred()" ' + '(input)="inputChanged($event)" class="searchbar-input" type="search" [attr.placeholder]="placeholder">' + '<button clear *ng-if="query" class="searchbar-close-icon" (click)="clearInput($event)"></button>' + '</div>' + '<button *ng-if="showCancel" (click)="cancelSearchbar($event, query)" class="searchbar-cancel">{{cancelText}}</button>',
                 directives: [FORM_DIRECTIVES, NgIf, NgClass, Icon]
             }), __metadata('design:paramtypes', [typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object, typeof (_c = typeof NgControl !== 'undefined' && NgControl) === 'function' && _c || Object, typeof (_d = typeof Renderer !== 'undefined' && Renderer) === 'function' && _d || Object])], Searchbar));
         }

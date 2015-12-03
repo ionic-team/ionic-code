@@ -45,7 +45,6 @@ System.register('ionic/animations/md-transition', ['./animation'], function (_ex
                     if (enteringHasNavbar) {
                         var enteringNavBar = new Animation(enteringView.navbarRef());
                         this.add(enteringNavBar);
-                        enteringNavBar.before.addClass('show-navbar');
                         var enteringBackButton = new Animation(enteringView.backBtnRef());
                         this.add(enteringBackButton);
                         if (enteringView.enableBack()) {

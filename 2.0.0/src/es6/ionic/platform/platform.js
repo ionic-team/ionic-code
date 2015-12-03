@@ -5,8 +5,8 @@
 +* @description
 +* Platform returns the availble information about your current platform
 +*/
-import * as util from '../util/util';
-import * as dom from '../util/dom';
+import { getQuerystring, extend } from '../util/util';
+import { ready, windowDimensions, flushDimensionCache } from '../util/dom';
 /**
  * TODO
  */
@@ -143,7 +143,7 @@ export class Platform {
         else {
             // there is no custom ready method from the engine
             // use the default dom ready
-            dom.ready(resolve);
+            ready(resolve);
         }
     }
     // Methods meant to be overridden by the engine
@@ -161,7 +161,7 @@ export class Platform {
     url(val) {
         if (arguments.length) {
             this._url = val;
-            this._qs = util.getQuerystring(val);
+            this._qs = getQuerystring(val);
         }
         return this._url;
     }
@@ -176,15 +176,15 @@ export class Platform {
     }
     navigatorPlatform(val) {
         if (arguments.length) {
-            this._bPlt = (val || '').toLowerCase();
+            this._bPlt = val;
         }
         return this._bPlt || '';
     }
     width() {
-        return dom.windowDimensions().width;
+        return windowDimensions().width;
     }
     height() {
-        return dom.windowDimensions().height;
+        return windowDimensions().height;
     }
     isPortrait() {
         return this.width() < this.height();
@@ -196,7 +196,7 @@ export class Platform {
         let self = this;
         clearTimeout(self._resizeTimer);
         self._resizeTimer = setTimeout(() => {
-            dom.flushDimensionCache();
+            flushDimensionCache();
             for (let i = 0; i < self._onResizes.length; i++) {
                 try {
                     self._onResizes[i]();
@@ -250,6 +250,15 @@ export class Platform {
     testUserAgent(userAgentExpression) {
         let rgx = new RegExp(userAgentExpression, 'i');
         return rgx.test(this._ua || '');
+    }
+    /**
+     * TODO
+     * @param {TODO} navigatorPlatformExpression  TODO
+     * @returns {boolean} TODO
+     */
+    testNavigatorPlatform(navigatorPlatformExpression) {
+        let rgx = new RegExp(navigatorPlatformExpression, 'i');
+        return rgx.test(this._bPlt || '');
     }
     /**
      * TODO
@@ -331,7 +340,7 @@ export class Platform {
                 let engineMethods = engineNode.methods();
                 engineMethods._engineReady = engineMethods.ready;
                 delete engineMethods.ready;
-                util.extend(this, engineMethods);
+                extend(this, engineMethods);
             }
             let platformNode = rootPlatformNode;
             while (platformNode) {

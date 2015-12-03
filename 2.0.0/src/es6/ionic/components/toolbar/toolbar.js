@@ -17,7 +17,7 @@ import { Ion } from '../ion';
 import { Config } from '../../config/config';
 import { Navbar } from '../navbar/navbar';
 /**
- * TODO
+ * @private
  */
 export class ToolbarBase extends Ion {
     constructor(elementRef, config) {
@@ -60,7 +60,18 @@ export class ToolbarBase extends Ion {
     }
 }
 /**
- * TODO
+ * @name Toolbar
+ * @description
+ * The toolbar is generic bar that sits above content.
+ * Unlike an `ionNavbar`, `ionToolbar` can be used for a subheader as well.
+ * @usage
+ * ```html
+ * <ion-toolbar>
+ *   <ion-title>My Toolbar Title</ion-title>
+ * </ion-toolbar>
+ *
+ *  <ion-content></ion-content>
+ *  ```
  */
 export let Toolbar = class extends ToolbarBase {
     constructor(elementRef, config) {
@@ -83,12 +94,31 @@ Toolbar = __decorate([
     }), 
     __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object])
 ], Toolbar);
+/**
+ * @name ToolbarTitle
+ * @description
+ * `ion-title` is a component that sets the title of the `ionToolbar` or `ionNavbar`
+ * @usage
+ * ```html
+ * <ion-navbar *navbar>
+ *    <ion-title>Tab 1</ion-title>
+ * </ion-navbar>
+ *
+ *<!-- or if you wanted to crate a subheader title-->
+ * <ion-toolbar>
+ *   <ion-title>SubHeader</ion-title>
+ * </ion-toolbar>
+ *  ```
+ */
 export let ToolbarTitle = class extends Ion {
     constructor(elementRef, toolbar, navbar) {
         super(elementRef, null);
         toolbar && toolbar.setTitleCmp(this);
         navbar && navbar.setTitleCmp(this);
     }
+    /**
+     * @private
+     */
     getTitleText() {
         return this.getNativeElement().textContent;
     }

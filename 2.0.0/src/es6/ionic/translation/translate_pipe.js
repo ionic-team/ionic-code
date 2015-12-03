@@ -12,6 +12,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Injectable, Pipe } from 'angular2/angular2';
 import { Translate } from './translate';
 /**
+ * @private
  * The Translate pipe makes it easy to translate strings.
  *
  * @usage

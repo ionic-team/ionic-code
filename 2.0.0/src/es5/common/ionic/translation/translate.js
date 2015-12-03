@@ -11,6 +11,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var _angular2Angular2 = require('angular2/angular2');
 
 /**
+ * @private
  * Provide multi-language and i18n support in your app. Translate works by
  * mapping full strings to language translated ones. That means that you don't need
  * to provide strings for your default language, just new languages.

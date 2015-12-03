@@ -47,33 +47,33 @@ var __metadata = undefined && undefined.__metadata || function (k, v) {
 };
 var TapClick = (function () {
     function TapClick(app, config, zone) {
-        var _this = this;
-
         _classCallCheck(this, TapClick);
 
-        this.app = app;
-        this.zone = zone;
-        this.lastTouch = 0;
-        this.disableClick = 0;
-        this.lastActivated = 0;
+        var self = this;
+        self.app = app;
+        self.zone = zone;
+        self.lastTouch = 0;
+        self.disableClick = 0;
+        self.lastActivated = 0;
         if (config.get('activator') == 'ripple') {
-            this.activator = new _ripple.RippleActivator(app, config, zone);
+            self.activator = new _ripple.RippleActivator(app, config, zone);
         } else if (config.get('activator') == 'highlight') {
-            this.activator = new _activator.Activator(app, config, zone);
+            self.activator = new _activator.Activator(app, config, zone);
         }
-        this.usePolyfill = config.get('tapPolyfill') === true;
+        self.usePolyfill = config.get('tapPolyfill') === true;
         zone.runOutsideAngular(function () {
-            addListener('click', _this.click.bind(_this), true);
-            addListener('touchstart', _this.touchStart.bind(_this));
-            addListener('touchend', _this.touchEnd.bind(_this));
-            addListener('touchcancel', _this.pointerCancel.bind(_this));
-            addListener('mousedown', _this.mouseDown.bind(_this), true);
-            addListener('mouseup', _this.mouseUp.bind(_this), true);
+            addListener('click', self.click.bind(self), true);
+            if (self.usePolyfill) {
+                addListener('touchstart', self.touchStart.bind(self));
+                addListener('touchend', self.touchEnd.bind(self));
+                addListener('touchcancel', self.pointerCancel.bind(self));
+            }
+            addListener('mousedown', self.mouseDown.bind(self), true);
+            addListener('mouseup', self.mouseUp.bind(self), true);
         });
-        this.pointerMove = function (ev) {
-            console.log('pointerMove');
-            if ((0, _utilDom.hasPointerMoved)(POINTER_MOVE_UNTIL_CANCEL, this.startCoord, (0, _utilDom.pointerCoord)(ev))) {
-                this.pointerCancel(ev);
+        self.pointerMove = function (ev) {
+            if ((0, _utilDom.hasPointerMoved)(POINTER_MOVE_UNTIL_CANCEL, self.startCoord, (0, _utilDom.pointerCoord)(ev))) {
+                self.pointerCancel(ev);
             }
         };
     }
@@ -91,7 +91,7 @@ var TapClick = (function () {
             if (this.usePolyfill && this.startCoord && this.app.isEnabled()) {
                 var endCoord = (0, _utilDom.pointerCoord)(ev);
                 if (!(0, _utilDom.hasPointerMoved)(POINTER_TOLERANCE, this.startCoord, endCoord)) {
-                    console.debug('create click from touch');
+                    console.debug('create click from touch ' + Date.now());
                     // prevent native mouse click events for XX amount of time
                     this.disableClick = this.lastTouch + DISABLE_NATIVE_CLICK_AMOUNT;
                     // manually dispatch the mouse click event
@@ -107,7 +107,7 @@ var TapClick = (function () {
         key: "mouseDown",
         value: function mouseDown(ev) {
             if (this.isDisabledNativeClick()) {
-                console.debug('mouseDown prevent', ev.target.tagName);
+                console.debug('mouseDown prevent ' + ev.target.tagName + ' ' + Date.now());
                 // does not prevent default on purpose
                 // so native blur events from inputs can happen
                 ev.stopPropagation();
@@ -119,7 +119,7 @@ var TapClick = (function () {
         key: "mouseUp",
         value: function mouseUp(ev) {
             if (this.isDisabledNativeClick()) {
-                console.debug('mouseUp prevent', ev.target.tagName);
+                console.debug('mouseUp prevent ' + ev.target.tagName + ' ' + Date.now());
                 ev.preventDefault();
                 ev.stopPropagation();
             }
@@ -152,21 +152,19 @@ var TapClick = (function () {
     }, {
         key: "pointerCancel",
         value: function pointerCancel(ev) {
-            console.debug('pointerCancel from', ev.type);
+            console.debug('pointerCancel from ' + ev.type + ' ' + Date.now());
             this.activator && this.activator.clearState();
             this.moveListeners(false);
         }
     }, {
         key: "moveListeners",
         value: function moveListeners(shouldAdd) {
-            var _this2 = this;
-
             removeListener(this.usePolyfill ? 'touchmove' : 'mousemove', this.pointerMove);
-            this.zone.runOutsideAngular(function () {
-                if (shouldAdd) {
-                    addListener(_this2.usePolyfill ? 'touchmove' : 'mousemove', _this2.pointerMove);
-                } else {}
-            });
+            //this.zone.runOutsideAngular(() => {
+            if (shouldAdd) {
+                addListener(this.usePolyfill ? 'touchmove' : 'mousemove', this.pointerMove);
+            } else {}
+            //});
         }
     }, {
         key: "click",
@@ -178,7 +176,7 @@ var TapClick = (function () {
                 preventReason = 'nativeClick';
             }
             if (preventReason !== null) {
-                console.debug('click prevent', preventReason);
+                console.debug('click prevent ' + preventReason + ' ' + Date.now());
                 ev.preventDefault();
                 ev.stopPropagation();
             }

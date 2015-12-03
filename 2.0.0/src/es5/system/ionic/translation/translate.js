@@ -1,5 +1,6 @@
 System.register("ionic/translation/translate", ["angular2/angular2"], function (_export) {
     /**
+     * @private
      * Provide multi-language and i18n support in your app. Translate works by
      * mapping full strings to language translated ones. That means that you don't need
      * to provide strings for your default language, just new languages.

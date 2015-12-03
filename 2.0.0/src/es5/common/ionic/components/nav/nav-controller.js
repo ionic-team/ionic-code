@@ -132,6 +132,7 @@ var NavController = (function (_Ion) {
         this._cd = cd;
         this._views = [];
         this._trnsTime = 0;
+        this._trnsDelay = config.get('pageTransitionDelay');
         this._sbTrans = null;
         this._sbEnabled = config.get('swipeBackEnabled') || false;
         this._sbThreshold = config.get('swipeBackThreshold') || 40;
@@ -140,8 +141,6 @@ var NavController = (function (_Ion) {
         // build a new injector for child ViewControllers to use
         this.providers = _angular2Angular2.Injector.resolve([(0, _angular2Angular2.provide)(NavController, { useValue: this })]);
     }
-
-    /** @internal */
 
     /**
      * Boolean if the nav controller is actively transitioning or not.
@@ -223,7 +222,6 @@ var NavController = (function (_Ion) {
          *      },{
          *       // here we can configure things like the animations direction or
          *       // or if the view should animate at all.
-         *       animate: true,
          *       direction: back
          *      });
          *    }
@@ -295,12 +293,8 @@ var NavController = (function (_Ion) {
          *    constructor(nav:NavController){
          *      this.nav = nav;
          *    }
-         *
          *    goBack(){
-         *      this.nav.pop({
-         *       animate: true,
-         *       direction: back
-         *      });
+         *      this.nav.pop();
          *    }
          * }
          * ```
@@ -366,7 +360,7 @@ var NavController = (function (_Ion) {
                 return Promise.resolve();
             }
             // ensure the entering view is shown
-            this._renderView(viewCtrl, true);
+            this._cachePage(viewCtrl, true);
             var resolve = null;
             var promise = new Promise(function (res) {
                 resolve = res;
@@ -384,7 +378,7 @@ var NavController = (function (_Ion) {
                     popView.shouldCache = false;
                     popView.willUnload();
                     // only the leaving view should be shown, all others hide
-                    this._renderView(popView, popView === leavingView);
+                    this._cachePage(popView, popView === leavingView);
                 }
             }
             if (this.router) {
@@ -511,8 +505,8 @@ var NavController = (function (_Ion) {
          *    constructor(nav: NavController) {
          *      this.nav = nav;
          *    }
-         *    setView() {
-         *      this.nav.setViews([List,Detail, Info]);
+         *    setPages() {
+         *      this.nav.setPages([List,Detail, Info]);
          *    }
          *  }
          *```
@@ -532,8 +526,8 @@ var NavController = (function (_Ion) {
          *    constructor(nav: NavController) {
          *      this.nav = nav;
          *    }
-         *    setView() {
-         *      this.nav.setViews([List,Detail, Info],{
+         *    setPages() {
+         *      this.nav.setPages([List,Detail, Info],{
          *        animate: true
          *      });
          *    }
@@ -553,8 +547,8 @@ var NavController = (function (_Ion) {
          *    constructor(nav: NavController) {
          *      this.nav = nav;
          *    }
-         *    setView() {
-         *      this.nav.setViews([{
+         *    setPages() {
+         *      this.nav.setPages([{
          *        componentType: List,
          *        params: {id: 43}
          *      }, {
@@ -563,16 +557,14 @@ var NavController = (function (_Ion) {
          *      },{
          *        componentType: Info,
          *        params: {id: 5}
-         *      } ],{
-         *        animate: true
-         *      });
+         *      }]);
          *    }
          *  }
          *```
          *
          * @param {Array} component an arry of components to load in the stack
          * @param {Object} [opts={}] Any options you want to use pass
-         * @returns {Promise} Returns a promise when the views are set
+         * @returns {Promise} Returns a promise when the pages are set
          */
     }, {
         key: 'setPages',
@@ -599,7 +591,7 @@ var NavController = (function (_Ion) {
                     popView.willUnload();
                     if (opts.animate) {
                         // only the leaving view should be shown, all others hide
-                        this._renderView(popView, popView === leavingView);
+                        this._cachePage(popView, popView === leavingView);
                     }
                 }
             }
@@ -652,20 +644,13 @@ var NavController = (function (_Ion) {
         }
 
         /**
-         *
          * @private
-         * @param {TODO} enteringView  TODO
-         * @param {TODO} leavingView  TODO
-         * @param {TODO} opts  TODO
-         * @param {Function} done  TODO
-         * @returns {any} TODO
          */
     }, {
         key: '_transition',
         value: function _transition(enteringView, leavingView, opts, done) {
-            var _this = this;
-
             if (enteringView === leavingView) {
+                // if the entering view and leaving view are the same thing don't continue
                 return done(enteringView);
             }
             if (!opts.animation) {
@@ -676,72 +661,149 @@ var NavController = (function (_Ion) {
             }
             if (!enteringView) {
                 // if no entering view then create a bogus one
+                // already consider this bogus one loaded
                 enteringView = new _viewController.ViewController();
                 enteringView.loaded();
             }
-            console.time('_transition ' + (enteringView.componentType && enteringView.componentType.name));
-            this._stage(enteringView, opts, function () {
-                if (enteringView.shouldDestroy) {
-                    // already marked as a view that will be destroyed, don't continue
-                    return done(enteringView);
-                }
-                _this._cd.detectChanges();
-                _this._zone.runOutsideAngular(function () {
-                    _this._setZIndex(enteringView, leavingView, opts.direction);
-                    enteringView.shouldDestroy = false;
-                    enteringView.shouldCache = false;
-                    _this._postRender(enteringView, opts, function () {
-                        if (!opts.preload) {
-                            enteringView.willEnter();
-                            leavingView.willLeave();
-                        }
-                        // set that the new view pushed on the stack is staged to be entering/leaving
-                        // staged state is important for the transition to find the correct view
-                        enteringView.state = STAGED_ENTERING_STATE;
-                        leavingView.state = STAGED_LEAVING_STATE;
-                        // init the transition animation
-                        opts.renderDelay = opts.transitionDelay || _this.config.get('pageTransitionDelay');
-                        var transAnimation = _animationsAnimation.Animation.createTransition(_this._getStagedEntering(), _this._getStagedLeaving(), opts);
-                        if (opts.animate === false) {
-                            // force it to not animate the elements, just apply the "to" styles
-                            transAnimation.clearDuration();
-                            transAnimation.duration(0);
-                        }
-                        var duration = transAnimation.duration();
-                        var enableApp = duration < 64;
-                        // block any clicks during the transition and provide a
-                        // fallback to remove the clickblock if something goes wrong
-                        _this.app.setEnabled(enableApp, duration);
-                        _this.setTransitioning(!enableApp, duration);
-                        if (opts.pageType) {
-                            transAnimation.before.addClass(opts.pageType);
-                        }
-                        // start the transition
-                        transAnimation.play(function () {
-                            // transition has completed, update each view's state
-                            enteringView.state = ACTIVE_STATE;
-                            leavingView.state = CACHED_STATE;
-                            // dispose any views that shouldn't stay around
-                            transAnimation.dispose();
-                            if (!opts.preload) {
-                                enteringView.didEnter();
-                                leavingView.didLeave();
-                            }
-                            _this._zone.run(function () {
-                                if (_this.keyboard.isOpen()) {
-                                    _this.keyboard.onClose(function () {
-                                        _this._transComplete();
-                                        console.timeEnd('_transition ' + (enteringView.componentType && enteringView.componentType.name));
-                                        done(enteringView);
-                                    }, 32);
-                                } else {
-                                    _this._transComplete();
-                                    console.timeEnd('_transition ' + (enteringView.componentType && enteringView.componentType.name));
-                                    done(enteringView);
-                                }
-                            });
+            var wtfScope = (0, _angular2Angular2.wtfStartTimeRange)('ionic.NavController#_transition ' + enteringView.name);
+            /* Async steps to complete a transition
+              1. _render: compile the view and render it in the DOM. Load page if it hasn't loaded already. When done call postRender
+              2. _postRender: Run willEnter/willLeave, then wait a frame (change detection happens), then call beginTransition
+              3. _beforeTrans: Create the transition's animation, play the animation, wait for it to end
+              4. _afterTrans: Run didEnter/didLeave, call _transComplete()
+              5. _transComplete: Cleanup, remove cache views, then call the final callback
+            */
+            // begin the multiple async process of transitioning to the entering view
+            this._render(enteringView, leavingView, opts, function () {
+                (0, _angular2Angular2.wtfEndTimeRange)(wtfScope);
+                done(enteringView);
+            });
+        }
+
+        /**
+         * @private
+         */
+    }, {
+        key: '_render',
+        value: function _render(enteringView, leavingView, opts, done) {
+            var _this = this;
+
+            // compile/load the view into the DOM
+            if (enteringView.shouldDestroy) {
+                // about to be destroyed, shouldn't continue
+                done();
+            } else if (enteringView.isLoaded()) {
+                // already compiled this view, do not load again and continue
+                this._postRender(enteringView, leavingView, opts, done);
+            } else {
+                // view has not been compiled/loaded yet
+                // continue once the view has finished compiling
+                // DOM WRITE
+                this.loadPage(enteringView, null, opts, function () {
+                    if (enteringView.onReady) {
+                        // this entering view needs to wait for it to be ready
+                        // this is used by Tabs to wait for the first page of
+                        // the first selected tab to be loaded
+                        enteringView.onReady(function () {
+                            enteringView.loaded();
+                            _this._postRender(enteringView, leavingView, opts, done);
                         });
-                    });
+                    } else {
+                        enteringView.loaded();
+                        _this._postRender(enteringView, leavingView, opts, done);
+                    }
+                });
+            }
+        }
+
+        /**
+         * @private
+         */
+    }, {
+        key: '_postRender',
+        value: function _postRender(enteringView, leavingView, opts, done) {
+            var _this2 = this;
+
+            var wtfScope = (0, _angular2Angular2.wtfStartTimeRange)('ionic.NavController#_postRender ' + enteringView.name);
+            // called after _render has completed and the view is compiled/loaded
+            if (enteringView.shouldDestroy) {
+                // view already marked as a view that will be destroyed, don't continue
+                (0, _angular2Angular2.wtfEndTimeRange)(wtfScope);
+                done();
+            } else if (!opts.preload) {
+                // the enteringView will become the active view, and is not being preloaded
+                // call each view's lifecycle events
+                // POSSIBLE DOM READ THEN DOM WRITE
+                enteringView.willEnter();
+                leavingView.willLeave();
+                // set the correct zIndex for the entering and leaving views
+                // DOM WRITE
+                this._setZIndex(enteringView, leavingView, opts.direction);
+                // make sure the entering and leaving views are showing
+                // and all others are hidden, but don't remove the leaving view yet
+                // DOM WRITE
+                this._cleanup(enteringView, leavingView, true);
+                // lifecycle events may have updated some data
+                // wait one frame and allow the raf to do a change detection
+                // before kicking off the transition and showing the new view
+                (0, _utilDom.raf)(function () {
+                    (0, _angular2Angular2.wtfEndTimeRange)(wtfScope);
+                    _this2._beforeTrans(enteringView, leavingView, opts, done);
+                });
+            } else {
+                // this view is being preloaded, don't call lifecycle events
+                // transition does not need to animate
+                opts.animate = false;
+                (0, _angular2Angular2.wtfEndTimeRange)(wtfScope);
+                this._beforeTrans(enteringView, leavingView, opts, done);
+            }
+        }
+
+        /**
+         * @private
+         */
+    }, {
+        key: '_beforeTrans',
+        value: function _beforeTrans(enteringView, leavingView, opts, done) {
+            var _this3 = this;
+
+            var wtfScope = (0, _angular2Angular2.wtfStartTimeRange)('ionic.NavController#_beforeTrans ' + enteringView.name);
+            // called after one raf from postRender()
+            // create the transitions animation, play the animation
+            // when the transition ends call wait for it to end
+            // everything during the transition should runOutsideAngular
+            this._zone.runOutsideAngular(function () {
+                // ensure the entering view is not destroyed or cached
+                enteringView.shouldDestroy = false;
+                enteringView.shouldCache = false;
+                // set that the new view pushed on the stack is staged to be entering/leaving
+                // staged state is important for the transition to find the correct view
+                enteringView.state = STAGED_ENTERING_STATE;
+                leavingView.state = STAGED_LEAVING_STATE;
+                // init the transition animation
+                opts.renderDelay = opts.transitionDelay || self._trnsDelay;
+                var transAnimation = _animationsAnimation.Animation.createTransition(enteringView, leavingView, opts);
+                if (opts.animate === false) {
+                    // force it to not animate the elements, just apply the "to" styles
+                    transAnimation.clearDuration();
+                    transAnimation.duration(0);
+                }
+                var duration = transAnimation.duration();
+                var enableApp = duration < 64;
+                // block any clicks during the transition and provide a
+                // fallback to remove the clickblock if something goes wrong
+                _this3.app.setEnabled(enableApp, duration);
+                _this3.setTransitioning(!enableApp, duration);
+                if (opts.pageType) {
+                    transAnimation.before.addClass(opts.pageType);
+                }
+                (0, _angular2Angular2.wtfEndTimeRange)(wtfScope);
+                // start the transition
+                transAnimation.play(function () {
+                    // transition animation has ended
+                    // dispose the animation and it's element references
+                    transAnimation.dispose();
+                    _this3._afterTrans(enteringView, leavingView, opts, done);
                 });
             });
         }
@@ -750,22 +812,35 @@ var NavController = (function (_Ion) {
          * @private
          */
     }, {
-        key: '_stage',
-        value: function _stage(viewCtrl, opts, done) {
-            if (viewCtrl.isLoaded() || viewCtrl.shouldDestroy) {
-                // already compiled this view
-                return done();
-            }
-            // get the pane the NavController wants to use
-            // the pane is where all this content will be placed into
-            this.loadPage(viewCtrl, null, opts, function () {
-                if (viewCtrl.onReady) {
-                    viewCtrl.onReady(function () {
-                        viewCtrl.loaded();
+        key: '_afterTrans',
+        value: function _afterTrans(enteringView, leavingView, opts, done) {
+            var _this4 = this;
+
+            var wtfScope = (0, _angular2Angular2.wtfStartTimeRange)('ionic.NavController#_afterTrans ' + enteringView.name);
+            // transition has completed, update each view's state
+            // place back into the zone, run didEnter/didLeave
+            // call the final callback when done
+            enteringView.state = ACTIVE_STATE;
+            leavingView.state = CACHED_STATE;
+            // run inside of the zone again
+            this._zone.run(function () {
+                if (!opts.preload) {
+                    enteringView.didEnter();
+                    leavingView.didLeave();
+                }
+                if (_this4.keyboard.isOpen()) {
+                    // the keyboard is still open!
+                    // no problem, let's just close for them
+                    _this4.keyboard.onClose(function () {
+                        // keyboard has finished closing, transition complete
+                        _this4._transComplete();
+                        (0, _angular2Angular2.wtfEndTimeRange)(wtfScope);
                         done();
-                    });
+                    }, 32);
                 } else {
-                    viewCtrl.loaded();
+                    // all good, transition complete
+                    _this4._transComplete();
+                    (0, _angular2Angular2.wtfEndTimeRange)(wtfScope);
                     done();
                 }
             });
@@ -775,20 +850,50 @@ var NavController = (function (_Ion) {
          * @private
          */
     }, {
+        key: '_transComplete',
+        value: function _transComplete() {
+            var wtfScope = (0, _angular2Angular2.wtfCreateScope)('ionic.NavController#_transComplete')();
+            this._views.forEach(function (view) {
+                if (view) {
+                    if (view.shouldDestroy) {
+                        view.didUnload();
+                    } else if (view.state === CACHED_STATE && view.shouldCache) {
+                        view.shouldCache = false;
+                    }
+                }
+            });
+            // allow clicks again, but still set an enable time
+            // meaning nothing with this view controller can happen for XXms
+            this.app.setEnabled(true);
+            this.setTransitioning(false);
+            this._sbComplete();
+            this._cleanup();
+            (0, _angular2Angular2.wtfLeave)(wtfScope);
+        }
+
+        /**
+         * @private
+         */
+    }, {
         key: 'loadPage',
         value: function loadPage(viewCtrl, navbarContainerRef, opts, done) {
-            var _this2 = this;
+            var _this5 = this;
 
+            var wtfTimeRangeScope = (0, _angular2Angular2.wtfStartTimeRange)('ionic.NavController#loadPage ' + viewCtrl.name);
             // guts of DynamicComponentLoader#loadIntoLocation
             this._compiler.compileInHost(viewCtrl.componentType).then(function (hostProtoViewRef) {
-                var wtfScope = NavController._loadPageScope();
-                var providers = _this2.providers.concat(_angular2Angular2.Injector.resolve([(0, _angular2Angular2.provide)(_viewController.ViewController, { useValue: viewCtrl }), (0, _angular2Angular2.provide)(NavParams, { useValue: viewCtrl.params })]));
-                var location = _this2._viewManager.getNamedElementInComponentView(_this2.elementRef, 'contents');
-                var viewContainer = _this2._viewManager.getViewContainer(location);
+                var wtfScope = (0, _angular2Angular2.wtfCreateScope)('ionic.NavController#loadPage_After_Compile')();
+                var providers = _this5.providers.concat(_angular2Angular2.Injector.resolve([(0, _angular2Angular2.provide)(_viewController.ViewController, { useValue: viewCtrl }), (0, _angular2Angular2.provide)(NavParams, { useValue: viewCtrl.params })]));
+                var location = _this5._viewManager.getNamedElementInComponentView(_this5.elementRef, 'contents');
+                var viewContainer = _this5._viewManager.getViewContainer(location);
                 var hostViewRef = viewContainer.createHostView(hostProtoViewRef, viewContainer.length, providers);
-                var newLocation = _this2._viewManager.getHostElement(hostViewRef);
-                var component = _this2._viewManager.getComponent(newLocation);
+                var pageElementRef = _this5._viewManager.getHostElement(hostViewRef);
+                var component = _this5._viewManager.getComponent(pageElementRef);
                 viewCtrl.addDestroy(function () {
+                    // ensure the element is cleaned up for when the view pool reuses this element
+                    _this5._renderer.setElementAttribute(pageElementRef, 'class', null);
+                    _this5._renderer.setElementAttribute(pageElementRef, 'style', null);
+                    // remove the page from its container
                     var index = viewContainer.indexOf(hostViewRef);
                     if (index !== -1) {
                         viewContainer.remove(index);
@@ -798,7 +903,7 @@ var NavController = (function (_Ion) {
                 // set the ComponentRef's instance to this ViewController
                 viewCtrl.setInstance(component);
                 // remember the ElementRef to the ion-page elementRef that was just created
-                viewCtrl.setPageRef(newLocation);
+                viewCtrl.setPageRef(pageElementRef);
                 if (!navbarContainerRef) {
                     navbarContainerRef = viewCtrl.getNavbarViewRef();
                 }
@@ -815,27 +920,22 @@ var NavController = (function (_Ion) {
                     })();
                 }
                 opts.postLoad && opts.postLoad(viewCtrl);
-                if (_this2._views.length === 1) {
-                    _this2._zone.runOutsideAngular(function () {
+                if (_this5._views.length === 1) {
+                    _this5._zone.runOutsideAngular(function () {
                         (0, _utilDom.rafFrames)(38, function () {
-                            _this2._renderer.setElementClass(_this2.elementRef, 'has-views', true);
+                            _this5._renderer.setElementClass(_this5.elementRef, 'has-views', true);
                         });
                     });
                 }
+                (0, _angular2Angular2.wtfEndTimeRange)(wtfTimeRangeScope);
                 (0, _angular2Angular2.wtfLeave)(wtfScope);
                 done(viewCtrl);
             });
         }
-    }, {
-        key: '_postRender',
-        value: function _postRender(enteringView, opts, done) {
-            enteringView.postRender();
-            if (opts.animate === false) {
-                done();
-            } else {
-                (0, _utilDom.rafFrames)(2, done);
-            }
-        }
+
+        /**
+         * @private
+         */
     }, {
         key: '_setZIndex',
         value: function _setZIndex(enteringView, leavingView, direction) {
@@ -856,9 +956,13 @@ var NavController = (function (_Ion) {
                 }
             }
         }
+
+        /**
+         * @private
+         */
     }, {
-        key: '_renderView',
-        value: function _renderView(viewCtrl, shouldShow) {
+        key: '_cachePage',
+        value: function _cachePage(viewCtrl, shouldShow) {
             // using hidden element attribute to display:none and not render views
             // renderAttr of '' means the hidden attribute will be added
             // renderAttr of null means the hidden attribute will be removed
@@ -877,9 +981,40 @@ var NavController = (function (_Ion) {
          * @private
          */
     }, {
+        key: '_cleanup',
+        value: function _cleanup(activeView, previousView, skipDestroy) {
+            var _this6 = this;
+
+            // the active page, and the previous page, should be rendered in dom and ready to go
+            // all others, like a cached page 2 back, should be display: none and not rendered
+            var destroys = [];
+            activeView = activeView || this.getActive();
+            previousView = previousView || this.getPrevious(activeView);
+            this._views.forEach(function (view) {
+                if (view) {
+                    if (view.shouldDestroy && !skipDestroy) {
+                        destroys.push(view);
+                    } else if (view.isLoaded()) {
+                        var shouldShow = view === activeView || view === previousView;
+                        _this6._cachePage(view, shouldShow);
+                    }
+                }
+            });
+            // all pages being destroyed should be removed from the list of pages
+            // and completely removed from the dom
+            destroys.forEach(function (view) {
+                _this6._remove(view);
+                view.destroy();
+            });
+        }
+
+        /**
+         * @private
+         */
+    }, {
         key: 'swipeBackStart',
         value: function swipeBackStart() {
-            var _this3 = this;
+            var _this7 = this;
 
             return;
             if (!this.app.isEnabled() || !this.canSwipeBack()) {
@@ -905,15 +1040,15 @@ var NavController = (function (_Ion) {
             enteringView.shouldCache = false;
             enteringView.willEnter();
             // wait for the new view to complete setup
-            enteringView._stage(enteringView, {}, function () {
-                _this3._zone.runOutsideAngular(function () {
+            this._render(enteringView, {}, function () {
+                _this7._zone.runOutsideAngular(function () {
                     // set that the new view pushed on the stack is staged to be entering/leaving
                     // staged state is important for the transition to find the correct view
                     enteringView.state = STAGED_ENTERING_STATE;
                     leavingView.state = STAGED_LEAVING_STATE;
                     // init the swipe back transition animation
-                    _this3._sbTrans = Transition.create(_this3, opts);
-                    _this3._sbTrans.easing('linear').progressStart();
+                    _this7._sbTrans = Transition.create(_this7, opts);
+                    _this7._sbTrans.easing('linear').progressStart();
                 });
             });
         }
@@ -940,7 +1075,7 @@ var NavController = (function (_Ion) {
     }, {
         key: 'swipeBackEnd',
         value: function swipeBackEnd(completeSwipeBack, rate) {
-            var _this4 = this;
+            var _this8 = this;
 
             return;
             if (!this._sbTrans) return;
@@ -948,10 +1083,10 @@ var NavController = (function (_Ion) {
             this.app.setEnabled(false);
             this.setTransitioning(true);
             this._sbTrans.progressEnd(completeSwipeBack, rate).then(function () {
-                _this4._zone.run(function () {
+                _this8._zone.run(function () {
                     // find the views that were entering and leaving
-                    var enteringView = _this4._getStagedEntering();
-                    var leavingView = _this4._getStagedLeaving();
+                    var enteringView = _this8._getStagedEntering();
+                    var leavingView = _this8._getStagedLeaving();
                     if (enteringView && leavingView) {
                         // finish up the animation
                         if (completeSwipeBack) {
@@ -961,9 +1096,9 @@ var NavController = (function (_Ion) {
                             leavingView.state = CACHED_STATE;
                             enteringView.didEnter();
                             leavingView.didLeave();
-                            if (_this4.router) {
+                            if (_this8.router) {
                                 // notify router of the pop state change
-                                _this4.router.stateChange('pop', enteringView);
+                                _this8.router.stateChange('pop', enteringView);
                             }
                         } else {
                             // cancelled the swipe back, they didn't end up going back
@@ -978,10 +1113,10 @@ var NavController = (function (_Ion) {
                         }
                     }
                     // empty out and dispose the swipe back transition animation
-                    _this4._sbTrans && _this4._sbTrans.dispose();
-                    _this4._sbTrans = null;
+                    _this8._sbTrans && _this8._sbTrans.dispose();
+                    _this8._sbTrans = null;
                     // all done!
-                    _this4._transComplete();
+                    _this8._transComplete();
                 });
             });
         }
@@ -1043,9 +1178,9 @@ var NavController = (function (_Ion) {
         }
 
         /**
-         * Returns `true` if there's a valid previous view that we can pop back to.
+         * Returns `true` if there's a valid previous page that we can pop back to.
          * Otherwise returns false.
-         * @returns {boolean} Whether there is a view to go back to
+         * @returns {boolean} Whether there is a page to go back to
          */
     }, {
         key: 'canGoBack',
@@ -1055,62 +1190,6 @@ var NavController = (function (_Ion) {
                 return activeView.enableBack();
             }
             return false;
-        }
-
-        /**
-         * @private
-         */
-    }, {
-        key: '_transComplete',
-        value: function _transComplete() {
-            var wtfScope = NavController._transCompleteScope();
-            this._views.forEach(function (view) {
-                if (view) {
-                    if (view.shouldDestroy) {
-                        view.didUnload();
-                    } else if (view.state === CACHED_STATE && view.shouldCache) {
-                        view.shouldCache = false;
-                    }
-                }
-            });
-            // allow clicks again, but still set an enable time
-            // meaning nothing with this view controller can happen for XXms
-            this.app.setEnabled(true);
-            this.setTransitioning(false);
-            this._sbComplete();
-            this._cleanup();
-            (0, _angular2Angular2.wtfLeave)(wtfScope);
-        }
-
-        /**
-         * @private
-         */
-    }, {
-        key: '_cleanup',
-        value: function _cleanup(activeView) {
-            var _this5 = this;
-
-            // the active view, and the previous view, should be rendered in dom and ready to go
-            // all others, like a cached page 2 back, should be display: none and not rendered
-            var destroys = [];
-            activeView = activeView || this.getActive();
-            var previousView = this.getPrevious(activeView);
-            this._views.forEach(function (view) {
-                if (view) {
-                    if (view.shouldDestroy) {
-                        destroys.push(view);
-                    } else if (view.isLoaded()) {
-                        var shouldShow = view === activeView || view === previousView;
-                        _this5._renderView(view, shouldShow);
-                    }
-                }
-            });
-            // all views being destroyed should be removed from the list of views
-            // and completely removed from the dom
-            destroys.forEach(function (view) {
-                _this5._remove(view);
-                view.destroy();
-            });
         }
 
         /**
@@ -1215,7 +1294,7 @@ var NavController = (function (_Ion) {
         }
 
         /**
-         * @param {Index} The index of the view you want to get
+         * @param {Index} The index of the page you want to get
          * @returns {Component} Returns the component that matches the index given
          */
     }, {
@@ -1229,7 +1308,7 @@ var NavController = (function (_Ion) {
 
         /**
          * @private
-         * @param {Handle} The handle of the view you want to get
+         * @param {Handle} The handle of the page you want to get
          * @returns {Component} Returns the component that matches the handle given
          */
     }, {
@@ -1279,9 +1358,8 @@ var NavController = (function (_Ion) {
         }
 
         /**
-         * First view in this nav controller's stack. This would
-         * not return an view which is about to be destroyed.
-         * @returns {Component} Returns the first component view in the current stack
+         * First page in this nav controller's stack. This would not return a page which is about to be destroyed.
+         * @returns {Component} Returns the first component page in the current stack
          */
     }, {
         key: 'first',
@@ -1295,9 +1373,8 @@ var NavController = (function (_Ion) {
         }
 
         /**
-         * Last view in this nav controller's stack. This would
-         * not return an view which is about to be destroyed.
-         * @returns {Component} Returns the last component view in the current stack
+         * Last page in this nav controller's stack. This would not return a page which is about to be destroyed.
+         * @returns {Component} Returns the last component page in the current stack
          */
     }, {
         key: 'last',
@@ -1365,9 +1442,7 @@ var NavController = (function (_Ion) {
 })(_ion.Ion);
 
 exports.NavController = NavController;
-NavController._tranitionScope = (0, _angular2Angular2.wtfCreateScope)('ionic.NavController#_transition()');
-NavController._loadPageScope = (0, _angular2Angular2.wtfCreateScope)('ionic.NavController#loadPage()');
-NavController._transCompleteScope = (0, _angular2Angular2.wtfCreateScope)('ionic.NavController#_transComplete()');
+
 var ACTIVE_STATE = 1;
 var CACHED_STATE = 2;
 var STAGED_ENTERING_STATE = 3;

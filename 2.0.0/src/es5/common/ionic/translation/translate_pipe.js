@@ -13,6 +13,7 @@ var _angular2Angular2 = require('angular2/angular2');
 var _translate = require('./translate');
 
 /**
+ * @private
  * The Translate pipe makes it easy to translate strings.
  *
  * @usage

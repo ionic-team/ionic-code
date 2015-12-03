@@ -24,6 +24,8 @@ import * as util from 'ionic/util';
  *
  * Using the List and Item components make it easy to support various
  * interaction modes such as swipe to edit, drag to reorder, and removing items.
+ * @demo /docs/v2/demos/list/
+ *
  *
  */
 export let List = class extends Ion {
@@ -109,6 +111,9 @@ List = __decorate([
     }), 
     __metadata('design:paramtypes', [(typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b) || Object, (typeof (_c = typeof NgZone !== 'undefined' && NgZone) === 'function' && _c) || Object])
 ], List);
+/**
+ * @private
+ */
 export let ListHeader = class {
 };
 ListHeader = __decorate([

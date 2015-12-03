@@ -1,5 +1,6 @@
 System.register("ionic/translation/translate_pipe", ["angular2/angular2", "./translate"], function (_export) {
     /**
+     * @private
      * The Translate pipe makes it easy to translate strings.
      *
      * @usage

@@ -37,6 +37,8 @@ var util = _interopRequireWildcard(_ionicUtil);
  *
  * Using the List and Item components make it easy to support various
  * interaction modes such as swipe to edit, drag to reorder, and removing items.
+ * @demo /docs/v2/demos/list/
+ *
  *
  */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -164,6 +166,9 @@ exports.List = List = __decorate([(0, _angular2Angular2.Directive)({
     selector: 'ion-list',
     inputs: ['items', 'virtual', 'content']
 }), __metadata('design:paramtypes', [typeof (_a = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _a || Object, typeof (_b = typeof _configConfig.Config !== 'undefined' && _configConfig.Config) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _c || Object])], List);
+/**
+ * @private
+ */
 var ListHeader = function ListHeader() {
     _classCallCheck(this, ListHeader);
 };

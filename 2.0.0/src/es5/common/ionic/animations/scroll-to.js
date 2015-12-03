@@ -44,14 +44,13 @@ var ScrollTo = (function () {
             x = x || 0;
             y = y || 0;
             tolerance = tolerance || 0;
-            var ele = self._el;
-            var fromY = ele.scrollTop;
-            var fromX = ele.scrollLeft;
+            var fromY = self._el.scrollTop;
+            var fromX = self._el.scrollLeft;
             var xDistance = Math.abs(x - fromX);
             var yDistance = Math.abs(y - fromY);
             if (yDistance <= tolerance && xDistance <= tolerance) {
                 // prevent scrolling if already close to there
-                this._el = ele = null;
+                self._el = null;
                 return Promise.resolve();
             }
             return new Promise(function (resolve, reject) {
@@ -65,25 +64,28 @@ var ScrollTo = (function () {
                 });
                 // scroll loop
                 function step() {
+                    if (!self._el) {
+                        return resolve();
+                    }
                     var time = Math.min(1, (Date.now() - start) / duration);
                     // where .5 would be 50% of time on a linear scale easedT gives a
                     // fraction based on the easing method
                     var easedT = easeOutCubic(time);
                     if (fromY != y) {
-                        ele.scrollTop = parseInt(easedT * (y - fromY) + fromY, 10);
+                        self._el.scrollTop = parseInt(easedT * (y - fromY) + fromY, 10);
                     }
                     if (fromX != x) {
-                        ele.scrollLeft = parseInt(easedT * (x - fromX) + fromX, 10);
+                        self._el.scrollLeft = parseInt(easedT * (x - fromX) + fromX, 10);
                     }
                     if (time < 1 && self.isPlaying) {
                         (0, _utilDom.raf)(step);
                     } else if (!self.isPlaying) {
                         // stopped
-                        this._el = ele = null;
+                        self._el = null;
                         reject();
                     } else {
                         // done
-                        this._el = ele = null;
+                        self._el = null;
                         resolve();
                     }
                 }

@@ -2,6 +2,9 @@ const CSS_CLICK_BLOCK = 'click-block-active';
 const DEFAULT_EXPIRE = 330;
 let cbEle, fallbackTimerId;
 let isShowing = false;
+/**
+ * @private
+ */
 export class ClickBlock {
     enable() {
         cbEle = document.createElement('click-block');

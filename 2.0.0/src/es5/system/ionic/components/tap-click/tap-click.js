@@ -85,33 +85,33 @@ System.register("ionic/components/tap-click/tap-click", ["angular2/angular2", ".
 
             TapClick = (function () {
                 function TapClick(app, config, zone) {
-                    var _this = this;
-
                     _classCallCheck(this, TapClick);
 
-                    this.app = app;
-                    this.zone = zone;
-                    this.lastTouch = 0;
-                    this.disableClick = 0;
-                    this.lastActivated = 0;
+                    var self = this;
+                    self.app = app;
+                    self.zone = zone;
+                    self.lastTouch = 0;
+                    self.disableClick = 0;
+                    self.lastActivated = 0;
                     if (config.get('activator') == 'ripple') {
-                        this.activator = new RippleActivator(app, config, zone);
+                        self.activator = new RippleActivator(app, config, zone);
                     } else if (config.get('activator') == 'highlight') {
-                        this.activator = new Activator(app, config, zone);
+                        self.activator = new Activator(app, config, zone);
                     }
-                    this.usePolyfill = config.get('tapPolyfill') === true;
+                    self.usePolyfill = config.get('tapPolyfill') === true;
                     zone.runOutsideAngular(function () {
-                        addListener('click', _this.click.bind(_this), true);
-                        addListener('touchstart', _this.touchStart.bind(_this));
-                        addListener('touchend', _this.touchEnd.bind(_this));
-                        addListener('touchcancel', _this.pointerCancel.bind(_this));
-                        addListener('mousedown', _this.mouseDown.bind(_this), true);
-                        addListener('mouseup', _this.mouseUp.bind(_this), true);
+                        addListener('click', self.click.bind(self), true);
+                        if (self.usePolyfill) {
+                            addListener('touchstart', self.touchStart.bind(self));
+                            addListener('touchend', self.touchEnd.bind(self));
+                            addListener('touchcancel', self.pointerCancel.bind(self));
+                        }
+                        addListener('mousedown', self.mouseDown.bind(self), true);
+                        addListener('mouseup', self.mouseUp.bind(self), true);
                     });
-                    this.pointerMove = function (ev) {
-                        console.log('pointerMove');
-                        if (hasPointerMoved(POINTER_MOVE_UNTIL_CANCEL, this.startCoord, pointerCoord(ev))) {
-                            this.pointerCancel(ev);
+                    self.pointerMove = function (ev) {
+                        if (hasPointerMoved(POINTER_MOVE_UNTIL_CANCEL, self.startCoord, pointerCoord(ev))) {
+                            self.pointerCancel(ev);
                         }
                     };
                 }
@@ -129,7 +129,7 @@ System.register("ionic/components/tap-click/tap-click", ["angular2/angular2", ".
                         if (this.usePolyfill && this.startCoord && this.app.isEnabled()) {
                             var endCoord = pointerCoord(ev);
                             if (!hasPointerMoved(POINTER_TOLERANCE, this.startCoord, endCoord)) {
-                                console.debug('create click from touch');
+                                console.debug('create click from touch ' + Date.now());
                                 // prevent native mouse click events for XX amount of time
                                 this.disableClick = this.lastTouch + DISABLE_NATIVE_CLICK_AMOUNT;
                                 // manually dispatch the mouse click event
@@ -145,7 +145,7 @@ System.register("ionic/components/tap-click/tap-click", ["angular2/angular2", ".
                     key: "mouseDown",
                     value: function mouseDown(ev) {
                         if (this.isDisabledNativeClick()) {
-                            console.debug('mouseDown prevent', ev.target.tagName);
+                            console.debug('mouseDown prevent ' + ev.target.tagName + ' ' + Date.now());
                             // does not prevent default on purpose
                             // so native blur events from inputs can happen
                             ev.stopPropagation();
@@ -157,7 +157,7 @@ System.register("ionic/components/tap-click/tap-click", ["angular2/angular2", ".
                     key: "mouseUp",
                     value: function mouseUp(ev) {
                         if (this.isDisabledNativeClick()) {
-                            console.debug('mouseUp prevent', ev.target.tagName);
+                            console.debug('mouseUp prevent ' + ev.target.tagName + ' ' + Date.now());
                             ev.preventDefault();
                             ev.stopPropagation();
                         }
@@ -190,21 +190,19 @@ System.register("ionic/components/tap-click/tap-click", ["angular2/angular2", ".
                 }, {
                     key: "pointerCancel",
                     value: function pointerCancel(ev) {
-                        console.debug('pointerCancel from', ev.type);
+                        console.debug('pointerCancel from ' + ev.type + ' ' + Date.now());
                         this.activator && this.activator.clearState();
                         this.moveListeners(false);
                     }
                 }, {
                     key: "moveListeners",
                     value: function moveListeners(shouldAdd) {
-                        var _this2 = this;
-
                         removeListener(this.usePolyfill ? 'touchmove' : 'mousemove', this.pointerMove);
-                        this.zone.runOutsideAngular(function () {
-                            if (shouldAdd) {
-                                addListener(_this2.usePolyfill ? 'touchmove' : 'mousemove', _this2.pointerMove);
-                            } else {}
-                        });
+                        //this.zone.runOutsideAngular(() => {
+                        if (shouldAdd) {
+                            addListener(this.usePolyfill ? 'touchmove' : 'mousemove', this.pointerMove);
+                        } else {}
+                        //});
                     }
                 }, {
                     key: "click",
@@ -216,7 +214,7 @@ System.register("ionic/components/tap-click/tap-click", ["angular2/angular2", ".
                             preventReason = 'nativeClick';
                         }
                         if (preventReason !== null) {
-                            console.debug('click prevent', preventReason);
+                            console.debug('click prevent ' + preventReason + ' ' + Date.now());
                             ev.preventDefault();
                             ev.stopPropagation();
                         }

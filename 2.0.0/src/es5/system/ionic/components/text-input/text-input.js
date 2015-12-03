@@ -1,6 +1,34 @@
 System.register("ionic/components/text-input/text-input", ["angular2/angular2", "../nav/nav-controller", "../../config/config", "../../util/form", "../app/app", "../content/content", "../../util/dom", "../../platform/platform"], function (_export) {
     /**
-     * TODO
+     * @name Input
+     * @module ionic
+     * @description
+     * `ionInput` is a generic wrapper for both inputs and textareas. You can give `ion-input` to tell it how to handle a chile `ion-label` component
+     * @property [fixed-labels] - a persistant label that sits next the the input
+     * @property [floating-labels] - a label that will float about the input if the input is empty of looses focus
+     * @property [stacked-labels] - A stacked label will always appear on top of the input
+     * @usage
+     * ```html
+     *  <ion-input>
+     *    <ion-label>Username</ion-label>
+     *    <input type="text" value="">
+     *  </ion-input>
+     *
+     *  <ion-input>
+     *    <input type="text" placeholder="Username">
+     *  </ion-input>
+     *
+     *  <ion-input fixed-label>
+     *    <ion-label>Username</ion-label>
+     *    <input type="text" value="">
+     *  </ion-input>
+     *
+     *  <ion-input floating-label>
+     *    <ion-label>Username</ion-label>
+     *    <input type="text" value="">
+     *  </ion-input>
+     * ```
+     *
      */
     "use strict";
 
@@ -101,9 +129,19 @@ System.register("ionic/components/text-input/text-input", ["angular2/angular2", 
 
                 /**
                  * @private
+                 * This function is used to add the Angular css classes associated with inputs in forms
                  */
 
                 _createClass(TextInput, [{
+                    key: "addNgClass",
+                    value: function addNgClass(className) {
+                        return this.input.elementRef.nativeElement.classList.contains(className);
+                    }
+
+                    /**
+                     * @private
+                     */
+                }, {
                     key: "registerInput",
                     value: function registerInput(textInputElement) {
                         this.input = textInputElement;
@@ -441,7 +479,13 @@ System.register("ionic/components/text-input/text-input", ["angular2/angular2", 
                     '(touchstart)': 'pointerStart($event)',
                     '(touchend)': 'pointerEnd($event)',
                     '(mouseup)': 'pointerEnd($event)',
-                    'class': 'item'
+                    'class': 'item',
+                    '[class.ng-untouched]': 'addNgClass("ng-untouched")',
+                    '[class.ng-touched]': 'addNgClass("ng-touched")',
+                    '[class.ng-pristine]': 'addNgClass("ng-pristine")',
+                    '[class.ng-dirty]': 'addNgClass("ng-dirty")',
+                    '[class.ng-valid]': 'addNgClass("ng-valid")',
+                    '[class.ng-invalid]': 'addNgClass("ng-invalid")'
                 },
                 template: '<div class="item-inner">' + '<ng-content></ng-content>' + '<input [type]="type" aria-hidden="true" scroll-assist *ng-if="scrollAssist">' + '</div>',
                 directives: [NgIf, forwardRef(function () {
@@ -558,6 +602,9 @@ System.register("ionic/components/text-input/text-input", ["angular2/angular2", 
                     '(keyup)': 'onKeyup($event)'
                 }
             }), __param(0, Attribute('type')), __param(3, Optional()), __metadata('design:paramtypes', [String, typeof (_j = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _j || Object, typeof (_k = typeof Renderer !== 'undefined' && Renderer) === 'function' && _k || Object, _TextInput])], TextInputElement));
+            /**
+             * @private
+             */
 
             InputScrollAssist = (function () {
                 function InputScrollAssist(form, textInput) {

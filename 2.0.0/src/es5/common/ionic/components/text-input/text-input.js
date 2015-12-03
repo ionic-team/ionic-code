@@ -29,7 +29,35 @@ var dom = _interopRequireWildcard(_utilDom);
 var _platformPlatform = require('../../platform/platform');
 
 /**
- * TODO
+ * @name Input
+ * @module ionic
+ * @description
+ * `ionInput` is a generic wrapper for both inputs and textareas. You can give `ion-input` to tell it how to handle a chile `ion-label` component
+ * @property [fixed-labels] - a persistant label that sits next the the input
+ * @property [floating-labels] - a label that will float about the input if the input is empty of looses focus
+ * @property [stacked-labels] - A stacked label will always appear on top of the input
+ * @usage
+ * ```html
+ *  <ion-input>
+ *    <ion-label>Username</ion-label>
+ *    <input type="text" value="">
+ *  </ion-input>
+ *
+ *  <ion-input>
+ *    <input type="text" placeholder="Username">
+ *  </ion-input>
+ *
+ *  <ion-input fixed-label>
+ *    <ion-label>Username</ion-label>
+ *    <input type="text" value="">
+ *  </ion-input>
+ *
+ *  <ion-input floating-label>
+ *    <ion-label>Username</ion-label>
+ *    <input type="text" value="">
+ *  </ion-input>
+ * ```
+ *
  */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -76,9 +104,19 @@ var _TextInput = (function () {
 
     /**
      * @private
+     * This function is used to add the Angular css classes associated with inputs in forms
      */
 
     _createClass(TextInput, [{
+        key: "addNgClass",
+        value: function addNgClass(className) {
+            return this.input.elementRef.nativeElement.classList.contains(className);
+        }
+
+        /**
+         * @private
+         */
+    }, {
         key: "registerInput",
         value: function registerInput(textInputElement) {
             this.input = textInputElement;
@@ -414,7 +452,13 @@ _TextInput = __decorate([(0, _angular2Angular2.Component)({
         '(touchstart)': 'pointerStart($event)',
         '(touchend)': 'pointerEnd($event)',
         '(mouseup)': 'pointerEnd($event)',
-        'class': 'item'
+        'class': 'item',
+        '[class.ng-untouched]': 'addNgClass("ng-untouched")',
+        '[class.ng-touched]': 'addNgClass("ng-touched")',
+        '[class.ng-pristine]': 'addNgClass("ng-pristine")',
+        '[class.ng-dirty]': 'addNgClass("ng-dirty")',
+        '[class.ng-valid]': 'addNgClass("ng-valid")',
+        '[class.ng-invalid]': 'addNgClass("ng-invalid")'
     },
     template: '<div class="item-inner">' + '<ng-content></ng-content>' + '<input [type]="type" aria-hidden="true" scroll-assist *ng-if="scrollAssist">' + '</div>',
     directives: [_angular2Angular2.NgIf, (0, _angular2Angular2.forwardRef)(function () {
@@ -528,6 +572,9 @@ exports.TextInputElement = TextInputElement = __decorate([(0, _angular2Angular2.
         '(keyup)': 'onKeyup($event)'
     }
 }), __param(0, (0, _angular2Angular2.Attribute)('type')), __param(3, (0, _angular2Angular2.Optional)()), __metadata('design:paramtypes', [String, typeof (_j = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _j || Object, typeof (_k = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _k || Object, _TextInput])], TextInputElement);
+/**
+ * @private
+ */
 var InputScrollAssist = (function () {
     function InputScrollAssist(form, textInput) {
         _classCallCheck(this, InputScrollAssist);

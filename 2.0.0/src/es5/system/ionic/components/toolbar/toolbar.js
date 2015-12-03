@@ -1,6 +1,6 @@
 System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../ion", "../../config/config", "../navbar/navbar"], function (_export) {
     /**
-     * TODO
+     * @private
      */
     "use strict";
 
@@ -70,7 +70,18 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                 }
 
                 /**
-                 * TODO
+                 * @name Toolbar
+                 * @description
+                 * The toolbar is generic bar that sits above content.
+                 * Unlike an `ionNavbar`, `ionToolbar` can be used for a subheader as well.
+                 * @usage
+                 * ```html
+                 * <ion-toolbar>
+                 *   <ion-title>My Toolbar Title</ion-title>
+                 * </ion-toolbar>
+                 *
+                 *  <ion-content></ion-content>
+                 *  ```
                  */
 
                 /**
@@ -149,6 +160,22 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                     'class': 'toolbar'
                 }
             }), __metadata('design:paramtypes', [typeof (_a = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object])], Toolbar));
+            /**
+             * @name ToolbarTitle
+             * @description
+             * `ion-title` is a component that sets the title of the `ionToolbar` or `ionNavbar`
+             * @usage
+             * ```html
+             * <ion-navbar *navbar>
+             *    <ion-title>Tab 1</ion-title>
+             * </ion-navbar>
+             *
+             *<!-- or if you wanted to crate a subheader title-->
+             * <ion-toolbar>
+             *   <ion-title>SubHeader</ion-title>
+             * </ion-toolbar>
+             *  ```
+             */
 
             ToolbarTitle = (function (_Ion2) {
                 _inherits(ToolbarTitle, _Ion2);
@@ -160,6 +187,10 @@ System.register("ionic/components/toolbar/toolbar", ["angular2/angular2", "../io
                     toolbar && toolbar.setTitleCmp(this);
                     navbar && navbar.setTitleCmp(this);
                 }
+
+                /**
+                 * @private
+                 */
 
                 _createClass(ToolbarTitle, [{
                     key: "getTitleText",

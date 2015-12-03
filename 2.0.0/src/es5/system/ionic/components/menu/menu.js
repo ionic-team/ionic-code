@@ -120,25 +120,25 @@ System.register("ionic/components/menu/menu", ["angular2/angular2", "../ion", ".
                     key: "onInit",
                     value: function onInit() {
                         _get(Object.getPrototypeOf(Menu.prototype), "onInit", this).call(this);
-                        var content = this.content;
-                        this._cntEle = content instanceof Node ? content : content && content.getNativeElement && content.getNativeElement();
-                        if (!this._cntEle) {
+                        var self = this;
+                        var content = self.content;
+                        self._cntEle = content instanceof Node ? content : content && content.getNativeElement && content.getNativeElement();
+                        if (!self._cntEle) {
                             return console.error('Menu: must have a [content] element to listen for drag events on. Example:\n\n<ion-menu [content]="content"></ion-menu>\n\n<ion-nav #content></ion-nav>');
                         }
-                        if (this.side !== 'left' && this.side !== 'right') {
-                            this.side = 'left';
+                        if (self.side !== 'left' && self.side !== 'right') {
+                            self.side = 'left';
                         }
-                        if (!this.id) {
+                        if (!self.id) {
                             // Auto register
-                            this.id = 'menu';
-                            this.app.register(this.id, this);
+                            self.id = 'menu';
+                            self.app.register(self.id, self);
                         }
-                        this._initGesture();
-                        this._initType(this.type);
-                        this._cntEle.classList.add('menu-content');
-                        this._cntEle.classList.add('menu-content-' + this.type);
-                        var self = this;
-                        this.onContentClick = function (ev) {
+                        self._initGesture();
+                        self._initType(self.type);
+                        self._cntEle.classList.add('menu-content');
+                        self._cntEle.classList.add('menu-content-' + self.type);
+                        self.onContentClick = function (ev) {
                             if (self.isEnabled) {
                                 ev.preventDefault();
                                 ev.stopPropagation();
@@ -176,6 +176,10 @@ System.register("ionic/components/menu/menu", ["angular2/angular2", "../ion", ".
                         }
                         this.type = type;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "_getType",
                     value: function _getType() {
@@ -276,7 +280,9 @@ System.register("ionic/components/menu/menu", ["angular2/angular2", "../ion", ".
                     key: "_after",
                     value: function _after(isOpen) {
                         // keep opening/closing the menu disabled for a touch more yet
-                        if (this.isEnabled) {
+                        // only add listeners/css if it's enabled and isOpen
+                        // and only remove listeners/css if it's not open
+                        if (this.isEnabled && isOpen || !isOpen) {
                             this._prevent();
                             this.isOpen = isOpen;
                             this._cntEle.classList[isOpen ? 'add' : 'remove']('menu-content-open');
@@ -341,12 +347,19 @@ System.register("ionic/components/menu/menu", ["angular2/angular2", "../ion", ".
                     }
 
                     /**
-                     * @private
+                     * Used to enable or disable a menu. For example, there could be multiple
+                     * left menus, but only one of them should be able to be dragged open.
+                     * @param {boolean} shouldEnable  True if it should be enabled, false if not.
+                     * @return {Menu}  Returns the instance of the menu, which is useful for chaining.
                      */
                 }, {
                     key: "enable",
                     value: function enable(shouldEnable) {
                         this.isEnabled = shouldEnable;
+                        if (!shouldEnable) {
+                            this.close();
+                        }
+                        return this;
                     }
 
                     /**
@@ -375,6 +388,10 @@ System.register("ionic/components/menu/menu", ["angular2/angular2", "../ion", ".
                     value: function getBackdropElement() {
                         return this.backdrop.elementRef.nativeElement;
                     }
+
+                    /**
+                     * @private
+                     */
                 }, {
                     key: "onDestroy",
 

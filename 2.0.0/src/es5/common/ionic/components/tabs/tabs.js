@@ -33,6 +33,12 @@ var _iconIcon = require('../icon/icon');
 var _utilDom = require('../../util/dom');
 
 /**
+ * @name Tabs
+ * @property [tabbar-placement] - set position of the tabbar, top or bottom
+ * @property [tabbar-icons] - set the position of the tabbar's icons: top, bottom, left, right, hide
+ * @property [tabbar-style] - sets tabbar's style (primary, secondary, etc)
+ * @property [preload-tabs] - sets whether to preload all the tabs, true or false
+ * @description
  * _For basic Tabs usage, see the [Tabs section](../../../../components/#tabs)
  * of the Component docs._
  *
@@ -174,9 +180,7 @@ var Tabs = (function (_Ion) {
         }
 
         /**
-         * TODO
-         * @param {Tab} tab  TODO
-         * @returns {TODO} TODO
+         * @param {Number} index Index of the tab you want to select
          */
     }, {
         key: "select",
@@ -219,9 +223,8 @@ var Tabs = (function (_Ion) {
         }
 
         /**
-         * TODO
-         * @param {TODO} index  TODO
-         * @returns {TODO} TODO
+         * @param {Number} index Index of the tab you want to get
+         * @returns {Any} Tab Returs the tab who's index matches the one passed
          */
     }, {
         key: "getByIndex",
@@ -231,6 +234,10 @@ var Tabs = (function (_Ion) {
             }
             return null;
         }
+
+        /**
+         * @return {Any} Tab Returns the currently selected tab
+         */
     }, {
         key: "getSelected",
         value: function getSelected() {
@@ -241,6 +248,10 @@ var Tabs = (function (_Ion) {
             }
             return null;
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "getIndex",
         value: function getIndex(tab) {

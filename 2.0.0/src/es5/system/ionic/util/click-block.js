@@ -31,6 +31,10 @@ System.register('ionic/util/click-block', [], function (_export) {
             fallbackTimerId = undefined;
             isShowing = false;
 
+            /**
+             * @private
+             */
+
             ClickBlock = (function () {
                 function ClickBlock() {
                     _classCallCheck(this, ClickBlock);

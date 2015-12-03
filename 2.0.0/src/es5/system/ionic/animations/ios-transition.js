@@ -60,7 +60,6 @@ System.register('ionic/animations/ios-transition', ['./animation'], function (_e
                         var enteringNavbarBg = new Animation(enteringView.navbarBgRef());
                         var enteringBackButton = new Animation(enteringView.backBtnRef());
                         enteringNavBar.add(enteringTitle).add(enteringNavbarItems).add(enteringNavbarBg).add(enteringBackButton);
-                        enteringNavBar.before.addClass('show-navbar');
                         enteringTitle.fadeIn();
                         enteringNavbarItems.fadeIn();
                         // set properties depending on direction

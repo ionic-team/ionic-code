@@ -54,7 +54,6 @@ var IOSTransition = (function (_Animation) {
             var enteringNavbarBg = new _animation.Animation(enteringView.navbarBgRef());
             var enteringBackButton = new _animation.Animation(enteringView.backBtnRef());
             enteringNavBar.add(enteringTitle).add(enteringNavbarItems).add(enteringNavbarBg).add(enteringBackButton);
-            enteringNavBar.before.addClass('show-navbar');
             enteringTitle.fadeIn();
             enteringNavbarItems.fadeIn();
             // set properties depending on direction
