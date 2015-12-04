@@ -12,6 +12,18 @@ var _angular2Angular2 = require('angular2/angular2');
 
 var _configConfig = require('../../config/config');
 
+/**
+ * @name Icon
+ * @description
+ * Icons can be used on their own, or inside of a number of Ionic components. For a full list of available icons,
+ * check out the [Ionicons resource docs](../../../../../resources/ionicons).
+ *
+ * @property {boolean} [is-active] - Whether or not the icon is active. Icons that are not active will use an outlined version of the icon.
+ * If there is not an outlined version for the particular icon, it will use the default (full) version.
+ * @property {string} [ios] - Explicitly set the icon to use on iOS.
+ * @property {string} [md] - Explicitly set the icon to use on Android.
+ *
+ */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {

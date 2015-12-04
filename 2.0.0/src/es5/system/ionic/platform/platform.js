@@ -340,8 +340,7 @@ System.register('ionic/platform/platform', ['../util/util', '../util/dom'], func
                 }, {
                     key: 'testNavigatorPlatform',
                     value: function testNavigatorPlatform(navigatorPlatformExpression) {
-                        var rgx = new RegExp(navigatorPlatformExpression, 'i');
-                        return rgx.test(this._bPlt || '');
+                        return navigatorPlatformExpression.test(this._bPlt || '');
                     }
 
                     /**

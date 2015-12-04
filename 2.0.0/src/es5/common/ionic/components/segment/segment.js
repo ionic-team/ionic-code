@@ -215,7 +215,7 @@ exports.SegmentButton = SegmentButton = __decorate([(0, _angular2Angular2.Direct
     inputs: ['value'],
     host: {
         '(click)': 'click($event)',
-        '[class.activated]': 'isActive'
+        '[class.segment-activated]': 'isActive'
     }
 }), __param(0, (0, _angular2Angular2.Host)()), __metadata('design:paramtypes', [Segment, typeof (_d = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _d || Object, typeof (_e = typeof _angular2Angular2.Renderer !== 'undefined' && _angular2Angular2.Renderer) === 'function' && _e || Object])], SegmentButton);
 var _a, _b, _c, _d, _e;

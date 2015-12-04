@@ -151,7 +151,7 @@ SegmentButton = __decorate([
         ],
         host: {
             '(click)': 'click($event)',
-            '[class.activated]': 'isActive',
+            '[class.segment-activated]': 'isActive',
         }
     }),
     __param(0, Host()), 

@@ -8,7 +8,7 @@ System.register('ionic/platform/registry', ['./platform', '../util/dom'], functi
         // checks navigator.platform to see if it's an actual iOS device
         // this does not use the user-agent string because it is often spoofed
         // an actual iPad will return true, a chrome dev tools iPad will return false
-        return p.testNavigatorPlatform(/iphone|ipad|ipod/);
+        return p.testNavigatorPlatform(/iphone|ipad|ipod/i);
     }
     return {
         setters: [function (_platform) {
@@ -54,7 +54,7 @@ System.register('ionic/platform/registry', ['./platform', '../util/dom'], functi
                         // however, under-powered devices shouldn't use ripple
                         // if this a linux device, and is using Android Chrome v36 (Android 5.0)
                         // or above then use ripple, otherwise do not use a ripple effect
-                        if (p.testNavigatorPlatform('linux')) {
+                        if (p.testNavigatorPlatform('/linux/i')) {
                             var chromeVersion = p.matchUserAgentVersion(/Chrome\/(\d+).(\d+)?/);
                             if (chromeVersion) {
                                 // linux android device using modern android chrome browser gets ripple

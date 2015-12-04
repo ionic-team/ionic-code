@@ -232,7 +232,7 @@ System.register("ionic/components/tap-click/tap-click", ["angular2/angular2", ".
             _export("TapClick", TapClick);
 
             _export("TapClick", TapClick = __decorate([Injectable(), __metadata('design:paramtypes', [typeof (_a = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _a || Object, typeof (_b = typeof Config !== 'undefined' && Config) === 'function' && _b || Object, typeof (_c = typeof NgZone !== 'undefined' && NgZone) === 'function' && _c || Object])], TapClick));ACTIVATABLE_ELEMENTS = /^(A|BUTTON)$/;
-            ACTIVATABLE_ATTRIBUTES = /tappable/;
+            ACTIVATABLE_ATTRIBUTES = /tappable|button/i;
             POINTER_TOLERANCE = 4;
             POINTER_MOVE_UNTIL_CANCEL = 10;
             DISABLE_NATIVE_CLICK_AMOUNT = 2500;

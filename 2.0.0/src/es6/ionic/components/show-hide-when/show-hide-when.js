@@ -53,7 +53,13 @@ class DisplayWhen {
     }
 }
 /**
- * TODO
+ *
+ * The `show-when` attribute takes a value or expression, and only shows the element it has been added to when
+ * the value or expression is true. Complements the [hide-when attribute](../HideWhen).
+ * @usage
+ * ```html
+ * <div show-when="false">I am hidden!</div>
+ * ```
  */
 export let ShowWhen = class extends DisplayWhen {
     constructor(showWhen, platform, ngZone) {
@@ -77,7 +83,13 @@ ShowWhen = __decorate([
     __metadata('design:paramtypes', [String, (typeof (_a = typeof Platform !== 'undefined' && Platform) === 'function' && _a) || Object, (typeof (_b = typeof NgZone !== 'undefined' && NgZone) === 'function' && _b) || Object])
 ], ShowWhen);
 /**
- * TODO
+ *
+ * The `hide-when` attribute takes a value or expression, and hides the element it has been added to when
+ * the value or expression is true. Complements the [show-when attribute](../ShowWhen).
+ * @usage
+ * ```html
+ * <div hide-when="true">I am hidden!</div>
+ * ```
  */
 export let HideWhen = class extends DisplayWhen {
     constructor(hideWhen, platform, ngZone) {

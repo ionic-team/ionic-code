@@ -225,7 +225,7 @@ function removeListener(type, listener) {
     document.removeEventListener(type, listener);
 }
 var ACTIVATABLE_ELEMENTS = /^(A|BUTTON)$/;
-var ACTIVATABLE_ATTRIBUTES = /tappable/;
+var ACTIVATABLE_ATTRIBUTES = /tappable|button/i;
 var POINTER_TOLERANCE = 4;
 var POINTER_MOVE_UNTIL_CANCEL = 10;
 var DISABLE_NATIVE_CLICK_AMOUNT = 2500;

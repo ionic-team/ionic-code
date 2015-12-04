@@ -25,6 +25,16 @@ var _navNavController = require('../nav/nav-controller');
 var _tabs = require('./tabs');
 
 /**
+ * @name Tab
+ * @usage
+ * ```html
+ * <ion-tabs>
+ * 	 <ion-tab tab-title="Home" tab-icon="home" [root]="tabOneRoot"></ion-tab>
+ * 	 <ion-tab tab-title="Login" tab-icon="star" [root]="tabTwoRoot"></ion-tab>
+ * </ion-tabs>
+ * ```
+ *
+ * @description
  * _For basic Tabs usage, see the [Tabs section](../../../../components/#tabs)
  * of the Component docs._
  *
@@ -37,36 +47,12 @@ var _tabs = require('./tabs');
  *
  * See the [Tabs API reference](../Tabs/) for more details on configuring Tabs
  * and the TabBar.
+
  *
- * Like Nav, you must set a root page to be loaded initially for each Tab with
- * the 'root' property:
- * ```
- * import {GettingStartedPage} from 'getting-started';
- * @App({
- *   template: `<ion-tabs>
- *                <ion-tab [root]="tabOneRoot"></ion-tab>
- *                <ion-tab [root]="tabTwoRoot"></ion-tab>
- *              <ion-tabs>`
- * })
- * class MyApp {
- *   constructor(){
- *     this.tabOneRoot = GettingStartedPage;
- *     this.tabTwoRoot = GettingStartedPage;
- *   }
- * }
- * ```
- * <h3 id="tab_properties">Tab Properties</h3>
- * The Tabs component automatically creates the TabBar from the properties you
- * set on each Tab.
- *
- * To change the title and icon, use the `tab-title` and `tab-icon`
- * inputs:
- * ```html
- * <ion-tabs>
- * 	 <ion-tab tab-title="Home" tab-icon="home" [root]="tabOneRoot"></ion-tab>
- * 	 <ion-tab tab-title="Login" tab-icon="star" [root]="tabTwoRoot"></ion-tab>
- * <ion-tabs>
- * ```
+ * @property {any} [root] - set the root page for this tab
+ * @property {any} [tab-title] - set the title of this tab
+ * @property {any} [tab-icon] - set the icon for this tab
+
  */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -168,6 +154,10 @@ var Tab = (function (_NavController) {
                 done();
             });
         }
+
+        /**
+         * @private
+         */
     }, {
         key: "setSelected",
         value: function setSelected(isSelected) {
@@ -186,8 +176,27 @@ var Tab = (function (_NavController) {
                 navbar && navbar.setHidden(shouldHideNavbars);
             });
         }
+
+        /**
+         *
+         * ```ts
+         * export class MyClass{
+         *  constructor(tab: Tab){
+         *    this.tab = tab;
+         *    console.log(this.tab.index);
+         *  }
+         * }
+         * ```
+         *
+         * @returns {Number} Returns the index of this page within its NavController.
+         *
+         */
     }, {
         key: "onDestroy",
+
+        /**
+         * @private
+         */
         value: function onDestroy() {
             clearTimeout(this._loadTimer);
         }

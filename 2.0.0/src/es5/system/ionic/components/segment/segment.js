@@ -230,7 +230,7 @@ System.register("ionic/components/segment/segment", ["angular2/angular2", "../io
                 inputs: ['value'],
                 host: {
                     '(click)': 'click($event)',
-                    '[class.activated]': 'isActive'
+                    '[class.segment-activated]': 'isActive'
                 }
             }), __param(0, Host()), __metadata('design:paramtypes', [Segment, typeof (_d = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _d || Object, typeof (_e = typeof Renderer !== 'undefined' && Renderer) === 'function' && _e || Object])], SegmentButton));
         }

@@ -72,7 +72,13 @@ var DisplayWhen = (function () {
     }
 
     /**
-     * TODO
+     *
+     * The `show-when` attribute takes a value or expression, and only shows the element it has been added to when
+     * the value or expression is true. Complements the [hide-when attribute](../HideWhen).
+     * @usage
+     * ```html
+     * <div show-when="false">I am hidden!</div>
+     * ```
      */
 
     _createClass(DisplayWhen, [{
@@ -124,7 +130,13 @@ exports.ShowWhen = ShowWhen = __decorate([(0, _angular2Angular2.Directive)({
     }
 }), __param(0, (0, _angular2Angular2.Attribute)('show-when')), __metadata('design:paramtypes', [String, typeof (_a = typeof _platformPlatform.Platform !== 'undefined' && _platformPlatform.Platform) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.NgZone !== 'undefined' && _angular2Angular2.NgZone) === 'function' && _b || Object])], ShowWhen);
 /**
- * TODO
+ *
+ * The `hide-when` attribute takes a value or expression, and hides the element it has been added to when
+ * the value or expression is true. Complements the [show-when attribute](../ShowWhen).
+ * @usage
+ * ```html
+ * <div hide-when="true">I am hidden!</div>
+ * ```
  */
 var HideWhen = (function (_DisplayWhen2) {
     _inherits(HideWhen, _DisplayWhen2);

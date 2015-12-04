@@ -96,6 +96,16 @@ exports.IdRef = IdRef = __decorate([(0, _angular2Angular2.Directive)({
     selector: '[id]',
     inputs: ['id']
 }), __metadata('design:paramtypes', [typeof (_a = typeof _app.IonicApp !== 'undefined' && _app.IonicApp) === 'function' && _a || Object, typeof (_b = typeof _angular2Angular2.ElementRef !== 'undefined' && _angular2Angular2.ElementRef) === 'function' && _b || Object, typeof (_c = typeof _angular2Angular2.AppViewManager !== 'undefined' && _angular2Angular2.AppViewManager) === 'function' && _c || Object])], IdRef);
+/**
+ * @name Attr
+ * @description
+ * Attr allows you to dynamically add or remove an attribute based on the value of an expression or variable.
+ * @usage
+ * ```html
+ * // toggle the no-lines attributes based on whether isAndroid is true or false
+ * <ion-list [attr.no-lines]="isAndroid ? '' : null">
+ * ```
+ */
 var Attr = (function () {
     function Attr(renderer, elementRef) {
         _classCallCheck(this, Attr);

@@ -11,6 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Directive, ElementRef, Renderer } from 'angular2/angular2';
 import { Config } from '../../config/config';
+/**
+ * @name Icon
+ * @description
+ * Icons can be used on their own, or inside of a number of Ionic components. For a full list of available icons,
+ * check out the [Ionicons resource docs](../../../../../resources/ionicons).
+ *
+ * @property {boolean} [is-active] - Whether or not the icon is active. Icons that are not active will use an outlined version of the icon.
+ * If there is not an outlined version for the particular icon, it will use the default (full) version.
+ * @property {string} [ios] - Explicitly set the icon to use on iOS.
+ * @property {string} [md] - Explicitly set the icon to use on Android.
+ *
+ */
 export let Icon = class {
     constructor(elementRef, config, renderer) {
         this.elementRef = elementRef;

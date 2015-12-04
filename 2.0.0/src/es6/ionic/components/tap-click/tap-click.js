@@ -180,7 +180,7 @@ function removeListener(type, listener) {
     document.removeEventListener(type, listener);
 }
 const ACTIVATABLE_ELEMENTS = /^(A|BUTTON)$/;
-const ACTIVATABLE_ATTRIBUTES = /tappable/;
+const ACTIVATABLE_ATTRIBUTES = /tappable|button/i;
 const POINTER_TOLERANCE = 4;
 const POINTER_MOVE_UNTIL_CANCEL = 10;
 const DISABLE_NATIVE_CLICK_AMOUNT = 2500;

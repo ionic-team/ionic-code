@@ -1,4 +1,20 @@
 System.register("ionic/components/text-input/label", ["angular2/angular2", "../../config/config", "./text-input", "../../util/dom"], function (_export) {
+    /**
+     * @name Label
+     * @description
+     * Labels describe the data that the user should enter in to an input element.
+     * @usage
+     * ```html
+     * <ion-input>
+     *   <ion-label>Username</ion-label>
+     *   <input type="text" value="">
+     * </ion-input>
+     * ```
+     *
+     * @see {@link ../../../../components#inputs Input Component Docs}
+     * @see {@link ../Input Input API Docs}
+     *
+     */
     "use strict";
 
     var Directive, Optional, Config, TextInput, pointerCoord, hasPointerMoved, __decorate, __metadata, __param, Label, labelIds, _a, _b;

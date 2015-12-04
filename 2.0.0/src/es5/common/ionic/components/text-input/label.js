@@ -16,6 +16,22 @@ var _textInput = require('./text-input');
 
 var _utilDom = require('../../util/dom');
 
+/**
+ * @name Label
+ * @description
+ * Labels describe the data that the user should enter in to an input element.
+ * @usage
+ * ```html
+ * <ion-input>
+ *   <ion-label>Username</ion-label>
+ *   <input type="text" value="">
+ * </ion-input>
+ * ```
+ *
+ * @see {@link ../../../../components#inputs Input Component Docs}
+ * @see {@link ../Input Input API Docs}
+ *
+ */
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {

@@ -65,6 +65,16 @@ IdRef = __decorate([
     }), 
     __metadata('design:paramtypes', [(typeof (_a = typeof IonicApp !== 'undefined' && IonicApp) === 'function' && _a) || Object, (typeof (_b = typeof ElementRef !== 'undefined' && ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof AppViewManager !== 'undefined' && AppViewManager) === 'function' && _c) || Object])
 ], IdRef);
+/**
+ * @name Attr
+ * @description
+ * Attr allows you to dynamically add or remove an attribute based on the value of an expression or variable.
+ * @usage
+ * ```html
+ * // toggle the no-lines attributes based on whether isAndroid is true or false
+ * <ion-list [attr.no-lines]="isAndroid ? '' : null">
+ * ```
+ */
 export let Attr = class {
     constructor(renderer, elementRef) {
         this.renderer = renderer;
