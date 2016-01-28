@@ -34,35 +34,45 @@ import { ViewController } from '../nav/view-controller';
  * @see {@link ../../toolbar/Toolbar/ Toolbar API Docs}
  */
 export declare class Navbar extends ToolbarBase {
-    constructor(app: IonicApp, viewCtrl: ViewController, elementRef: ElementRef, config: Config, renderer: Renderer);
+    private _app;
+    private _renderer;
+    private _bbIcon;
+    private _bbText;
+    private _hidden;
+    private _bbRef;
+    private _bbtRef;
+    private _bgRef;
+    hideBackButton: any;
+    constructor(_app: IonicApp, viewCtrl: ViewController, elementRef: ElementRef, config: Config, _renderer: Renderer);
     /**
      * @private
      */
     ngOnInit(): void;
+    setBackButtonText(text: string): void;
     /**
      * @private
      */
-    getBackButtonRef(): any;
+    getBackButtonRef(): ElementRef;
     /**
      * @private
      */
-    setBackButtonRef(backButtonElementRef: any): void;
+    setBackButtonRef(backButtonElementRef: ElementRef): void;
     /**
      * @private
      */
-    getBackButtonTextRef(): any;
+    getBackButtonTextRef(): ElementRef;
     /**
      * @private
      */
-    setBackButtonTextRef(backButtonTextElementRef: any): void;
+    setBackButtonTextRef(backButtonTextElementRef: ElementRef): void;
     /**
      * @private
      */
-    setBackgroundRef(backgrouneElementRef: any): void;
+    setBackgroundRef(backgrouneElementRef: ElementRef): void;
     /**
      * @private
      */
-    getBackgroundRef(): any;
+    getBackgroundRef(): ElementRef;
     /**
      * @private
      */

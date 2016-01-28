@@ -4,22 +4,22 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var core_1 = require('angular2/core');
 var ion_1 = require('../ion');
-var config_1 = require('../../config/config');
 var virtual_1 = require('./virtual');
 var item_sliding_gesture_1 = require('../item/item-sliding-gesture');
-var util = require('../../util');
+var util_1 = require('../../util');
 /**
  * The List is a widely used interface element in almost any mobile app, and can include
  * content ranging from basic text all the way to buttons, toggles, icons, and thumbnails.
@@ -32,25 +32,23 @@ var util = require('../../util');
  * @demo /docs/v2/demos/list/
  * @see {@link /docs/v2/components#lists List Component Docs}
  *
- *
  */
 var List = (function (_super) {
     __extends(List, _super);
-    function List(elementRef, config, zone) {
-        _super.call(this, elementRef, config);
+    function List(elementRef, zone) {
+        _super.call(this, elementRef);
         this.zone = zone;
-        this.ele = elementRef.nativeElement;
         this._enableSliding = false;
+        this.ele = elementRef.nativeElement;
     }
     /**
      * @private
      */
     List.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        if (util.isDefined(this.virtual)) {
-            console.log('Content', this.content);
-            console.log('Virtual?', this.virtual);
-            console.log('Items?', this.items.length, 'of \'em');
+        if (util_1.isDefined(this.virtual)) {
+            void 0;
+            void 0;
+            void 0;
             this._initVirtualScrolling();
         }
     };
@@ -97,7 +95,7 @@ var List = (function (_super) {
         if (this._enableSliding !== shouldEnable) {
             this._enableSliding = shouldEnable;
             if (shouldEnable) {
-                console.debug('enableSlidingItems');
+                void 0;
                 this.zone.runOutsideAngular(function () {
                     setTimeout(function () {
                         _this.slidingGesture = new item_sliding_gesture_1.ItemSlidingGesture(_this, _this.ele);
@@ -129,38 +127,53 @@ var List = (function (_super) {
     List.prototype.closeSlidingItems = function () {
         this.slidingGesture && this.slidingGesture.closeOpened();
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], List.prototype, "items", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], List.prototype, "virtual", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], List.prototype, "content", void 0);
     List = __decorate([
         core_1.Directive({
-            selector: 'ion-list',
-            inputs: [
-                'items',
-                'virtual',
-                'content'
-            ]
+            selector: 'ion-list'
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _b) || Object, (typeof (_c = typeof core_1.NgZone !== 'undefined' && core_1.NgZone) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [core_1.ElementRef, core_1.NgZone])
     ], List);
     return List;
-    var _a, _b, _c;
 })(ion_1.Ion);
 exports.List = List;
 /**
  * @private
  */
 var ListHeader = (function () {
-    function ListHeader() {
+    function ListHeader(_renderer, _elementRef, id) {
+        this._renderer = _renderer;
+        this._elementRef = _elementRef;
+        this._id = id;
     }
+    Object.defineProperty(ListHeader.prototype, "id", {
+        get: function () {
+            return this._id;
+        },
+        set: function (val) {
+            this._id = val;
+            this._renderer.setElementAttribute(this._elementRef.nativeElement, 'id', val);
+        },
+        enumerable: true,
+        configurable: true
+    });
     ListHeader = __decorate([
         core_1.Directive({
-            selector: 'ion-list-header',
-            inputs: [
-                'id'
-            ],
-            host: {
-                '[attr.id]': 'id'
-            }
-        }), 
-        __metadata('design:paramtypes', [])
+            selector: 'ion-list-header'
+        }),
+        __param(2, core_1.Attribute('id')), 
+        __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef, String])
     ], ListHeader);
     return ListHeader;
 })();

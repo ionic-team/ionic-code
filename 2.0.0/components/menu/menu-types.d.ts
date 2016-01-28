@@ -1,3 +1,4 @@
+import { Animation } from '../../animations/animation';
 /**
  * Menu Type
  * Base class which is extended by the various types. Each
@@ -6,7 +7,10 @@
  * @private
  */
 export declare class MenuType {
-    constructor();
+    open: Animation;
+    close: Animation;
+    isOpening: boolean;
+    seek: Animation;
     setOpen(shouldOpen: any): Promise<{}>;
     setProgressStart(isOpen: any): void;
     setProgess(value: any): void;

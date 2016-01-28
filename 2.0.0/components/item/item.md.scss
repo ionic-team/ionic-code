@@ -76,10 +76,6 @@ $item-md-sliding-content-bg:         $list-md-background-color !default;
   border-bottom: 1px solid $list-md-border-color;
 }
 
-ion-item-content {
-  margin: $item-md-padding-top ($item-md-padding-right / 2) $item-md-padding-bottom 0;
-}
-
 
 // Material Design Item Media
 // --------------------------------------------------
@@ -89,54 +85,31 @@ ion-item-content {
   margin: $item-md-padding-media-top ($item-md-padding-right / 2) $item-md-padding-media-bottom 0;
 }
 
-icon[item-left],
-icon[item-right] {
+ion-icon[item-left],
+ion-icon[item-right] {
   margin-top: $item-md-padding-icon-top;
   margin-bottom: $item-md-padding-icon-bottom;
   margin-left: 0;
 }
 
-button[item-left],
-button[item-right],
-[button][item-left],
-[button][item-right] {
+.item-button {
   padding: 0 0.6em;
-  min-height: 26px;
+  min-height: 25px;
   font-size: 1.2rem;
 }
 
-[item-left].button-icon-only,
-[item-right].button-icon-only,
-[item-left].button-icon-only icon,
-[item-right].button-icon-only icon {
-  padding: 0 1px;
-}
+.item-button.button-icon-only ion-icon,
+.item-button.button-icon-only {
+   padding: 0 1px;
+ }
 
-[item-left][clear],
-[item-right][clear] {
-  padding: 0 8px;
-}
-
-[item-left].icon-left icon,
-[item-right].icon-left icon {
-  margin-bottom: 1px;
-  margin-left: 0;
-  padding-right: 0.3em;
-}
-
-[item-left].icon-right icon,
-[item-right].icon-right icon {
-  margin-right: 0;
-  margin-bottom: 1px;
-}
-
-[text-wrap] ion-item-content {
+[text-wrap] ion-label {
   font-size: $item-md-body-text-font-size;
   line-height: $item-md-body-text-line-height;
 }
 
-icon[item-left] + .item-inner,
-icon[item-left] + .item-input {
+ion-icon[item-left] + .item-inner,
+ion-icon[item-left] + .item-input {
   margin-left: $item-md-padding-left + ($item-md-padding-left / 2);
 }
 
@@ -183,6 +156,17 @@ ion-item-divider {
   padding: $item-md-padding-top $item-md-padding-right $item-md-padding-bottom $item-md-padding-left;
   background-color: $item-md-divider-bg;
   color: $item-md-divider-color;
+}
+
+
+// Generate Material Design Item Divider Colors
+// --------------------------------------------------
+
+@each $color-name, $color-value in $colors-md {
+  ion-item-divider[#{$color-name}] {
+    background-color: $color-value;
+    color: inverse($color-value);
+  }
 }
 
 

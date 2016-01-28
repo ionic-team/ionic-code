@@ -14,20 +14,36 @@ function clamp(min, n, max) {
 }
 exports.clamp = clamp;
 /**
- * Extend the destination with an arbitrary number of other objects.
- * @param dst the destination
- * @param ... the param objects
+ * The assign() method is used to copy the values of all enumerable own
+ * properties from one or more source objects to a target object. It will
+ * return the target object. When available, this method will use
+ * `Object.assign()` under-the-hood.
+ * @param target  The target object
+ * @param source(s)  The source object
  */
-function extend(dst) {
-    return _baseExtend(dst, [].slice.call(arguments, 1), false);
+function assign() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i - 0] = arguments[_i];
+    }
+    if (typeof Object.assign !== 'function') {
+        // use the old-school shallow extend method
+        return _baseExtend(args[0], [].slice.call(args, 1), false);
+    }
+    // use the built in ES6 Object.assign method
+    return Object.assign.apply(null, args);
 }
-exports.extend = extend;
+exports.assign = assign;
 /**
  * Do a deep extend (merge).
  * @param dst the destination
  * @param ... the param objects
  */
 function merge(dst) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
     return _baseExtend(dst, [].slice.call(arguments, 1), true);
 }
 exports.merge = merge;
@@ -53,13 +69,14 @@ function _baseExtend(dst, objs, deep) {
     return dst;
 }
 function debounce(func, wait, immediate) {
+    if (immediate === void 0) { immediate = false; }
     var timeout, args, context, timestamp, result;
     return function () {
         context = this;
         args = arguments;
-        timestamp = new Date();
+        timestamp = Date.now();
         var later = function () {
-            var last = (new Date()) - timestamp;
+            var last = Date.now() - timestamp;
             if (last < wait) {
                 timeout = setTimeout(later, wait - last);
             }
@@ -85,6 +102,10 @@ exports.debounce = debounce;
  * @param the destination to apply defaults to.
  */
 function defaults(dest) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
     for (var i = arguments.length - 1; i >= 1; i--) {
         var source = arguments[i] || {};
         for (var key in source) {
@@ -105,7 +126,17 @@ exports.isUndefined = function (val) { return typeof val === 'undefined'; };
 exports.isBlank = function (val) { return val === undefined || val === null; };
 exports.isObject = function (val) { return typeof val === 'object'; };
 exports.isArray = Array.isArray;
-exports.isTrueProperty = function (val) { return typeof val !== 'undefined' && val !== "false"; };
+exports.isTrueProperty = function (val) {
+    if (typeof val === 'boolean')
+        return val;
+    if (typeof val === 'string') {
+        val = val.toLowerCase().trim();
+        return (val === 'true' || val === '');
+    }
+    if (typeof val === 'number')
+        return (val > 0);
+    return !!val;
+};
 /**
  * Convert a string in the format thisIsAString to a slug format this-is-a-string
  */
@@ -144,10 +175,10 @@ exports.array = {
     }
 };
 /**
- * Grab the query string param value for the given key.
- * @param key the key to look for
+ * Grab all query strings keys and values.
+ * @param url
  */
-function getQuerystring(url, key) {
+function getQuerystring(url) {
     var queryParams = {};
     if (url) {
         var startIndex = url.indexOf('?');
@@ -157,9 +188,6 @@ function getQuerystring(url, key) {
                 var split = param.split('=');
                 queryParams[split[0].toLowerCase()] = split[1].split('#')[0];
             });
-        }
-        if (key) {
-            return queryParams[key] || '';
         }
     }
     return queryParams;

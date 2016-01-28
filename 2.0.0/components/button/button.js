@@ -1,13 +1,14 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
 };
 var core_1 = require('angular2/core');
 var config_1 = require('../../config/config');
@@ -28,6 +29,7 @@ var config_1 = require('../../config/config');
   * @property [fab-center] - position a fab button towards the center
   * @property [fab-top] - position a fab button towards the top
   * @property [fab-bottom] - position a fab button towards the bottom
+  * @property [color] - Dynamically set which color attribute this button should use.
   * @description
   * Buttons are simple components in Ionic, can consist of text, an icon, or both, and can be enhanced with a wide range of attributes.
   * @demo /docs/v2/demos/buttons/
@@ -35,20 +37,22 @@ var config_1 = require('../../config/config');
 
  */
 var Button = (function () {
-    function Button(config, elementRef, renderer) {
-        this.elementRef = elementRef;
-        this.renderer = renderer;
+    function Button(config, _elementRef, _renderer, ionItem) {
+        this._elementRef = _elementRef;
+        this._renderer = _renderer;
         this._role = 'button'; // bar-button/item-button
         this._size = null; // large/small
         this._style = 'default'; // outline/clear/solid
         this._shape = null; // round/fab
         this._display = null; // block/full
+        this._lastColor = null;
         this._colors = []; // primary/secondary
         this._icon = null; // left/right/only
         this._disabled = false; // disabled
-        var element = elementRef.nativeElement;
+        this.isItem = (ionItem === '');
+        var element = _elementRef.nativeElement;
         if (config.get('hoverCSS') === false) {
-            renderer.setElementClass(elementRef, 'disable-hover', true);
+            _renderer.setElementClass(_elementRef.nativeElement, 'disable-hover', true);
         }
         if (element.hasAttribute('ion-item')) {
             // no need to put on these classes for an ion-item
@@ -65,7 +69,28 @@ var Button = (function () {
      * @private
      */
     Button.prototype.ngAfterContentInit = function () {
+        this._lastColor = this.color;
+        if (this.color) {
+            this._colors = [this.color];
+        }
         this._assignCss(true);
+    };
+    /**
+     * @private
+     */
+    Button.prototype.ngAfterContentChecked = function () {
+        if (this._lastColor !== this.color) {
+            this._assignCss(false);
+            this._lastColor = this.color;
+            this._colors = [this.color];
+            this._assignCss(true);
+        }
+    };
+    /**
+     * @private
+     */
+    Button.prototype.addClass = function (className) {
+        this._renderer.setElementClass(this._elementRef.nativeElement, className, true);
     };
     /**
      * @private
@@ -73,6 +98,9 @@ var Button = (function () {
     Button.prototype.setRole = function (val) {
         this._role = val;
     };
+    /**
+     * @private
+     */
     Button.prototype._readIcon = function (element) {
         // figure out if and where the icon lives in the button
         var childNodes = element.childNodes;
@@ -87,12 +115,12 @@ var Button = (function () {
                 }
             }
             else if (childNode.nodeType === 1) {
-                if (childNode.nodeName === 'ICON') {
+                if (childNode.nodeName === 'ION-ICON') {
                     // icon element node
                     nodes.push(ICON);
                 }
                 else {
-                    // element other than an <icon>
+                    // element other than an <ion-icon>
                     nodes.push(TEXT);
                 }
             }
@@ -109,6 +137,9 @@ var Button = (function () {
             this._icon = 'icon-only';
         }
     };
+    /**
+     * @private
+     */
     Button.prototype._readAttrs = function (element) {
         var elementAttrs = element.attributes;
         var attrName;
@@ -133,11 +164,14 @@ var Button = (function () {
             }
         }
     };
+    /**
+     * @private
+     */
     Button.prototype._assignCss = function (assignCssClass) {
         var _this = this;
         var role = this._role;
         if (role) {
-            this.renderer.setElementClass(this.elementRef, role, assignCssClass); // button
+            this._renderer.setElementClass(this._elementRef.nativeElement, role, assignCssClass); // button
             this._setClass(this._style, assignCssClass); // button-clear
             this._setClass(this._shape, assignCssClass); // button-round
             this._setClass(this._display, assignCssClass); // button-full
@@ -149,9 +183,12 @@ var Button = (function () {
             });
         }
     };
+    /**
+     * @private
+     */
     Button.prototype._setClass = function (type, assignCssClass) {
         if (type) {
-            this.renderer.setElementClass(this.elementRef, this._role + '-' + type, assignCssClass);
+            this._renderer.setElementClass(this._elementRef.nativeElement, this._role + '-' + type, assignCssClass);
         }
     };
     /**
@@ -163,14 +200,18 @@ var Button = (function () {
             button.setRole(role);
         });
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Button.prototype, "color", void 0);
     Button = __decorate([
         core_1.Directive({
             selector: 'button,[button]'
-        }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof core_1.Renderer !== 'undefined' && core_1.Renderer) === 'function' && _c) || Object])
+        }),
+        __param(3, core_1.Attribute('ion-item')), 
+        __metadata('design:paramtypes', [config_1.Config, core_1.ElementRef, core_1.Renderer, String])
     ], Button);
     return Button;
-    var _a, _b, _c;
 })();
 exports.Button = Button;
 var BUTTON_SIZE_ATTRS = ['large', 'small'];

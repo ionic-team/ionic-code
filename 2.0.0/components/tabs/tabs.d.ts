@@ -1,6 +1,8 @@
-import { ElementRef } from 'angular2/core';
-import { Ion } from '../ion';
+import { ElementRef, ViewContainerRef, EventEmitter, Renderer } from 'angular2/core';
+import { IonicApp } from '../app/app';
 import { Config } from '../../config/config';
+import { Tab } from './tab';
+import { Ion } from '../ion';
 import { Platform } from '../../platform/platform';
 import { NavController } from '../nav/nav-controller';
 import { ViewController } from '../nav/view-controller';
@@ -8,7 +10,6 @@ import { ViewController } from '../nav/view-controller';
  * @name Tabs
  * @property {any} [tabbarPlacement] - set position of the tabbar, top or bottom
  * @property {any} [tabbarIcons] - set the position of the tabbar's icons: top, bottom, left, right, hide
- * @property {any} [tabbar-style] - sets tabbar's style (primary, secondary, etc)
  * @property {any} [preloadTabs] - sets whether to preload all the tabs, true or false
  * @usage
 * ```html
@@ -28,51 +29,72 @@ import { ViewController } from '../nav/view-controller';
  * @see {@link ../Tab Tab API Docs}
  */
 export declare class Tabs extends Ion {
-    private platform;
-    /**
-     * Hi, I'm "Tabs". I'm really just another Page, with a few special features.
-     * "Tabs" can be a sibling to other pages that can be navigated to, which those
-     * sibling pages may or may not have their own tab bars (doesn't matter). The fact
-     * that "Tabs" can happen to have children "Tab" classes, and each "Tab" can have
-     * children pages with their own "ViewController" instance, as nothing to do with the
-     * point that "Tabs" is itself is just a page with its own instance of ViewController.
-     */
-    constructor(config: Config, elementRef: ElementRef, viewCtrl: ViewController, navCtrl: NavController, platform: Platform);
-    /**
-     * @private
-     */
-    ngOnInit(): void;
+    parent: NavController;
+    private _app;
+    private _config;
+    private _elementRef;
+    private _platform;
+    private _renderer;
+    private _ids;
+    private _tabs;
+    private _onReady;
+    private _useHighlight;
     /**
      * @private
      */
-    add(tab: any): boolean;
+    id: number;
     /**
-     * @param {Number} index Index of the tab you want to select
+     * @private
+     */
+    navbarContainerRef: ViewContainerRef;
+    subPages: boolean;
+    selectedIndex: any;
+    preloadTabs: any;
+    tabbarIcons: string;
+    tabbarPlacement: string;
+    change: EventEmitter<Tab>;
+    private _highlight;
+    private _btns;
+    constructor(viewCtrl: ViewController, parent: NavController, _app: IonicApp, _config: Config, _elementRef: ElementRef, _platform: Platform, _renderer: Renderer);
+    /**
+     * @private
+     */
+    ngAfterViewInit(): void;
+    /**
+     * @private
+     */
+    private _setConfig(attrKey, fallback);
+    /**
+     * @private
+     */
+    add(tab: any): void;
+    /**
+     * @param {number} index Index of the tab you want to select
      */
     select(tabOrIndex: any): any;
     /**
-     * @param {Number} index Index of the tab you want to get
+     * @param {number} index Index of the tab you want to get
      * @returns {Any} Tab Returs the tab who's index matches the one passed
      */
-    getByIndex(index: any): any;
+    getByIndex(index: number): any;
     /**
      * @return {Any} Tab Returns the currently selected tab
      */
-    getSelected(): any;
+    getSelected(): Tab;
     /**
      * @private
      */
-    getIndex(tab: any): any;
+    getIndex(tab: Tab): number;
     /**
      * @private
      * "Touch" the active tab, going back to the root view of the tab
      * or optionally letting the tab handle the event
      */
-    _touchActive(tab: any): any;
+    private _touchActive(tab);
     /**
      * Returns the root NavController. Returns `null` if Tabs is not
      * within a NavController.
      * @returns {NavController}
      */
-    rootNav: any;
+    rootNav: NavController;
 }

@@ -1,5 +1,7 @@
 var platform_1 = require('./platform');
 var dom_1 = require('../util/dom');
+var win = window;
+var doc = document;
 platform_1.Platform.register({
     name: 'core',
     settings: {
@@ -99,7 +101,7 @@ platform_1.Platform.register({
         keyboardHeight: 500,
     },
     isMatch: function (p) {
-        return p.isPlatform('ipad');
+        return p.isPlatform('ios', 'ipad');
     }
 });
 platform_1.Platform.register({
@@ -108,7 +110,7 @@ platform_1.Platform.register({
         'phablet'
     ],
     isMatch: function (p) {
-        return p.isPlatform('iphone');
+        return p.isPlatform('ios', 'iphone');
     }
 });
 platform_1.Platform.register({
@@ -134,16 +136,16 @@ platform_1.Platform.register({
     methods: {
         ready: function (resolve) {
             function isReady() {
-                document.removeEventListener('deviceready', isReady);
+                doc.removeEventListener('deviceready', isReady);
                 resolve();
             }
             dom_1.windowLoad(function () {
-                document.addEventListener('deviceready', isReady);
+                doc.addEventListener('deviceready', isReady);
             });
         }
     },
     isMatch: function () {
-        return !!(window.cordova || window.PhoneGap || window.phonegap);
+        return !!(win.cordova || win.PhoneGap || win.phonegap);
     }
 });
 function isIOSDevice(p) {

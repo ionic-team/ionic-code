@@ -1,12 +1,15 @@
-import { ElementRef } from 'angular2/core';
+import { ElementRef, Renderer } from 'angular2/core';
 import { NgControl } from 'angular2/common';
 import { Form } from '../../util/form';
 import { Config } from '../../config/config';
+import { Item } from '../item/item';
 /**
  * @name Toggle
  * @description
- * A toggle technically is the same thing as an HTML checkbox input, except it looks different and is easier to use on a touch device. Ionic prefers to wrap the checkbox input with the `<label>` in order to make the entire toggle easy to tap or drag.
- * Togglees can also have colors assigned to them, by adding any color attribute to them.
+ * A toggle technically is the same thing as an HTML checkbox input,
+ * except it looks different and is easier to use on a touch device.
+ * Toggles can also have colors assigned to them, by adding any color
+ * attribute.
  *
  * See the [Angular 2 Docs](https://angular.io/docs/js/latest/api/forms/) for more info on forms and input.
  * @property {any} [value] - the inital value of the toggle
@@ -15,25 +18,23 @@ import { Config } from '../../config/config';
  * @property {string} [id] - a unique ID for a toggle
  * @usage
  * ```html
- * // Create a single toggle
- *  <ion-toggle checked="true">
- *    Pineapple
- *  </ion-toggle>
  *
- * // Create a list of togglees:
  *  <ion-list>
  *
- *    <ion-toggle checked="true">
- *      Apple
- *    </ion-toggle>
+ *    <ion-item>
+ *      <ion-label>Pepperoni</ion-label>
+ *      <ion-toggle value="pepperoni" checked="true"></ion-toggle>
+ *    </ion-item>
  *
- *     <ion-toggle checked="false">
- *       Banana
- *     </ion-toggle>
+ *    <ion-item>
+ *      <ion-label>Sausage</ion-label>
+ *      <ion-toggle value="sausage"></ion-toggle>
+ *    </ion-item>
  *
- *     <ion-toggle disabled="true">
- *       Cherry
- *     </ion-toggle>
+ *    <ion-item>
+ *      <ion-label>Mushrooms</ion-label>
+ *      <ion-toggle value="mushrooms"></ion-toggle>
+ *    </ion-item>
  *
  *  </ion-list>
  * ```
@@ -41,23 +42,39 @@ import { Config } from '../../config/config';
  * @see {@link /docs/v2/components#toggle Toggle Component Docs}
  */
 export declare class Toggle {
-    private ngControl;
-    constructor(form: Form, elementRef: ElementRef, config: Config, ngControl: NgControl);
+    private _form;
+    private _elementRef;
+    private _renderer;
+    private _item;
+    private _checked;
+    private _disabled;
+    private _labelId;
+    private _activated;
+    private _mode;
+    private _startX;
+    private _touched;
+    id: string;
+    value: string;
+    constructor(_form: Form, _elementRef: ElementRef, _renderer: Renderer, config: Config, ngControl: NgControl, _item: Item);
     /**
      * @private
-     */
-    ngOnInit(): void;
-    /**
-     * Set checked state of this toggle.
-     * @param {boolean} value  Boolean to set this toggle's checked state to.
-     * @private
-     */
-    check(value: any): void;
-    /**
      * Toggle the checked state of this toggle.
+     */
+    toggle(): void;
+    checked: any;
+    disabled: any;
+    /**
      * @private
      */
-    toggle(ev: any): void;
+    private pointerDown(ev);
+    /**
+     * @private
+     */
+    private pointerMove(ev);
+    /**
+     * @private
+     */
+    private pointerUp(ev);
     /**
      * @private
      */
@@ -65,11 +82,11 @@ export declare class Toggle {
     /**
      * @private
      */
-    pointerDown(ev: any): void;
+    onChange(val: any): void;
     /**
      * @private
      */
-    pointerUp(ev: any): void;
+    onTouched(val: any): void;
     /**
      * @private
      */
@@ -85,9 +102,5 @@ export declare class Toggle {
     /**
      * @private
      */
-    isDisabled(ev: any): boolean;
-    /**
-     * @private
-     */
-    initFocus(): void;
+    private isDisabled(ev);
 }

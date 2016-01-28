@@ -1,7 +1,15 @@
-import { ElementRef, Renderer } from 'angular2/core';
+import { ElementRef, EventEmitter } from 'angular2/core';
 import { NgControl } from 'angular2/common';
 import { Ion } from '../ion';
 import { Config } from '../../config/config';
+/**
+* @private
+*/
+export declare class SearchbarInput {
+    private _elementRef;
+    private stopInput(event);
+    constructor(_elementRef: ElementRef);
+}
 /**
  * @name Searchbar
  * @module ionic
@@ -10,21 +18,72 @@ import { Config } from '../../config/config';
  *
  * @usage
  * ```html
- * <ion-searchbar [(ngModel)]="defaultSearch"></ion-searchbar>
+ * <ion-searchbar [(ngModel)]="defaultSearch" (input)="triggerInput($event)" (cancel)="onCancelSearchbar($event)" (clear)="onClearSearchbar($event)"></ion-searchbar>
  * ```
  *
- * @property {function} [cancelButtonAction] - the function that gets called by clicking the cancel button
- * @property {string} [cancelButtonText=Cancel] - sets the cancel button text to the value passed in
+ * @property {string} [cancelButtonText=Cancel] - Sets the cancel button text to the value passed in
  * @property {boolean} [hideCancelButton=false] - Hides the cancel button
  * @property {string} [placeholder=Search] - Sets input placeholder to the value passed in
  *
- * @see {@link /docs/v2/components#search Search Component Docs}
+ * @property {Any} [input] - Expression to evaluate when the Searchbar input has changed including cleared
+ * @property {Any} [keydown] - Expression to evaluate when a key is pushed down in the Searchbar input
+ * @property {Any} [keypress] - Expression to evaluate when a character is inserted in the Searchbar input
+ * @property {Any} [keyup] - Expression to evaluate when a key is released in the Searchbar input
+ * @property {Any} [blur] - Expression to evaluate when the Searchbar input has blurred
+ * @property {Any} [focus] - Expression to evaluate when the Searchbar input has focused
+ * @property {Any} [cancel] - Expression to evaluate when the cancel button is clicked
+ * @property {Any} [clear] - Expression to evaluate when the clear input button is clicked
+ *
+ * @see {@link /docs/v2/components#searchbar Searchbar Component Docs}
  */
 export declare class Searchbar extends Ion {
+    private _elementRef;
+    private _config;
     searchbarInput: any;
-    query: string;
+    /**
+     * @private
+     */
+    cancelButtonText: string;
+    /**
+     * @private
+     */
+    hideCancelButton: any;
+    /**
+     * @private
+     */
+    placeholder: string;
+    /**
+     * @private
+     */
+    ngModel: any;
+    /**
+     * @private
+     */
+    input: EventEmitter<Searchbar>;
+    /**
+     * @private
+     */
+    blur: EventEmitter<Searchbar>;
+    /**
+     * @private
+     */
+    focus: EventEmitter<Searchbar>;
+    /**
+     * @private
+     */
+    cancel: EventEmitter<Searchbar>;
+    /**
+     * @private
+     */
+    clear: EventEmitter<Searchbar>;
+    value: string;
     blurInput: boolean;
-    constructor(elementRef: ElementRef, config: Config, ngControl: NgControl, renderer: Renderer);
+    inputElement: any;
+    searchIconElement: any;
+    mode: string;
+    isFocused: any;
+    shouldLeftAlign: any;
+    constructor(_elementRef: ElementRef, _config: Config, ngControl: NgControl);
     /**
      * @private
      * On Initialization check for attributes
@@ -32,9 +91,26 @@ export declare class Searchbar extends Ion {
     ngOnInit(): void;
     /**
      * @private
-     * After the view has initialized check if the Searchbar has a value
+     * After View Initialization check the value
      */
     ngAfterViewInit(): void;
+    /**
+     * @private
+     * Determines whether or not to add style to the element
+     * to center it properly (ios only)
+     */
+    setElementLeft(): void;
+    /**
+     * @private
+     * Calculates the amount of padding/margin left for the elements
+     * in order to center them based on the placeholder width
+     */
+    addElementLeft(): void;
+    /**
+     * @private
+     * Update the Searchbar input value when the input changes
+     */
+    inputChanged(ev: any): void;
     /**
      * @private
      * Sets the Searchbar to focused and aligned left on input focus.
@@ -57,15 +133,7 @@ export declare class Searchbar extends Ion {
      * the clearInput function doesn't want the input to blur
      * then calls the custom cancel function if the user passed one in.
      */
-    cancelSearchbar(event: any, value: any): void;
-    /**
-    * @private
-    * Updates the value of query
-    */
-    updateQuery(value: any): void;
-}
-export declare class SearchbarInput {
-    constructor(searchbar: Searchbar, elementRef: ElementRef, renderer: Renderer);
+    cancelSearchbar(): void;
     /**
      * @private
      * Write a new value to the element.
@@ -73,17 +141,20 @@ export declare class SearchbarInput {
     writeValue(value: any): void;
     /**
      * @private
+     */
+    onChange: (_: any) => void;
+    /**
+     * @private
+     */
+    onTouched: () => void;
+    /**
+     * @private
      * Set the function to be called when the control receives a change event.
      */
-    registerOnChange(fn: any): void;
+    registerOnChange(fn: (_: any) => {}): void;
     /**
      * @private
      * Set the function to be called when the control receives a touch event.
      */
-    registerOnTouched(fn: any): void;
-    /**
-     * @private
-     * Update the Searchbar input value when the input changes
-     */
-    inputChanged(event: any): void;
+    registerOnTouched(fn: () => {}): void;
 }

@@ -6,24 +6,24 @@ var __extends = (this && this.__extends) || function (d, b) {
 var slide_edge_gesture_1 = require('../../gestures/slide-edge-gesture');
 var SwipeBackGesture = (function (_super) {
     __extends(SwipeBackGesture, _super);
-    function SwipeBackGesture(element, opts, navCtrl) {
+    function SwipeBackGesture(element, opts, _nav) {
         if (opts === void 0) { opts = {}; }
         _super.call(this, element, opts);
+        this._nav = _nav;
         // Can check corners through use of eg 'left top'
         this.edges = opts.edge.split(' ');
         this.threshold = opts.threshold;
-        this.navCtrl = navCtrl;
     }
     SwipeBackGesture.prototype.onSlideStart = function () {
-        this.navCtrl.swipeBackStart();
+        this._nav.swipeBackStart();
     };
     SwipeBackGesture.prototype.onSlide = function (slide, ev) {
-        this.navCtrl.swipeBackProgress(slide.distance / slide.max);
+        this._nav.swipeBackProgress(slide.distance / slide.max);
     };
     SwipeBackGesture.prototype.onSlideEnd = function (slide, ev) {
         var shouldComplete = (Math.abs(ev.velocityX) > 0.2 || Math.abs(slide.delta) > Math.abs(slide.max) * 0.5);
         // TODO: calculate a better playback rate depending on velocity and distance
-        this.navCtrl.swipeBackEnd(shouldComplete, 1);
+        this._nav.swipeBackEnd(shouldComplete, 1);
     };
     return SwipeBackGesture;
 })(slide_edge_gesture_1.SlideEdgeGesture);

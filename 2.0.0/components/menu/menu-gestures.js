@@ -4,21 +4,23 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var slide_edge_gesture_1 = require('../../gestures/slide-edge-gesture');
-var util = require('../../util');
+var util_1 = require('../../util/util');
 var MenuContentGesture = (function (_super) {
     __extends(MenuContentGesture, _super);
     function MenuContentGesture(menu, targetEl, options) {
         if (options === void 0) { options = {}; }
-        _super.call(this, targetEl, util.extend({
+        _super.call(this, targetEl, util_1.assign({
             direction: (menu.side === 'left' || menu.side === 'right') ? 'x' : 'y',
             edge: menu.side,
-            threshold: 75
+            threshold: 0,
+            maxEdgeStart: menu.maxEdgeStart || 75
         }, options));
         this.menu = menu;
         this.listen();
     }
     MenuContentGesture.prototype.canStart = function (ev) {
-        return this.menu.isOpen && this.menu.isEnabled ? true : _super.prototype.canStart.call(this, ev);
+        var validAngle = ((-35 <= ev.angle && ev.angle <= 35) || (180 >= ev.angle && ev.angle >= 145) || (-180 <= ev.angle && ev.angle <= -145));
+        return this.menu.isOpen && this.menu.isEnabled && validAngle ? true : _super.prototype.canStart.call(this, ev);
     };
     // Set CSS, then wait one frame for it to apply before sliding starts
     MenuContentGesture.prototype.onSlideBeforeStart = function (slide, ev) {
@@ -50,7 +52,7 @@ var TargetGesture = (function (_super) {
     __extends(TargetGesture, _super);
     function TargetGesture(menu) {
         _super.call(this, menu, menu.getNativeElement(), {
-            threshold: 0
+            maxEdgeStart: 0
         });
     }
     return TargetGesture;

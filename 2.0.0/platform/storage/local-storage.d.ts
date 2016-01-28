@@ -28,21 +28,21 @@ import { StorageEngine } from './storage';
  * @see {@link /docs/v2/platform/storage/ Storage Platform Docs}
  */
 export declare class LocalStorage extends StorageEngine {
-    constructor();
+    constructor(options?: {});
     /**
      * Get the value of a key in LocalStorage
      * @param {String} key the key you want to lookup in LocalStorage
      */
-    get(key: any): Promise<{}>;
+    get(key: string): Promise<string>;
     /**
      * Set a key value pair and save it to LocalStorage
      * @param {String} key the key you want to save to LocalStorage
      * @param {Any} value the value of the key you're saving
      */
-    set(key: any, value: any): Promise<{}>;
+    set(key: string, value: string): Promise<any>;
     /**
      * Remove a key from LocalStorage
      * @param {String} key the key you want to remove from LocalStorage
      */
-    remove(key: any): Promise<{}>;
+    remove(key: string): Promise<any>;
 }

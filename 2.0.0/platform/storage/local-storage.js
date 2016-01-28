@@ -34,7 +34,8 @@ var storage_1 = require('./storage');
  */
 var LocalStorage = (function (_super) {
     __extends(LocalStorage, _super);
-    function LocalStorage() {
+    function LocalStorage(options) {
+        if (options === void 0) { options = {}; }
         _super.call(this);
     }
     /**

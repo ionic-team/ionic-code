@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -39,10 +37,11 @@ var MenuToggle = (function () {
     function MenuToggle(app, elementRef, viewCtrl, navbar) {
         this.app = app;
         this.viewCtrl = viewCtrl;
+        this.navbar = navbar;
         this.withinNavbar = !!navbar;
         // Deprecation warning
         if (this.withinNavbar && elementRef.nativeElement.tagName === 'A') {
-            console.warn('Menu toggles within a navbar should use <button menuToggle> instead of <a menu-toggle>');
+            void 0;
         }
     }
     /**
@@ -65,23 +64,28 @@ var MenuToggle = (function () {
         enumerable: true,
         configurable: true
     });
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], MenuToggle.prototype, "menuToggle", void 0);
+    __decorate([
+        core_1.HostListener('click'), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', []), 
+        __metadata('design:returntype', void 0)
+    ], MenuToggle.prototype, "toggle", null);
     MenuToggle = __decorate([
         core_1.Directive({
             selector: '[menuToggle]',
-            inputs: [
-                'menuToggle'
-            ],
             host: {
-                '(click)': 'toggle()',
                 '[hidden]': 'isHidden',
                 'menuToggle': '' //ensures the attr is there for css when using [menuToggle]
             }
         }),
         __param(2, core_1.Optional()),
         __param(3, core_1.Optional()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof app_1.IonicApp !== 'undefined' && app_1.IonicApp) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof view_controller_1.ViewController !== 'undefined' && view_controller_1.ViewController) === 'function' && _c) || Object, (typeof (_d = typeof navbar_1.Navbar !== 'undefined' && navbar_1.Navbar) === 'function' && _d) || Object])
+        __metadata('design:paramtypes', [app_1.IonicApp, core_1.ElementRef, view_controller_1.ViewController, navbar_1.Navbar])
     ], MenuToggle);
     return MenuToggle;
-    var _a, _b, _c, _d;
 })();
 exports.MenuToggle = MenuToggle;

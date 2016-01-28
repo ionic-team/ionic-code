@@ -1,23 +1,31 @@
-/**
-+* @ngdoc service
-+* @name platform
-+* @module ionic
-+*/
 var util_1 = require('../util/util');
 var dom_1 = require('../util/dom');
 /**
  * @name Platform
  * @description
  * Platform returns the availble information about your current platform.
+ * Platforms in Ionic 2 are much more complex then in V1, returns not just a single platform,
+ * but a hierarchy of information, such as a devices OS, phone vs tablet, or mobile vs browser.
+ * With this information you can completely custimize your app to fit any device and platform.
+ *
+ * @usage
+ * ```ts
+ * import {Platform} 'ionic/ionic';
+ * export MyClass {
+ *    constructor(platform: Platform){
+ *      this.platform = platform;
+ *    }
+ * }
+ * ```
  * @demo /docs/v2/demos/platform/
  */
 var Platform = (function () {
     function Platform(platforms) {
         var _this = this;
         if (platforms === void 0) { platforms = []; }
-        this._platforms = platforms;
         this._versions = {};
         this._onResizes = [];
+        this._platforms = platforms;
         this._readyPromise = new Promise(function (res) { _this._readyResolve = res; });
     }
     // Methods
@@ -69,14 +77,7 @@ var Platform = (function () {
         return this._platforms;
     };
     /**
-     * @param {string} optional platformName
-     * @returns {object} An object with various platform info
-     * - `{object=} `cordova`
-     * - `{object=}` `platformOS` {str: "9.1", num: 9.1, major: 9, minor: 1}
-     * - `{object=} `deviceName` Returns the name of the device
-     * - `{object=}` `device platform` R
-     * @description
-     * Returns an object conta
+     * Returns an object containing information about the paltform
      *
      * ```
      * import {Platform} 'ionic/ionic';
@@ -84,11 +85,12 @@ var Platform = (function () {
      *    constructor(platform: Platform){
      *      this.platform = platform;
      *      console.log(this.platform.versions());
-     *      // or pass in a platform name
-     *      console.log(this.platform.versions('ios'));
      *    }
      * }
      * ```
+  
+     * @param {string} [platformName] optional platformName
+     * @returns {object} An object with various platform info
      *
      */
     Platform.prototype.versions = function (platformName) {
@@ -99,6 +101,9 @@ var Platform = (function () {
         // get all the platforms that have a valid parsed version
         return this._versions;
     };
+    /**
+     * @private
+     */
     Platform.prototype.version = function () {
         for (var platformName in this._versions) {
             if (this._versions[platformName]) {
@@ -108,8 +113,6 @@ var Platform = (function () {
         return {};
     };
     /**
-     * @returns {promise}
-     * @description
      * Returns a promise when the platform is ready and native functionality can be called
      *
      * ```
@@ -124,15 +127,13 @@ var Platform = (function () {
      *    }
      * }
      * ```
+     * @returns {promise} Returns a promsie when device ready has fired
      */
     Platform.prototype.ready = function () {
         return this._readyPromise;
     };
     /**
      * @private
-     * TODO
-     * @param {TODO} config  TODO
-     * @returns {TODO} TODO
      */
     Platform.prototype.prepareReady = function (config) {
         var self = this;
@@ -149,52 +150,166 @@ var Platform = (function () {
             dom_1.ready(resolve);
         }
     };
+    /**
+    * Set the app's language direction, which will update the `dir` attribute
+    * on the app's root `<html>` element. We recommend the app's `index.html`
+    * file already has the correct `dir` attribute value set, such as
+    * `<html dir="ltr">` or `<html dir="rtl">`. This method is useful if the
+    * direction needs to be dynamically changed per user/session.
+    * [W3C: Structural markup and right-to-left text in HTML](http://www.w3.org/International/questions/qa-html-dir)
+    * @param {string} dir  Examples: `rtl`, `ltr`
+    */
+    Platform.prototype.setDir = function (dir, updateDocument) {
+        this._dir = (dir || '').toLowerCase();
+        if (updateDocument !== false) {
+            document.documentElement.setAttribute('dir', dir);
+        }
+    };
+    /**
+     * Returns app's language direction.
+     * We recommend the app's `index.html` file already has the correct `dir`
+     * attribute value set, such as `<html dir="ltr">` or `<html dir="rtl">`.
+     * [W3C: Structural markup and right-to-left text in HTML](http://www.w3.org/International/questions/qa-html-dir)
+     * @returns {string}
+     */
+    Platform.prototype.dir = function () {
+        return this._dir;
+    };
+    /**
+     * Returns if this app is using right-to-left language direction or not.
+     * We recommend the app's `index.html` file already has the correct `dir`
+     * attribute value set, such as `<html dir="ltr">` or `<html dir="rtl">`.
+     * [W3C: Structural markup and right-to-left text in HTML](http://www.w3.org/International/questions/qa-html-dir)
+     * @returns {boolean}
+     */
+    Platform.prototype.isRTL = function () {
+        return (this._dir === 'rtl');
+    };
+    /**
+    * Set the app's language and optionally the country code, which will update
+    * the `lang` attribute on the app's root `<html>` element.
+    * We recommend the app's `index.html` file already has the correct `lang`
+    * attribute value set, such as `<html lang="en">`. This method is useful if
+    * the language needs to be dynamically changed per user/session.
+    * [W3C: Declaring language in HTML](http://www.w3.org/International/questions/qa-html-language-declarations)
+    * @param {string} language  Examples: `en-US`, `en-GB`, `ar`, `de`, `zh`, `es-MX`
+    */
+    Platform.prototype.setLang = function (language, updateDocument) {
+        this._lang = language;
+        if (updateDocument !== false) {
+            document.documentElement.setAttribute('lang', language);
+        }
+    };
+    /**
+     * Returns app's language and optional country code.
+     * We recommend the app's `index.html` file already has the correct `lang`
+     * attribute value set, such as `<html lang="en">`.
+     * [W3C: Declaring language in HTML](http://www.w3.org/International/questions/qa-html-language-declarations)
+     * @returns {string}
+     */
+    Platform.prototype.lang = function () {
+        return this._lang;
+    };
     // Methods meant to be overridden by the engine
     // **********************************************
     // Provided NOOP methods so they do not error when
     // called by engines (the browser) doesn't provide them
+    /**
+    * @private
+    */
     Platform.prototype.on = function () { };
+    /**
+    * @private
+    */
     Platform.prototype.onHardwareBackButton = function () { };
+    /**
+    * @private
+    */
     Platform.prototype.registerBackButtonAction = function () { };
+    /**
+    * @private
+    */
     Platform.prototype.exitApp = function () { };
+    /**
+    * @private
+    */
     Platform.prototype.fullScreen = function () { };
+    /**
+    * @private
+    */
     Platform.prototype.showStatusBar = function () { };
     // Getter/Setter Methods
     // **********************************************
-    Platform.prototype.url = function (val) {
-        if (arguments.length) {
-            this._url = val;
-            this._qs = util_1.getQuerystring(val);
-        }
+    /**
+    * @private
+    */
+    Platform.prototype.setUrl = function (url) {
+        this._url = url;
+        this._qs = util_1.getQuerystring(url);
+    };
+    /**
+    * @private
+    */
+    Platform.prototype.url = function () {
         return this._url;
     };
+    /**
+    * @private
+    */
     Platform.prototype.query = function (key) {
         return (this._qs || {})[key];
     };
-    Platform.prototype.userAgent = function (val) {
-        if (arguments.length) {
-            this._ua = val;
-        }
+    /**
+    * @private
+    */
+    Platform.prototype.setUserAgent = function (userAgent) {
+        this._ua = userAgent;
+    };
+    /**
+    * @private
+    */
+    Platform.prototype.userAgent = function () {
         return this._ua || '';
     };
-    Platform.prototype.navigatorPlatform = function (val) {
-        if (arguments.length) {
-            this._bPlt = val;
-        }
+    /**
+    * @private
+    */
+    Platform.prototype.setNavigatorPlatform = function (navigatorPlatform) {
+        this._bPlt = navigatorPlatform;
+    };
+    /**
+    * @private
+    */
+    Platform.prototype.navigatorPlatform = function () {
         return this._bPlt || '';
     };
+    /**
+    * @private
+    */
     Platform.prototype.width = function () {
         return dom_1.windowDimensions().width;
     };
+    /**
+    * @private
+    */
     Platform.prototype.height = function () {
         return dom_1.windowDimensions().height;
     };
+    /**
+    * @private
+    */
     Platform.prototype.isPortrait = function () {
         return this.width() < this.height();
     };
+    /**
+    * @private
+    */
     Platform.prototype.isLandscape = function () {
         return !this.isPortrait();
     };
+    /**
+    * @private
+    */
     Platform.prototype.windowResize = function () {
         var self = this;
         clearTimeout(self._resizeTimer);
@@ -205,68 +320,66 @@ var Platform = (function () {
                     self._onResizes[i]();
                 }
                 catch (e) {
-                    console.error(e);
+                    void 0;
                 }
             }
-        }, 500);
+        }, 250);
     };
+    /**
+    * @private
+    */
     Platform.prototype.onResize = function (cb) {
         this._onResizes.push(cb);
     };
     // Platform Registry
     // **********************************************
     /**
-     * TODO
-     * @param {TODO} platformConfig  TODO
+     * @private
      */
     Platform.register = function (platformConfig) {
         platformRegistry[platformConfig.name] = platformConfig;
     };
+    /**
+    * @private
+    */
     Platform.registry = function () {
         return platformRegistry;
     };
     /**
-     * TODO
-     * @param {TODO} platformName  TODO
-     * @returns {string} TODO
+     * @private
      */
     Platform.get = function (platformName) {
         return platformRegistry[platformName] || {};
     };
+    /**
+     * @private
+     */
     Platform.setDefault = function (platformName) {
         platformDefault = platformName;
     };
     /**
-     * TODO
-     * @param {TODO} queryValue  TODO
-     * @returns {boolean} TODO
+     * @private
      */
     Platform.prototype.testQuery = function (queryValue, queryTestValue) {
         var valueSplit = queryValue.toLowerCase().split(';');
         return valueSplit.indexOf(queryTestValue) > -1;
     };
     /**
-     * TODO
-     * @param {TODO} userAgentExpression  TODO
-     * @returns {boolean} TODO
+     * @private
      */
     Platform.prototype.testUserAgent = function (userAgentExpression) {
         var rgx = new RegExp(userAgentExpression, 'i');
         return rgx.test(this._ua || '');
     };
     /**
-     * TODO
-     * @param {TODO} navigatorPlatformExpression  TODO
-     * @returns {boolean} TODO
+     * @private
      */
     Platform.prototype.testNavigatorPlatform = function (navigatorPlatformExpression) {
         var rgx = new RegExp(navigatorPlatformExpression, 'i');
         return rgx.test(this._bPlt);
     };
     /**
-     * TODO
-     * @param {TODO} userAgentExpression  TODO
-     * @returns {Object} TODO
+     * @private
      */
     Platform.prototype.matchUserAgentVersion = function (userAgentExpression) {
         if (this._ua && userAgentExpression) {
@@ -280,10 +393,7 @@ var Platform = (function () {
         }
     };
     /**
-     * TODO
-     * @param {TODO} queryValue  TODO
-     * @param {TODO} userAgentExpression  TODO
-     * @returns {boolean} TODO
+     * @private
      */
     Platform.prototype.isPlatform = function (queryTestValue, userAgentExpression) {
         if (!userAgentExpression) {
@@ -296,8 +406,7 @@ var Platform = (function () {
         return this.testUserAgent(userAgentExpression);
     };
     /**
-     * TODO
-     * @param {TODO} config  TODO
+     * @private
      */
     Platform.prototype.load = function (platformOverride) {
         var rootPlatformNode = null;
@@ -335,27 +444,27 @@ var Platform = (function () {
                 // add the engine to the first in the platform hierarchy
                 // the original rootPlatformNode now becomes a child
                 // of the engineNode, which is not the new root
-                engineNode.child(rootPlatformNode);
-                rootPlatformNode.parent(engineNode);
+                engineNode.child = rootPlatformNode;
+                rootPlatformNode.parent = engineNode;
                 rootPlatformNode = engineNode;
                 // add any events which the engine would provide
                 // for example, Cordova provides its own ready event
                 var engineMethods = engineNode.methods();
                 engineMethods._engineReady = engineMethods.ready;
                 delete engineMethods.ready;
-                util_1.extend(this, engineMethods);
+                util_1.assign(this, engineMethods);
             }
             var platformNode = rootPlatformNode;
             while (platformNode) {
                 insertSuperset(platformNode);
-                platformNode = platformNode.child();
+                platformNode = platformNode.child;
             }
             // make sure the root noot is actually the root
             // incase a node was inserted before the root
-            platformNode = rootPlatformNode.parent();
+            platformNode = rootPlatformNode.parent;
             while (platformNode) {
                 rootPlatformNode = platformNode;
-                platformNode = platformNode.parent();
+                platformNode = platformNode.parent;
             }
             platformNode = rootPlatformNode;
             while (platformNode) {
@@ -365,27 +474,28 @@ var Platform = (function () {
                 // get the platforms version if a version parser was provided
                 this._versions[platformNode.name()] = platformNode.version(this);
                 // go to the next platform child
-                platformNode = platformNode.child();
+                platformNode = platformNode.child;
             }
+        }
+        if (this._platforms.indexOf('mobile') > -1 && this._platforms.indexOf('cordova') === -1) {
+            this._platforms.push('mobileweb');
         }
     };
     /**
-     * TODO
-     * @param {TODO} platformName  TODO
-     * @returns {TODO} TODO
+     * @private
      */
     Platform.prototype.matchPlatform = function (platformName) {
         // build a PlatformNode and assign config data to it
         // use it's getRoot method to build up its hierarchy
         // depending on which platforms match
         var platformNode = new PlatformNode(platformName);
-        var rootNode = platformNode.getRoot(this, 0);
+        var rootNode = platformNode.getRoot(this);
         if (rootNode) {
             rootNode.depth = 0;
-            var childPlatform = rootNode.child();
+            var childPlatform = rootNode.child;
             while (childPlatform) {
                 rootNode.depth++;
-                childPlatform = childPlatform.child();
+                childPlatform = childPlatform.child;
             }
         }
         return rootNode;
@@ -399,12 +509,12 @@ function insertSuperset(platformNode) {
         // add a platform in between two exist platforms
         // so we can build the correct hierarchy of active platforms
         var supersetPlatform = new PlatformNode(supersetPlaformName);
-        supersetPlatform.parent(platformNode.parent());
-        supersetPlatform.child(platformNode);
-        if (supersetPlatform.parent()) {
-            supersetPlatform.parent().child(supersetPlatform);
+        supersetPlatform.parent = platformNode.parent;
+        supersetPlatform.child = platformNode;
+        if (supersetPlatform.parent) {
+            supersetPlatform.parent.child = supersetPlatform;
         }
-        platformNode.parent(supersetPlatform);
+        platformNode.parent = supersetPlatform;
     }
 }
 var PlatformNode = (function () {
@@ -423,18 +533,6 @@ var PlatformNode = (function () {
     };
     PlatformNode.prototype.methods = function () {
         return this.c.methods || {};
-    };
-    PlatformNode.prototype.parent = function (val) {
-        if (arguments.length) {
-            this._parent = val;
-        }
-        return this._parent;
-    };
-    PlatformNode.prototype.child = function (val) {
-        if (arguments.length) {
-            this._child = val;
-        }
-        return this._child;
     };
     PlatformNode.prototype.isMatch = function (p) {
         if (p.platformOverride && !this.isEngine) {
@@ -469,10 +567,10 @@ var PlatformNode = (function () {
             var rootPlatform = null;
             for (var i = 0; i < parents.length; i++) {
                 platform = new PlatformNode(parents[i]);
-                platform.child(this);
+                platform.child = this;
                 rootPlatform = platform.getRoot(p);
                 if (rootPlatform) {
-                    this.parent(platform);
+                    this.parent = platform;
                     return rootPlatform;
                 }
             }

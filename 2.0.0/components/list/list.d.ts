@@ -1,6 +1,6 @@
-import { ElementRef, NgZone } from 'angular2/core';
+import { ElementRef, Renderer, NgZone } from 'angular2/core';
 import { Ion } from '../ion';
-import { Config } from '../../config/config';
+import { ItemSlidingGesture } from '../item/item-sliding-gesture';
 /**
  * The List is a widely used interface element in almost any mobile app, and can include
  * content ranging from basic text all the way to buttons, toggles, icons, and thumbnails.
@@ -13,11 +13,18 @@ import { Config } from '../../config/config';
  * @demo /docs/v2/demos/list/
  * @see {@link /docs/v2/components#lists List Component Docs}
  *
- *
  */
 export declare class List extends Ion {
     private zone;
-    constructor(elementRef: ElementRef, config: Config, zone: NgZone);
+    private _enableSliding;
+    private _virtualScrollingManager;
+    ele: HTMLElement;
+    itemTemplate: any;
+    slidingGesture: ItemSlidingGesture;
+    items: any;
+    virtual: any;
+    content: any;
+    constructor(elementRef: ElementRef, zone: NgZone);
     /**
      * @private
      */
@@ -50,7 +57,7 @@ export declare class List extends Ion {
      * ```
      * @param {Boolean} shouldEnable whether the item-sliding should be enabled or not
      */
-    enableSlidingItems(shouldEnable: any): void;
+    enableSlidingItems(shouldEnable: boolean): void;
     /**
      * Enable sliding items if your page has
      *
@@ -74,4 +81,9 @@ export declare class List extends Ion {
  * @private
  */
 export declare class ListHeader {
+    private _renderer;
+    private _elementRef;
+    private _id;
+    constructor(_renderer: Renderer, _elementRef: ElementRef, id: string);
+    id: string;
 }

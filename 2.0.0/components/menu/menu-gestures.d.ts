@@ -1,15 +1,16 @@
 import { Menu } from './menu';
 import { SlideEdgeGesture } from '../../gestures/slide-edge-gesture';
 export declare class MenuContentGesture extends SlideEdgeGesture {
+    menu: Menu;
     constructor(menu: Menu, targetEl: Element, options?: {});
-    canStart(ev: any): any;
+    canStart(ev: any): boolean;
     onSlideBeforeStart(slide: any, ev: any): void;
     onSlide(slide: any, ev: any): void;
     onSlideEnd(slide: any, ev: any): void;
     getElementStartPos(slide: any, ev: any): any;
     getSlideBoundaries(): {
         min: number;
-        max: any;
+        max: number;
     };
 }
 /**

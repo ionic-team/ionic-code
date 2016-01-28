@@ -1,4 +1,12 @@
 /**
+* @ngdoc service
+* @name Config
+* @module ionic
+* @description
+* Config allows you to set the modes of your components
+*/
+import { Platform } from '../platform/platform';
+/**
  * @name Config
  * @demo /docs/v2/demos/config/
  * @description
@@ -67,8 +75,8 @@
  * | activator                  | highlight              | ripple                    |
  * | actionSheetEnter           | action-sheet-slide-in  | action-sheet-md-slide-in  |
  * | actionSheetLeave           | action-sheet-slide-out | action-sheet-md-slide-out |
- * | actionSheetCancelIcon      |                        | ion-md-close              |
- * | actionSheetDestructiveIcon |                        | ion-md-trash              |
+ * | alertEnter                 | alert-pop-in           | alert-md-pop-in           |
+ * | alertLeave                 | alert-pop-out          | alert-md-pop-out          |
  * | backButtonText             | Back                   |                           |
  * | backButtonIcon             | ion-ios-arrow-back     | ion-md-arrow-back         |
  * | iconMode                   | ios                    | md                        |
@@ -77,15 +85,19 @@
  * | modalLeave                 | modal-slide-out        | modal-md-slide-out        |
  * | pageTransition             | ios-transition         | md-transition             |
  * | pageTransitionDelay        | 16                     | 120                       |
- * | popupEnter                 | popup-pop-in           | popup-md-pop-in           |
- * | popupLeave                 | popup-pop-out          | popup-md-pop-out          |
- * | tabbarPlacement            | bottom                 | true                      |
+ * | tabbarPlacement            | bottom                 | top                       |
  * | tabbarHighlight            |                        | top                       |
- * | tabSubPage                 |                        | true                      |
+ * | tabSubPages                |                        | true                      |
  *
 **/
 export declare class Config {
-    constructor(config: any);
+    private _c;
+    private _s;
+    /**
+     * @private
+     */
+    platform: Platform;
+    constructor(config?: any);
     /**
      * For setting and getting multiple config values
      */
@@ -104,7 +116,7 @@ export declare class Config {
      * @param {String} [key] - The key used to look up the value at a later point in time.
      * @param {String} [value] - The config value being stored.
      */
-    set(): Config;
+    set(): this;
     /**
      * @name get
      * @description
@@ -112,7 +124,15 @@ export declare class Config {
      *
      * @param {String} [key] - the key for the config value
      */
-    get(key: any): any;
+    get(key: string): any;
+    /**
+     * @name getBoolean
+     * @description
+     * Same as `get()`, however always returns a boolean value.
+     *
+     * @param {String} [key] - the key for the config value
+     */
+    getBoolean(key: string): boolean;
     /**
      * @private
      */

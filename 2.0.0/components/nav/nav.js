@@ -4,12 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -21,7 +19,6 @@ var core_1 = require('angular2/core');
 var app_1 = require('../app/app');
 var config_1 = require('../../config/config');
 var keyboard_1 = require('../../util/keyboard');
-var decorators_1 = require('../../config/decorators');
 var nav_controller_1 = require('./nav-controller');
 var view_controller_1 = require('./view-controller');
 /**
@@ -119,8 +116,8 @@ var view_controller_1 = require('./view-controller');
  */
 var Nav = (function (_super) {
     __extends(Nav, _super);
-    function Nav(hostNavCtrl, viewCtrl, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer, cd) {
-        _super.call(this, hostNavCtrl, app, config, keyboard, elementRef, 'contents', compiler, viewManager, zone, renderer, cd);
+    function Nav(hostNavCtrl, viewCtrl, app, config, keyboard, elementRef, compiler, viewManager, zone, renderer) {
+        _super.call(this, hostNavCtrl, app, config, keyboard, elementRef, 'contents', compiler, viewManager, zone, renderer);
         if (viewCtrl) {
             // an ion-nav can also act as an ion-page within a parent ion-nav
             // this would happen when an ion-nav nests a child ion-nav.
@@ -132,7 +129,6 @@ var Nav = (function (_super) {
      * @private
      */
     Nav.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
         if (this.root) {
             if (typeof this.root !== 'function') {
                 throw 'The [root] property in <ion-nav> must be given a reference to a component class from within the constructor.';
@@ -142,22 +138,23 @@ var Nav = (function (_super) {
         // default the swipe back to be enabled
         this.isSwipeBackEnabled((this.swipeBackEnabled || '').toString() !== 'false');
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', core_1.Type)
+    ], Nav.prototype, "root", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Nav.prototype, "swipeBackEnabled", void 0);
     Nav = __decorate([
-        decorators_1.ConfigComponent({
+        core_1.Component({
             selector: 'ion-nav',
-            inputs: [
-                'root'
-            ],
-            // defaultInputs: {
-            //   'swipeBackEnabled': true
-            // },
-            template: '<template #contents></template>'
+            template: '<div #contents></div>'
         }),
         __param(0, core_1.Optional()),
         __param(1, core_1.Optional()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof nav_controller_1.NavController !== 'undefined' && nav_controller_1.NavController) === 'function' && _a) || Object, (typeof (_b = typeof view_controller_1.ViewController !== 'undefined' && view_controller_1.ViewController) === 'function' && _b) || Object, (typeof (_c = typeof app_1.IonicApp !== 'undefined' && app_1.IonicApp) === 'function' && _c) || Object, (typeof (_d = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _d) || Object, (typeof (_e = typeof keyboard_1.Keyboard !== 'undefined' && keyboard_1.Keyboard) === 'function' && _e) || Object, (typeof (_f = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _f) || Object, (typeof (_g = typeof core_1.Compiler !== 'undefined' && core_1.Compiler) === 'function' && _g) || Object, (typeof (_h = typeof core_1.AppViewManager !== 'undefined' && core_1.AppViewManager) === 'function' && _h) || Object, (typeof (_j = typeof core_1.NgZone !== 'undefined' && core_1.NgZone) === 'function' && _j) || Object, (typeof (_k = typeof core_1.Renderer !== 'undefined' && core_1.Renderer) === 'function' && _k) || Object, (typeof (_l = typeof core_1.ChangeDetectorRef !== 'undefined' && core_1.ChangeDetectorRef) === 'function' && _l) || Object])
+        __metadata('design:paramtypes', [nav_controller_1.NavController, view_controller_1.ViewController, app_1.IonicApp, config_1.Config, keyboard_1.Keyboard, core_1.ElementRef, core_1.Compiler, core_1.AppViewManager, core_1.NgZone, core_1.Renderer])
     ], Nav);
     return Nav;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
 })(nav_controller_1.NavController);
 exports.Nav = Nav;

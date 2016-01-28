@@ -23,6 +23,8 @@ $item-ios-sliding-content-bg:         $list-ios-background-color !default;
 // --------------------------------------------------
 
 .item {
+  position: relative;
+
   padding-left: $item-ios-padding-left;
   font-size: $item-ios-body-text-font-size;
   border-radius: 0;
@@ -87,26 +89,23 @@ $item-ios-sliding-content-bg:         $list-ios-background-color !default;
   border-bottom-width: 0.55px;
 }
 
-ion-item-content {
-  margin: $item-ios-padding-top ($item-ios-padding-right / 2) $item-ios-padding-bottom 0;
-}
-
 
 // iOS Item Media
 // --------------------------------------------------
 
 [item-left] {
-  margin: ($item-ios-padding-top / 2) $item-ios-padding-right ($item-ios-padding-bottom / 2) 0;
+  margin: $item-ios-padding-media-top $item-ios-padding-left $item-ios-padding-media-bottom 0;
 }
 
 [item-right] {
-  margin: ($item-ios-padding-top / 2) ($item-ios-padding-right / 2) ($item-ios-padding-bottom / 2) ($item-ios-padding-left / 2);
+  margin: $item-ios-padding-media-top ($item-ios-padding-left / 2) $item-ios-padding-media-bottom ($item-ios-padding-right / 2);
 }
 
-icon[item-left],
-icon[item-right] {
+ion-icon[item-left],
+ion-icon[item-right] {
   margin-top: $item-ios-padding-icon-top;
   margin-bottom: $item-ios-padding-icon-bottom;
+  margin-left: 0;
 }
 
 ion-avatar[item-left],
@@ -119,37 +118,16 @@ ion-thumbnail[item-right] {
   margin: ($item-ios-padding-right / 2);
 }
 
-button[item-left],
-button[item-right],
-[button][item-left],
-[button][item-right] {
+.item-button {
   padding: 0 0.5em;
   font-size: 1.3rem;
-  min-height: 25px;
-  margin-top: 9px;
+  min-height: 24px;
 }
 
-[item-left].button-icon-only,
-[item-right].button-icon-only,
-[item-left].button-icon-only icon,
-[item-right].button-icon-only icon,
-[item-left][clear],
-[item-right][clear] {
-  padding: 0 1px;
-}
-
-[item-left].icon-left icon,
-[item-right].icon-left icon {
-  margin-left: 0;
-  margin-bottom: 1px;
-  padding-right: 0.3em;
-}
-
-[item-left].icon-right icon,
-[item-right].icon-right icon {
-  margin-right: 0;
-  margin-bottom: 1px;
-}
+.item-button.button-icon-only ion-icon,
+.item-button.button-icon-only {
+   padding: 0 1px;
+ }
 
 ion-avatar {
   min-width: $item-ios-avatar-size;
@@ -214,9 +192,34 @@ ion-item-divider {
 }
 
 
+// Generate iOS Item Divider Colors
+// --------------------------------------------------
+
+@each $color-name, $color-value in $colors-ios {
+  ion-item-divider[#{$color-name}] {
+    background-color: $color-value;
+    color: inverse($color-value);
+  }
+}
+
+
 // iOS Item Sliding
 // --------------------------------------------------
 
 ion-item-sliding {
   background-color: $item-ios-sliding-content-bg;
+}
+
+// iOS item right-to-left
+// --------------------------------------------------
+@if $include-rtl {
+  @at-root {
+
+    .rtl.ios {
+
+      // todo
+
+    }
+
+  }
 }

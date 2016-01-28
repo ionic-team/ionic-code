@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -46,66 +44,60 @@ var app_1 = require('./app');
  * has been navigated away from.
  */
 var IdRef = (function () {
-    function IdRef(app, elementRef, appViewManager) {
-        this.app = app;
-        this.elementRef = elementRef;
-        this.appViewManager = appViewManager;
+    function IdRef(_app, elementRef, appViewManager) {
+        this._app = _app;
         // Grab the component this directive is attached to
-        this.component = appViewManager.getComponent(elementRef);
+        this._component = appViewManager.getComponent(elementRef);
     }
     /**
      * @private
      */
     IdRef.prototype.ngOnInit = function () {
-        this.app.register(this.id, this.component);
+        this._app.register(this.id, this._component);
     };
     /**
      * @private
      */
     IdRef.prototype.ngOnDestroy = function () {
-        this.app.unregister(this.id);
+        this._app.unregister(this.id);
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], IdRef.prototype, "id", void 0);
     IdRef = __decorate([
         core_1.Directive({
-            selector: '[id]',
-            inputs: ['id']
+            selector: '[id]'
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof app_1.IonicApp !== 'undefined' && app_1.IonicApp) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof core_1.AppViewManager !== 'undefined' && core_1.AppViewManager) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [app_1.IonicApp, core_1.ElementRef, core_1.AppViewManager])
     ], IdRef);
     return IdRef;
-    var _a, _b, _c;
 })();
 exports.IdRef = IdRef;
 /**
- * @name Attr
- * @description
- * Attr allows you to dynamically add or remove an attribute based on the value of an expression or variable.
- * @usage
- * ```html
- * // toggle the no-lines attributes based on whether isAndroid is true or false
- * <ion-list [attr.no-lines]="isAndroid ? '' : null">
- * ```
- * @demo /docs/v2/demos/attr/
+ * @private
  */
 var Attr = (function () {
-    function Attr(renderer, elementRef) {
-        this.renderer = renderer;
-        this.elementRef = elementRef;
+    function Attr(_renderer, _elementRef) {
+        this._renderer = _renderer;
+        this._elementRef = _elementRef;
     }
     /**
      * @private
      */
     Attr.prototype.ngOnInit = function () {
-        this.renderer.setElementAttribute(this.elementRef, this.attr, '');
+        this._renderer.setElementAttribute(this._elementRef.nativeElement, this.attr, '');
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Attr.prototype, "attr", void 0);
     Attr = __decorate([
         core_1.Directive({
-            selector: '[attr]',
-            inputs: ['attr']
+            selector: '[attr]'
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.Renderer !== 'undefined' && core_1.Renderer) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])
     ], Attr);
     return Attr;
-    var _a, _b;
 })();
 exports.Attr = Attr;

@@ -1,7 +1,7 @@
 import { ElementRef, NgZone } from 'angular2/core';
 import { Ion } from '../ion';
+import { IonicApp } from '../app/app';
 import { Config } from '../../config/config';
-import { Keyboard } from '../../util/keyboard';
 import { ViewController } from '../nav/view-controller';
 /**
  * @name Content
@@ -21,16 +21,27 @@ import { ViewController } from '../nav/view-controller';
  *
  */
 export declare class Content extends Ion {
+    private _elementRef;
+    private _config;
+    private _app;
     private _zone;
+    private _padding;
+    private _onScroll;
+    private _scrollTo;
+    scrollElement: HTMLElement;
     /**
      * @param {ElementRef} elementRef  A reference to the component's DOM element.
      * @param {Config} config  The config object to change content's default settings.
      */
-    constructor(elementRef: ElementRef, config: Config, keyboard: Keyboard, viewCtrl: ViewController, _zone: NgZone);
+    constructor(_elementRef: ElementRef, _config: Config, _app: IonicApp, _zone: NgZone, viewCtrl: ViewController);
     /**
      * @private
      */
     ngOnInit(): void;
+    /**
+     * @private
+     */
+    ngOnDestroy(): void;
     /**
      * Adds the specified scroll handler to the content' scroll element.
      *
@@ -59,6 +70,7 @@ export declare class Content extends Ion {
     addScrollEventListener(handler: any): () => void;
     onScrollEnd(callback: any): void;
     /**
+     * @private
      * Adds the specified touchmove handler to the content's scroll element.
      *
      * ```ts
@@ -113,7 +125,7 @@ export declare class Content extends Ion {
      * @param {TODO} tolerance  TODO
      * @returns {Promise} Returns a promise when done
      */
-    scrollTo(x: any, y: any, duration: any, tolerance: any): any;
+    scrollTo(x: number, y: number, duration: number, tolerance?: number): Promise<any>;
     /**
      * Scroll to the specified position.
      *
@@ -139,7 +151,7 @@ export declare class Content extends Ion {
      * ```
      * @returns {Promise} Returns a promise when done
      */
-    scrollToTop(): any;
+    scrollToTop(): Promise<any>;
     /**
      * @private
      * Returns the content and scroll elements' dimensions.
@@ -157,24 +169,24 @@ export declare class Content extends Ion {
      * {Number} dimensions.scrollLeft  scroll scrollLeft
      * {Number} dimensions.scrollRight  scroll scrollLeft + scrollWidth
      */
-    getDimensions(): {
-        contentHeight: any;
-        contentTop: any;
-        contentBottom: any;
-        contentWidth: any;
-        contentLeft: any;
-        contentRight: any;
-        scrollHeight: any;
-        scrollTop: any;
-        scrollBottom: any;
-        scrollWidth: any;
-        scrollLeft: any;
-        scrollRight: any;
+    getContentDimensions(): {
+        contentHeight: number;
+        contentTop: number;
+        contentBottom: number;
+        contentWidth: number;
+        contentLeft: number;
+        contentRight: number;
+        scrollHeight: number;
+        scrollTop: number;
+        scrollBottom: number;
+        scrollWidth: number;
+        scrollLeft: number;
+        scrollRight: number;
     };
     /**
      * @private
      * Adds padding to the bottom of the scroll element when the keyboard is open
      * so content below the keyboard can be scrolled into view.
      */
-    addScrollPadding(newScrollPadding: any): void;
+    addScrollPadding(newPadding: any): void;
 }

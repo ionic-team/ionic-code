@@ -1,3 +1,4 @@
+import { ViewController } from '../components/nav/view-controller';
 /**
   Animation Steps/Process
   -----------------------
@@ -22,33 +23,54 @@
  * @private
 **/
 export declare class Animation {
-    constructor(ele: any, opts?: {});
+    private _parent;
+    private _isStaged;
+    private _isFinished;
+    private _duration;
+    private _easing;
+    private _from;
+    private _to;
+    private _rate;
+    private _opts;
+    private _el;
+    private _chld;
+    private _ani;
+    private _bfSty;
+    private _bfAdd;
+    private _bfRmv;
+    private _afAdd;
+    private _afRmv;
+    private _readys;
+    private _plays;
+    private _finishes;
+    isProgress: boolean;
+    constructor(ele?: any, opts?: {});
     reset(): void;
-    elements(ele: any): Animation;
+    elements(ele: any): this;
     addElement(ele: any): void;
-    parent(parentAnimation: any): Animation;
-    add(childAnimations: any): Animation;
-    duration(value: any): any;
+    parent(parentAnimation: any): this;
+    add(childAnimations: any): this;
+    duration(value?: number): any;
     clearDuration(): void;
-    easing(name: any, opts: any): any;
-    playbackRate(value: any): any;
+    easing(name?: string, opts?: {}): any;
+    playbackRate(value?: number): any;
     reverse(): any;
     forward(): any;
-    from(property: any, value: any): Animation;
-    to(property: any, value: any): Animation;
-    fromTo(property: any, from: any, to: any): Animation;
-    fadeIn(): Animation;
-    fadeOut(): Animation;
+    from(property: any, value: any): this;
+    to(property: any, value: any): this;
+    fromTo(property: any, from: any, to: any): this;
+    fadeIn(): this;
+    fadeOut(): this;
     before: {
         addClass: (className: any) => Animation;
         removeClass: (className: any) => Animation;
         setStyles: (styles: any) => Animation;
     };
     after: {
-        addClass: (className: any) => Animation;
-        removeClass: (className: any) => Animation;
+        addClass: (className: string) => Animation;
+        removeClass: (className: string) => Animation;
     };
-    play(done: any): any;
+    play(done?: Function): any;
     stage(): void;
     _onPlay(): void;
     _onFinish(): void;
@@ -62,12 +84,12 @@ export declare class Animation {
      */
     getCurrentTime(): any;
     progressEnd(shouldComplete: any, rate?: number): Promise<any[]>;
-    onReady(fn: any, clear: any): Animation;
-    onPlay(fn: any, clear: any): Animation;
-    onFinish(fn: any, clear: any): Animation;
-    clone(): any;
-    dispose(removeElement: any): void;
-    static create(element: any, name: any): any;
-    static createTransition(enteringView: any, leavingView: any, opts?: {}): any;
-    static register(name: any, AnimationClass: any): void;
+    onReady(fn: any, clear: any): this;
+    onPlay(fn: any, clear: any): this;
+    onFinish(fn: any, clear: any): this;
+    clone(): Animation;
+    dispose(removeElement?: any): void;
+    static create(name: any): any;
+    static createTransition(enteringView: ViewController, leavingView: ViewController, opts?: any): any;
+    static register(name: string, AnimationClass: any): void;
 }

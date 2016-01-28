@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -29,11 +27,11 @@ var dom_1 = require('./dom');
  * ```
  */
 var Keyboard = (function () {
-    function Keyboard(config, form, zone) {
+    function Keyboard(config, _form, _zone) {
         var _this = this;
-        this.form = form;
-        this.zone = zone;
-        zone.runOutsideAngular(function () {
+        this._form = _form;
+        this._zone = _zone;
+        _zone.runOutsideAngular(function () {
             _this.focusOutline(config.get('focusOutline'), document);
         });
     }
@@ -78,7 +76,7 @@ var Keyboard = (function () {
      */
     Keyboard.prototype.onClose = function (callback, pollingInternval) {
         if (pollingInternval === void 0) { pollingInternval = KEYBOARD_CLOSE_POLLING; }
-        console.debug('keyboard onClose');
+        void 0;
         var self = this;
         var checks = 0;
         var promise = null;
@@ -86,13 +84,13 @@ var Keyboard = (function () {
             // a callback wasn't provided, so let's return a promise instead
             promise = new Promise(function (resolve) { callback = resolve; });
         }
-        self.zone.runOutsideAngular(function () {
+        self._zone.runOutsideAngular(function () {
             function checkKeyboard() {
-                console.debug('keyboard isOpen', self.isOpen(), checks);
+                void 0;
                 if (!self.isOpen() || checks > 100) {
                     dom_1.rafFrames(30, function () {
-                        self.zone.run(function () {
-                            console.debug('keyboard closed');
+                        self._zone.run(function () {
+                            void 0;
                             callback();
                         });
                     });
@@ -112,11 +110,11 @@ var Keyboard = (function () {
      */
     Keyboard.prototype.close = function () {
         var _this = this;
-        console.debug('keyboard close()');
+        void 0;
         dom_1.raf(function () {
             if (dom_1.hasFocusedTextInput()) {
                 // only focus out when a text input has focus
-                _this.form.focusOut();
+                _this._form.focusOut();
             }
         });
     };
@@ -162,7 +160,7 @@ var Keyboard = (function () {
         }
         function enableKeyInput() {
             cssClass();
-            self.zone.runOutsideAngular(function () {
+            self._zone.runOutsideAngular(function () {
                 document.removeEventListener('mousedown', pointerDown);
                 document.removeEventListener('touchstart', pointerDown);
                 if (isKeyInputEnabled) {
@@ -175,10 +173,9 @@ var Keyboard = (function () {
     };
     Keyboard = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _a) || Object, (typeof (_b = typeof form_1.Form !== 'undefined' && form_1.Form) === 'function' && _b) || Object, (typeof (_c = typeof core_1.NgZone !== 'undefined' && core_1.NgZone) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [config_1.Config, form_1.Form, core_1.NgZone])
     ], Keyboard);
     return Keyboard;
-    var _a, _b, _c;
 })();
 exports.Keyboard = Keyboard;
 var KEYBOARD_CLOSE_POLLING = 150;

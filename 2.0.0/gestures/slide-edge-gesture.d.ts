@@ -1,7 +1,10 @@
 import { SlideGesture } from './slide-gesture';
 export declare class SlideEdgeGesture extends SlideGesture {
-    constructor(element: Element, opts?: Object);
-    canStart(ev: any): any;
+    edges: Array<string>;
+    maxEdgeStart: any;
+    private _d;
+    constructor(element: Element, opts?: any);
+    canStart(ev: any): boolean;
     getContainerDimensions(): {
         left: number;
         top: number;

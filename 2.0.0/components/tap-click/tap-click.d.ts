@@ -5,7 +5,16 @@ import { Config } from '../../config/config';
  * @private
  */
 export declare class TapClick {
-    constructor(app: IonicApp, config: Config, zone: NgZone);
+    private app;
+    private zone;
+    private lastTouch;
+    private disableClick;
+    private lastActivated;
+    private usePolyfill;
+    private activator;
+    private startCoord;
+    private pointerMove;
+    constructor(config: Config, app: IonicApp, zone: NgZone);
     touchStart(ev: any): void;
     touchEnd(ev: any): void;
     mouseDown(ev: any): void;

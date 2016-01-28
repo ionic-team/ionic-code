@@ -1,4 +1,14 @@
-var nav_controller_1 = require('./nav-controller');
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var core_1 = require('angular2/core');
+var nav_params_1 = require('./nav-params');
 /**
  * @name ViewController
  * @description
@@ -15,16 +25,69 @@ var nav_controller_1 = require('./nav-controller');
  *  ```
  */
 var ViewController = (function () {
-    function ViewController(navCtrl, componentType, params) {
-        if (params === void 0) { params = {}; }
-        this.navCtrl = navCtrl;
+    function ViewController(componentType, data) {
+        if (data === void 0) { data = {}; }
         this.componentType = componentType;
-        this.params = new nav_controller_1.NavParams(params);
-        this.instance = {};
-        this.state = 0;
+        this.data = data;
         this._destroys = [];
+        this._hdAttr = null;
+        this._leavingOpts = null;
         this._loaded = false;
+        this._onDismiss = null;
+        /**
+         * @private
+         */
+        this.instance = {};
+        /**
+         * @private
+         */
+        this.state = '';
+        /**
+         * @private
+         */
+        this.viewType = '';
+        this._emitter = new core_1.EventEmitter();
     }
+    ViewController.prototype.subscribe = function (callback) {
+        this._emitter.subscribe(callback);
+    };
+    /**
+     * @private
+     */
+    ViewController.prototype.emit = function (data) {
+        this._emitter.emit(data);
+    };
+    ViewController.prototype.onDismiss = function (callback) {
+        this._onDismiss = callback;
+    };
+    ViewController.prototype.dismiss = function (data) {
+        this._onDismiss && this._onDismiss(data);
+        return this._nav.remove(this._nav.indexOf(this), 1, this._leavingOpts);
+    };
+    /**
+     * @private
+     */
+    ViewController.prototype.setNav = function (navCtrl) {
+        this._nav = navCtrl;
+    };
+    /**
+     * @private
+     */
+    ViewController.prototype.getTransitionName = function (direction) {
+        return this._nav && this._nav.config.get('pageTransition');
+    };
+    /**
+     * @private
+     */
+    ViewController.prototype.getNavParams = function () {
+        return new nav_params_1.NavParams(this.data);
+    };
+    /**
+     * @private
+     */
+    ViewController.prototype.setLeavingOpts = function (opts) {
+        this._leavingOpts = opts;
+    };
     /**
      * Check to see if you can go back in the navigation stack
      * @param {boolean} Check whether or not you can go back from this page
@@ -32,11 +95,11 @@ var ViewController = (function () {
      */
     ViewController.prototype.enableBack = function () {
         // update if it's possible to go back from this nav item
-        if (this.navCtrl) {
-            var previousItem = this.navCtrl.getPrevious(this);
+        if (this._nav) {
+            var previousItem = this._nav.getPrevious(this);
             // the previous view may exist, but if it's about to be destroyed
             // it shouldn't be able to go back to
-            return !!(previousItem && !previousItem.shouldDestroy);
+            return !!(previousItem);
         }
         return false;
     };
@@ -51,7 +114,7 @@ var ViewController = (function () {
          * @private
          */
         get: function () {
-            return this.componentType ? this.componentType.name : '';
+            return this.componentType ? this.componentType['name'] : '';
         },
         enumerable: true,
         configurable: true
@@ -70,10 +133,10 @@ var ViewController = (function () {
          *  }
          * ```
          *
-         * @returns {Number} Returns the index of this page within its NavController.
+         * @returns {number} Returns the index of this page within its NavController.
          */
         get: function () {
-            return (this.navCtrl ? this.navCtrl.indexOf(this) : -1);
+            return (this._nav ? this._nav.indexOf(this) : -1);
         },
         enumerable: true,
         configurable: true
@@ -98,6 +161,34 @@ var ViewController = (function () {
             this._destroys[i]();
         }
         this._destroys = [];
+    };
+    /**
+     * @private
+     */
+    ViewController.prototype.domCache = function (shouldShow, renderer) {
+        // using hidden element attribute to display:none and not render views
+        // renderAttr of '' means the hidden attribute will be added
+        // renderAttr of null means the hidden attribute will be removed
+        // doing checks to make sure we only make an update to the element when needed
+        if (this._pgRef &&
+            (shouldShow && this._hdAttr === '' ||
+                !shouldShow && this._hdAttr !== '')) {
+            this._hdAttr = (shouldShow ? null : '');
+            renderer.setElementAttribute(this._pgRef.nativeElement, 'hidden', this._hdAttr);
+            var navbarRef = this.navbarRef();
+            if (navbarRef) {
+                renderer.setElementAttribute(navbarRef.nativeElement, 'hidden', this._hdAttr);
+            }
+        }
+    };
+    /**
+     * @private
+     */
+    ViewController.prototype.setZIndex = function (zIndex, renderer) {
+        if (this._pgRef && zIndex !== this.zIndex) {
+            this.zIndex = zIndex;
+            renderer.setElementStyle(this._pgRef.nativeElement, 'z-index', zIndex.toString());
+        }
     };
     /**
      * @private
@@ -255,7 +346,7 @@ var ViewController = (function () {
     ViewController.prototype.setBackButtonText = function (val) {
         var navbar = this.getNavbar();
         if (navbar) {
-            navbar.bbText = val;
+            navbar.setBackButtonText(val);
         }
     };
     /**
@@ -284,18 +375,14 @@ var ViewController = (function () {
      */
     ViewController.prototype.loaded = function () {
         this._loaded = true;
-        if (!this.shouldDestroy) {
-            ctrlFn(this, 'onPageLoaded');
-        }
+        ctrlFn(this, 'onPageLoaded');
     };
     /**
      * @private
      * The view is about to enter and become the active view.
      */
     ViewController.prototype.willEnter = function () {
-        if (!this.shouldDestroy) {
-            ctrlFn(this, 'onPageWillEnter');
-        }
+        ctrlFn(this, 'onPageWillEnter');
     };
     /**
      * @private
@@ -336,6 +423,10 @@ var ViewController = (function () {
     ViewController.prototype.didUnload = function () {
         ctrlFn(this, 'onPageDidUnload');
     };
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], ViewController.prototype, "_emitter", void 0);
     return ViewController;
 })();
 exports.ViewController = ViewController;
@@ -345,7 +436,7 @@ function ctrlFn(viewCtrl, fnName) {
             viewCtrl.instance[fnName]();
         }
         catch (e) {
-            console.error(fnName + ': ' + e.message);
+            void 0;
         }
     }
 }

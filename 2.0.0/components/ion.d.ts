@@ -1,16 +1,21 @@
 import { ElementRef } from 'angular2/core';
-import { Config } from '../config/config';
 /**
  * Base class for all Ionic components. Exposes some common functionality
  * that all Ionic components need, such as accessing underlying native elements and
  * sending/receiving app-level events.
  */
 export declare class Ion {
-    constructor(elementRef: ElementRef, config: Config);
-    ngOnInit(): void;
-    getElementRef(): any;
+    protected elementRef: ElementRef;
+    private _id;
+    constructor(elementRef: ElementRef);
+    getElementRef(): ElementRef;
     getNativeElement(): any;
-    getDimensions(): any;
-    width(): any;
-    height(): any;
+    getDimensions(): {
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+    };
+    width(): number;
+    height(): number;
 }

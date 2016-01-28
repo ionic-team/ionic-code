@@ -41,11 +41,11 @@ import { NavRegistry } from './nav-registry';
  * @see {@link ../NavPop NavPop API Docs}
  */
 export declare class NavPush {
-    /**
-     * TODO
-     * @param {NavController} nav  TODO
-     */
-    constructor(nav: NavController, registry: NavRegistry);
+    private _nav;
+    private registry;
+    navPush: any;
+    navParams: any;
+    constructor(_nav: NavController, registry: NavRegistry);
     /**
      * @private
      */
@@ -70,11 +70,12 @@ export declare class NavPush {
  * @see {@link ../NavPush NavPush API Docs}
  */
 export declare class NavPop {
+    private _nav;
     /**
      * TODO
      * @param {NavController} nav  TODO
      */
-    constructor(nav: NavController);
+    constructor(_nav: NavController);
     /**
      * @private
      */

@@ -1,73 +1,100 @@
-import { OverlayController } from '../overlay/overlay-controller';
-import { Config } from '../../config/config';
+import { ViewController } from '../nav/view-controller';
 /**
  * @name ActionSheet
  * @description
- * The Action Sheet is a slide-up pane that lets the user choose from a set of options. Dangerous options are made obvious.
- * There are easy ways to cancel out of the action sheet, such as tapping the backdrop or even hitting escape on the keyboard for desktop testing.
+ * An Action Sheet is a dialog that lets the user choose from a set of
+ * options. It appears on top of the app's content, and must be manually
+ * dismissed by the user before they can resume interaction with the app.
+ * Dangerous (destructive) options are made obvious. There are easy
+ * ways to cancel out of the action sheet, such as tapping the backdrop or
+ * hitting the escape key on desktop.
+ *
+ * An action sheet is created from an array of `buttons`, with each button
+ * including properties for its `text`, and optionally a `style` and `handler`.
+ * If a handler returns `false` then the action sheet will not be dismissed. An
+ * action sheet can also optionally have a `title` and a `subTitle`.
+ *
+ * A button's `style` property can either be `destructive` or `cancel`. Buttons
+ * without a style property will have a default style for its platform. Buttons
+ * with the `cancel` style will always load as the bottom button, no matter where
+ * it shows up in the array. All other buttons will show up in the order they
+ * have been added to the `buttons` array. Note: We recommend that `destructive`
+ * buttons show be the first button in the array, making it the button on top.
+ *
+ * Its shorthand is to add all the action sheet's options from within the
+ * `ActionSheet.create(opts)` first argument. Otherwise the action sheet's
+ * instance has methods to add options, such as `setTitle()` or `addButton()`.
  *
  * @usage
  * ```ts
- * openMenu() {
+ * constructor(nav: NavController) {
+ *   this.nav = nav;
+ * }
  *
- *   this.actionSheet.open({
+ * presentActionSheet() {
+ *   let actionSheet = ActionSheet.create({
+ *     title: 'Modify your album',
  *     buttons: [
- *       { text: 'Share This' },
- *       { text: 'Move' }
- *     ],
- *     destructiveText: 'Delete',
- *     titleText: 'Modify your album',
- *     cancelText: 'Cancel',
- *     cancel: function() {
- *       console.log('Canceled');
- *     },
- *     destructiveButtonClicked: () => {
- *       console.log('Destructive clicked');
- *     },
- *     buttonClicked: function(index) {
- *       console.log('Button clicked', index);
- *       if(index == 1) { return false; }
- *       return true;
- *     }
- *
- *   }).then(actionSheetRef => {
- *     this.actionSheetRef = actionSheetRef;
+ *       {
+ *         text: 'Destructive',
+ *         style: 'destructive',
+ *         handler: () => {
+ *           console.log('Destructive clicked');
+ *         }
+ *       },
+ *       {
+ *         text: 'Archive',
+ *         handler: () => {
+ *           console.log('Archive clicked');
+ *         }
+ *       },
+ *       {
+ *         text: 'Cancel',
+ *         style: 'cancel',
+ *         handler: () => {
+ *           console.log('Cancel clicked');
+ *         }
+ *       }
+ *     ]
  *   });
  *
+ *   this.nav.present(actionSheet);
  * }
  * ```
  *
  * @demo /docs/v2/demos/action-sheet/
  * @see {@link /docs/v2/components#action-sheets ActionSheet Component Docs}
  */
-export declare class ActionSheet {
-    constructor(ctrl: OverlayController, config: Config);
+export declare class ActionSheet extends ViewController {
+    constructor(opts?: {
+        title?: string;
+        subTitle?: string;
+        cssClass?: string;
+        buttons?: Array<any>;
+    });
     /**
-     * Create and open a new Action Sheet. This is the
-     * public API, and most often you will only use ActionSheet.open()
-     *
-     * @param {Object} [opts={}]  An object containing optional settings.
-     *  - `[Object]` `buttons` Which buttons to show.  Each button is an object with a `text` field.
-     *  - `{string}` `titleText` The title to show on the action sheet.
-     *  - `{string=}` `cancelText` the text for a 'cancel' button on the action sheet.
-     *  - `{string=}` `destructiveText` The text for a 'danger' on the action sheet.
-     *  - `{function=}` `cancel` Called if the cancel button is pressed, the backdrop is tapped or
-     *     the hardware back button is pressed.
-     *  - `{function=}` `buttonClicked` Called when one of the non-destructive buttons is clicked,
-     *     with the index of the button that was clicked and the button object. Return true to close
-     *     the action sheet, or false to keep it opened.
-     *  - `{function=}` `destructiveButtonClicked` Called when the destructive button is clicked.
-     *     Return true to close the action sheet, or false to keep it opened.
-     * @param {String} [opts.enterAnimation='action-sheet-slide-in'] The class used to animate an actionSheet that is entering.
-     * @param {String} [opts.leaveAnimation='action-sheet-slide-out'] The class used to animate an actionSheet that is leaving.
-     * @return {Promise} Promise that resolves when the action sheet is open.
-     */
-    open(opts?: {}): any;
+    * @private
+    */
+    getTransitionName(direction: any): any;
     /**
-     * Retrieves an actionSheet instance.
-     *
-     * @param {String} [handle]  The handle used to open the instance to be retrieved.
-     * @returns {ActionSheet} An actionSheet instance.
+     * @param {string} title Action sheet title
      */
-    get(handle: any): any;
+    setTitle(title: string): void;
+    /**
+     * @param {string} subTitle Action sheet subtitle
+     */
+    setSubTitle(subTitle: string): void;
+    /**
+     * @param {object} button Action sheet button
+     */
+    addButton(button: any): void;
+    /**
+     * @param {object} opts Action sheet options
+     */
+    static create(opts?: {
+        title?: string;
+        subTitle?: string;
+        cssClass?: string;
+        buttons?: Array<any>;
+    }): ActionSheet;
 }

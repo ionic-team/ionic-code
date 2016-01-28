@@ -17,7 +17,9 @@ import { Form } from './form';
  * ```
  */
 export declare class Keyboard {
-    constructor(config: Config, form: Form, zone: NgZone);
+    private _form;
+    private _zone;
+    constructor(config: Config, _form: Form, _zone: NgZone);
     /**
      * Chech to see if the keyboard is open or not.
      *

@@ -17,8 +17,8 @@ var IOSTransition = (function (_super) {
     __extends(IOSTransition, _super);
     function IOSTransition(enteringView, leavingView, opts) {
         _super.call(this, null, opts);
-        this.duration(DURATION);
-        this.easing(EASING);
+        this.duration(opts.duration || DURATION);
+        this.easing(opts.easing || EASING);
         // what direction is the transition going
         var backDirection = (opts.direction === 'back');
         // do they have navbars?

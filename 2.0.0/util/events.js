@@ -1,15 +1,3 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var core_1 = require('angular2/core');
 /**
  * Events is a pub/sub style event system for sending and responding to application-level
  * events across your app.
@@ -30,7 +18,7 @@ var core_1 = require('angular2/core');
  */
 var Events = (function () {
     function Events() {
-        this.channels = [];
+        this._channels = [];
     }
     /**
      * Subscribe to an event topic. Events that get posted to that topic
@@ -45,11 +33,11 @@ var Events = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             handlers[_i - 1] = arguments[_i];
         }
-        if (!this.channels[topic]) {
-            this.channels[topic] = [];
+        if (!this._channels[topic]) {
+            this._channels[topic] = [];
         }
         handlers.forEach(function (handler) {
-            _this.channels[topic].push(handler);
+            _this._channels[topic].push(handler);
         });
     };
     /**
@@ -62,14 +50,14 @@ var Events = (function () {
      * @return true if a handler was removed
      */
     Events.prototype.unsubscribe = function (topic, handler) {
-        var t = this.channels[topic];
+        var t = this._channels[topic];
         if (!t) {
             // Wasn't found, wasn't removed
             return false;
         }
         if (!handler) {
             // Remove all handlers for this topic
-            delete this.channels[topic];
+            delete this._channels[topic];
             return true;
         }
         // We need to find and remove a specific handler
@@ -81,7 +69,7 @@ var Events = (function () {
         t.splice(i, 1);
         // If the channel is empty now, remove it from the channel map
         if (!t.length) {
-            delete this.channels[topic];
+            delete this._channels[topic];
         }
         return true;
     };
@@ -96,7 +84,7 @@ var Events = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
         }
-        var t = this.channels[topic];
+        var t = this._channels[topic];
         if (!t) {
             return null;
         }
@@ -106,10 +94,6 @@ var Events = (function () {
         });
         return responses;
     };
-    Events = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], Events);
     return Events;
 })();
 exports.Events = Events;

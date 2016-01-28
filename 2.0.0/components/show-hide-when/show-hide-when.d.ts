@@ -4,7 +4,10 @@ import { Platform } from '../../platform/platform';
  * @private
  */
 export declare class DisplayWhen {
-    constructor(conditions: any, platform: any, ngZone: any);
+    protected isMatch: boolean;
+    private platform;
+    private conditions;
+    constructor(conditions: string, platform: Platform, ngZone: NgZone);
     orientation(): boolean;
 }
 /**
@@ -43,5 +46,5 @@ export declare class HideWhen extends DisplayWhen {
     /**
      * @private
      */
-    hidden: any;
+    hidden: boolean;
 }

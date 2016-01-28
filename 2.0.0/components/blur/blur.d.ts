@@ -2,8 +2,7 @@ import { Renderer, ElementRef } from 'angular2/core';
 /**
  * @name Blur
  * @description
- * The blur attribute applies the CSS blur attribute to an element. If the CSS attribute is not supported,
- * it will fall back to applying a semi-transparent background color to the element.
+ * The blur attribute applies the CSS blur attribute to an element. Safari only.
  *
  * @usage
  * ```html
@@ -13,9 +12,10 @@ import { Renderer, ElementRef } from 'angular2/core';
  * ```
  *
  * @demo /docs/v2/demos/blur/
+ * @private
  */
 export declare class Blur {
-    private elementRef;
-    private renderer;
-    constructor(elementRef: ElementRef, renderer: Renderer);
+    private _elementRef;
+    private _renderer;
+    constructor(_elementRef: ElementRef, _renderer: Renderer);
 }

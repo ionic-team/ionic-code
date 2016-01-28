@@ -4,12 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -22,10 +20,9 @@ var common_1 = require('angular2/common');
 var ion_1 = require('../ion');
 var animation_1 = require('../../animations/animation');
 var gesture_1 = require('../../gestures/gesture');
-var config_1 = require('../../config/config');
 var util_1 = require('../../util');
 var dom_1 = require('../../util/dom');
-var util = require('../../util');
+var util_2 = require('../../util/util');
 var swiper_widget_1 = require('./swiper-widget');
 /**
  * @name Slides
@@ -79,6 +76,7 @@ var swiper_widget_1 = require('./swiper-widget');
  * @property {Number} [index] - The slide index to start on
  * @property [pager] - add this property to enable the slide pager
  * @property {Any} [change] - expression to evaluate when a slide has been changed
+ * @demo /docs/v2/demos/slides/
  * @see {@link /docs/v2/components#slides Slides Component Docs}
  */
 var Slides = (function (_super) {
@@ -87,14 +85,14 @@ var Slides = (function (_super) {
      * @private
      * @param {ElementRef} elementRef  TODO
      */
-    function Slides(elementRef, config) {
+    function Slides(elementRef) {
         var _this = this;
-        _super.call(this, elementRef, config);
+        _super.call(this, elementRef);
         this.change = new core_1.EventEmitter();
-        this.rapidUpdate = util.debounce(function () {
+        this.rapidUpdate = util_2.debounce(function () {
             _this.update();
         }, 10);
-        console.warn("(slideChanged) deprecated. Use (change) to track slide changes.");
+        void 0;
     }
     /**
      * @private
@@ -104,9 +102,14 @@ var Slides = (function (_super) {
         if (!this.options) {
             this.options = {};
         }
-        this.showPager = util.isTrueProperty(this.pager);
-        var options = util.defaults({
+        this.showPager = util_2.isTrueProperty(this.pager);
+        this.loop = util_2.isTrueProperty(this.loop);
+        if (typeof (this.index) != 'undefined') {
+            this.index = parseInt(this.index);
+        }
+        var options = util_2.defaults({
             loop: this.loop,
+            initialSlide: this.index,
             pagination: '.swiper-pagination',
             paginationClickable: true,
             lazyLoading: true,
@@ -145,11 +148,13 @@ var Slides = (function (_super) {
         options.onLazyImageReady = function (swiper, slide, img) {
             return _this.options.onLazyImageReady && _this.options.onLazyImageReady(swiper, slide, img);
         };
-        var swiper = new swiper_widget_1.Swiper(this.getNativeElement().children[0], options);
-        this.slider = swiper;
+        setTimeout(function () {
+            var swiper = new swiper_widget_1.Swiper(_this.getNativeElement().children[0], options);
+            _this.slider = swiper;
+        });
         /*
         * TODO: Finish this
-        if(util.isTrueProperty(this.zoom)) {
+        if (util.isTrueProperty(this.zoom)) {
           this.enableZoom = true;
           setTimeout(() => {
             this.initZoom();
@@ -219,11 +224,11 @@ var Slides = (function (_super) {
         });
         this.zoomGesture.on('pinchstart', function (e) {
             last_scale = _this.scale;
-            console.log('Last scale', e.scale);
+            void 0;
         });
         this.zoomGesture.on('pinch', function (e) {
             _this.scale = Math.max(1, Math.min(last_scale * e.scale, 10));
-            console.log('Scaling', _this.scale);
+            void 0;
             _this.zoomElement.style[dom_1.CSS.transform] = 'scale(' + _this.scale + ')';
             zoomRect = _this.zoomElement.getBoundingClientRect();
         });
@@ -256,11 +261,11 @@ var Slides = (function (_super) {
      * @private
      */
     Slides.prototype.toggleZoom = function (swiper, e) {
-        console.log('Try toggle zoom');
+        void 0;
         if (!this.enableZoom) {
             return;
         }
-        console.log('Toggling zoom', e);
+        void 0;
         /*
         let x = e.pointers[0].clientX;
         let y = e.pointers[0].clientY;
@@ -270,14 +275,14 @@ var Slides = (function (_super) {
     
         let tx, ty;
     
-        if(x > mx) {
+        if (x > mx) {
           // Greater than half
           tx = -x;
         } else {
           // Less than or equal to half
           tx = (this.viewportWidth - x);
         }
-        if(y > my) {
+        if (y > my) {
           ty = -y;
         } else {
           ty = y-my;
@@ -293,8 +298,7 @@ var Slides = (function (_super) {
             .duration(this.zoomDuration)
             .easing('linear');
         var za = new animation_1.Animation();
-        za.fill('none');
-        za.add(zi); //, zw);
+        za.add(zi);
         if (this.scale > 1) {
             // Zoom out
             //zw.fromTo('translateX', posX + 'px', '0px');
@@ -321,21 +325,23 @@ var Slides = (function (_super) {
     /**
      * @private
      */
-    Slides.prototype.onTransitionStart = function (swiper) {
+    Slides.prototype.onTransitionStart = function (swiper, e) {
     };
     /**
      * @private
      */
-    Slides.prototype.onTransitionEnd = function (swiper) {
+    Slides.prototype.onTransitionEnd = function (swiper, e) {
     };
     /**
      * @private
      */
     Slides.prototype.onTouchStart = function (e) {
-        console.log('Touch start', e);
+        void 0;
         //TODO: Support mice as well
         var target = util_1.dom.closest(e.target, '.slide').children[0].children[0];
         this.touch = {
+            x: null,
+            y: null,
             startX: e.touches[0].clientX,
             startY: e.touches[0].clientY,
             deltaX: 0,
@@ -347,7 +353,7 @@ var Slides = (function (_super) {
             zoomableWidth: target.offsetWidth,
             zoomableHeight: target.offsetHeight
         };
-        console.log('Target', this.touch.target);
+        void 0;
         //TODO: android prevent default
     };
     /**
@@ -363,27 +369,27 @@ var Slides = (function (_super) {
         var x2 = -x1;
         var y1 = Math.min((this.viewportHeight / 2) - zoomableScaledHeight / 2, 0);
         var y2 = -y1;
-        console.log('BOUNDS', x1, x2, y1, y2);
+        void 0;
         if (this.scale <= 1) {
             return;
         }
-        console.log('PAN', e);
+        void 0;
         // Move image
         this.touch.x = this.touch.deltaX + this.touch.lastX;
         this.touch.y = this.touch.deltaY + this.touch.lastY;
-        console.log(this.touch.x, this.touch.y);
+        void 0;
         if (this.touch.x < x1) {
-            console.log('OUT ON LEFT');
+            void 0;
         }
         if (this.touch.x > x2) {
-            console.log('OUT ON RIGHT');
+            void 0;
         }
         if (this.touch.x > this.viewportWidth) {
         }
         else if (-this.touch.x > this.viewportWidth) {
         }
         else {
-            console.log('TRANSFORM', this.touch.x, this.touch.y, this.touch.target);
+            void 0;
             //this.touch.target.style[CSS.transform] = 'translateX(' + this.touch.x + 'px) translateY(' + this.touch.y + 'px)';
             this.touch.target.style[dom_1.CSS.transform] = 'translateX(' + this.touch.x + 'px) translateY(' + this.touch.y + 'px)';
             e.preventDefault();
@@ -395,14 +401,15 @@ var Slides = (function (_super) {
      * @private
      */
     Slides.prototype.onTouchEnd = function (e) {
-        console.log('PANEND', e);
+        void 0;
         if (this.scale > 1) {
             if (Math.abs(this.touch.x) > this.viewportWidth) {
-                posX = posX > 0 ? this.viewportWidth - 1 : -(this.viewportWidth - 1);
-                console.log('Setting on posx', this.touch.x);
+                // TODO what is posX?
+                var posX = posX > 0 ? this.viewportWidth - 1 : -(this.viewportWidth - 1);
+                void 0;
             }
             /*
-            if(posY > this.viewportHeight/2) {
+            if (posY > this.viewportHeight/2) {
               let z = new Animation(this.zoomElement.parentElement);
               z.fromTo('translateY', posY + 'px', Math.min(this.viewportHeight/2 + 30, posY));
               z.play();
@@ -474,23 +481,48 @@ var Slides = (function (_super) {
         return this.slider;
     };
     __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "autoplay", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "loop", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "index", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "bounce", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "pager", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "options", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "zoom", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "zoomDuration", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slides.prototype, "zoomMax", void 0);
+    __decorate([
         core_1.Output(), 
-        __metadata('design:type', (typeof (_a = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _a) || Object)
-    ], Slides.prototype, "change");
+        __metadata('design:type', core_1.EventEmitter)
+    ], Slides.prototype, "change", void 0);
     Slides = __decorate([
         core_1.Component({
             selector: 'ion-slides',
-            inputs: [
-                'autoplay',
-                'loop',
-                'index',
-                'bounce',
-                'pager',
-                'options',
-                'zoom',
-                'zoomDuration',
-                'zoomMax'
-            ],
             template: '<div class="swiper-container">' +
                 '<div class="swiper-wrapper">' +
                 '<ng-content></ng-content>' +
@@ -499,53 +531,50 @@ var Slides = (function (_super) {
                 '</div>',
             directives: [common_1.NgClass]
         }), 
-        __metadata('design:paramtypes', [(typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [core_1.ElementRef])
     ], Slides);
     return Slides;
-    var _a, _b, _c;
 })(ion_1.Ion);
 exports.Slides = Slides;
 /**
  * @private
  */
 var Slide = (function () {
-    /**
-     * TODO
-     * @param {Slides} slides  The containing slidebox.
-     * @param {ElementRef} elementRef  TODO
-     */
     function Slide(elementRef, slides) {
         this.ele = elementRef.nativeElement;
         this.ele.classList.add('swiper-slide');
         slides.rapidUpdate();
     }
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Slide.prototype, "zoom", void 0);
     Slide = __decorate([
         core_1.Component({
             selector: 'ion-slide',
-            inputs: ['zoom'],
             template: '<div class="slide-zoom"><ng-content></ng-content></div>'
         }),
         __param(1, core_1.Host()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, Slides])
+        __metadata('design:paramtypes', [core_1.ElementRef, Slides])
     ], Slide);
     return Slide;
-    var _a;
 })();
 exports.Slide = Slide;
 /**
  * @private
  */
 var SlideLazy = (function () {
-    function SlideLazy(elementRef) {
-        elementRef.getNativeElement().classList.add('swiper-lazy');
+    function SlideLazy() {
     }
     SlideLazy = __decorate([
         core_1.Directive({
             selector: 'slide-lazy',
+            host: {
+                'class': 'swiper-lazy'
+            }
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [])
     ], SlideLazy);
     return SlideLazy;
-    var _a;
 })();
 exports.SlideLazy = SlideLazy;

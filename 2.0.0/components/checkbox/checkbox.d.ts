@@ -1,8 +1,10 @@
-import { ElementRef } from 'angular2/core';
 import { NgControl } from 'angular2/common';
 import { Form } from '../../util/form';
+import { Item } from '../item/item';
 /**
- * The checkbox is no different than the HTML checkbox input, except it's styled differently.
+ * The checkbox is no different than the HTML checkbox input, except
+ * it's styled accordingly to the the platform and design mode, such
+ * as iOS or Material Design.
  *
  * See the [Angular 2 Docs](https://angular.io/docs/js/latest/api/core/Form-interface.html) for more info on forms and input.
  *
@@ -12,38 +14,67 @@ import { Form } from '../../util/form';
  *
  * @usage
  * ```html
- * <ion-checkbox checked="true" value="isChecked" ngControl="htmlCtrl">
- *   HTML5
- * </ion-checkbox>
+ *
+ *  <ion-list>
+ *
+ *    <ion-item>
+ *      <ion-label>Pepperoni</ion-label>
+ *      <ion-checkbox value="pepperoni" checked="true"></ion-checkbox>
+ *    </ion-item>
+ *
+ *    <ion-item>
+ *      <ion-label>Sausage</ion-label>
+ *      <ion-checkbox value="sausage"></ion-checkbox>
+ *    </ion-item>
+ *
+ *    <ion-item>
+ *      <ion-label>Mushrooms</ion-label>
+ *      <ion-checkbox value="mushrooms"></ion-checkbox>
+ *    </ion-item>
+ *
+ *  </ion-list>
  * ```
  * @demo /docs/v2/demos/checkbox/
  * @see {@link /docs/v2/components#checkbox Checkbox Component Docs}
  */
 export declare class Checkbox {
-    private form;
-    constructor(form: Form, ngControl: NgControl, elementRef: ElementRef);
+    private _form;
+    private _item;
+    private _checked;
+    private _disabled;
+    private _labelId;
     /**
      * @private
      */
-    ngOnInit(): void;
+    id: string;
+    value: string;
+    constructor(_form: Form, _item: Item, ngControl: NgControl);
     /**
      * @private
      * Toggle the checked state of the checkbox. Calls onChange to pass the updated checked state to the model (Control).
      */
     toggle(): void;
+    checked: any;
+    disabled: any;
     /**
      * @private
-     * Click event handler to toggle the checkbox checked state.
-     * @param {MouseEvent} ev  The click event.
      */
-    click(ev: any): void;
+    private _click(ev);
     /**
      * @private
      * Angular2 Forms API method called by the model (Control) on change to update
      * the checked value.
      * https://github.com/angular/angular/blob/master/modules/angular2/src/forms/directives/shared.ts#L34
      */
-    writeValue(value: any): void;
+    writeValue(val: any): void;
+    /**
+     * @private
+     */
+    onChange(val: any): void;
+    /**
+     * @private
+     */
+    onTouched(val: any): void;
     /**
      * @private
      * Angular2 Forms API method called by the view (NgControl) to register the

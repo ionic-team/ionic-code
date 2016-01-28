@@ -76,8 +76,8 @@ var util_1 = require('../util/util');
  * | activator                  | highlight              | ripple                    |
  * | actionSheetEnter           | action-sheet-slide-in  | action-sheet-md-slide-in  |
  * | actionSheetLeave           | action-sheet-slide-out | action-sheet-md-slide-out |
- * | actionSheetCancelIcon      |                        | ion-md-close              |
- * | actionSheetDestructiveIcon |                        | ion-md-trash              |
+ * | alertEnter                 | alert-pop-in           | alert-md-pop-in           |
+ * | alertLeave                 | alert-pop-out          | alert-md-pop-out          |
  * | backButtonText             | Back                   |                           |
  * | backButtonIcon             | ion-ios-arrow-back     | ion-md-arrow-back         |
  * | iconMode                   | ios                    | md                        |
@@ -86,17 +86,16 @@ var util_1 = require('../util/util');
  * | modalLeave                 | modal-slide-out        | modal-md-slide-out        |
  * | pageTransition             | ios-transition         | md-transition             |
  * | pageTransitionDelay        | 16                     | 120                       |
- * | popupEnter                 | popup-pop-in           | popup-md-pop-in           |
- * | popupLeave                 | popup-pop-out          | popup-md-pop-out          |
- * | tabbarPlacement            | bottom                 | true                      |
+ * | tabbarPlacement            | bottom                 | top                       |
  * | tabbarHighlight            |                        | top                       |
- * | tabSubPage                 |                        | true                      |
+ * | tabSubPages                |                        | true                      |
  *
 **/
 var Config = (function () {
     function Config(config) {
+        this._c = {};
+        this._s = {};
         this._s = config && util_1.isObject(config) && !util_1.isArray(config) ? config : {};
-        this._c = {}; // cached values
     }
     /**
      * For setting and getting multiple config values
@@ -167,6 +166,9 @@ var Config = (function () {
      */
     Config.prototype.get = function (key) {
         if (!util_1.isDefined(this._c[key])) {
+            if (!util_1.isDefined(key)) {
+                throw 'config key is not defined';
+            }
             // if the value was already set this will all be skipped
             // if there was no user config then it'll check each of
             // the user config's platforms, which already contains
@@ -178,8 +180,8 @@ var Config = (function () {
             var platformValue = undefined;
             var platformModeValue = undefined;
             var configObj = null;
-            if (this._platform) {
-                var queryStringValue = this._platform.query('ionic' + key.toLowerCase());
+            if (this.platform) {
+                var queryStringValue = this.platform.query('ionic' + key.toLowerCase());
                 if (util_1.isDefined(queryStringValue)) {
                     return this._c[key] = (queryStringValue === 'true' ? true : queryStringValue === 'false' ? false : queryStringValue);
                 }
@@ -187,7 +189,7 @@ var Config = (function () {
                 // loop though each of the active platforms
                 // array of active platforms, which also knows the hierarchy,
                 // with the last one the most important
-                var activePlatformKeys = this._platform.platforms();
+                var activePlatformKeys = this.platform.platforms();
                 // loop through all of the active platforms we're on
                 for (var i = 0, l = activePlatformKeys.length; i < l; i++) {
                     // get user defined platform values
@@ -237,15 +239,26 @@ var Config = (function () {
         // or it was from the default platform configs
         // in that order
         if (util_1.isFunction(this._c[key])) {
-            return this._c[key](this._platform);
+            return this._c[key](this.platform);
         }
         return this._c[key];
+    };
+    /**
+     * @name getBoolean
+     * @description
+     * Same as `get()`, however always returns a boolean value.
+     *
+     * @param {String} [key] - the key for the config value
+     */
+    Config.prototype.getBoolean = function (key) {
+        var val = this.get(key);
+        return (val || val === 'true') ? true : false;
     };
     /**
      * @private
      */
     Config.prototype.setPlatform = function (platform) {
-        this._platform = platform;
+        this.platform = platform;
     };
     Config.setModeConfig = function (mode, config) {
         modeConfigs[mode] = config;

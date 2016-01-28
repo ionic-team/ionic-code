@@ -1,3 +1,5 @@
+import { Renderer, ElementRef } from 'angular2/core';
+import { Form } from '../../util/form';
 /**
  * @name Item
  * @description
@@ -12,9 +14,6 @@
  * To hide this icon, add the `detail-none` attribute to the item (eg: `<button ion-item detail-none>`). To add the icon when it is not displayed by default,
  * add the `detail-push` attribute (eg: `<ion-item detail-push>`).
  *
- * To break an item up into multiple columns, add multiple `<ion-item-content>` components inside of the item. By default,
- * this component will automatically be added inside of an `<ion-item>`, giving it a single column.
- *
  *
  * @usage
  * ```html
@@ -26,13 +25,6 @@
  *     {{item.title}}
  *   </ion-item>
  *
- *   // multiple item-content containers
- *   <ion-item>
- *     <ion-item-content>First Column</ion-item-content>
- *     <ion-item-content>Second Column</ion-item-content>
- *     <ion-item-content>Third Column</ion-item-content>
- *   </ion-item>
- *
  * </ion-list>
  *
  *  ```
@@ -40,4 +32,39 @@
  * @see {@link ../../list/List List API Docs}
  */
 export declare class Item {
+    private _renderer;
+    private _elementRef;
+    private _ids;
+    private _inputs;
+    private _label;
+    private _viewLabel;
+    id: string;
+    labelId: string;
+    constructor(form: Form, _renderer: Renderer, _elementRef: ElementRef);
+    /**
+     * @private
+     */
+    registerInput(type: string): string;
+    /**
+     * @private
+     */
+    ngAfterContentInit(): void;
+    /**
+     * @private
+     */
+    setCssClass(cssClass: string, shouldAdd: boolean): void;
+    /**
+     * @private
+     */
+    getLabelText(): string;
+    private contentLabel;
+    private viewLabel;
+    /**
+     * @private
+     */
+    private _buttons;
+    /**
+     * @private
+     */
+    private _icons;
 }

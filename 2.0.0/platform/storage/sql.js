@@ -4,8 +4,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var storage_1 = require('./storage');
-var util = require('../../util');
+var util_1 = require('../../util/util');
 var DB_NAME = '__ionicstorage';
+var win = window;
 /**
  * SqlStorage uses SQLite or WebSQL (development only!) to store data in a
  * persistent SQL store on the filesystem.
@@ -41,22 +42,22 @@ var SqlStorage = (function (_super) {
     function SqlStorage(options) {
         if (options === void 0) { options = {}; }
         _super.call(this);
-        var dbOptions = util.defaults(options, {
+        var dbOptions = util_1.defaults(options, {
             name: DB_NAME,
             backupFlag: SqlStorage.BACKUP_LOCAL,
             existingDatabase: false
         });
-        if (window.sqlitePlugin) {
-            var location = this._getBackupLocation(dbOptions.backupFlag);
-            this._db = window.sqlitePlugin.openDatabase(util.extend({
+        if (win.sqlitePlugin) {
+            var location_1 = this._getBackupLocation(dbOptions.backupFlag);
+            this._db = win.sqlitePlugin.openDatabase(util_1.assign({
                 name: dbOptions.name,
-                location: location,
+                location: location_1,
                 createFromLocation: dbOptions.existingDatabase ? 1 : 0
             }, dbOptions));
         }
         else {
-            console.warn('Storage: SQLite plugin not installed, falling back to WebSQL. Make sure to install cordova-sqlite-storage in production!');
-            this._db = window.openDatabase(dbOptions.name, '1.0', 'database', 5 * 1024 * 1024);
+            void 0;
+            this._db = win.openDatabase(dbOptions.name, '1.0', 'database', 5 * 1024 * 1024);
         }
         this._tryInit();
     }
@@ -77,7 +78,7 @@ var SqlStorage = (function (_super) {
         this._db.transaction(function (tx) {
             tx.executeSql('CREATE TABLE IF NOT EXISTS kv (key text primary key, value text)', [], function (tx, res) {
             }, function (tx, err) {
-                console.error('Storage: Unable to create initial storage tables', tx, err);
+                void 0;
             });
         });
     };

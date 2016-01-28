@@ -4,12 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -107,38 +105,46 @@ var gestures = require('./menu-gestures');
  */
 var Menu = (function (_super) {
     __extends(Menu, _super);
-    function Menu(app, elementRef, config, platform, keyboard) {
-        _super.call(this, elementRef, config);
-        this.app = app;
-        this.platform = platform;
-        this.keyboard = keyboard;
-        this.opening = new core_1.EventEmitter('opening');
-        this.isOpen = false;
+    function Menu(_elementRef, _config, _app, _platform, _renderer, _keyboard, _zone) {
+        _super.call(this, _elementRef);
+        this._elementRef = _elementRef;
+        this._config = _config;
+        this._app = _app;
+        this._platform = _platform;
+        this._renderer = _renderer;
+        this._keyboard = _keyboard;
+        this._zone = _zone;
         this._preventTime = 0;
+        this.isOpen = false;
         this.isEnabled = true;
+        this.isSwipeEnabled = true;
+        this.opening = new core_1.EventEmitter();
     }
     /**
      * @private
      */
     Menu.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
         var self = this;
         var content = self.content;
         self._cntEle = (content instanceof Node) ? content : content && content.getNativeElement && content.getNativeElement();
         if (!self._cntEle) {
-            return console.error('Menu: must have a [content] element to listen for drag events on. Example:\n\n<ion-menu [content]="content"></ion-menu>\n\n<ion-nav #content></ion-nav>');
+            return void 0;
         }
         if (self.side !== 'left' && self.side !== 'right') {
             self.side = 'left';
         }
+        self._renderer.setElementAttribute(self._elementRef.nativeElement, 'side', self.side);
+        if (self.swipeEnabled === 'false') {
+            self.isSwipeEnabled = false;
+        }
         if (!self.id) {
             // Auto register
             self.id = self.side + 'Menu';
-            if (self.app.getComponent(self.id)) {
+            if (self._app.getComponent(self.id)) {
                 // id already exists, make sure this one is unique
                 self.id += (++menuIds);
             }
-            self.app.register(self.id, self);
+            self._app.register(self.id, self);
         }
         self._initGesture();
         self._initType(self.type);
@@ -156,15 +162,18 @@ var Menu = (function (_super) {
      * @private
      */
     Menu.prototype._initGesture = function () {
-        switch (this.side) {
-            case 'right':
-                this._gesture = new gestures.RightMenuGesture(this);
-                break;
-            case 'left':
-                this._gesture = new gestures.LeftMenuGesture(this);
-                break;
-        }
-        this._targetGesture = new gestures.TargetGesture(this);
+        var _this = this;
+        this._zone.runOutsideAngular(function () {
+            switch (_this.side) {
+                case 'right':
+                    _this._gesture = new gestures.RightMenuGesture(_this);
+                    break;
+                case 'left':
+                    _this._gesture = new gestures.LeftMenuGesture(_this);
+                    break;
+            }
+            _this._targetGesture = new gestures.TargetGesture(_this);
+        });
     };
     /**
      * @private
@@ -172,9 +181,10 @@ var Menu = (function (_super) {
     Menu.prototype._initType = function (type) {
         type = type && type.trim().toLowerCase();
         if (!type) {
-            type = this.config.get('menuType');
+            type = this._config.get('menuType');
         }
         this.type = type;
+        this._renderer.setElementAttribute(this._elementRef.nativeElement, 'menuType', type);
     };
     /**
      * @private
@@ -182,7 +192,7 @@ var Menu = (function (_super) {
     Menu.prototype._getType = function () {
         if (!this._type) {
             this._type = new menuTypes[this.type](this);
-            if (this.config.get('animate') === false) {
+            if (this._config.get('animate') === false) {
                 this._type.open.duration(33);
                 this._type.close.duration(33);
             }
@@ -211,7 +221,7 @@ var Menu = (function (_super) {
      */
     Menu.prototype.setProgressStart = function () {
         // user started swiping the menu open/close
-        if (this._isPrevented() || !this.isEnabled)
+        if (this._isPrevented() || !this.isEnabled || !this.isSwipeEnabled)
             return;
         this._before();
         this._getType().setProgressStart(this.isOpen);
@@ -221,7 +231,7 @@ var Menu = (function (_super) {
      */
     Menu.prototype.setProgess = function (value) {
         // user actively dragging the menu
-        if (this.isEnabled) {
+        if (this.isEnabled && this.isSwipeEnabled) {
             this._prevent();
             this._getType().setProgess(value);
             this.opening.next(value);
@@ -233,7 +243,7 @@ var Menu = (function (_super) {
     Menu.prototype.setProgressEnd = function (shouldComplete) {
         var _this = this;
         // user has finished dragging the menu
-        if (this.isEnabled) {
+        if (this.isEnabled && this.isSwipeEnabled) {
             this._prevent();
             this._getType().setProgressEnd(shouldComplete).then(function (isOpen) {
                 _this._after(isOpen);
@@ -250,7 +260,7 @@ var Menu = (function (_super) {
             this.getNativeElement().classList.add('show-menu');
             this.getBackdropElement().classList.add('show-backdrop');
             this._prevent();
-            this.keyboard.close();
+            this._keyboard.close();
         }
     };
     /**
@@ -323,6 +333,15 @@ var Menu = (function (_super) {
         return this;
     };
     /**
+     * Used to enable or disable the ability to swipe open the menu.
+     * @param {boolean} shouldEnable  True if it should be swipe-able, false if not.
+     * @return {Menu}  Returns the instance of the menu, which is useful for chaining.
+     */
+    Menu.prototype.swipeEnable = function (shouldEnable) {
+        this.isSwipeEnabled = shouldEnable;
+        return this;
+    };
+    /**
      * @private
      */
     Menu.prototype.getMenuElement = function () {
@@ -346,11 +365,12 @@ var Menu = (function (_super) {
     Menu.register = function (name, cls) {
         menuTypes[name] = cls;
     };
+    //static register(name:string , cls: typeof MenuType) {
     /**
      * @private
      */
     Menu.prototype.ngOnDestroy = function () {
-        this.app.unregister(this.id);
+        this._app.unregister(this.id);
         this._gesture && this._gesture.destroy();
         this._targetGesture && this._targetGesture.destroy();
         this._type && this._type.ngOnDestroy();
@@ -361,7 +381,7 @@ var Menu = (function (_super) {
         if (menuId) {
             menu = app.getComponent(menuId);
             if (!menu) {
-                console.error('Menu with id "' + menuId + '" cannot be found for menuToggle');
+                void 0;
                 return;
             }
         }
@@ -371,42 +391,62 @@ var Menu = (function (_super) {
                 menu = app.getComponent('rightMenu');
             }
             if (!menu) {
-                console.error('Menu with id "leftMenu" or "rightMenu" cannot be found for menuToggle');
+                void 0;
                 return;
             }
         }
         return menu;
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Menu.prototype, "content", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Menu.prototype, "id", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Menu.prototype, "side", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Menu.prototype, "type", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Menu.prototype, "swipeEnabled", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Menu.prototype, "maxEdgeStart", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Menu.prototype, "opening", void 0);
     Menu = __decorate([
         core_1.Component({
             selector: 'ion-menu',
-            inputs: [
-                'content',
-                'id',
-                'side',
-                'type'
-            ],
-            defaultInputs: {
-                'side': 'left',
-                'menuType': 'reveal'
-            },
-            outputs: ['opening'],
             host: {
                 'role': 'navigation',
                 '[attr.side]': 'side',
-                '[attr.type]': 'type'
+                '[attr.type]': 'type',
+                '[attr.swipeEnabled]': 'swipeEnabled'
             },
             template: '<ng-content></ng-content><div tappable disable-activated class="backdrop"></div>',
             directives: [core_1.forwardRef(function () { return MenuBackdrop; })]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof app_1.IonicApp !== 'undefined' && app_1.IonicApp) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object, (typeof (_c = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _c) || Object, (typeof (_d = typeof platform_1.Platform !== 'undefined' && platform_1.Platform) === 'function' && _d) || Object, (typeof (_e = typeof keyboard_1.Keyboard !== 'undefined' && keyboard_1.Keyboard) === 'function' && _e) || Object])
+        __metadata('design:paramtypes', [core_1.ElementRef, config_1.Config, app_1.IonicApp, platform_1.Platform, core_1.Renderer, keyboard_1.Keyboard, core_1.NgZone])
     ], Menu);
     return Menu;
-    var _a, _b, _c, _d, _e;
 })(ion_1.Ion);
 exports.Menu = Menu;
 var menuTypes = {};
 var menuIds = 0;
+/**
+ * @private
+ */
 var MenuBackdrop = (function () {
     function MenuBackdrop(menu, elementRef) {
         this.menu = menu;
@@ -417,7 +457,7 @@ var MenuBackdrop = (function () {
      * @private
      */
     MenuBackdrop.prototype.clicked = function (ev) {
-        console.debug('backdrop clicked');
+        void 0;
         ev.preventDefault();
         ev.stopPropagation();
         this.menu.close();
@@ -430,8 +470,8 @@ var MenuBackdrop = (function () {
             }
         }),
         __param(0, core_1.Host()), 
-        __metadata('design:paramtypes', [Menu, (typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [Menu, core_1.ElementRef])
     ], MenuBackdrop);
     return MenuBackdrop;
-    var _a;
 })();
+exports.MenuBackdrop = MenuBackdrop;

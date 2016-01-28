@@ -35,10 +35,10 @@ import { IonicApp } from './app';
  * has been navigated away from.
  */
 export declare class IdRef {
-    private app;
-    private elementRef;
-    private appViewManager;
-    constructor(app: IonicApp, elementRef: ElementRef, appViewManager: AppViewManager);
+    private _app;
+    private _component;
+    id: string;
+    constructor(_app: IonicApp, elementRef: ElementRef, appViewManager: AppViewManager);
     /**
      * @private
      */
@@ -49,20 +49,13 @@ export declare class IdRef {
     ngOnDestroy(): void;
 }
 /**
- * @name Attr
- * @description
- * Attr allows you to dynamically add or remove an attribute based on the value of an expression or variable.
- * @usage
- * ```html
- * // toggle the no-lines attributes based on whether isAndroid is true or false
- * <ion-list [attr.no-lines]="isAndroid ? '' : null">
- * ```
- * @demo /docs/v2/demos/attr/
+ * @private
  */
 export declare class Attr {
-    private renderer;
-    private elementRef;
-    constructor(renderer: Renderer, elementRef: ElementRef);
+    private _renderer;
+    private _elementRef;
+    attr: string;
+    constructor(_renderer: Renderer, _elementRef: ElementRef);
     /**
      * @private
      */

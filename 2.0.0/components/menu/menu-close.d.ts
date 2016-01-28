@@ -22,8 +22,9 @@ import { IonicApp } from '../app/app';
 * @see {@link ../../menu/Menu Menu API Docs}
 */
 export declare class MenuClose {
-    private app;
-    constructor(app: IonicApp);
+    private _app;
+    menuClose: any;
+    constructor(_app: IonicApp);
     /**
     * @private
     */

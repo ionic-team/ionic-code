@@ -1,10 +1,10 @@
 var FeatureDetect = (function () {
     function FeatureDetect() {
+        this._results = {};
     }
     FeatureDetect.prototype.run = function (window, document) {
-        this._results = {};
-        for (var name in featureDetects) {
-            this._results[name] = featureDetects[name](window, document, document.body);
+        for (var name_1 in featureDetects) {
+            this._results[name_1] = featureDetects[name_1](window, document, document.body);
         }
     };
     FeatureDetect.prototype.has = function (featureName) {

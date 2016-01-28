@@ -3,7 +3,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var hammer_1 = require('../../gestures/hammer');
 var drag_gesture_1 = require('../../gestures/drag-gesture');
 var dom_1 = require('../../util/dom');
 var ItemSlidingGesture = (function (_super) {
@@ -14,57 +13,71 @@ var ItemSlidingGesture = (function (_super) {
             direction: 'x',
             threshold: DRAG_THRESHOLD
         });
-        this.data = {};
-        this.openItems = 0;
         this.list = list;
         this.listEle = listEle;
         this.canDrag = true;
+        this.data = {};
+        this.openItems = 0;
+        this.preventDrag = false;
+        this.dragEnded = true;
         this.listen();
-        this.tap = function (ev) {
+        this.onTap = function (ev) {
             if (!isFromOptionButtons(ev.target)) {
                 var didClose = _this.closeOpened();
                 if (didClose) {
+                    void 0;
                     preventDefault(ev);
                 }
             }
         };
-        this.mouseOut = function (ev) {
+        this.onMouseOut = function (ev) {
             if (ev.target.tagName === 'ION-ITEM-SLIDING') {
+                void 0;
                 _this.onDragEnd(ev);
             }
         };
     }
     ItemSlidingGesture.prototype.onDragStart = function (ev) {
         var itemContainerEle = getItemConatiner(ev.target);
-        if (!itemContainerEle)
-            return;
+        if (!itemContainerEle) {
+            void 0;
+            return false;
+        }
         this.closeOpened(itemContainerEle);
         var openAmout = this.getOpenAmount(itemContainerEle);
         var itemData = this.get(itemContainerEle);
         this.preventDrag = (openAmout > 0);
         if (this.preventDrag) {
             this.closeOpened();
-            return preventDefault(ev);
+            void 0;
+            preventDefault(ev);
+            return;
         }
         itemContainerEle.classList.add('active-slide');
         this.set(itemContainerEle, 'offsetX', openAmout);
         this.set(itemContainerEle, 'startX', ev.center[this.direction]);
         this.dragEnded = false;
+        return true;
     };
     ItemSlidingGesture.prototype.onDrag = function (ev) {
         var _this = this;
         if (this.dragEnded || this.preventDrag || Math.abs(ev.deltaY) > 30) {
+            void 0;
             this.preventDrag = true;
             return;
         }
         var itemContainerEle = getItemConatiner(ev.target);
-        if (!itemContainerEle || !isActive(itemContainerEle))
+        if (!itemContainerEle || !isActive(itemContainerEle)) {
+            void 0;
             return;
+        }
         var itemData = this.get(itemContainerEle);
         if (!itemData.optsWidth) {
             itemData.optsWidth = getOptionsWidth(itemContainerEle);
-            if (!itemData.optsWidth)
+            if (!itemData.optsWidth) {
+                void 0;
                 return;
+            }
         }
         var x = ev.center[this.direction];
         var delta = x - itemData.startX;
@@ -74,7 +87,7 @@ var ItemSlidingGesture = (function (_super) {
             newX = -Math.min(-itemData.optsWidth, -itemData.optsWidth + (((delta + itemData.optsWidth) * 0.4)));
         }
         if (newX > 5 && ev.srcEvent.type.indexOf('mouse') > -1 && !itemData.hasMouseOut) {
-            itemContainerEle.addEventListener('mouseout', this.mouseOut);
+            itemContainerEle.addEventListener('mouseout', this.onMouseOut);
             itemData.hasMouseOut = true;
         }
         dom_1.raf(function () {
@@ -89,8 +102,10 @@ var ItemSlidingGesture = (function (_super) {
         this.preventDrag = false;
         this.dragEnded = true;
         var itemContainerEle = getItemConatiner(ev.target);
-        if (!itemContainerEle || !isActive(itemContainerEle))
+        if (!itemContainerEle || !isActive(itemContainerEle)) {
+            void 0;
             return;
+        }
         // If we are currently dragging, we want to snap back into place
         // The final resting point X will be the width of the exposed buttons
         var itemData = this.get(itemContainerEle);
@@ -99,11 +114,11 @@ var ItemSlidingGesture = (function (_super) {
         // and we aren't moving fast enough to swipe open
         if (this.getOpenAmount(itemContainerEle) < (restingPoint / 2)) {
             // If we are going left but too slow, or going right, go back to resting
-            if (ev.direction & hammer_1.Hammer.DIRECTION_RIGHT || Math.abs(ev.velocityX) < 0.3) {
+            if (ev.direction & Hammer.DIRECTION_RIGHT || Math.abs(ev.velocityX) < 0.3) {
                 restingPoint = 0;
             }
         }
-        itemContainerEle.removeEventListener('mouseout', this.mouseOut);
+        itemContainerEle.removeEventListener('mouseout', this.onMouseOut);
         itemData.hasMouseOut = false;
         dom_1.raf(function () {
             _this.open(itemContainerEle, restingPoint, true);
@@ -125,8 +140,10 @@ var ItemSlidingGesture = (function (_super) {
     ItemSlidingGesture.prototype.open = function (itemContainerEle, openAmount, isFinal) {
         var _this = this;
         var slidingEle = itemContainerEle.querySelector('ion-item,[ion-item]');
-        if (!slidingEle)
+        if (!slidingEle) {
+            void 0;
             return;
+        }
         this.set(itemContainerEle, 'openAmount', openAmount);
         clearTimeout(this.get(itemContainerEle).timerId);
         if (openAmount) {
@@ -146,12 +163,11 @@ var ItemSlidingGesture = (function (_super) {
         if (isFinal) {
             if (openAmount) {
                 isItemActive(itemContainerEle, true);
-                this.on('tap', this.tap);
+                this.on('tap', this.onTap);
             }
             else {
-                this.off('tap', this.tap);
+                this.off('tap', this.onTap);
             }
-            this.enableScroll(!openAmount);
         }
     };
     ItemSlidingGesture.prototype.getOpenAmount = function (itemContainerEle) {
@@ -166,12 +182,6 @@ var ItemSlidingGesture = (function (_super) {
         }
         this.data[itemContainerEle.$ionSlide][key] = value;
     };
-    ItemSlidingGesture.prototype.enableScroll = function (shouldEnable) {
-        var scrollContentEle = dom_1.closest(this.listEle, 'scroll-content');
-        if (scrollContentEle) {
-            scrollContentEle[shouldEnable ? 'removeEventListener' : 'addEventListener']('touchstart', preventDefault);
-        }
-    };
     ItemSlidingGesture.prototype.unlisten = function () {
         _super.prototype.unlisten.call(this);
         this.listEle = null;
@@ -184,6 +194,7 @@ function isItemActive(ele, isActive) {
     ele.classList[isActive ? 'add' : 'remove']('active-options');
 }
 function preventDefault(ev) {
+    void 0;
     ev.preventDefault();
 }
 function getItemConatiner(ele) {

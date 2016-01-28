@@ -1,10 +1,17 @@
-export declare function raf(callback: any): void;
-export declare const rafCancel: any;
+export declare const raf: any;
 export declare function rafFrames(framesToWait: any, callback: any): void;
-export declare let CSS: {};
-export declare function transitionEnd(el: Element): any;
-export declare function animationStart(el: Element, animationName: any): Promise<{}>;
-export declare function animationEnd(el: Element, animationName: any): Promise<{}>;
+export declare let CSS: {
+    animationStart?: string;
+    animationEnd?: string;
+    transform?: string;
+    transition?: string;
+    transitionDuration?: string;
+    transitionStart?: string;
+    transitionEnd?: string;
+};
+export declare function transitionEnd(el: HTMLElement): Promise<{}>;
+export declare function animationStart(el: HTMLElement, animationName: string): Promise<{}>;
+export declare function animationEnd(el: HTMLElement, animationName: string): Promise<{}>;
 export declare function ready(callback: any): any;
 export declare function windowLoad(callback: any): any;
 export declare function pointerCoord(ev: any): {
@@ -16,14 +23,19 @@ export declare function isActive(ele: any): boolean;
 export declare function hasFocus(ele: any): boolean;
 export declare function isTextInput(ele: any): boolean;
 export declare function hasFocusedTextInput(): boolean;
-export declare function closest(ele: any, selector: any, checkSelf: any): any;
+export declare function closest(ele: HTMLElement, selector: string, checkSelf?: boolean): HTMLElement;
 export declare function removeElement(ele: any): void;
 /**
  * Get the element offsetWidth and offsetHeight. Values are cached
  * to reduce DOM reads. Cache is cleared on a window resize.
  * @param {TODO} ele  TODO
  */
-export declare function getDimensions(ion: any, ele: any): any;
+export declare function getDimensions(ele: HTMLElement, id: string): {
+    width: number;
+    height: number;
+    left: number;
+    top: number;
+};
 export declare function windowDimensions(): any;
 export declare function flushDimensionCache(): void;
 /**
@@ -44,7 +56,7 @@ export declare function position(element: any): {
     left: number;
 };
 /**
-* Get the current coordinates of the element, relative to the document.
+* Get the current coordinates of the element, relative to the doc.
 * Read-only equivalent of [jQuery's offset function](http://api.jquery.com/offset/).
 * @param {element} element The element to get the offset of.
 * @returns {object} Returns an object containing the properties top, left, width and height.

@@ -1,19 +1,14 @@
 import { ElementRef, DynamicComponentLoader } from 'angular2/core';
 import { RouterOutlet, Router, ComponentInstruction } from 'angular2/router';
 import { Nav } from './nav';
+import { ViewController } from './view-controller';
 /**
  * @private
  */
 export declare class NavRouter extends RouterOutlet {
-    /**
-     * TODO
-     * @param {ElementRef} _elementRef  TODO
-     * @param {DynamicComponentLoader} _loader  TODO
-     * @param {Router} _parentRouter  TODO
-     * @param {string} nameAttr  Value of the element's 'name' attribute
-     * @param {Nav} nav  TODO
-     */
-    constructor(_elementRef: ElementRef, _loader: DynamicComponentLoader, _parentRouter: Router, nameAttr: string, nav: Nav);
+    private _nav;
+    private _activeViewId;
+    constructor(_elementRef: ElementRef, _loader: DynamicComponentLoader, _parentRouter: Router, nameAttr: string, _nav: Nav);
     /**
      * @private
      * TODO
@@ -22,11 +17,11 @@ export declare class NavRouter extends RouterOutlet {
     activate(nextInstruction: ComponentInstruction): Promise<any>;
     reuse(nextInstruction: ComponentInstruction): Promise<void>;
     /**
-     * TODO
-     * @param {TODO} type  TODO
-     * @param {TODO} viewCtrl  TODO
+     * Called by Ionic after a transition has completed.
+     * @param {string} direction  The direction of the state change
+     * @param {ViewController} viewCtrl  The entering ViewController
      */
-    stateChange(type: any, viewCtrl: any): void;
+    stateChange(direction: string, viewCtrl: ViewController): void;
     /**
      * TODO
      * @param {TODO} componentType  TODO

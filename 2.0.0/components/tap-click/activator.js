@@ -5,17 +5,16 @@ var Activator = (function () {
         this.zone = zone;
         this.queue = [];
         this.active = [];
-        this.clearStateDefers = 5;
-        this.clearAttempt = 0;
-        this.activatedClass = config.get('activatedClass') || 'activated';
         this.x = 0;
         this.y = 0;
+        this.activatedClass = config.get('activatedClass') || 'activated';
     }
-    Activator.prototype.downAction = function (ev, activatableEle, pointerX, pointerY, callback) {
+    Activator.prototype.downAction = function (ev, activatableEle, pointerX, pointerY) {
         // the user just pressed down
         var self = this;
-        if (self.disableActivated(ev))
+        if (self.disableActivated(ev)) {
             return false;
+        }
         // remember where they pressed
         self.x = pointerX;
         self.y = pointerY;
@@ -44,7 +43,7 @@ var Activator = (function () {
             self.clearState();
         }
         this.zone.runOutsideAngular(function () {
-            dom_1.rafFrames(self.clearStateDefers, activateUp);
+            dom_1.rafFrames(CLEAR_STATE_DEFERS, activateUp);
         });
     };
     Activator.prototype.clearState = function () {
@@ -91,3 +90,4 @@ var Activator = (function () {
     return Activator;
 })();
 exports.Activator = Activator;
+var CLEAR_STATE_DEFERS = 5;

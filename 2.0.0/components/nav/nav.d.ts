@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, ElementRef, NgZone, Compiler, AppViewManager, Renderer } from 'angular2/core';
+import { ElementRef, NgZone, Compiler, AppViewManager, Renderer, Type } from 'angular2/core';
 import { IonicApp } from '../app/app';
 import { Config } from '../../config/config';
 import { Keyboard } from '../../util/keyboard';
@@ -98,7 +98,9 @@ import { ViewController } from './view-controller';
  * @see {@link /docs/v2/components#navigation Navigation Component Docs}
  */
 export declare class Nav extends NavController {
-    constructor(hostNavCtrl: NavController, viewCtrl: ViewController, app: IonicApp, config: Config, keyboard: Keyboard, elementRef: ElementRef, compiler: Compiler, viewManager: AppViewManager, zone: NgZone, renderer: Renderer, cd: ChangeDetectorRef);
+    root: Type;
+    swipeBackEnabled: any;
+    constructor(hostNavCtrl: NavController, viewCtrl: ViewController, app: IonicApp, config: Config, keyboard: Keyboard, elementRef: ElementRef, compiler: Compiler, viewManager: AppViewManager, zone: NgZone, renderer: Renderer);
     /**
      * @private
      */

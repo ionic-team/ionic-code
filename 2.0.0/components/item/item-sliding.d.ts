@@ -17,15 +17,15 @@ import { List } from '../list/list';
  *       <button (click)="favorite(item)">Favorite</button>
  *       <button (click)="share(item)">Share</button>
  *     </ion-item-options>
- *   </ion-item>
+ *   </ion-item-sliding>
  * </ion-list>
  * ```
  * @see {@link /docs/v2/components#lists List Component Docs}
  * @see {@link ../../list/List List API Docs}
  */
 export declare class ItemSliding {
-    private list;
-    constructor(list: List, elementRef: ElementRef);
+    private _list;
+    constructor(_list: List, elementRef: ElementRef);
     /**
      * @private
      */

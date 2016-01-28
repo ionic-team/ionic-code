@@ -1,4 +1,4 @@
-import { ElementRef } from 'angular2/core';
+import { ElementRef, EventEmitter } from 'angular2/core';
 import { Content } from '../content/content';
 /**
  * @name Refresher
@@ -54,11 +54,36 @@ import { Content } from '../content/content';
  *
  */
 export declare class Refresher {
-    /**
-     * @private
-     * @param {Content} content  TODO
-     * @param {ElementRef} elementRef  TODO
-     */
+    private content;
+    private ele;
+    private _touchMoveListener;
+    private _touchEndListener;
+    private _handleScrollListener;
+    isActive: boolean;
+    isDragging: boolean;
+    isOverscrolling: boolean;
+    dragOffset: number;
+    lastOverscroll: number;
+    ptrThreshold: number;
+    activated: boolean;
+    scrollTime: number;
+    canOverscroll: boolean;
+    startY: any;
+    deltaY: any;
+    scrollHost: any;
+    scrollChild: any;
+    showIcon: boolean;
+    showSpinner: boolean;
+    isRefreshing: boolean;
+    isRefreshingTail: boolean;
+    pullingIcon: string;
+    pullingText: string;
+    refreshingIcon: string;
+    refreshingText: string;
+    spinner: string;
+    pulling: EventEmitter<any>;
+    refresh: EventEmitter<any>;
+    starting: EventEmitter<any>;
     constructor(content: Content, element: ElementRef);
     /**
      * @private
@@ -66,13 +91,8 @@ export declare class Refresher {
     ngOnInit(): void;
     /**
      * @private
-     * Initialize touch and scroll event listeners.
      */
-    initEvents(): void;
-    /**
-     * @private
-     */
-    onDehydrate(): void;
+    ngOnDestroy(): void;
     /**
      * @private
      * @param {TODO} val  TODO
@@ -123,7 +143,7 @@ export declare class Refresher {
      * @param {TODO} duration  TODO
      * @param {Function} callback  TODO
      */
-    scrollTo(Y: any, duration: any, callback: any): void;
+    scrollTo(Y: any, duration: any, callback?: any): void;
     /**
      * @private
      * TODO

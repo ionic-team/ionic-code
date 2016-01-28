@@ -1,14 +1,14 @@
 var ListVirtualScroll = (function () {
     function ListVirtualScroll(list) {
         var _this = this;
-        this.list = list;
-        this.content = this.list.content;
-        this.viewportHeight = this.content.height();
-        this.viewContainer = this.list.itemTemplate.viewContainer;
         this.itemHeight = 60;
         this.shownItems = {};
         this.enteringItems = [];
         this.leavingItems = [];
+        this.list = list;
+        this.content = this.list.content;
+        this.viewportHeight = this.content.height();
+        this.viewContainer = this.list.itemTemplate.viewContainer;
         // Compute the initial sizes
         setTimeout(function () {
             _this.resize();
@@ -26,7 +26,7 @@ var ListVirtualScroll = (function () {
         this.viewportScrollHeight = this.content.scrollElement.scrollHeight;
         this.virtualHeight = this.list.items.length * this.itemHeight;
         this.itemsPerScreen = this.viewportHeight / this.itemHeight;
-        console.log('VIRTUAL: resize(viewportHeight:', this.viewportHeight, 'viewportScrollHeight:', this.viewportScrollHeight, 'virtualHeight:', this.virtualHeight, ', itemsPerScreen:', this.itemsPerScreen, ')');
+        void 0;
     };
     ListVirtualScroll.prototype._handleVirtualScroll = function (event) {
         var item;
@@ -52,7 +52,7 @@ var ListVirtualScroll = (function () {
         // virtual items we draw
         for (var i = topIndex, realIndex_1 = 0; i < bottomIndex && i < items.length; i++, realIndex_1++) {
             item = items[i];
-            console.log('Drawing item', i, item.title);
+            void 0;
             shownItemRef = this.shownItems[i];
             // Is this a new item?
             if (!shownItemRef) {
@@ -66,11 +66,11 @@ var ListVirtualScroll = (function () {
         }
         while (this.leavingItems.length) {
             var itemRef = this.leavingItems.pop();
-            console.log('Removing item', itemRef.item, itemRef.realIndex);
+            void 0;
             this.viewContainer.remove(itemRef.realIndex);
         }
-        console.log('VIRTUAL SCROLL: scroll(scrollTop:', st, 'topIndex:', topIndex, 'bottomIndex:', bottomIndex, ')');
-        console.log('Container has', this.list.getNativeElement().children.length, 'children');
+        void 0;
+        void 0;
     };
     ListVirtualScroll.prototype.cellAtIndex = function (index) {
     };

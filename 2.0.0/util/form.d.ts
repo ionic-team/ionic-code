@@ -1,15 +1,11 @@
 /**
- * The Input component is used to focus text input elements.
- *
- * @usage
- * ```html
- * <ion-input>
- *   <ion-label>Name</ion-label>
- *   <input value="Name" type="text">
- * </ion-input>
- * ```
+ * @private
  */
 export declare class Form {
+    private _blur;
+    private _focused;
+    private _ids;
+    private _inputs;
     constructor();
     register(input: any): void;
     deregister(input: any): void;
@@ -19,6 +15,6 @@ export declare class Form {
     /**
      * Focuses the next input element, if it exists.
      */
-    focusNext(currentInput: any): any;
+    tabFocus(currentInput: any): any;
     nextId(): number;
 }

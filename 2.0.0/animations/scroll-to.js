@@ -1,6 +1,6 @@
 var dom_1 = require('../util/dom');
 var ScrollTo = (function () {
-    function ScrollTo(ele, x, y, duration) {
+    function ScrollTo(ele) {
         if (typeof ele === 'string') {
             // string query selector
             ele = document.querySelector(ele);
@@ -30,35 +30,30 @@ var ScrollTo = (function () {
         var fromX = self._el.scrollLeft;
         var xDistance = Math.abs(x - fromX);
         var yDistance = Math.abs(y - fromY);
+        void 0;
         if (yDistance <= tolerance && xDistance <= tolerance) {
             // prevent scrolling if already close to there
             self._el = null;
             return Promise.resolve();
         }
         return new Promise(function (resolve, reject) {
-            var start;
-            // start scroll loop
-            self.isPlaying = true;
-            // chill out for a frame first
-            dom_1.raf(function () {
-                start = Date.now();
-                dom_1.raf(step);
-            });
+            var startTime;
             // scroll loop
             function step() {
                 if (!self._el) {
                     return resolve();
                 }
-                var time = Math.min(1, ((Date.now() - start) / duration));
+                var time = Math.min(1, ((Date.now() - startTime) / duration));
                 // where .5 would be 50% of time on a linear scale easedT gives a
                 // fraction based on the easing method
                 var easedT = easeOutCubic(time);
                 if (fromY != y) {
-                    self._el.scrollTop = Math.round((easedT * (y - fromY)) + fromY);
+                    self._el.scrollTop = (easedT * (y - fromY)) + fromY;
                 }
                 if (fromX != x) {
                     self._el.scrollLeft = Math.round((easedT * (x - fromX)) + fromX);
                 }
+                void 0;
                 if (time < 1 && self.isPlaying) {
                     dom_1.raf(step);
                 }
@@ -70,9 +65,17 @@ var ScrollTo = (function () {
                 else {
                     // done
                     self._el = null;
+                    void 0;
                     resolve();
                 }
             }
+            // start scroll loop
+            self.isPlaying = true;
+            // chill out for a frame first
+            dom_1.raf(function () {
+                startTime = Date.now();
+                dom_1.raf(step);
+            });
         });
     };
     ScrollTo.prototype.stop = function () {

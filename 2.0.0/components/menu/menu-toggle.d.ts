@@ -21,6 +21,11 @@ import { Navbar } from '../navbar/navbar';
 * @see {@link ../../menu/Menu Menu API Docs}
 */
 export declare class MenuToggle {
+    private app;
+    private viewCtrl;
+    private navbar;
+    menuToggle: any;
+    withinNavbar: boolean;
     constructor(app: IonicApp, elementRef: ElementRef, viewCtrl: ViewController, navbar: Navbar);
     /**
     * @private

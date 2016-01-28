@@ -4,66 +4,213 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('angular2/core');
 var common_1 = require('angular2/common');
-var overlay_controller_1 = require('../overlay/overlay-controller');
+var animation_1 = require('../../animations/animation');
 var config_1 = require('../../config/config');
 var icon_1 = require('../icon/icon');
-var animation_1 = require('../../animations/animation');
-var nav_controller_1 = require('../nav/nav-controller');
-var util_1 = require('../../util/util');
+var nav_params_1 = require('../nav/nav-params');
+var view_controller_1 = require('../nav/view-controller');
+/**
+ * @name ActionSheet
+ * @description
+ * An Action Sheet is a dialog that lets the user choose from a set of
+ * options. It appears on top of the app's content, and must be manually
+ * dismissed by the user before they can resume interaction with the app.
+ * Dangerous (destructive) options are made obvious. There are easy
+ * ways to cancel out of the action sheet, such as tapping the backdrop or
+ * hitting the escape key on desktop.
+ *
+ * An action sheet is created from an array of `buttons`, with each button
+ * including properties for its `text`, and optionally a `style` and `handler`.
+ * If a handler returns `false` then the action sheet will not be dismissed. An
+ * action sheet can also optionally have a `title` and a `subTitle`.
+ *
+ * A button's `style` property can either be `destructive` or `cancel`. Buttons
+ * without a style property will have a default style for its platform. Buttons
+ * with the `cancel` style will always load as the bottom button, no matter where
+ * it shows up in the array. All other buttons will show up in the order they
+ * have been added to the `buttons` array. Note: We recommend that `destructive`
+ * buttons show be the first button in the array, making it the button on top.
+ *
+ * Its shorthand is to add all the action sheet's options from within the
+ * `ActionSheet.create(opts)` first argument. Otherwise the action sheet's
+ * instance has methods to add options, such as `setTitle()` or `addButton()`.
+ *
+ * @usage
+ * ```ts
+ * constructor(nav: NavController) {
+ *   this.nav = nav;
+ * }
+ *
+ * presentActionSheet() {
+ *   let actionSheet = ActionSheet.create({
+ *     title: 'Modify your album',
+ *     buttons: [
+ *       {
+ *         text: 'Destructive',
+ *         style: 'destructive',
+ *         handler: () => {
+ *           console.log('Destructive clicked');
+ *         }
+ *       },
+ *       {
+ *         text: 'Archive',
+ *         handler: () => {
+ *           console.log('Archive clicked');
+ *         }
+ *       },
+ *       {
+ *         text: 'Cancel',
+ *         style: 'cancel',
+ *         handler: () => {
+ *           console.log('Cancel clicked');
+ *         }
+ *       }
+ *     ]
+ *   });
+ *
+ *   this.nav.present(actionSheet);
+ * }
+ * ```
+ *
+ * @demo /docs/v2/demos/action-sheet/
+ * @see {@link /docs/v2/components#action-sheets ActionSheet Component Docs}
+ */
+var ActionSheet = (function (_super) {
+    __extends(ActionSheet, _super);
+    function ActionSheet(opts) {
+        if (opts === void 0) { opts = {}; }
+        opts.buttons = opts.buttons || [];
+        _super.call(this, ActionSheetCmp, opts);
+        this.viewType = 'action-sheet';
+    }
+    /**
+    * @private
+    */
+    ActionSheet.prototype.getTransitionName = function (direction) {
+        var key = 'actionSheet' + (direction === 'back' ? 'Leave' : 'Enter');
+        return this._nav && this._nav.config.get(key);
+    };
+    /**
+     * @param {string} title Action sheet title
+     */
+    ActionSheet.prototype.setTitle = function (title) {
+        this.data.title = title;
+    };
+    /**
+     * @param {string} subTitle Action sheet subtitle
+     */
+    ActionSheet.prototype.setSubTitle = function (subTitle) {
+        this.data.subTitle = subTitle;
+    };
+    /**
+     * @param {object} button Action sheet button
+     */
+    ActionSheet.prototype.addButton = function (button) {
+        this.data.buttons.push(button);
+    };
+    /**
+     * @param {object} opts Action sheet options
+     */
+    ActionSheet.create = function (opts) {
+        if (opts === void 0) { opts = {}; }
+        return new ActionSheet(opts);
+    };
+    return ActionSheet;
+})(view_controller_1.ViewController);
+exports.ActionSheet = ActionSheet;
+/**
+* @private
+*/
 var ActionSheetCmp = (function () {
-    function ActionSheetCmp(params, renderer) {
+    function ActionSheetCmp(_viewCtrl, _config, elementRef, params, renderer) {
+        this._viewCtrl = _viewCtrl;
+        this._config = _config;
         this.d = params.data;
         if (this.d.cssClass) {
-            renderer.setElementClass(elementRef, this.d.cssClass, true);
+            renderer.setElementClass(elementRef.nativeElement, this.d.cssClass, true);
         }
     }
-    ActionSheetCmp.prototype.cancel = function () {
-        this.d.cancel && this.d.cancel();
-        return this.close();
-    };
-    ActionSheetCmp.prototype.destructive = function () {
-        if (this.d.destructiveButtonClicked()) {
-            return this.close();
+    ActionSheetCmp.prototype.click = function (button) {
+        var _this = this;
+        var shouldDismiss = true;
+        if (button.handler) {
+            // a handler has been provided, execute it
+            if (button.handler() === false) {
+                // if the return value of the handler is false then do not dismiss
+                shouldDismiss = false;
+            }
+        }
+        if (shouldDismiss) {
+            setTimeout(function () {
+                _this.dismiss();
+            }, this._config.get('pageTransitionDelay'));
         }
     };
-    ActionSheetCmp.prototype.buttonClicked = function (index) {
-        if (this.d.buttonClicked(index)) {
-            return this.close();
-        }
+    ActionSheetCmp.prototype.dismiss = function () {
+        return this._viewCtrl.dismiss(null);
+    };
+    ActionSheetCmp.prototype.onPageLoaded = function () {
+        var _this = this;
+        // normalize the data
+        var buttons = [];
+        this.d.buttons.forEach(function (button) {
+            if (typeof button === 'string') {
+                button = { text: button };
+            }
+            if (!button.cssClass) {
+                button.cssClass = '';
+            }
+            if (button.style === 'cancel') {
+                _this.d.cancelButton = button;
+            }
+            else {
+                if (button.style === 'destructive') {
+                    button.cssClass = (button.cssClass + ' ' || '') + 'action-sheet-destructive';
+                }
+                buttons.push(button);
+            }
+        });
+        this.d.buttons = buttons;
+        var self = this;
+        self.keyUp = function (ev) {
+            if (ev.keyCode === 27) {
+                void 0;
+                self.dismiss();
+            }
+        };
+        document.addEventListener('keyup', this.keyUp);
+    };
+    ActionSheetCmp.prototype.onPageDidLeave = function () {
+        document.removeEventListener('keyup', this.keyUp);
     };
     ActionSheetCmp = __decorate([
         core_1.Component({
             selector: 'ion-action-sheet',
-            template: '<div (click)="cancel()" tappable disable-activated class="backdrop"></div>' +
+            template: '<div (click)="dismiss()" tappable disable-activated class="backdrop" role="presentation"></div>' +
                 '<div class="action-sheet-wrapper">' +
                 '<div class="action-sheet-container">' +
-                '<div class="action-sheet-group action-sheet-options">' +
-                '<div class="action-sheet-title" *ngIf="d.titleText">{{d.titleText}}</div>' +
-                '<button (click)="buttonClicked(i)" *ngFor="#b of d.buttons; #i=index" class="action-sheet-button action-sheet-option disable-hover">' +
-                '<icon [name]="b.icon" *ngIf="b.icon" class="action-sheet-icon"></icon> ' +
+                '<div class="action-sheet-group">' +
+                '<div class="action-sheet-title" *ngIf="d.title">{{d.title}}</div>' +
+                '<div class="action-sheet-sub-title" *ngIf="d.subTitle">{{d.subTitle}}</div>' +
+                '<button (click)="click(b)" *ngFor="#b of d.buttons" class="action-sheet-button disable-hover" [ngClass]="b.cssClass">' +
+                '<ion-icon [name]="b.icon" *ngIf="b.icon" class="action-sheet-icon"></ion-icon> ' +
                 '{{b.text}}' +
                 '</button>' +
-                '<button *ngIf="d.destructiveText" (click)="destructive()" class="action-sheet-button action-sheet-destructive disable-hover">' +
-                '<icon [name]="d.destructiveIcon" *ngIf="d.destructiveIcon" class="action-sheet-icon"></icon> ' +
-                '{{d.destructiveText}}' +
-                '</button>' +
                 '</div>' +
-                '<div class="action-sheet-group" *ngIf="d.cancelText">' +
-                '<button (click)="cancel()" class="action-sheet-button action-sheet-cancel disable-hover">' +
-                '<icon [name]="d.cancelIcon" *ngIf="d.cancelIcon" class="action-sheet-icon"></icon> ' +
-                '{{d.cancelText}}' +
+                '<div class="action-sheet-group" *ngIf="d.cancelButton">' +
+                '<button (click)="click(d.cancelButton)" class="action-sheet-button action-sheet-cancel disable-hover" [ngClass]="d.cancelButton.cssClass">' +
+                '<ion-icon [name]="d.cancelButton.icon" *ngIf="d.cancelButton.icon" class="action-sheet-icon"></ion-icon> ' +
+                '{{d.cancelButton.text}}' +
                 '</button>' +
                 '</div>' +
                 '</div>' +
@@ -73,108 +220,10 @@ var ActionSheetCmp = (function () {
             },
             directives: [common_1.NgFor, common_1.NgIf, icon_1.Icon]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof nav_controller_1.NavParams !== 'undefined' && nav_controller_1.NavParams) === 'function' && _a) || Object, (typeof (_b = typeof core_1.Renderer !== 'undefined' && core_1.Renderer) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [view_controller_1.ViewController, config_1.Config, core_1.ElementRef, nav_params_1.NavParams, core_1.Renderer])
     ], ActionSheetCmp);
     return ActionSheetCmp;
-    var _a, _b;
 })();
-/**
- * @name ActionSheet
- * @description
- * The Action Sheet is a slide-up pane that lets the user choose from a set of options. Dangerous options are made obvious.
- * There are easy ways to cancel out of the action sheet, such as tapping the backdrop or even hitting escape on the keyboard for desktop testing.
- *
- * @usage
- * ```ts
- * openMenu() {
- *
- *   this.actionSheet.open({
- *     buttons: [
- *       { text: 'Share This' },
- *       { text: 'Move' }
- *     ],
- *     destructiveText: 'Delete',
- *     titleText: 'Modify your album',
- *     cancelText: 'Cancel',
- *     cancel: function() {
- *       console.log('Canceled');
- *     },
- *     destructiveButtonClicked: () => {
- *       console.log('Destructive clicked');
- *     },
- *     buttonClicked: function(index) {
- *       console.log('Button clicked', index);
- *       if(index == 1) { return false; }
- *       return true;
- *     }
- *
- *   }).then(actionSheetRef => {
- *     this.actionSheetRef = actionSheetRef;
- *   });
- *
- * }
- * ```
- *
- * @demo /docs/v2/demos/action-sheet/
- * @see {@link /docs/v2/components#action-sheets ActionSheet Component Docs}
- */
-var ActionSheet = (function () {
-    function ActionSheet(ctrl, config) {
-        this.ctrl = ctrl;
-        this.config = config;
-    }
-    /**
-     * Create and open a new Action Sheet. This is the
-     * public API, and most often you will only use ActionSheet.open()
-     *
-     * @param {Object} [opts={}]  An object containing optional settings.
-     *  - `[Object]` `buttons` Which buttons to show.  Each button is an object with a `text` field.
-     *  - `{string}` `titleText` The title to show on the action sheet.
-     *  - `{string=}` `cancelText` the text for a 'cancel' button on the action sheet.
-     *  - `{string=}` `destructiveText` The text for a 'danger' on the action sheet.
-     *  - `{function=}` `cancel` Called if the cancel button is pressed, the backdrop is tapped or
-     *     the hardware back button is pressed.
-     *  - `{function=}` `buttonClicked` Called when one of the non-destructive buttons is clicked,
-     *     with the index of the button that was clicked and the button object. Return true to close
-     *     the action sheet, or false to keep it opened.
-     *  - `{function=}` `destructiveButtonClicked` Called when the destructive button is clicked.
-     *     Return true to close the action sheet, or false to keep it opened.
-     * @param {String} [opts.enterAnimation='action-sheet-slide-in'] The class used to animate an actionSheet that is entering.
-     * @param {String} [opts.leaveAnimation='action-sheet-slide-out'] The class used to animate an actionSheet that is leaving.
-     * @return {Promise} Promise that resolves when the action sheet is open.
-     */
-    ActionSheet.prototype.open = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        opts = util_1.extend({
-            pageType: OVERLAY_TYPE,
-            enterAnimation: this.config.get('actionSheetEnter'),
-            leaveAnimation: this.config.get('actionSheetLeave'),
-            cancelIcon: this.config.get('actionSheetCancelIcon'),
-            destructiveIcon: this.config.get('actionSheetDestructiveIcon')
-        }, opts);
-        return this.ctrl.open(ActionSheetCmp, opts, opts);
-    };
-    /**
-     * Retrieves an actionSheet instance.
-     *
-     * @param {String} [handle]  The handle used to open the instance to be retrieved.
-     * @returns {ActionSheet} An actionSheet instance.
-     */
-    ActionSheet.prototype.get = function (handle) {
-        if (handle) {
-            return this.ctrl.getByHandle(handle);
-        }
-        return this.ctrl.getByType(OVERLAY_TYPE);
-    };
-    ActionSheet = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof overlay_controller_1.OverlayController !== 'undefined' && overlay_controller_1.OverlayController) === 'function' && _a) || Object, (typeof (_b = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _b) || Object])
-    ], ActionSheet);
-    return ActionSheet;
-    var _a, _b;
-})();
-exports.ActionSheet = ActionSheet;
-var OVERLAY_TYPE = 'action-sheet';
 var ActionSheetSlideIn = (function (_super) {
     __extends(ActionSheetSlideIn, _super);
     function ActionSheetSlideIn(enteringView, leavingView, opts) {

@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -56,15 +54,11 @@ var nav_registry_1 = require('./nav-registry');
  * @see {@link ../NavPop NavPop API Docs}
  */
 var NavPush = (function () {
-    /**
-     * TODO
-     * @param {NavController} nav  TODO
-     */
-    function NavPush(nav, registry) {
-        this.nav = nav;
+    function NavPush(_nav, registry) {
+        this._nav = _nav;
         this.registry = registry;
-        if (!nav) {
-            console.error('nav-push must be within a NavController');
+        if (!_nav) {
+            void 0;
         }
     }
     /**
@@ -72,39 +66,42 @@ var NavPush = (function () {
      */
     NavPush.prototype.onClick = function () {
         var destination, params;
-        if (this.instruction instanceof Array) {
-            if (this.instruction.length > 2) {
+        if (this.navPush instanceof Array) {
+            if (this.navPush.length > 2) {
                 throw 'Too many [navPush] arguments, expects [View, { params }]';
             }
-            destination = this.instruction[0];
-            params = this.instruction[1] || this.params;
+            destination = this.navPush[0];
+            params = this.navPush[1] || this.navParams;
         }
         else {
-            destination = this.instruction;
-            params = this.params;
+            destination = this.navPush;
+            params = this.navParams;
         }
         if (typeof destination === "string") {
             destination = this.registry.get(destination);
         }
-        this.nav && this.nav.push(destination, params);
+        this._nav && this._nav.push(destination, params);
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], NavPush.prototype, "navPush", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], NavPush.prototype, "navParams", void 0);
     NavPush = __decorate([
         core_1.Directive({
             selector: '[navPush]',
-            inputs: [
-                'instruction: navPush',
-                'params: navParams'
-            ],
             host: {
                 '(click)': 'onClick()',
                 'role': 'link'
             }
         }),
         __param(0, core_1.Optional()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof nav_controller_1.NavController !== 'undefined' && nav_controller_1.NavController) === 'function' && _a) || Object, (typeof (_b = typeof nav_registry_1.NavRegistry !== 'undefined' && nav_registry_1.NavRegistry) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [nav_controller_1.NavController, nav_registry_1.NavRegistry])
     ], NavPush);
     return NavPush;
-    var _a, _b;
 })();
 exports.NavPush = NavPush;
 /**
@@ -130,17 +127,17 @@ var NavPop = (function () {
      * TODO
      * @param {NavController} nav  TODO
      */
-    function NavPop(nav) {
-        this.nav = nav;
-        if (!nav) {
-            console.error('nav-pop must be within a NavController');
+    function NavPop(_nav) {
+        this._nav = _nav;
+        if (!_nav) {
+            void 0;
         }
     }
     /**
      * @private
      */
     NavPop.prototype.onClick = function () {
-        this.nav && this.nav.pop();
+        this._nav && this._nav.pop();
     };
     NavPop = __decorate([
         core_1.Directive({
@@ -151,9 +148,8 @@ var NavPop = (function () {
             }
         }),
         __param(0, core_1.Optional()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof nav_controller_1.NavController !== 'undefined' && nav_controller_1.NavController) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [nav_controller_1.NavController])
     ], NavPop);
     return NavPop;
-    var _a;
 })();
 exports.NavPop = NavPop;

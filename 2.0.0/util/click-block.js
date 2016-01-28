@@ -7,6 +7,7 @@ var isShowing = false;
  */
 var ClickBlock = (function () {
     function ClickBlock() {
+        this._enabled = false;
     }
     ClickBlock.prototype.enable = function () {
         cbEle = document.createElement('click-block');

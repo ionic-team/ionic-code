@@ -1,5 +1,6 @@
 var dom_1 = require('../util/dom');
 var util_1 = require('../util/util');
+var doc = document;
 /**
   Animation Steps/Process
   -----------------------
@@ -27,20 +28,20 @@ var Animation = (function () {
     function Animation(ele, opts) {
         if (opts === void 0) { opts = {}; }
         this.reset();
-        this._opts = util_1.extend({
+        this._opts = util_1.assign({
             renderDelay: 16
         }, opts);
         this.elements(ele);
-        if (!document.documentElement.animate) {
-            console.error('Web Animations polyfill missing');
+        if (!doc.documentElement.animate) {
+            void 0;
         }
     }
     Animation.prototype.reset = function () {
         this._el = [];
         this._chld = [];
         this._ani = [];
-        this._bfAdd = [];
         this._bfSty = {};
+        this._bfAdd = [];
         this._bfRmv = [];
         this._afAdd = [];
         this._afRmv = [];
@@ -52,7 +53,7 @@ var Animation = (function () {
         if (ele) {
             if (typeof ele === 'string') {
                 // string query selector
-                ele = document.querySelectorAll(ele);
+                ele = doc.querySelectorAll(ele);
             }
             if (ele.length) {
                 // array of elements
@@ -416,7 +417,7 @@ var Animation = (function () {
     Animation.prototype.clone = function () {
         function copy(dest, src) {
             // undo what stage() may have already done
-            util_1.extend(dest, src);
+            util_1.assign(dest, src);
             dest._isFinished = dest._isStaged = dest.isProgress = false;
             dest._chld = [];
             dest._ani = [];
@@ -433,7 +434,7 @@ var Animation = (function () {
             this._chld[i].dispose(removeElement);
         }
         for (i = 0; i < this._ani.length; i++) {
-            this._ani[i].dispose(removeElement);
+            this._ani[i].dispose();
         }
         if (removeElement) {
             for (i = 0; i < this._el.length; i++) {
@@ -445,14 +446,14 @@ var Animation = (function () {
     /*
      STATIC CLASSES
      */
-    Animation.create = function (element, name) {
+    Animation.create = function (name) {
         var AnimationClass = AnimationRegistry[name];
         if (!AnimationClass) {
             // couldn't find an animation by the given name
             // fallback to just the base Animation class
             AnimationClass = Animation;
         }
-        return new AnimationClass(element);
+        return new AnimationClass();
     };
     Animation.createTransition = function (enteringView, leavingView, opts) {
         if (opts === void 0) { opts = {}; }
@@ -479,12 +480,14 @@ var Animate = (function () {
         // however, element.animate() seems locked in and uses the latest
         // and correct API methods under the hood, so really doesn't matter
         if (!fromEffect) {
-            return console.error(ele.tagName, 'animation fromEffect required, toEffect:', toEffect);
+            void 0;
+            return;
         }
         this.toEffect = parseEffect(toEffect);
         this.shouldAnimate = (duration > 32);
         if (!this.shouldAnimate) {
-            return inlineStyle(ele, this.toEffect);
+            inlineStyle(ele, this.toEffect);
+            return;
         }
         this.ele = ele;
         // stage where the element will start from
@@ -633,9 +636,6 @@ function inlineStyle(ele, effect) {
         if (transforms.length) {
             transforms.push('translateZ(0px)');
             ele.style[dom_1.CSS.transform] = transforms.join(' ');
-        }
-        else {
-            ele.style[dom_1.CSS.transform] = 'translateZ(0px)';
         }
     }
 }

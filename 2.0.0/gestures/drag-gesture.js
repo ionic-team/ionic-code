@@ -4,12 +4,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var gesture_1 = require('./gesture');
-var util = require('../util');
+var util_1 = require('../util');
 var DragGesture = (function (_super) {
     __extends(DragGesture, _super);
     function DragGesture(element, opts) {
         if (opts === void 0) { opts = {}; }
-        util.defaults(opts, {});
+        util_1.defaults(opts, {});
         _super.call(this, element, opts);
     }
     DragGesture.prototype.listen = function () {
@@ -33,11 +33,10 @@ var DragGesture = (function (_super) {
             _this.onDragEnd(ev);
             _this.dragging = false;
         });
-        this.hammertime.get('pan').set(this._options);
     };
-    DragGesture.prototype.onDrag = function () { };
-    DragGesture.prototype.onDragStart = function () { };
-    DragGesture.prototype.onDragEnd = function () { };
+    DragGesture.prototype.onDrag = function (ev) { return true; };
+    DragGesture.prototype.onDragStart = function (ev) { return true; };
+    DragGesture.prototype.onDragEnd = function (ev) { };
     return DragGesture;
 })(gesture_1.Gesture);
 exports.DragGesture = DragGesture;

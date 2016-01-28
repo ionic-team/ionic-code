@@ -33,8 +33,9 @@ export declare class SqlStorage extends StorageEngine {
     static BACKUP_LOCAL: number;
     static BACKUP_LIBRARY: number;
     static BACKUP_DOCUMENTS: number;
+    private _db;
     constructor(options?: {});
-    _getBackupLocation(dbFlag: any): number;
+    _getBackupLocation(dbFlag: number): number;
     _tryInit(): void;
     /**
      * Perform an arbitrary SQL operation on the database. Use this method
@@ -45,25 +46,25 @@ export declare class SqlStorage extends StorageEngine {
      * @param {array} params the additional params to use for query placeholders
      * @return {Promise} that resolves or rejects with an object of the form { tx: Transaction, res: Result (or err)}
      */
-    query(query: any, params?: any[]): Promise<{}>;
+    query(query: any, params?: any[]): Promise<any>;
     /**
      * Get the value in the database identified by the given key.
      * @param {string} key the key
      * @return {Promise} that resolves or rejects with an object of the form { tx: Transaction, res: Result (or err)}
      */
-    get(key: any): Promise<{}>;
+    get(key: string): Promise<any>;
     /**
     * Set the value in the database for the given key. Existing values will be overwritten.
     * @param {string} key the key
     * @param {string} value The value (as a string)
     * @return {Promise} that resolves or rejects with an object of the form { tx: Transaction, res: Result (or err)}
     */
-    set(key: any, value: any): Promise<{}>;
+    set(key: string, value: string): Promise<any>;
     /**
     * Remove the value in the database for the given key.
     * @param {string} key the key
     * @param {string} value The value (as a string)
     * @return {Promise} that resolves or rejects with an object of the form { tx: Transaction, res: Result (or err)}
     */
-    remove(key: any): Promise<{}>;
+    remove(key: string): Promise<any>;
 }

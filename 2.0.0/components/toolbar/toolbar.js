@@ -4,12 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -19,7 +17,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var core_1 = require('angular2/core');
 var ion_1 = require('../ion');
-var config_1 = require('../../config/config');
 var navbar_1 = require('../navbar/navbar');
 var button_1 = require('../button/button');
 /**
@@ -27,8 +24,8 @@ var button_1 = require('../button/button');
  */
 var ToolbarBase = (function (_super) {
     __extends(ToolbarBase, _super);
-    function ToolbarBase(elementRef, config) {
-        _super.call(this, elementRef, config);
+    function ToolbarBase(elementRef) {
+        _super.call(this, elementRef);
         this.itemRefs = [];
         this.titleRef = null;
     }
@@ -74,21 +71,42 @@ exports.ToolbarBase = ToolbarBase;
  * @description
  * The toolbar is generic bar that sits above or below content.
  * Unlike an `Navbar`, `Toolbar` can be used for a subheader as well.
+ * Since it's based on flexbox, you can place the toolbar where you
+ * need it and flexbox will handle everything else. Toolbars will automatically
+ * assume they should be placed before an `ion-content`, so to specify that you want it
+ * below, you can add the property `placement="bottom"`. This will change the flex order
+ * property.
+ *
  * @usage
  * ```html
  * <ion-toolbar>
  *   <ion-title>My Toolbar Title</ion-title>
  * </ion-toolbar>
  *
+ * <ion-toolbar>
+ *   <ion-title>I'm a subheader</ion-title>
+ * </ion-toolbar>
+ *
  *  <ion-content></ion-content>
+ *
+ * <ion-toolbar position="bottom>
+ *   <ion-title>I'm a subfooter</ion-title>
+ * </ion-toolbar>
+ *
+ * <ion-toolbar position="bottom>
+ *   <ion-title>I'm a footer</ion-title>
+ * </ion-toolbar>
+ *
  *  ```
+ *
+ * @property {any} [placement] - set position of the toolbar, top or bottom
  * @demo /docs/v2/demos/toolbar/
  * @see {@link ../../navbar/Navbar/ Navbar API Docs}
  */
 var Toolbar = (function (_super) {
     __extends(Toolbar, _super);
-    function Toolbar(elementRef, config) {
-        _super.call(this, elementRef, config);
+    function Toolbar(elementRef) {
+        _super.call(this, elementRef);
     }
     Toolbar = __decorate([
         core_1.Component({
@@ -104,14 +122,13 @@ var Toolbar = (function (_super) {
                 'class': 'toolbar'
             }
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [core_1.ElementRef])
     ], Toolbar);
     return Toolbar;
-    var _a, _b;
 })(ToolbarBase);
 exports.Toolbar = Toolbar;
 /**
- * @name ToolbarTitle
+ * @name Title
  * @description
  * `ion-title` is a component that sets the title of the `Toolbar` or `Navbar`
  * @usage
@@ -133,7 +150,7 @@ exports.Toolbar = Toolbar;
 var ToolbarTitle = (function (_super) {
     __extends(ToolbarTitle, _super);
     function ToolbarTitle(elementRef, toolbar, navbar) {
-        _super.call(this, elementRef, null);
+        _super.call(this, elementRef);
         toolbar && toolbar.setTitleCmp(this);
         navbar && navbar.setTitleCmp(this);
     }
@@ -153,10 +170,9 @@ var ToolbarTitle = (function (_super) {
         __param(1, core_1.Optional()),
         __param(2, core_1.Optional()),
         __param(2, core_1.Inject(core_1.forwardRef(function () { return navbar_1.Navbar; }))), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, Toolbar, (typeof (_b = typeof navbar_1.Navbar !== 'undefined' && navbar_1.Navbar) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [core_1.ElementRef, Toolbar, navbar_1.Navbar])
     ], ToolbarTitle);
     return ToolbarTitle;
-    var _a, _b;
 })(ion_1.Ion);
 exports.ToolbarTitle = ToolbarTitle;
 /**
@@ -170,15 +186,15 @@ var ToolbarItem = (function () {
         // Deprecation warning
         if (elementRef.nativeElement.tagName === 'ION-NAV-ITEMS') {
             if (elementRef.nativeElement.hasAttribute('primary')) {
-                console.warn('<ion-nav-items primary> has been renamed to <ion-buttons start>, please update your HTML');
+                void 0;
                 elementRef.nativeElement.setAttribute('start', '');
             }
             else if (elementRef.nativeElement.hasAttribute('secondary')) {
-                console.warn('<ion-nav-items secondary> has been renamed to <ion-buttons end>, please update your HTML');
+                void 0;
                 elementRef.nativeElement.setAttribute('end', '');
             }
             else {
-                console.warn('<ion-nav-items> has been renamed to <ion-buttons>, please update your HTML');
+                void 0;
             }
         }
     }
@@ -191,12 +207,11 @@ var ToolbarItem = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ToolbarItem.prototype, "_buttons",
-        __decorate([
-            core_1.ContentChildren(button_1.Button), 
-            __metadata('design:type', Object), 
-            __metadata('design:paramtypes', [Object])
-        ], ToolbarItem.prototype, "_buttons", Object.getOwnPropertyDescriptor(ToolbarItem.prototype, "_buttons")));
+    __decorate([
+        core_1.ContentChildren(button_1.Button), 
+        __metadata('design:type', Object), 
+        __metadata('design:paramtypes', [Object])
+    ], ToolbarItem.prototype, "_buttons", null);
     ToolbarItem = __decorate([
         core_1.Directive({
             selector: 'ion-buttons,[menuToggle],ion-nav-items'
@@ -204,9 +219,8 @@ var ToolbarItem = (function () {
         __param(1, core_1.Optional()),
         __param(2, core_1.Optional()),
         __param(2, core_1.Inject(core_1.forwardRef(function () { return navbar_1.Navbar; }))), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, Toolbar, (typeof (_b = typeof navbar_1.Navbar !== 'undefined' && navbar_1.Navbar) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [core_1.ElementRef, Toolbar, navbar_1.Navbar])
     ], ToolbarItem);
     return ToolbarItem;
-    var _a, _b;
 })();
 exports.ToolbarItem = ToolbarItem;

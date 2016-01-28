@@ -3,8 +3,9 @@ function __export(m) {
 }
 __export(require('./config/bootstrap'));
 __export(require('./config/config'));
-__export(require('./config/decorators'));
 __export(require('./config/directives'));
+__export(require('./decorators/app'));
+__export(require('./decorators/page'));
 __export(require('./components'));
 __export(require('./platform/platform'));
 __export(require('./platform/storage'));

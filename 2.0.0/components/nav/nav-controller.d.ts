@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Compiler, ElementRef, NgZone, AppViewManager, Renderer } from 'angular2/core';
+import { Compiler, ElementRef, NgZone, AppViewManager, Renderer, ResolvedProvider, Type } from 'angular2/core';
+import { Config } from '../../config/config';
 import { Ion } from '../ion';
 import { IonicApp } from '../app/app';
-import { Config } from '../../config/config';
 import { Keyboard } from '../../util/keyboard';
+import { NavRouter } from './nav-router';
+import { ViewController } from './view-controller';
 /**
  * _For examples on the basic usage of NavController, check out the
  * [Navigation section](../../../../components/#navigation) of the Component
@@ -48,7 +50,7 @@ import { Keyboard } from '../../util/keyboard';
  *
  * <h2 id="creating_pages">Page creation</h2>
  * _For more information on the `@Page` decorator see the [@Page API
- * reference](../../../config/decorators/Page/)._
+ * reference](../../../decorators/Page/)._
  *
  * Pages are created when they are added to the navigation stack.  For methods
  * like [push()](#push), the NavController takes any component class that is
@@ -92,19 +94,119 @@ import { Keyboard } from '../../util/keyboard';
  * @see {@link /docs/v2/components#navigation Navigation Component Docs}
  */
 export declare class NavController extends Ion {
-    constructor(parentnavCtrl: NavController, app: IonicApp, config: Config, keyboard: Keyboard, elementRef: ElementRef, anchorName: string, compiler: Compiler, viewManager: AppViewManager, zone: NgZone, renderer: Renderer, cd: ChangeDetectorRef);
+    parent: any;
+    app: IonicApp;
+    config: Config;
+    keyboard: Keyboard;
+    protected _anchorName: string;
+    protected _compiler: Compiler;
+    protected _viewManager: AppViewManager;
+    protected _zone: NgZone;
+    protected _renderer: Renderer;
+    private _transIds;
+    private _init;
+    private _lastTrans;
+    protected _ids: number;
+    protected _sbEnabled: any;
+    protected _sbThreshold: any;
+    protected _sbTrans: any;
+    protected _trnsDelay: any;
+    protected _trnsTime: number;
+    protected _views: Array<ViewController>;
+    id: number;
+    providers: ResolvedProvider[];
+    router: NavRouter;
+    sbGesture: any;
+    constructor(parent: any, app: IonicApp, config: Config, keyboard: Keyboard, elementRef: ElementRef, _anchorName: string, _compiler: Compiler, _viewManager: AppViewManager, _zone: NgZone, _renderer: Renderer);
     /**
-     * Boolean if the nav controller is actively transitioning or not.
-     * @private
-     * @return {bool}
+     * Set the root for the current navigation stack
+     * @param {Type} page  The name of the component you want to push on the navigation stack
+     * @param {object} [params={}] Any nav-params you want to pass along to the next view
+     * @param {object} [opts={}] Any options you want to use pass to transtion
+     * @returns {Promise} Returns a promise when done
      */
-    isTransitioning(): boolean;
+    setRoot(page: Type, params?: any, opts?: any): Promise<any>;
     /**
-     * Boolean if the nav controller is actively transitioning or not.
-     * @private
-     * @return {bool}
+     * You can set the views of the current navigation stack and navigate to the last view past
+     *
+     *
+     *```typescript
+     * import {Page, NavController} from 'ionic/ionic'
+     * import {Detail} from '../detail/detail'
+     * import {Info} from '../info/info'
+     *
+     *  export class Home {
+     *    constructor(nav: NavController) {
+     *      this.nav = nav;
+     *    }
+     *    setPages() {
+     *      this.nav.setPages([ {page: List}, {page: Detail}, {page:Info} ]);
+     *    }
+     *  }
+     *```
+     *
+     *
+     *In this example, we're giving the current nav stack an array of pages. Then the navigation stack will navigate to the last view in the array and remove the orignal view you came from.
+     *
+     * By default, animations are disabled, but they can be enabled by passing options to the navigation controller
+     *
+     *
+     *```typescript
+     * import {Page, NavController} from 'ionic/ionic'
+     * import {Detail} from '../detail/detail'
+     *
+     *  export class Home {
+     *    constructor(nav: NavController) {
+     *      this.nav = nav;
+     *    }
+     *    setPages() {
+     *      this.nav.setPages([ {page: List}, {page: Detail} ], {
+     *        animate: true
+     *      });
+     *    }
+     *  }
+     *```
+     *
+     *
+     *You can also pass any navigation params to the individual pages in the array.
+     *
+     *
+     *```typescript
+     * import {Page, NavController} from 'ionic/ionic';
+     * import {Info} from '../info/info';
+     * import {List} from '../list/list';
+     * import {Detail} from '../detail/detail';
+     *
+     *  export class Home {
+     *    constructor(nav: NavController) {
+     *      this.nav = nav;
+     *    }
+     *    setPages() {
+     *      this.nav.setPages([{
+     *        page: Info
+     *      }, {
+     *        page: List,
+     *        params: {tags: 'css'}
+     *      }, {
+     *        page: Detail,
+     *        params: {id: 325}
+     *      }]);
+     *    }
+     *  }
+     *```
+     *
+     * @param {Array<Type>} pages  An arry of page components and their params to load in the stack
+     * @param {object} [opts={}] Any options you want to use pass
+     * @returns {Promise} Returns a promise when the pages are set
      */
-    setTransitioning(isTransitioning: any, fallback?: number): void;
+    setPages(pages: Array<{
+        page: Type;
+        params?: any;
+    }>, opts?: any): Promise<any>;
+    /**
+     * @private
+     */
+    private setViews(components, opts?);
     /**
      * Push is how we can pass components and navigate to them. We push the component we want to navigate to on to the navigation stack.
      *
@@ -146,7 +248,7 @@ export declare class NavController extends Ion {
      *
      * ```typescript
      * class MyClass{
-     *    constructor(nav:NavController){
+     *    constructor(nav: NavController){
      *      this.nav = nav;
      *    }
      *
@@ -160,17 +262,108 @@ export declare class NavController extends Ion {
      *      },{
      *       // here we can configure things like the animations direction or
      *       // or if the view should animate at all.
-     *       direction: back
+     *       direction: 'back'
      *      });
      *    }
      * }
      * ```
-     * @param {Any} component The name of the component you want to push on the navigation stack
-     * @param {Object} [params={}] Any nav-params you want to pass along to the next view
-     * @param {Object} [opts={}] Any options you want to use pass to transtion
-     * @returns {Promise} Returns a promise when the transition is completed
+     * @param {Type} page  The page component class you want to push on to the navigation stack
+     * @param {object} [params={}] Any nav-params you want to pass along to the next view
+     * @param {object} [opts={}] Any options you want to use pass to transtion
+     * @returns {Promise} Returns a promise, which resolves when the transition has completed
      */
-    push(componentType: any, params: {}, opts: {}, callback: any): any;
+    push(page: Type, params?: any, opts?: {
+        animate?: boolean;
+        animation?: string;
+        direction?: string;
+    }): Promise<any>;
+    /**
+     * Present is how we display overlays on top of the content, from within the
+     * root level `NavController`. The `present` method is used by overlays, such
+     * as `ActionSheet`, `Alert`, and `Modal`. The main difference between `push`
+     * and `present`, is that `present` takes a `ViewController` instance, whereas
+     * `push` takes a `Page` component class. Additionally, `present` will place
+     * the overlay in the root NavController's stack.
+     *
+     * ```typescript
+     * class MyClass{
+     *    constructor(nav: NavController) {
+     *      this.nav = nav;
+     *    }
+     *
+     *    presentModal() {
+     *      let modal = Modal.create(ProfilePage);
+     *      this.nav.present(modal);
+     *    }
+     * }
+     * ```
+     *
+     * @param {ViewController} enteringView The name of the component you want to push on the navigation stack
+     * @param {object} [opts={}] Any options you want to use pass to transtion
+     * @returns {Promise} Returns a promise, which resolves when the transition has completed
+     */
+    present(enteringView: ViewController, opts?: any): Promise<any>;
+    /**
+     * Inserts a view into the nav stack at the specified index.
+     * This is useful if you need to add a view at any point in your navigation stack
+     *
+     * ```typescript
+     * export class Detail {
+     *    constructor(nav: NavController) {
+     *      this.nav = nav;
+     *    }
+     *    insertPage(){
+     *      this.nav.insert(1, Info);
+     *    }
+     *  }
+     * ```
+     *
+     * This will insert the `Info` page into the second slot of our navigation stack
+     *
+     * @param {number} insertIndex  The index where you want to insert the page
+     * @param {Type} page  The name of the component you want to insert into the nav stack
+     * @param {object} [params={}] Any nav-params you want to pass along to the next page
+     * @param {object} [opts={}] Any options you want to use pass to transtion
+     * @returns {Promise} Returns a promise when the page has been inserted into the navigation stack
+     */
+    insert(insertIndex: number, page: Type, params?: any, opts?: any): Promise<any>;
+    /**
+     * Inserts multiple pages into the nav stack at the specified index.
+     *
+     * ```typescript
+     * export class Detail {
+     *    constructor(nav: NavController) {
+     *      this.nav = nav;
+     *    }
+     *    insertPages(){
+     *      let pages = [
+     *        { page: Info },
+     *        { page: ProfileList },
+     *        { page: ProfileDetail, params: {userId:5} }
+     *      ];
+     *      this.nav.insertPages(2, pages);
+     *    }
+     *  }
+     * ```
+     *
+     * This will insert each of the pages in the array, starting at the third slot
+     * (second index) of the nav stack. The last page in the array will animate
+     * in and become the active page.
+     *
+     * @param {number} insertIndex  The index where you want to insert the page
+     * @param {Array<{page: Type, params=: any}>} insertPages  An array of objects, each with a `page` and optionally `params` property
+     * @param {object} [opts={}] Any options you want to use pass to transtion
+     * @returns {Promise} Returns a promise when the pages have been inserted into the navigation stack
+     */
+    insertPages(insertIndex: number, insertPages: Array<{
+        page: Type;
+        params?: any;
+    }>, opts?: any): Promise<any>;
+    private _insertViews(insertIndex, insertViews, opts?);
+    /**
+     * @private
+     */
+    private _insert(insertIndex, insertViews);
     /**
      * If you wanted to navigate back from a current view, you can use the back-button or programatically call `pop()`
      * Similar to `push()`, you can pass animation options.
@@ -186,44 +379,21 @@ export declare class NavController extends Ion {
      * }
      * ```
      *
-     * @param {Object} [opts={}] Any options you want to use pass to transtion
+     * @param {object} [opts={}] Any options you want to use pass to transtion
      * @returns {Promise} Returns a promise when the transition is completed
      */
-    pop(opts?: {}): any;
-    /**
-     * @private
-     * Pop to a specific view in the history stack
-     * @param view {ViewController} to pop to
-     * @param {Object} [opts={}] Any options you want to use pass to transtion
-     */
-    popTo(viewCtrl: any, opts?: {}): any;
+    pop(opts?: any): Promise<any>;
     /**
      * Similar to `pop()`, this method let's you navigate back to the root of the stack, no matter how many views that is
-     * @param {Object} [opts={}] Any options you want to use pass to transtion
+     * @param {object} [opts={}] Any options you want to use pass to transtion
      */
-    popToRoot(opts?: {}): any;
+    popToRoot(opts?: {}): Promise<any>;
     /**
-     * Inserts a view into the nav stack at the specified index.
-     * This is useful if you need to add a view at any point in your navigation stack
-     *
-     * ```typescript
-     * export class Detail {
-     *    constructor(nav: NavController) {
-     *      this.nav = nav;
-     *    }
-     *    insertView(){
-     *      this.nav.insert(1,Info)
-     *    }
-     *  }
-     * ```
-     *
-     * This will insert the `Info` view into the second slot of our navigation stack
-     *
-     * @param {Number} index The index where you want to insert the view
-     * @param {Any} component The name of the component you want to insert into the nav stack
-     * @returns {Promise} Returns a promise when the view has been inserted into the navigation stack
+     * Pop to a specific view in the history stack
+     * @param {ViewController} view  to pop to
+     * @param {object} [opts={}]  Any options you want to use pass to transtion
      */
-    insert(index: any, componentType: any, params?: {}, opts?: {}): any;
+    popTo(view: ViewController, opts?: any): Promise<any>;
     /**
      * Removes a view from the nav stack at the specified index.
      *
@@ -233,143 +403,50 @@ export declare class NavController extends Ion {
      *      this.nav = nav;
      *    }
      *    removeView(){
-     *      this.nav.remove(1)
+     *      this.nav.remove(1);
      *    }
      *  }
      * ```
      *
-     * @param {Number} index Remove the view from the nav stack at that index
-     * @param {Object} [opts={}] Any options you want to use pass to transtion
+     * @param {number} startIndex  The starting index to remove views from the nav stack
+     * @param {removeCount} [opts={}]  The number of views to remove, defaults to remove `1`.
+     * @param {object} [opts={}] Any options you want to use pass to transtion
      * @returns {Promise} Returns a promise when the view has been removed
      */
-    remove(index: any, opts?: {}): any;
+    remove(startIndex: number, removeCount?: number, opts?: any): Promise<any>;
     /**
      * @private
      */
-    setViews(components: any, opts?: {}): any;
-    /**
-     * You can set the views of the current navigation stack and navigate to the last view past
-     *
-     *
-     *```typescript
-     * import {Page, NavController} from 'ionic/ionic'
-     * import {Detail} from '../detail/detail'
-     * import {Info} from '../info/info'
-     *
-     *  export class Home {
-     *    constructor(nav: NavController) {
-     *      this.nav = nav;
-     *    }
-     *    setPages() {
-     *      this.nav.setPages([List,Detail, Info]);
-     *    }
-     *  }
-     *```
-     *
-     *
-     *In this example, we're giving the current nav stack an array of pages. Then the navigation stack will navigate to the last view in the array and remove the orignal view you came from.
-     *
-     *By default, animations are disabled, but they can be enabled by passing options to the navigation controller
-     *
-     *
-     *```typescript
-     * import {Page, NavController} from 'ionic/ionic'
-     * import {Detail} from '../detail/detail'
-     * import {Info} from '../info/info'
-     *
-     *  export class Home {
-     *    constructor(nav: NavController) {
-     *      this.nav = nav;
-     *    }
-     *    setPages() {
-     *      this.nav.setPages([List,Detail, Info],{
-     *        animate: true
-     *      });
-     *    }
-     *  }
-     *```
-     *
-     *
-     *You can also pass any navigation params to the individual pages in the array.
-     *
-     *
-     *```typescript
-     * import {Page, NavController} from 'ionic/ionic'
-     * import {Detail} from '../detail/detail'
-     * import {Info} from '../info/info'
-     *
-     *  export class Home {
-     *    constructor(nav: NavController) {
-     *      this.nav = nav;
-     *    }
-     *    setPages() {
-     *      this.nav.setPages([{
-     *        componentType: List,
-     *        params: {id: 43}
-     *      }, {
-     *        componentType: Detail,
-     *        params: {id: 45}
-     *      },{
-     *        componentType: Info,
-     *        params: {id: 5}
-     *      }]);
-     *    }
-     *  }
-     *```
-     *
-     * @param {Array} component an arry of components to load in the stack
-     * @param {Object} [opts={}] Any options you want to use pass
-     * @returns {Promise} Returns a promise when the pages are set
-     */
-    setPages(components: any, opts?: {}): any;
-    /**
-     * Set the root for the current navigation stack
-     * @param {Component} The name of the component you want to push on the navigation stack
-     * @param {Object} [params={}] Any nav-params you want to pass along to the next view
-     * @param {Object} [opts={}] Any options you want to use pass to transtion
-     * @returns {Promise} Returns a promise when done
-     */
-    setRoot(componentType: any, params?: {}, opts?: {}): any;
+    private _remove(startIndex, removeCount);
     /**
      * @private
      */
-    _transition(enteringView: any, leavingView: any, opts: any, done: any): any;
+    private _transition(enteringView, leavingView, opts, done);
     /**
      * @private
      */
-    _render(enteringView: any, leavingView: any, opts: any, done: any): void;
+    private _render(transId, enteringView, leavingView, opts, done);
     /**
      * @private
      */
-    _postRender(enteringView: any, leavingView: any, opts: any, done: any): void;
+    private _postRender(transId, enteringView, leavingView, isAlreadyTransitioning, opts, done);
     /**
      * @private
      */
-    _beforeTrans(enteringView: any, leavingView: any, opts: any, done: any): void;
+    private _beforeTrans(enteringView, leavingView, opts, done);
     /**
      * @private
      */
-    _afterTrans(enteringView: any, leavingView: any, opts: any, done: any): void;
+    private _afterTrans(enteringView, leavingView, opts, done);
     /**
      * @private
      */
-    _transComplete(): void;
+    private _transComplete(transId, enteringView, leavingView, direction);
+    private _cleanup();
     /**
      * @private
      */
-    loadPage(viewCtrl: any, navbarContainerRef: any, opts: any, done: any): void;
-    /**
-     * @private
-     */
-    _setZIndex(enteringView: any, leavingView: any, direction: any): void;
-    /**
-     * @private
-     */
-    _cachePage(viewCtrl: any, shouldShow: any): void;
-    /**
-     * @private
-     */
-    _cleanup(activeView: any, previousView: any, skipDestroy: any): void;
+    loadPage(view: ViewController, navbarContainerRef: any, opts: any, done: Function): void;
     /**
      * @private
      */
@@ -385,13 +462,13 @@ export declare class NavController extends Ion {
     /**
      * @private
      */
-    _sbComplete(): void;
+    private _sbComplete();
     /**
      * Check to see if swipe-to-go-back is enabled
-     * @param {boolean=} isSwipeBackEnabled Set whether or not swipe-to-go-back is enabled
+     * @param {boolean} isSwipeBackEnabled Set whether or not swipe-to-go-back is enabled
      * @returns {boolean} Whether swipe-to-go-back is enabled
      */
-    isSwipeBackEnabled(val: any): any;
+    isSwipeBackEnabled(val?: boolean): boolean;
     /**
      * If it's possible to use swipe back or not. If it's not possible
      * to go back, or swipe back is not enable then this will return false.
@@ -399,98 +476,68 @@ export declare class NavController extends Ion {
      * will return true.
      * @returns {boolean} Whether you can swipe to go back
      */
-    canSwipeBack(): any;
+    canSwipeBack(): boolean;
     /**
      * Returns `true` if there's a valid previous page that we can pop back to.
      * Otherwise returns false.
      * @returns {boolean} Whether there is a page to go back to
      */
-    canGoBack(): any;
+    canGoBack(): boolean;
+    /**
+     * Boolean if the nav controller is actively transitioning or not.
+     * @private
+     * @return {boolean}
+     */
+    isTransitioning(): boolean;
     /**
      * @private
+     * @return {boolean}
      */
-    navbarViewContainer(nbContainer: any): any;
+    setTransitioning(isTransitioning: boolean, fallback?: number): void;
     /**
      * @private
-     * @returns {TODO} TODO
+     * @returns {ViewController}
      */
-    anchorElementRef(): any;
+    getByState(state: string): ViewController;
     /**
-     * @private
+     * @param {number} index  The index of the page you want to get
+     * @returns {ViewController} Returns the component that matches the index given
      */
-    _add(viewCtrl: any): void;
+    getByIndex(index: number): ViewController;
     /**
-     * @private
+     * @returns {ViewController} Returns the active page's view controller.
      */
-    _incId(viewCtrl: any): void;
+    getActive(): ViewController;
     /**
-     * @private
-     */
-    _remove(viewOrIndex: any): void;
-    /**
-     * @private
-     */
-    _getStagedEntering(): any;
-    /**
-     * @private
-     */
-    _getStagedLeaving(): any;
-    /**
-     * @private
-     * @returns {Component} TODO
-     */
-    getActive(): any;
-    /**
-     * @param {Index} The index of the page you want to get
-     * @returns {Component} Returns the component that matches the index given
-     */
-    getByIndex(index: any): any;
-    /**
-     * @private
-     * @param {Handle} The handle of the page you want to get
-     * @returns {Component} Returns the component that matches the handle given
-     */
-    getByHandle(handle: any): any;
-    /**
-     * @private
-     * @param {TODO} pageType  TODO
-     * @returns {TODO} TODO
-     */
-    getByType(pageType: any): any;
-    /**
-     * @private
-     * @param {TODO} view  TODO
-     * @returns {TODO} TODO
-     */
-    getPrevious(viewCtrl: any): any;
-    /**
-     * First page in this nav controller's stack. This would not return a page which is about to be destroyed.
-     * @returns {Component} Returns the first component page in the current stack
-     */
-    first(): any;
-    /**
-     * Last page in this nav controller's stack. This would not return a page which is about to be destroyed.
-     * @returns {Component} Returns the last component page in the current stack
-     */
-    last(): any;
-    /**
-     * @private
-     * @param {TODO} view  TODO
-     * @returns {TODO} TODO
-     */
-    indexOf(viewCtrl: any): any;
-    /**
-     * Number of sibling views in the nav controller. This does
-     * not include views which are about to be destroyed.
-     * @returns {Number} The number of views in stack, including the current view
-     */
-    length(): number;
-    /**
-     * @private
-     * @param {TODO} view  TODO
+     * @param {ViewController} view
      * @returns {boolean}
      */
-    isActive(viewCtrl: any): boolean;
+    isActive(view: ViewController): boolean;
+    /**
+     * @param {ViewController} view  The ViewController to get the previous view to
+     * @returns {ViewController}
+     */
+    getPrevious(view: ViewController): ViewController;
+    /**
+     * First page in this nav controller's stack.
+     * @returns {ViewController} Returns the first component page in the current stack
+     */
+    first(): ViewController;
+    /**
+     * Last page in this nav controller's stack. This would not return a page which is about to be destroyed.
+     * @returns {ViewController} Returns the last component page in the current stack
+     */
+    last(): ViewController;
+    /**
+     * @param {ViewController} view
+     * @returns {number} Returns the index number of the view
+     */
+    indexOf(view: ViewController): number;
+    /**
+     * Number of sibling views in the nav controller.
+     * @returns {number} The number of views in stack, including the current view
+     */
+    length(): number;
     /**
      * Returns the root NavController.
      * @returns {NavController}
@@ -501,51 +548,12 @@ export declare class NavController extends Ion {
      * @param {TODO} router  TODO
      */
     registerRouter(router: any): void;
-}
-/**
- * @name NavParams
- * @description
- * NavParams are an object that exists on a page and can contain data for that particular view.
- * Similar to how data was pass to a view in V1 with `$stateParams`, NavParams offer a much more flexible
- * option with a simple `get` method.
- *
- * @usage
- * ```ts
- * export class MyClass{
- *  constructor(params: NavParams){
- *    this.params = params;
- *    // userParams is an object we have in our nav-parameters
- *    this.params.get('userParams');
- *  }
- * }
- * ```
- * @demo /docs/v2/demos/nav-params/
- * @see {@link /docs/v2/components#navigation Navigation Component Docs}
- * @see {@link ../NavController/ NavController API Docs}
- * @see {@link ../Nav/ Nav API Docs}
- * @see {@link ../NavPush/ NavPush API Docs}
- */
-export declare class NavParams {
     /**
      * @private
-     * @param {TODO} data  TODO
      */
-    constructor(data: any);
+    private _incId(view);
     /**
-     * Get the value of a nav-parameter for the current view
-     *
-     * ```ts
-     * export class MyClass{
-     *  constructor(params: NavParams){
-     *    this.params = params;
-     *    // userParams is an object we have in our nav-parameters
-     *    this.params.get('userParams');
-     *  }
-     * }
-     * ```
-     *
-     *
-     * @param {string} parameter Which param you want to look up
+     * @private
      */
-    get(param: any): any;
+    private _setZIndex(enteringView, leavingView, direction);
 }

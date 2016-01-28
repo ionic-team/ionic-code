@@ -4,12 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -21,9 +19,35 @@ var core_1 = require('angular2/core');
 var common_1 = require('angular2/common');
 var ion_1 = require('../ion');
 var config_1 = require('../../config/config');
-var decorators_1 = require('../../config/decorators');
 var icon_1 = require('../icon/icon');
 var button_1 = require('../button/button');
+var util_1 = require('../../util/util');
+/**
+* @private
+*/
+var SearchbarInput = (function () {
+    function SearchbarInput(_elementRef) {
+        this._elementRef = _elementRef;
+    }
+    SearchbarInput.prototype.stopInput = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    };
+    __decorate([
+        core_1.HostListener('input', ['$event']), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', [Object]), 
+        __metadata('design:returntype', void 0)
+    ], SearchbarInput.prototype, "stopInput", null);
+    SearchbarInput = __decorate([
+        core_1.Directive({
+            selector: '.searchbar-input',
+        }), 
+        __metadata('design:paramtypes', [core_1.ElementRef])
+    ], SearchbarInput);
+    return SearchbarInput;
+})();
+exports.SearchbarInput = SearchbarInput;
 /**
  * @name Searchbar
  * @module ionic
@@ -32,57 +56,153 @@ var button_1 = require('../button/button');
  *
  * @usage
  * ```html
- * <ion-searchbar [(ngModel)]="defaultSearch"></ion-searchbar>
+ * <ion-searchbar [(ngModel)]="defaultSearch" (input)="triggerInput($event)" (cancel)="onCancelSearchbar($event)" (clear)="onClearSearchbar($event)"></ion-searchbar>
  * ```
  *
- * @property {function} [cancelButtonAction] - the function that gets called by clicking the cancel button
- * @property {string} [cancelButtonText=Cancel] - sets the cancel button text to the value passed in
+ * @property {string} [cancelButtonText=Cancel] - Sets the cancel button text to the value passed in
  * @property {boolean} [hideCancelButton=false] - Hides the cancel button
  * @property {string} [placeholder=Search] - Sets input placeholder to the value passed in
  *
- * @see {@link /docs/v2/components#search Search Component Docs}
+ * @property {Any} [input] - Expression to evaluate when the Searchbar input has changed including cleared
+ * @property {Any} [keydown] - Expression to evaluate when a key is pushed down in the Searchbar input
+ * @property {Any} [keypress] - Expression to evaluate when a character is inserted in the Searchbar input
+ * @property {Any} [keyup] - Expression to evaluate when a key is released in the Searchbar input
+ * @property {Any} [blur] - Expression to evaluate when the Searchbar input has blurred
+ * @property {Any} [focus] - Expression to evaluate when the Searchbar input has focused
+ * @property {Any} [cancel] - Expression to evaluate when the cancel button is clicked
+ * @property {Any} [clear] - Expression to evaluate when the clear input button is clicked
+ *
+ * @see {@link /docs/v2/components#searchbar Searchbar Component Docs}
  */
 var Searchbar = (function (_super) {
     __extends(Searchbar, _super);
-    function Searchbar(elementRef, config, ngControl, renderer) {
-        _super.call(this, elementRef, config);
+    function Searchbar(_elementRef, _config, ngControl) {
+        _super.call(this, _elementRef);
+        this._elementRef = _elementRef;
+        this._config = _config;
+        /**
+         * @private
+         */
+        this.input = new core_1.EventEmitter();
+        /**
+         * @private
+         */
+        this.blur = new core_1.EventEmitter();
+        /**
+         * @private
+         */
+        this.focus = new core_1.EventEmitter();
+        /**
+         * @private
+         */
+        this.cancel = new core_1.EventEmitter();
+        /**
+         * @private
+         */
+        this.clear = new core_1.EventEmitter();
+        this.value = '';
         this.blurInput = true;
-        this.renderer = renderer;
-        this.elementRef = elementRef;
-        this.input = new core_1.EventEmitter('input');
-        // If there is no control then we shouldn't do anything
-        if (!ngControl)
-            return;
-        this.ngControl = ngControl;
-        this.ngControl.valueAccessor = this;
-        this.query = '';
+        /**
+         * @private
+         */
+        this.onChange = function (_) { };
+        /**
+         * @private
+         */
+        this.onTouched = function () { };
+        // If the user passed a ngControl we need to set the valueAccessor
+        if (ngControl) {
+            ngControl.valueAccessor = this;
+        }
     }
     /**
      * @private
      * On Initialization check for attributes
      */
     Searchbar.prototype.ngOnInit = function () {
+        this.mode = this._config.get('mode');
         var hideCancelButton = this.hideCancelButton;
         if (typeof hideCancelButton === 'string') {
             this.hideCancelButton = (hideCancelButton === '' || hideCancelButton === 'true');
         }
         this.cancelButtonText = this.cancelButtonText || 'Cancel';
         this.placeholder = this.placeholder || 'Search';
+        if (this.ngModel)
+            this.value = this.ngModel;
+        this.onChange(this.value);
+        this.shouldLeftAlign = this.value && this.value.trim() != '';
+        // Using querySelector instead of searchbarInput because at this point it doesn't exist
+        this.inputElement = this._elementRef.nativeElement.querySelector('.searchbar-input');
+        this.searchIconElement = this._elementRef.nativeElement.querySelector('.searchbar-search-icon');
+        this.setElementLeft();
     };
     /**
      * @private
-     * After the view has initialized check if the Searchbar has a value
+     * After View Initialization check the value
      */
     Searchbar.prototype.ngAfterViewInit = function () {
-        this.shouldLeftAlign = this.searchbarInput.value && this.searchbarInput.value.trim() != '';
+        // If the user passes an undefined variable to ngModel this will warn
+        // and set the value to an empty string
+        if (!util_1.isDefined(this.value)) {
+            void 0;
+            this.value = '';
+            this.onChange(this.value);
+        }
+    };
+    /**
+     * @private
+     * Determines whether or not to add style to the element
+     * to center it properly (ios only)
+     */
+    Searchbar.prototype.setElementLeft = function () {
+        if (this.mode !== 'ios')
+            return;
+        if (this.shouldLeftAlign) {
+            this.inputElement.removeAttribute("style");
+            this.searchIconElement.removeAttribute("style");
+        }
+        else {
+            this.addElementLeft();
+        }
+    };
+    /**
+     * @private
+     * Calculates the amount of padding/margin left for the elements
+     * in order to center them based on the placeholder width
+     */
+    Searchbar.prototype.addElementLeft = function () {
+        // Create a dummy span to get the placeholder width
+        var tempSpan = document.createElement('span');
+        tempSpan.innerHTML = this.placeholder;
+        document.body.appendChild(tempSpan);
+        // Get the width of the span then remove it
+        var textWidth = tempSpan.offsetWidth;
+        tempSpan.remove();
+        // Set the input padding left
+        var inputLeft = "calc(50% - " + (textWidth / 2) + "px)";
+        this.inputElement.style.paddingLeft = inputLeft;
+        // Set the icon margin left
+        var iconLeft = "calc(50% - " + ((textWidth / 2) + 30) + "px)";
+        this.searchIconElement.style.marginLeft = iconLeft;
+    };
+    /**
+     * @private
+     * Update the Searchbar input value when the input changes
+     */
+    Searchbar.prototype.inputChanged = function (ev) {
+        this.value = ev.target.value;
+        this.onChange(this.value);
+        this.input.emit(this);
     };
     /**
      * @private
      * Sets the Searchbar to focused and aligned left on input focus.
      */
     Searchbar.prototype.inputFocused = function () {
+        this.focus.emit(this);
         this.isFocused = true;
         this.shouldLeftAlign = true;
+        this.setElementLeft();
     };
     /**
      * @private
@@ -93,22 +213,24 @@ var Searchbar = (function (_super) {
         // blurInput determines if it should blur
         // if we are clearing the input we still want to stay focused in the input
         if (this.blurInput == false) {
-            this.searchbarInput.elementRef.nativeElement.focus();
+            this.searchbarInput._elementRef.nativeElement.focus();
             this.blurInput = true;
             return;
         }
-        //console.log("Blurring input");
+        this.blur.emit(this);
         this.isFocused = false;
-        this.shouldLeftAlign = this.searchbarInput.value && this.searchbarInput.value.trim() != '';
+        this.shouldLeftAlign = this.value && this.value.trim() != '';
+        this.setElementLeft();
     };
     /**
      * @private
      * Clears the input field and triggers the control change.
      */
     Searchbar.prototype.clearInput = function () {
-        //console.log("Clearing input");
-        this.searchbarInput.writeValue('');
-        this.searchbarInput.onChange('');
+        this.clear.emit(this);
+        this.value = '';
+        this.onChange(this.value);
+        this.input.emit(this);
         this.blurInput = false;
     };
     /**
@@ -117,110 +239,97 @@ var Searchbar = (function (_super) {
      * the clearInput function doesn't want the input to blur
      * then calls the custom cancel function if the user passed one in.
      */
-    Searchbar.prototype.cancelSearchbar = function (event, value) {
-        //console.log("Cancel searchbar");
+    Searchbar.prototype.cancelSearchbar = function () {
+        this.cancel.emit(this);
         this.clearInput();
         this.blurInput = true;
-        this.cancelButtonAction && this.cancelButtonAction(event, value);
     };
-    /**
-    * @private
-    * Updates the value of query
-    */
-    Searchbar.prototype.updateQuery = function (value) {
-        this.query = value;
-        this.input.next(value);
-    };
-    __decorate([
-        core_1.ViewChild(core_1.forwardRef(function () { return SearchbarInput; })), 
-        __metadata('design:type', Object)
-    ], Searchbar.prototype, "searchbarInput");
-    Searchbar = __decorate([
-        decorators_1.ConfigComponent({
-            selector: 'ion-searchbar',
-            inputs: [
-                'cancelButtonAction',
-                'cancelButtonText',
-                'hideCancelButton',
-                'placeholder'
-            ],
-            outputs: ['input'],
-            host: {
-                '[class.searchbar-left-aligned]': 'shouldLeftAlign',
-                '[class.searchbar-focused]': 'isFocused',
-            },
-            template: '<div class="searchbar-input-container">' +
-                '<button (click)="cancelSearchbar($event, query)" (mousedown)="cancelSearchbar($event, query)" clear dark class="searchbar-md-cancel">' +
-                '<icon arrow-back></icon>' +
-                '</button>' +
-                '<div class="searchbar-search-icon"></div>' +
-                '<input [value]="query" (blur)="inputBlurred($event)" (focus)="inputFocused()" class="searchbar-input" type="search" [attr.placeholder]="placeholder">' +
-                '<button clear *ngIf="query" class="searchbar-clear-icon" (click)="clearInput()" (mousedown)="clearInput()"></button>' +
-                '</div>' +
-                '<button clear (click)="cancelSearchbar($event)" (mousedown)="cancelSearchbar($event)" [hidden]="hideCancelButton" class="searchbar-ios-cancel">{{cancelButtonText}}</button>',
-            directives: [common_1.FORM_DIRECTIVES, common_1.NgIf, common_1.NgClass, icon_1.Icon, button_1.Button, core_1.forwardRef(function () { return SearchbarInput; })]
-        }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _b) || Object, (typeof (_c = typeof common_1.NgControl !== 'undefined' && common_1.NgControl) === 'function' && _c) || Object, (typeof (_d = typeof core_1.Renderer !== 'undefined' && core_1.Renderer) === 'function' && _d) || Object])
-    ], Searchbar);
-    return Searchbar;
-    var _a, _b, _c, _d;
-})(ion_1.Ion);
-exports.Searchbar = Searchbar;
-var SearchbarInput = (function () {
-    function SearchbarInput(searchbar, elementRef, renderer) {
-        this.searchbar = searchbar;
-        this.renderer = renderer;
-        this.elementRef = elementRef;
-        if (!searchbar.ngControl)
-            return;
-        this.onChange = function (_) { };
-        this.onTouched = function (_) { };
-        this.ngControl = searchbar.ngControl;
-        this.ngControl.valueAccessor = this;
-    }
     /**
      * @private
      * Write a new value to the element.
      */
-    SearchbarInput.prototype.writeValue = function (value) {
+    Searchbar.prototype.writeValue = function (value) {
         this.value = value;
-        if (typeof value === 'string') {
-            this.searchbar.updateQuery(value);
-        }
     };
     /**
      * @private
      * Set the function to be called when the control receives a change event.
      */
-    SearchbarInput.prototype.registerOnChange = function (fn) {
+    Searchbar.prototype.registerOnChange = function (fn) {
         this.onChange = fn;
     };
     /**
      * @private
      * Set the function to be called when the control receives a touch event.
      */
-    SearchbarInput.prototype.registerOnTouched = function (fn) {
+    Searchbar.prototype.registerOnTouched = function (fn) {
         this.onTouched = fn;
     };
-    /**
-     * @private
-     * Update the Searchbar input value when the input changes
-     */
-    SearchbarInput.prototype.inputChanged = function (event) {
-        this.writeValue(event.target.value);
-        this.onChange(event.target.value);
-    };
-    SearchbarInput = __decorate([
-        core_1.Directive({
-            selector: '.searchbar-input',
-            host: {
-                '(keyup)': 'inputChanged($event)'
-            }
+    __decorate([
+        core_1.ViewChild(SearchbarInput), 
+        __metadata('design:type', Object)
+    ], Searchbar.prototype, "searchbarInput", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Searchbar.prototype, "cancelButtonText", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Searchbar.prototype, "hideCancelButton", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Searchbar.prototype, "placeholder", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Object)
+    ], Searchbar.prototype, "ngModel", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Searchbar.prototype, "input", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Searchbar.prototype, "blur", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Searchbar.prototype, "focus", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Searchbar.prototype, "cancel", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Searchbar.prototype, "clear", void 0);
+    __decorate([
+        core_1.HostBinding('class.searchbar-focused'), 
+        __metadata('design:type', Object)
+    ], Searchbar.prototype, "isFocused", void 0);
+    __decorate([
+        core_1.HostBinding('class.searchbar-left-aligned'), 
+        __metadata('design:type', Object)
+    ], Searchbar.prototype, "shouldLeftAlign", void 0);
+    Searchbar = __decorate([
+        core_1.Component({
+            selector: 'ion-searchbar',
+            template: '<div class="searchbar-input-container">' +
+                '<button (click)="cancelSearchbar()" (mousedown)="cancelSearchbar()" clear dark class="searchbar-md-cancel">' +
+                '<ion-icon name="arrow-back"></ion-icon>' +
+                '</button>' +
+                '<div class="searchbar-search-icon"></div>' +
+                '<input [value]="value" (keyup)="inputChanged($event)" (blur)="inputBlurred()" (focus)="inputFocused()" class="searchbar-input" type="search" [attr.placeholder]="placeholder">' +
+                '<button clear *ngIf="value" class="searchbar-clear-icon" (click)="clearInput()" (mousedown)="clearInput()"></button>' +
+                '</div>' +
+                '<button clear (click)="cancelSearchbar()" (mousedown)="cancelSearchbar()" [hidden]="hideCancelButton" class="searchbar-ios-cancel">{{cancelButtonText}}</button>',
+            directives: [common_1.FORM_DIRECTIVES, common_1.NgIf, common_1.NgClass, icon_1.Icon, button_1.Button, SearchbarInput]
         }),
-        __param(0, core_1.Host()), 
-        __metadata('design:paramtypes', [Searchbar, (typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof core_1.Renderer !== 'undefined' && core_1.Renderer) === 'function' && _b) || Object])
-    ], SearchbarInput);
-    return SearchbarInput;
-    var _a, _b;
-})();
-exports.SearchbarInput = SearchbarInput;
+        __param(2, core_1.Optional()), 
+        __metadata('design:paramtypes', [core_1.ElementRef, config_1.Config, common_1.NgControl])
+    ], Searchbar);
+    return Searchbar;
+})(ion_1.Ion);
+exports.Searchbar = Searchbar;

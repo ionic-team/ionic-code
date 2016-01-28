@@ -4,12 +4,9 @@ var http_1 = require('angular2/http');
 var app_1 = require('../components/app/app');
 var config_1 = require('./config');
 var platform_1 = require('../platform/platform');
-var overlay_controller_1 = require('../components/overlay/overlay-controller');
 var form_1 = require('../util/form');
 var keyboard_1 = require('../util/keyboard');
-var action_sheet_1 = require('../components/action-sheet/action-sheet');
-var modal_1 = require('../components/modal/modal');
-var popup_1 = require('../components/popup/popup');
+var scroll_to_1 = require('../animations/scroll-to');
 var events_1 = require('../util/events');
 var nav_registry_1 = require('../components/nav/nav-registry');
 var translate_1 = require('../translation/translate');
@@ -28,12 +25,12 @@ function ionicProviders(args) {
     if (!(config instanceof config_1.Config)) {
         config = new config_1.Config(config);
     }
-    platform.url(window.location.href);
-    platform.userAgent(window.navigator.userAgent);
-    platform.navigatorPlatform(window.navigator.platform);
+    platform.setUrl(window.location.href);
+    platform.setUserAgent(window.navigator.userAgent);
+    platform.setNavigatorPlatform(window.navigator.platform);
     platform.load();
     config.setPlatform(platform);
-    var clickBlock = new click_block_1.ClickBlock(config.get('clickBlock'));
+    var clickBlock = new click_block_1.ClickBlock();
     var events = new events_1.Events();
     var featureDetect = new feature_detect_1.FeatureDetect();
     setupDom(window, document, config, platform, clickBlock, featureDetect);
@@ -51,10 +48,6 @@ function ionicProviders(args) {
         tap_click_1.TapClick,
         form_1.Form,
         keyboard_1.Keyboard,
-        overlay_controller_1.OverlayController,
-        action_sheet_1.ActionSheet,
-        modal_1.Modal,
-        popup_1.Popup,
         translate_1.Translate,
         router_1.ROUTER_PROVIDERS,
         core_1.provide(router_1.LocationStrategy, { useClass: router_1.HashLocationStrategy }),
@@ -76,6 +69,9 @@ function setupDom(window, document, config, platform, clickBlock, featureDetect)
     // set the mode class name
     // ios/md
     bodyEle.classList.add(mode);
+    // language and direction
+    platform.setDir(document.documentElement.dir, false);
+    platform.setLang(document.documentElement.lang, false);
     var versions = platform.versions();
     platform.platforms().forEach(function (platformName) {
         // platform-ios
@@ -123,7 +119,7 @@ function bindEvents(window, document, platform, events) {
         }
         var content = dom_1.closest(el, 'scroll-content');
         if (content) {
-            var scrollTo = new ScrollTo(content);
+            var scrollTo = new scroll_to_1.ScrollTo(content);
             scrollTo.start(0, 0, 300, 0);
         }
     });

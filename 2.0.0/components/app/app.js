@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -20,18 +18,18 @@ var dom_1 = require('../../util/dom');
  * components see the [IdRef API reference](../id/IdRef/).
  */
 var IonicApp = (function () {
-    function IonicApp(config, clickBlock, zone) {
-        this._config = config;
-        this._zone = zone;
+    function IonicApp(_config, _clickBlock, _zone) {
+        this._config = _config;
+        this._clickBlock = _clickBlock;
+        this._zone = _zone;
         this._titleSrv = new browser_1.Title();
         this._title = '';
         this._disTime = 0;
-        this._clickBlock = clickBlock;
+        this._scrollTime = 0;
         // Our component registry map
         this.components = {};
     }
     /**
-     * @private
      * Sets the document title.
      * @param {string} val  Value to set the document title to.
      */
@@ -77,9 +75,23 @@ var IonicApp = (function () {
     };
     /**
      * @private
+     */
+    IonicApp.prototype.setScrolling = function () {
+        this._scrollTime = Date.now();
+    };
+    /**
+     * @private
+     * Boolean if the app is actively scrolling or not.
+     * @return {bool}
+     */
+    IonicApp.prototype.isScrolling = function () {
+        return (this._scrollTime + 64 > Date.now());
+    };
+    /**
+     * @private
      * Register a known component with a key, for easy lookups later.
-     * @param {TODO} id  The id to use to register the component
-     * @param {TODO} component  The component to register
+     * @param {string} id  The id to use to register the component
+     * @param {Object} component  The component to register
      */
     IonicApp.prototype.register = function (id, component) {
         if (this.components[id] && this.components[id] !== component) {
@@ -89,7 +101,7 @@ var IonicApp = (function () {
     /**
      * @private
      * Unregister a known component with a key.
-     * @param {TODO} id  The id to use to unregister
+     * @param {string} id  The id to use to unregister
      */
     IonicApp.prototype.unregister = function (id) {
         delete this.components[id];
@@ -98,11 +110,11 @@ var IonicApp = (function () {
      * @private
      * Get a registered component with the given type (returns the first)
      * @param {Object} cls the type to search for
-     * @return the matching component, or undefined if none was found
+     * @return {Object} the matching component, or undefined if none was found
      */
     IonicApp.prototype.getRegisteredComponent = function (cls) {
-        for (var _i = 0, _a = this.components; _i < _a.length; _i++) {
-            var component = _a[_i];
+        for (var key in this.components) {
+            var component = this.components[key];
             if (component instanceof cls) {
                 return component;
             }
@@ -111,17 +123,16 @@ var IonicApp = (function () {
     /**
      * @private
      * Get the component for the given key.
-     * @param {TODO} key  TODO
-     * @return {TODO} TODO
+     * @param {string} id  TODO
+     * @return {Object} TODO
      */
     IonicApp.prototype.getComponent = function (id) {
         return this.components[id];
     };
     IonicApp = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _a) || Object, (typeof (_b = typeof click_block_1.ClickBlock !== 'undefined' && click_block_1.ClickBlock) === 'function' && _b) || Object, (typeof (_c = typeof core_1.NgZone !== 'undefined' && core_1.NgZone) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [config_1.Config, click_block_1.ClickBlock, core_1.NgZone])
     ], IonicApp);
     return IonicApp;
-    var _a, _b, _c;
 })();
 exports.IonicApp = IonicApp;

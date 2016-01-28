@@ -58,7 +58,7 @@ tabbar {
 [tabbarIcons=left] .tab-button {
   padding-bottom: 10px;
 
-  icon {
+  ion-icon {
     min-width: 24px;
   }
 }
@@ -94,7 +94,7 @@ tab-highlight {
 
 @mixin tabbar-md($color-name, $color-value) {
 
-  tabbar[#{$color-name}] {
+  ion-tabs[#{$color-name}] tabbar {
     background-color: $color-value;
 
     .tab-button {

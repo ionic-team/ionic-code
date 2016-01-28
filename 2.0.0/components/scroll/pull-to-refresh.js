@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -15,7 +13,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 var core_1 = require('angular2/core');
 var common_1 = require('angular2/common');
 var content_1 = require('../content/content');
-var util = require('../../util');
+var icon_1 = require('../icon/icon');
+var util_1 = require('../../util/util');
 var dom_1 = require('../../util/dom');
 /**
  * @name Refresher
@@ -71,50 +70,38 @@ var dom_1 = require('../../util/dom');
  *
  */
 var Refresher = (function () {
-    /**
-     * @private
-     * @param {Content} content  TODO
-     * @param {ElementRef} elementRef  TODO
-     */
     function Refresher(content, element) {
+        this.content = content;
+        this.isDragging = false;
+        this.isOverscrolling = false;
+        this.dragOffset = 0;
+        this.lastOverscroll = 0;
+        this.ptrThreshold = 0;
+        this.activated = false;
+        this.scrollTime = 500;
+        this.canOverscroll = true;
+        this.pulling = new core_1.EventEmitter();
+        this.refresh = new core_1.EventEmitter();
+        this.starting = new core_1.EventEmitter();
         this.ele = element.nativeElement;
         this.ele.classList.add('content');
-        this.content = content;
-        this.refresh = new core_1.EventEmitter('refresh');
-        this.starting = new core_1.EventEmitter('starting');
-        this.pulling = new core_1.EventEmitter('pulling');
     }
     /**
      * @private
      */
     Refresher.prototype.ngOnInit = function () {
-        this.initEvents();
-    };
-    /**
-     * @private
-     * Initialize touch and scroll event listeners.
-     */
-    Refresher.prototype.initEvents = function () {
         var sp = this.content.getNativeElement();
         var sc = this.content.scrollElement;
-        this.isDragging = false;
-        this.isOverscrolling = false;
-        this.dragOffset = 0;
-        this.lastOverscroll = 0;
-        this.ptrThreshold = 60;
-        this.activated = false;
-        this.scrollTime = 500;
         this.startY = null;
         this.deltaY = null;
-        this.canOverscroll = true;
         this.scrollHost = sp;
         this.scrollChild = sc;
-        util.defaults(this, {
-            pullingIcon: 'ion-android-arrow-down',
-            refreshingIcon: 'ion-ionic'
+        util_1.defaults(this, {
+            pullingIcon: 'md-arrow-down',
+            refreshingIcon: 'ionic'
         });
-        this.showSpinner = !util.isDefined(this.refreshingIcon) && this.spinner != 'none';
-        this.showIcon = util.isDefined(this.refreshingIcon);
+        this.showSpinner = !util_1.isDefined(this.refreshingIcon) && this.spinner != 'none';
+        this.showIcon = util_1.isDefined(this.refreshingIcon);
         this._touchMoveListener = this._handleTouchMove.bind(this);
         this._touchEndListener = this._handleTouchEnd.bind(this);
         this._handleScrollListener = this._handleScroll.bind(this);
@@ -125,8 +112,7 @@ var Refresher = (function () {
     /**
      * @private
      */
-    Refresher.prototype.onDehydrate = function () {
-        console.log('DEHYDRATION');
+    Refresher.prototype.ngOnDestroy = function () {
         var sc = this.content.scrollElement;
         sc.removeEventListener('touchmove', this._touchMoveListener);
         sc.removeEventListener('touchend', this._touchEndListener);
@@ -257,7 +243,7 @@ var Refresher = (function () {
         // credit https://gist.github.com/dezinezync/5487119
         var start = Date.now(), from = this.lastOverscroll;
         if (from === Y) {
-            callback();
+            callback && callback();
             return; /* Prevent scrolling to the Y point if already there */
         }
         // decelerating to zero velocity
@@ -270,7 +256,7 @@ var Refresher = (function () {
             // where .5 would be 50% of time on a linear scale easedT gives a
             // fraction based on the easing method
             easedT = easeOutCubic(time);
-            this.overscroll(parseInt((easedT * (Y - from)) + from, 10));
+            this.overscroll(Math.round((easedT * (Y - from)) + from));
             if (time < 1) {
                 dom_1.raf(scroll.bind(this));
             }
@@ -309,7 +295,7 @@ var Refresher = (function () {
                 this.setScrollLock(false);
             }
             if (this.isDragging) {
-                this.nativescroll(this.scrollHost, parseInt(this.deltaY - this.dragOffset, 10) * -1);
+                this.nativescroll(this.scrollHost, Math.round(this.deltaY - this.dragOffset) * -1);
             }
             // if we're not at overscroll 0 yet, 0 out
             if (this.lastOverscroll !== 0) {
@@ -330,7 +316,7 @@ var Refresher = (function () {
         }
         this.isDragging = true;
         // overscroll according to the user's drag so far
-        this.overscroll(parseInt((this.deltaY - this.dragOffset) / 3, 10));
+        this.overscroll(Math.round((this.deltaY - this.dragOffset) / 3));
         // Pass an incremental pull amount to the EventEmitter
         this.pulling.next(this.lastOverscroll);
         // update the icon accordingly
@@ -349,7 +335,7 @@ var Refresher = (function () {
      * @param {Event} e  TODO
      */
     Refresher.prototype._handleTouchEnd = function (e) {
-        console.log('TOUCHEND', e);
+        void 0;
         // if this wasn't an overscroll, get out immediately
         if (!this.canOverscroll && !this.isDragging) {
             return;
@@ -382,20 +368,43 @@ var Refresher = (function () {
      * @param {Event} e  TODO
      */
     Refresher.prototype._handleScroll = function (e) {
-        console.log('SCROLL', e.target.scrollTop);
+        void 0;
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Refresher.prototype, "pullingIcon", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Refresher.prototype, "pullingText", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Refresher.prototype, "refreshingIcon", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Refresher.prototype, "refreshingText", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], Refresher.prototype, "spinner", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Refresher.prototype, "pulling", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Refresher.prototype, "refresh", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], Refresher.prototype, "starting", void 0);
     Refresher = __decorate([
         core_1.Component({
             selector: 'ion-refresher',
-            inputs: [
-                'pullingIcon',
-                'pullingText',
-                'refreshingIcon',
-                'refreshingText',
-                'spinner',
-                'disablePullingRotation'
-            ],
-            outputs: ['refresh', 'starting', 'pulling'],
             host: {
                 '[class.active]': 'isActive',
                 '[class.refreshing]': 'isRefreshing',
@@ -403,20 +412,19 @@ var Refresher = (function () {
             },
             template: '<div class="refresher-content" [class.refresher-with-text]="pullingText || refreshingText">' +
                 '<div class="icon-pulling">' +
-                '<i class="icon" [ngClass]="pullingIcon"></i>' +
+                '<ion-icon [name]="pullingIcon"></ion-icon>' +
                 '</div>' +
                 '<div class="text-pulling" [innerHTML]="pullingText" *ngIf="pullingText"></div>' +
                 '<div class="icon-refreshing">' +
-                '<i class="icon" [ngClass]="refreshingIcon"></i>' +
+                '<ion-icon [name]="refreshingIcon"></ion-icon>' +
                 '</div>' +
                 '<div class="text-refreshing" [innerHTML]="refreshingText" *ngIf="refreshingText"></div>' +
                 '</div>',
-            directives: [common_1.NgIf, common_1.NgClass]
+            directives: [common_1.NgIf, common_1.NgClass, icon_1.Icon]
         }),
         __param(0, core_1.Host()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof content_1.Content !== 'undefined' && content_1.Content) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [content_1.Content, core_1.ElementRef])
     ], Refresher);
     return Refresher;
-    var _a, _b;
 })();
 exports.Refresher = Refresher;

@@ -11,17 +11,23 @@
  * @private
 */
 export declare class Storage {
-    constructor(strategyCls: StorageEngine, options: any);
-    get(key: any): any;
-    getJson(key: any): any;
-    set(key: any, value: any): any;
-    remove(key: any): any;
-    query(query: any, params: any): any;
+    private _strategy;
+    constructor(strategyCls: IStorageEngine, options?: any);
+    get(key: string): any;
+    getJson(key: string): any;
+    setJson(key: string, value: any): Promise<any>;
+    set(key: string, value: any): any;
+    remove(key: string): any;
+    query(query: string, params?: any): any;
+}
+export interface IStorageEngine {
+    new (options: any): StorageEngine;
 }
 /**
  * @private
 */
 export declare class StorageEngine {
+    constructor(options?: {});
     get(key: any, value: any): void;
     set(key: any, value: any): void;
     remove(key: any): void;

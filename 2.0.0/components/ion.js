@@ -1,42 +1,15 @@
 var dom = require('../util/dom');
+var ids = 0;
 /**
  * Base class for all Ionic components. Exposes some common functionality
  * that all Ionic components need, such as accessing underlying native elements and
  * sending/receiving app-level events.
  */
 var Ion = (function () {
-    function Ion(elementRef, config) {
+    function Ion(elementRef) {
         this.elementRef = elementRef;
-        this.config = config;
+        this._id = 'i' + ids++;
     }
-    Ion.prototype.ngOnInit = function () {
-        var cls = this.constructor;
-        if (cls.defaultInputs && this.config) {
-            for (var prop in cls.defaultInputs) {
-                // Priority:
-                // ---------
-                // 1) Value set from within constructor
-                // 2) Value set from the host element's attribute
-                // 3) Value set by the users global config
-                // 4) Value set by the default mode/platform config
-                // 5) Value set from the component's default
-                if (this[prop]) {
-                    // this property has already been set on the instance
-                    // could be from the user setting the element's attribute
-                    // or from the user setting it within the constructor
-                    continue;
-                }
-                // get the property values from a global user/platform config
-                var configVal = this.config.get(prop);
-                if (configVal) {
-                    this[prop] = configVal;
-                    continue;
-                }
-                // wasn't set yet, so go with property's default value
-                this[prop] = cls.defaultInputs[prop];
-            }
-        }
-    };
     Ion.prototype.getElementRef = function () {
         return this.elementRef;
     };
@@ -44,13 +17,13 @@ var Ion = (function () {
         return this.elementRef.nativeElement;
     };
     Ion.prototype.getDimensions = function () {
-        return dom.getDimensions(this);
+        return dom.getDimensions(this.elementRef.nativeElement, this._id);
     };
     Ion.prototype.width = function () {
-        return dom.getDimensions(this).width;
+        return dom.getDimensions(this.elementRef.nativeElement, this._id).width;
     };
     Ion.prototype.height = function () {
-        return dom.getDimensions(this).height;
+        return dom.getDimensions(this.elementRef.nativeElement, this._id).height;
     };
     return Ion;
 })();

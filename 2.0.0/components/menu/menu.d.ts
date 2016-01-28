@@ -1,9 +1,10 @@
-import { ElementRef } from 'angular2/core';
+import { EventEmitter, ElementRef, NgZone, Renderer } from 'angular2/core';
 import { Ion } from '../ion';
 import { IonicApp } from '../app/app';
 import { Config } from '../../config/config';
 import { Platform } from '../../platform/platform';
 import { Keyboard } from '../../util/keyboard';
+import { MenuType } from './menu-types';
 /**
  * @name Menu
  * @description
@@ -86,7 +87,31 @@ import { Keyboard } from '../../util/keyboard';
  *
  */
 export declare class Menu extends Ion {
-    constructor(app: IonicApp, elementRef: ElementRef, config: Config, platform: Platform, keyboard: Keyboard);
+    private _elementRef;
+    private _config;
+    private _app;
+    private _platform;
+    private _renderer;
+    private _keyboard;
+    private _zone;
+    private _preventTime;
+    private _cntEle;
+    private _gesture;
+    private _targetGesture;
+    private _type;
+    isOpen: boolean;
+    isEnabled: boolean;
+    isSwipeEnabled: boolean;
+    backdrop: MenuBackdrop;
+    onContentClick: EventListener;
+    content: any;
+    id: string;
+    side: string;
+    type: string;
+    swipeEnabled: string;
+    maxEdgeStart: any;
+    opening: EventEmitter<any>;
+    constructor(_elementRef: ElementRef, _config: Config, _app: IonicApp, _platform: Platform, _renderer: Renderer, _keyboard: Keyboard, _zone: NgZone);
     /**
      * @private
      */
@@ -102,13 +127,13 @@ export declare class Menu extends Ion {
     /**
      * @private
      */
-    _getType(): any;
+    _getType(): MenuType;
     /**
      * Sets the state of the Menu to open or not.
      * @param {boolean} isOpen  If the Menu is open or not.
      * @return {Promise} returns a promise once set
      */
-    setOpen(shouldOpen: any): any;
+    setOpen(shouldOpen: any): Promise<void>;
     /**
      * @private
      */
@@ -141,24 +166,30 @@ export declare class Menu extends Ion {
      * Progamatically open the Menu
      * @return {Promise} returns a promise when the menu is fully opened
      */
-    open(): any;
+    open(): Promise<void>;
     /**
      * Progamatically close the Menu
      * @return {Promise} returns a promise when the menu is fully closed
      */
-    close(): any;
+    close(): Promise<void>;
     /**
      * Toggle the menu. If it's closed, it will open, and if opened, it will close
      * @return {Promise} returns a promise when the menu has been toggled
      */
-    toggle(): any;
+    toggle(): Promise<void>;
     /**
      * Used to enable or disable a menu. For example, there could be multiple
      * left menus, but only one of them should be able to be dragged open.
      * @param {boolean} shouldEnable  True if it should be enabled, false if not.
      * @return {Menu}  Returns the instance of the menu, which is useful for chaining.
      */
-    enable(shouldEnable: any): Menu;
+    enable(shouldEnable: any): this;
+    /**
+     * Used to enable or disable the ability to swipe open the menu.
+     * @param {boolean} shouldEnable  True if it should be swipe-able, false if not.
+     * @return {Menu}  Returns the instance of the menu, which is useful for chaining.
+     */
+    swipeEnable(shouldEnable: any): this;
     /**
      * @private
      */
@@ -166,7 +197,7 @@ export declare class Menu extends Ion {
     /**
      * @private
      */
-    getContentElement(): any;
+    getContentElement(): HTMLElement;
     /**
      * @private
      */
@@ -174,10 +205,22 @@ export declare class Menu extends Ion {
     /**
      * @private
      */
-    static register(name: any, cls: any): void;
+    static register(name: string, cls: new (...args: any[]) => MenuType): void;
     /**
      * @private
      */
     ngOnDestroy(): void;
     static getById(app: any, menuId: any): any;
+}
+/**
+ * @private
+ */
+export declare class MenuBackdrop {
+    private menu;
+    elementRef: ElementRef;
+    constructor(menu: Menu, elementRef: ElementRef);
+    /**
+     * @private
+     */
+    clicked(ev: any): void;
 }

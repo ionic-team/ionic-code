@@ -1,31 +1,21 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('angular2/core');
 /**
- * The Input component is used to focus text input elements.
- *
- * @usage
- * ```html
- * <ion-input>
- *   <ion-label>Name</ion-label>
- *   <input value="Name" type="text">
- * </ion-input>
- * ```
+ * @private
  */
 var Form = (function () {
     function Form() {
-        this._inputs = [];
-        this._ids = -1;
         this._focused = null;
+        this._ids = -1;
+        this._inputs = [];
         this.focusCtrl(document);
     }
     Form.prototype.register = function (input) {
@@ -50,8 +40,11 @@ var Form = (function () {
         document.body.appendChild(focusCtrl);
     };
     Form.prototype.focusOut = function () {
-        console.debug('focusOut');
-        document.activeElement && document.activeElement.blur();
+        void 0;
+        var activeElement = document.activeElement;
+        if (activeElement) {
+            activeElement.blur();
+        }
         this._blur.focus();
     };
     Form.prototype.setAsFocused = function (input) {
@@ -60,12 +53,12 @@ var Form = (function () {
     /**
      * Focuses the next input element, if it exists.
      */
-    Form.prototype.focusNext = function (currentInput) {
-        console.debug('focusNext');
+    Form.prototype.tabFocus = function (currentInput) {
         var index = this._inputs.indexOf(currentInput);
         if (index > -1 && (index + 1) < this._inputs.length) {
             var nextInput = this._inputs[index + 1];
             if (nextInput !== this._focused) {
+                void 0;
                 return nextInput.initFocus();
             }
         }
@@ -73,6 +66,7 @@ var Form = (function () {
         if (index > 0) {
             var previousInput = this._inputs[index - 1];
             if (previousInput) {
+                void 0;
                 previousInput.initFocus();
             }
         }

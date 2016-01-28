@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -31,23 +29,23 @@ var list_1 = require('../list/list');
  *       <button (click)="favorite(item)">Favorite</button>
  *       <button (click)="share(item)">Share</button>
  *     </ion-item-options>
- *   </ion-item>
+ *   </ion-item-sliding>
  * </ion-list>
  * ```
  * @see {@link /docs/v2/components#lists List Component Docs}
  * @see {@link ../../list/List List API Docs}
  */
 var ItemSliding = (function () {
-    function ItemSliding(list, elementRef) {
-        this.list = list;
-        list.enableSlidingItems(true);
+    function ItemSliding(_list, elementRef) {
+        this._list = _list;
+        _list.enableSlidingItems(true);
         elementRef.nativeElement.$ionSlide = ++slideIds;
     }
     /**
      * @private
      */
     ItemSliding.prototype.close = function () {
-        this.list.closeSlidingItems();
+        this._list.closeSlidingItems();
     };
     ItemSliding = __decorate([
         core_1.Component({
@@ -56,10 +54,9 @@ var ItemSliding = (function () {
                 '<ng-content select="ion-item-options"></ng-content>'
         }),
         __param(0, core_1.Optional()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof list_1.List !== 'undefined' && list_1.List) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [list_1.List, core_1.ElementRef])
     ], ItemSliding);
     return ItemSliding;
-    var _a, _b;
 })();
 exports.ItemSliding = ItemSliding;
 var slideIds = 0;

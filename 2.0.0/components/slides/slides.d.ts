@@ -1,6 +1,6 @@
 import { ElementRef, EventEmitter } from 'angular2/core';
 import { Ion } from '../ion';
-import { Config } from '../../config/config';
+import { Swiper } from './swiper-widget';
 /**
  * @name Slides
  * @description
@@ -53,15 +53,38 @@ import { Config } from '../../config/config';
  * @property {Number} [index] - The slide index to start on
  * @property [pager] - add this property to enable the slide pager
  * @property {Any} [change] - expression to evaluate when a slide has been changed
+ * @demo /docs/v2/demos/slides/
  * @see {@link /docs/v2/components#slides Slides Component Docs}
  */
 export declare class Slides extends Ion {
+    rapidUpdate: Function;
+    private showPager;
+    private slider;
+    private maxScale;
+    private zoomElement;
+    private zoomGesture;
+    private scale;
+    private zoomLastPosX;
+    private zoomLastPosY;
+    private viewportWidth;
+    private viewportHeight;
+    private enableZoom;
+    private touch;
+    autoplay: any;
+    loop: any;
+    index: any;
+    bounce: any;
+    pager: any;
+    options: any;
+    zoom: any;
+    zoomDuration: any;
+    zoomMax: any;
     change: EventEmitter<any>;
     /**
      * @private
      * @param {ElementRef} elementRef  TODO
      */
-    constructor(elementRef: ElementRef, config: Config);
+    constructor(elementRef: ElementRef);
     /**
      * @private
      */
@@ -101,11 +124,11 @@ export declare class Slides extends Ion {
     /**
      * @private
      */
-    onTransitionStart(swiper: any): void;
+    onTransitionStart(swiper: any, e: any): void;
     /**
      * @private
      */
-    onTransitionEnd(swiper: any): void;
+    onTransitionEnd(swiper: any, e: any): void;
     /**
      * @private
      */
@@ -135,38 +158,34 @@ export declare class Slides extends Ion {
     /**
      * @private
      */
-    getIndex(): any;
+    getIndex(): number;
     /**
      * @private
      */
-    getNumSlides(): any;
+    getNumSlides(): number;
     /**
      * @private
      */
-    isAtEnd(): any;
+    isAtEnd(): boolean;
     /**
      * @private
      */
-    isAtBeginning(): any;
+    isAtBeginning(): boolean;
     /**
      * @private
      */
-    getSliderWidget(): any;
+    getSliderWidget(): Swiper;
 }
 /**
  * @private
  */
 export declare class Slide {
-    /**
-     * TODO
-     * @param {Slides} slides  The containing slidebox.
-     * @param {ElementRef} elementRef  TODO
-     */
+    private ele;
+    zoom: any;
     constructor(elementRef: ElementRef, slides: Slides);
 }
 /**
  * @private
  */
 export declare class SlideLazy {
-    constructor(elementRef: ElementRef);
 }

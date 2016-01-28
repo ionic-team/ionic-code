@@ -5,7 +5,12 @@
 var NavRegistry = (function () {
     function NavRegistry(pages) {
         if (pages === void 0) { pages = []; }
-        this._pages = new Map(pages.map(function (page) { return [page.name, page]; }));
+        var pagePairs = pages.map(function (page) { return [page['name'], page]; });
+        this._pages = new Map();
+        for (var i = 0; i < pagePairs.length; i++) {
+            var pair = pagePairs[i];
+            this._pages.set(pair[0], pair[1]);
+        }
     }
     NavRegistry.prototype.get = function (pageName) {
         return this._pages.get(pageName);

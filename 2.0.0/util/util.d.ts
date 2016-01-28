@@ -8,24 +8,27 @@ export declare function noop(): void;
  */
 export declare function clamp(min: any, n: any, max: any): number;
 /**
- * Extend the destination with an arbitrary number of other objects.
- * @param dst the destination
- * @param ... the param objects
+ * The assign() method is used to copy the values of all enumerable own
+ * properties from one or more source objects to a target object. It will
+ * return the target object. When available, this method will use
+ * `Object.assign()` under-the-hood.
+ * @param target  The target object
+ * @param source(s)  The source object
  */
-export declare function extend(dst: any): any;
+export declare function assign(...args: any[]): any;
 /**
  * Do a deep extend (merge).
  * @param dst the destination
  * @param ... the param objects
  */
-export declare function merge(dst: any): any;
-export declare function debounce(func: any, wait: any, immediate: any): () => any;
+export declare function merge(dst: any, ...args: any[]): any;
+export declare function debounce(func: any, wait: number, immediate?: boolean): () => any;
 /**
  * Apply default arguments if they don't exist in
  * the first object.
  * @param the destination to apply defaults to.
  */
-export declare function defaults(dest: any): any;
+export declare function defaults(dest: any, ...args: any[]): any;
 export declare const isBoolean: (val: any) => boolean;
 export declare const isString: (val: any) => boolean;
 export declare const isNumber: (val: any) => boolean;
@@ -46,10 +49,10 @@ export declare const array: {
     remove(arr: any, itemOrIndex: any): boolean;
 };
 /**
- * Grab the query string param value for the given key.
- * @param key the key to look for
+ * Grab all query strings keys and values.
+ * @param url
  */
-export declare function getQuerystring(url: any, key: any): any;
+export declare function getQuerystring(url: string): any;
 /**
  * Throttle the given fun, only allowing it to be
  * called at most every `wait` ms.

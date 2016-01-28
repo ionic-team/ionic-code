@@ -22,11 +22,11 @@ var MDTransition = (function (_super) {
         enteringPage.before.addClass('show-page');
         this.add(enteringPage);
         if (backDirection) {
-            this.duration(200).easing('cubic-bezier(0.47,0,0.745,0.715)');
+            this.duration(opts.duration || 200).easing('cubic-bezier(0.47,0,0.745,0.715)');
             enteringPage.fromTo(TRANSLATEY, CENTER, CENTER);
         }
         else {
-            this.duration(280).easing('cubic-bezier(0.36,0.66,0.04,1)');
+            this.duration(opts.duration || 280).easing('cubic-bezier(0.36,0.66,0.04,1)');
             enteringPage
                 .fromTo(TRANSLATEY, OFF_BOTTOM, CENTER)
                 .fadeIn();
@@ -47,7 +47,7 @@ var MDTransition = (function (_super) {
         // setup leaving view
         if (leavingView && backDirection) {
             // leaving content
-            this.duration(200).easing('cubic-bezier(0.47,0,0.745,0.715)');
+            this.duration(opts.duration || 200).easing('cubic-bezier(0.47,0,0.745,0.715)');
             var leavingPage = new animation_1.Animation(leavingView.pageRef());
             this.add(leavingPage.fromTo(TRANSLATEY, CENTER, OFF_BOTTOM).fadeOut());
         }

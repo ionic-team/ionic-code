@@ -18,12 +18,22 @@ var Storage = (function () {
         return this._strategy.get(key);
     };
     Storage.prototype.getJson = function (key) {
+        return this.get(key).then(function (value) {
+            try {
+                return JSON.parse(value);
+            }
+            catch (e) {
+                void 0;
+                throw e; // rethrowing exception so it can be handled with .catch()
+            }
+        });
+    };
+    Storage.prototype.setJson = function (key, value) {
         try {
-            return JSON.parse(this._strategy.get(key));
+            return this.set(key, JSON.stringify(value));
         }
         catch (e) {
-            console.warn('Storage getJson(): unable to parse value for key', key, ' as JSON');
-            return null;
+            return Promise.reject(e);
         }
     };
     Storage.prototype.set = function (key, value) {
@@ -42,7 +52,8 @@ exports.Storage = Storage;
  * @private
 */
 var StorageEngine = (function () {
-    function StorageEngine() {
+    function StorageEngine(options) {
+        if (options === void 0) { options = {}; }
     }
     StorageEngine.prototype.get = function (key, value) {
         throw Error("get() not implemented for this storage engine");

@@ -12,7 +12,6 @@ var RippleActivator = (function (_super) {
         _super.call(this, app, config, zone);
         this.expands = {};
         this.fades = {};
-        this.expandSpeed = null;
     }
     RippleActivator.prototype.downAction = function (ev, activatableEle, pointerX, pointerY) {
         var _this = this;
@@ -28,6 +27,7 @@ var RippleActivator = (function (_super) {
                 });
             });
         }
+        return true;
     };
     RippleActivator.prototype.createRipple = function (activatableEle, pointerX, pointerY, clientRect) {
         var _this = this;

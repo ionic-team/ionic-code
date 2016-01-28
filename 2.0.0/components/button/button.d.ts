@@ -17,6 +17,7 @@ import { Config } from '../../config/config';
   * @property [fab-center] - position a fab button towards the center
   * @property [fab-top] - position a fab button towards the top
   * @property [fab-bottom] - position a fab button towards the bottom
+  * @property [color] - Dynamically set which color attribute this button should use.
   * @description
   * Buttons are simple components in Ionic, can consist of text, an icon, or both, and can be enhanced with a wide range of attributes.
   * @demo /docs/v2/demos/buttons/
@@ -24,9 +25,23 @@ import { Config } from '../../config/config';
 
  */
 export declare class Button {
-    private elementRef;
-    private renderer;
-    constructor(config: Config, elementRef: ElementRef, renderer: Renderer);
+    private _elementRef;
+    private _renderer;
+    private _role;
+    private _size;
+    private _style;
+    private _shape;
+    private _display;
+    private _lastColor;
+    private _colors;
+    private _icon;
+    private _disabled;
+    /**
+     * @private
+     */
+    isItem: boolean;
+    color: string;
+    constructor(config: Config, _elementRef: ElementRef, _renderer: Renderer, ionItem: string);
     /**
      * @private
      */
@@ -34,13 +49,33 @@ export declare class Button {
     /**
      * @private
      */
-    setRole(val: any): void;
-    _readIcon(element: any): void;
-    _readAttrs(element: any): void;
-    _assignCss(assignCssClass: any): void;
-    _setClass(type: any, assignCssClass: any): void;
+    ngAfterContentChecked(): void;
     /**
      * @private
      */
-    static setRoles(contentButtonChildren: any, role: any): void;
+    addClass(className: string): void;
+    /**
+     * @private
+     */
+    setRole(val: string): void;
+    /**
+     * @private
+     */
+    private _readIcon(element);
+    /**
+     * @private
+     */
+    private _readAttrs(element);
+    /**
+     * @private
+     */
+    private _assignCss(assignCssClass);
+    /**
+     * @private
+     */
+    private _setClass(type, assignCssClass);
+    /**
+     * @private
+     */
+    static setRoles(contentButtonChildren: any, role: string): void;
 }

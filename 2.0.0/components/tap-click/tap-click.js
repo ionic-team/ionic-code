@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -19,13 +17,13 @@ var ripple_1 = require('./ripple');
  * @private
  */
 var TapClick = (function () {
-    function TapClick(app, config, zone) {
+    function TapClick(config, app, zone) {
+        this.app = app;
+        this.zone = zone;
+        this.lastTouch = 0;
+        this.disableClick = 0;
+        this.lastActivated = 0;
         var self = this;
-        self.app = app;
-        self.zone = zone;
-        self.lastTouch = 0;
-        self.disableClick = 0;
-        self.lastActivated = 0;
         if (config.get('activator') == 'ripple') {
             self.activator = new ripple_1.RippleActivator(app, config, zone);
         }
@@ -54,23 +52,32 @@ var TapClick = (function () {
     TapClick.prototype.touchEnd = function (ev) {
         this.lastTouch = Date.now();
         if (this.usePolyfill && this.startCoord && this.app.isEnabled()) {
+            // only dispatch mouse click events from a touchend event
+            // when tapPolyfill config is true, and the startCoordand endCoord
+            // are not too far off from each other
             var endCoord = dom_1.pointerCoord(ev);
             if (!dom_1.hasPointerMoved(POINTER_TOLERANCE, this.startCoord, endCoord)) {
-                console.debug('create click from touch ' + Date.now());
                 // prevent native mouse click events for XX amount of time
                 this.disableClick = this.lastTouch + DISABLE_NATIVE_CLICK_AMOUNT;
-                // manually dispatch the mouse click event
-                var clickEvent = document.createEvent('MouseEvents');
-                clickEvent.initMouseEvent('click', true, true, window, 1, 0, 0, endCoord.x, endCoord.y, false, false, false, false, 0, null);
-                clickEvent.isIonicTap = true;
-                ev.target.dispatchEvent(clickEvent);
+                if (this.app.isScrolling()) {
+                    // do not fire off a click event while the app was scrolling
+                    void 0;
+                }
+                else {
+                    // dispatch a mouse click event
+                    void 0;
+                    var clickEvent = document.createEvent('MouseEvents');
+                    clickEvent.initMouseEvent('click', true, true, window, 1, 0, 0, endCoord.x, endCoord.y, false, false, false, false, 0, null);
+                    clickEvent.isIonicTap = true;
+                    ev.target.dispatchEvent(clickEvent);
+                }
             }
         }
         this.pointerEnd(ev);
     };
     TapClick.prototype.mouseDown = function (ev) {
         if (this.isDisabledNativeClick()) {
-            console.debug('mouseDown prevent ' + ev.target.tagName + ' ' + Date.now());
+            void 0;
             // does not prevent default on purpose
             // so native blur events from inputs can happen
             ev.stopPropagation();
@@ -81,7 +88,7 @@ var TapClick = (function () {
     };
     TapClick.prototype.mouseUp = function (ev) {
         if (this.isDisabledNativeClick()) {
-            console.debug('mouseUp prevent ' + ev.target.tagName + ' ' + Date.now());
+            void 0;
             ev.preventDefault();
             ev.stopPropagation();
         }
@@ -109,19 +116,15 @@ var TapClick = (function () {
         this.activator && this.activator.upAction();
     };
     TapClick.prototype.pointerCancel = function (ev) {
-        console.debug('pointerCancel from ' + ev.type + ' ' + Date.now());
+        void 0;
         this.activator && this.activator.clearState();
         this.moveListeners(false);
     };
     TapClick.prototype.moveListeners = function (shouldAdd) {
         removeListener(this.usePolyfill ? 'touchmove' : 'mousemove', this.pointerMove);
-        //this.zone.runOutsideAngular(() => {
         if (shouldAdd) {
             addListener(this.usePolyfill ? 'touchmove' : 'mousemove', this.pointerMove);
         }
-        else {
-        }
-        //});
     };
     TapClick.prototype.click = function (ev) {
         var preventReason = null;
@@ -132,7 +135,7 @@ var TapClick = (function () {
             preventReason = 'nativeClick';
         }
         if (preventReason !== null) {
-            console.debug('click prevent ' + preventReason + ' ' + Date.now());
+            void 0;
             ev.preventDefault();
             ev.stopPropagation();
         }
@@ -142,10 +145,9 @@ var TapClick = (function () {
     };
     TapClick = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof app_1.IonicApp !== 'undefined' && app_1.IonicApp) === 'function' && _a) || Object, (typeof (_b = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _b) || Object, (typeof (_c = typeof core_1.NgZone !== 'undefined' && core_1.NgZone) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [config_1.Config, app_1.IonicApp, core_1.NgZone])
     ], TapClick);
     return TapClick;
-    var _a, _b, _c;
 })();
 exports.TapClick = TapClick;
 function getActivatableTarget(ele) {

@@ -4,12 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -19,9 +17,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var core_1 = require('angular2/core');
 var ion_1 = require('../ion');
+var app_1 = require('../app/app');
 var config_1 = require('../../config/config');
 var dom_1 = require('../../util/dom');
-var keyboard_1 = require('../../util/keyboard');
 var view_controller_1 = require('../nav/view-controller');
 var scroll_to_1 = require('../../animations/scroll-to');
 /**
@@ -47,22 +45,38 @@ var Content = (function (_super) {
      * @param {ElementRef} elementRef  A reference to the component's DOM element.
      * @param {Config} config  The config object to change content's default settings.
      */
-    function Content(elementRef, config, keyboard, viewCtrl, _zone) {
-        _super.call(this, elementRef, config);
+    function Content(_elementRef, _config, _app, _zone, viewCtrl) {
+        _super.call(this, _elementRef);
+        this._elementRef = _elementRef;
+        this._config = _config;
+        this._app = _app;
         this._zone = _zone;
-        this.scrollPadding = 0;
-        this.keyboard = keyboard;
+        this._padding = 0;
         if (viewCtrl) {
             viewCtrl.setContent(this);
-            viewCtrl.setContentRef(elementRef);
+            viewCtrl.setContentRef(_elementRef);
         }
     }
     /**
      * @private
      */
     Content.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.scrollElement = this.getNativeElement().children[0];
+        var self = this;
+        self.scrollElement = self._elementRef.nativeElement.children[0];
+        self._onScroll = function (ev) {
+            self._app.setScrolling();
+        };
+        if (self._config.get('tapPolyfill') === true) {
+            self._zone.runOutsideAngular(function () {
+                self.scrollElement.addEventListener('scroll', self._onScroll);
+            });
+        }
+    };
+    /**
+     * @private
+     */
+    Content.prototype.ngOnDestroy = function () {
+        this.scrollElement.removeEventListener('scroll', this._onScroll);
     };
     /**
      * Adds the specified scroll handler to the content' scroll element.
@@ -104,9 +118,9 @@ var Content = (function (_super) {
     Content.prototype.onScrollEnd = function (callback) {
         var lastScrollTop = null;
         var framesUnchanged = 0;
-        var scrollElement = this.scrollElement;
+        var _scrollEle = this.scrollElement;
         function next() {
-            var currentScrollTop = scrollElement.scrollTop;
+            var currentScrollTop = _scrollEle.scrollTop;
             if (lastScrollTop !== null) {
                 if (Math.round(lastScrollTop) === Math.round(currentScrollTop)) {
                     framesUnchanged++;
@@ -126,6 +140,7 @@ var Content = (function (_super) {
         setTimeout(next, 100);
     };
     /**
+     * @private
      * Adds the specified touchmove handler to the content's scroll element.
      *
      * ```ts
@@ -247,9 +262,9 @@ var Content = (function (_super) {
      * {Number} dimensions.scrollLeft  scroll scrollLeft
      * {Number} dimensions.scrollRight  scroll scrollLeft + scrollWidth
      */
-    Content.prototype.getDimensions = function () {
-        var scrollElement = this.scrollElement;
-        var parentElement = scrollElement.parentElement;
+    Content.prototype.getContentDimensions = function () {
+        var _scrollEle = this.scrollElement;
+        var parentElement = _scrollEle.parentElement;
         return {
             contentHeight: parentElement.offsetHeight,
             contentTop: parentElement.offsetTop,
@@ -257,12 +272,12 @@ var Content = (function (_super) {
             contentWidth: parentElement.offsetWidth,
             contentLeft: parentElement.offsetLeft,
             contentRight: parentElement.offsetLeft + parentElement.offsetWidth,
-            scrollHeight: scrollElement.scrollHeight,
-            scrollTop: scrollElement.scrollTop,
-            scrollBottom: scrollElement.scrollTop + scrollElement.scrollHeight,
-            scrollWidth: scrollElement.scrollWidth,
-            scrollLeft: scrollElement.scrollLeft,
-            scrollRight: scrollElement.scrollLeft + scrollElement.scrollWidth,
+            scrollHeight: _scrollEle.scrollHeight,
+            scrollTop: _scrollEle.scrollTop,
+            scrollBottom: _scrollEle.scrollTop + _scrollEle.scrollHeight,
+            scrollWidth: _scrollEle.scrollWidth,
+            scrollLeft: _scrollEle.scrollLeft,
+            scrollRight: _scrollEle.scrollLeft + _scrollEle.scrollWidth,
         };
     };
     /**
@@ -270,11 +285,11 @@ var Content = (function (_super) {
      * Adds padding to the bottom of the scroll element when the keyboard is open
      * so content below the keyboard can be scrolled into view.
      */
-    Content.prototype.addScrollPadding = function (newScrollPadding) {
-        if (newScrollPadding > this.scrollPadding) {
-            console.debug('addScrollPadding', newScrollPadding);
-            this.scrollPadding = newScrollPadding;
-            this.scrollElement.style.paddingBottom = newScrollPadding + 'px';
+    Content.prototype.addScrollPadding = function (newPadding) {
+        if (newPadding > this._padding) {
+            void 0;
+            this._padding = newPadding;
+            this.scrollElement.style.paddingBottom = newPadding + 'px';
         }
     };
     Content = __decorate([
@@ -284,10 +299,9 @@ var Content = (function (_super) {
                 '<ng-content></ng-content>' +
                 '</scroll-content>'
         }),
-        __param(3, core_1.Optional()), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof config_1.Config !== 'undefined' && config_1.Config) === 'function' && _b) || Object, (typeof (_c = typeof keyboard_1.Keyboard !== 'undefined' && keyboard_1.Keyboard) === 'function' && _c) || Object, (typeof (_d = typeof view_controller_1.ViewController !== 'undefined' && view_controller_1.ViewController) === 'function' && _d) || Object, (typeof (_e = typeof core_1.NgZone !== 'undefined' && core_1.NgZone) === 'function' && _e) || Object])
+        __param(4, core_1.Optional()), 
+        __metadata('design:paramtypes', [core_1.ElementRef, config_1.Config, app_1.IonicApp, core_1.NgZone, view_controller_1.ViewController])
     ], Content);
     return Content;
-    var _a, _b, _c, _d, _e;
 })(ion_1.Ion);
 exports.Content = Content;

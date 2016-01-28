@@ -4,12 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -25,22 +23,13 @@ var nav_1 = require('./nav');
  */
 var NavRouter = (function (_super) {
     __extends(NavRouter, _super);
-    /**
-     * TODO
-     * @param {ElementRef} _elementRef  TODO
-     * @param {DynamicComponentLoader} _loader  TODO
-     * @param {Router} _parentRouter  TODO
-     * @param {string} nameAttr  Value of the element's 'name' attribute
-     * @param {Nav} nav  TODO
-     */
-    function NavRouter(_elementRef, _loader, _parentRouter, nameAttr, nav) {
+    function NavRouter(_elementRef, _loader, _parentRouter, nameAttr, _nav) {
         _super.call(this, _elementRef, _loader, _parentRouter, nameAttr);
-        // Nav is Ionic's NavController, which we injected into this class
-        this.nav = nav;
+        this._nav = _nav;
         // register this router with Ionic's NavController
         // Ionic's NavController will call this NavRouter's "stateChange"
         // method when the NavController has...changed its state
-        nav.registerRouter(this);
+        _nav.registerRouter(this);
     }
     /**
      * @private
@@ -48,27 +37,27 @@ var NavRouter = (function (_super) {
      * @param {ComponentInstruction} instruction  TODO
      */
     NavRouter.prototype.activate = function (nextInstruction) {
-        var previousInstruction = this._currentInstruction;
-        this._currentInstruction = nextInstruction;
+        var previousInstruction = this['_currentInstruction'];
+        this['_currentInstruction'] = nextInstruction;
         var componentType = nextInstruction.componentType;
-        var childRouter = this._parentRouter.childRouter(componentType);
+        var childRouter = this['_parentRouter'].childRouter(componentType);
         // prevent double navigations to the same view
-        var lastView = this.nav.last();
-        if (this.nav.isTransitioning() || lastView && lastView.componentType === componentType && lastView.params.data === nextInstruction.params) {
+        var lastView = this._nav.last();
+        if (this._nav.isTransitioning() || lastView && lastView.componentType === componentType && lastView.data === nextInstruction.params) {
             return Promise.resolve();
         }
         // tell the NavController which componentType, and it's params, to navigate to
-        return this.nav.push(componentType, nextInstruction.params);
+        return this._nav.push(componentType, nextInstruction.params);
     };
     NavRouter.prototype.reuse = function (nextInstruction) {
         return Promise.resolve();
     };
     /**
-     * TODO
-     * @param {TODO} type  TODO
-     * @param {TODO} viewCtrl  TODO
+     * Called by Ionic after a transition has completed.
+     * @param {string} direction  The direction of the state change
+     * @param {ViewController} viewCtrl  The entering ViewController
      */
-    NavRouter.prototype.stateChange = function (type, viewCtrl) {
+    NavRouter.prototype.stateChange = function (direction, viewCtrl) {
         // stateChange is called by Ionic's NavController
         // type could be "push" or "pop"
         // viewCtrl is Ionic's ViewController class, which has the properties "componentType" and "params"
@@ -80,10 +69,10 @@ var NavRouter = (function (_super) {
         var pathRecognizer = this.getPathRecognizerByComponent(viewCtrl.componentType);
         if (pathRecognizer) {
             // generate a componentInstruction from the view's PathRecognizer and params
-            var componentInstruction = pathRecognizer.generate(viewCtrl.params.data);
+            var componentInstruction = pathRecognizer.generate(viewCtrl.data);
             // create a ResolvedInstruction from the componentInstruction
-            var instruction = new ResolvedInstruction(componentInstruction, null);
-            this._parentRouter.navigateByInstruction(instruction);
+            var instruction = new ResolvedInstruction(componentInstruction, null, null);
+            this['_parentRouter'].navigateByInstruction(instruction);
         }
     };
     /**
@@ -93,7 +82,7 @@ var NavRouter = (function (_super) {
      */
     NavRouter.prototype.getPathRecognizerByComponent = function (componentType) {
         // given a componentType, figure out the best PathRecognizer to use
-        var rules = this._parentRouter.registry._rules;
+        var rules = this['_parentRouter'].registry._rules;
         var pathRecognizer = null;
         rules.forEach(function (rule) {
             pathRecognizer = rule.matchers.find(function (matcherPathRecognizer) {
@@ -107,10 +96,9 @@ var NavRouter = (function (_super) {
             selector: 'ion-nav'
         }),
         __param(3, core_1.Attribute('name')), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _a) || Object, (typeof (_b = typeof core_1.DynamicComponentLoader !== 'undefined' && core_1.DynamicComponentLoader) === 'function' && _b) || Object, (typeof (_c = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _c) || Object, String, (typeof (_d = typeof nav_1.Nav !== 'undefined' && nav_1.Nav) === 'function' && _d) || Object])
+        __metadata('design:paramtypes', [core_1.ElementRef, core_1.DynamicComponentLoader, router_1.Router, String, nav_1.Nav])
     ], NavRouter);
     return NavRouter;
-    var _a, _b, _c, _d;
 })(router_1.RouterOutlet);
 exports.NavRouter = NavRouter;
 // TODO: hacked from

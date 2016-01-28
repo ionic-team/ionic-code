@@ -109,8 +109,8 @@ var MenuPushType = (function (_super) {
         var contentOpenedX, menuClosedX, menuOpenedX;
         if (menu.side == 'right') {
             contentOpenedX = -menu.width() + 'px';
-            menuOpenedX = (menu.platform.width() - menu.width()) + 'px';
-            menuClosedX = menu.platform.width() + 'px';
+            menuOpenedX = (menu._platform.width() - menu.width()) + 'px';
+            menuClosedX = menu._platform.width() + 'px';
         }
         else {
             contentOpenedX = menu.width() + 'px';
@@ -151,8 +151,8 @@ var MenuOverlayType = (function (_super) {
         var closedX, openedX;
         if (menu.side == 'right') {
             // right side
-            closedX = menu.platform.width() + 'px';
-            openedX = (menu.platform.width() - menu.width() - 8) + 'px';
+            closedX = menu._platform.width() + 'px';
+            openedX = (menu._platform.width() - menu.width() - 8) + 'px';
         }
         else {
             // left side

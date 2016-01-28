@@ -1,10 +1,13 @@
-/*! Hammer.JS - v2.0.4 - 2014-09-28
+var util_1 = require('../util/util');
+var win = window;
+var doc = document;
+/*! Hammer.JS - v2.0.6 - 2015-12-23
  * http://hammerjs.github.io/
  *
- * Copyright (c) 2014 Jorik Tangelder;
- * Licensed under the MIT license */
-var VENDOR_PREFIXES = ['', 'webkit', 'moz', 'MS', 'ms', 'o'];
-var TEST_ELEMENT = document.createElement('div');
+ * Copyright (c) 2015 Jorik Tangelder;
+ * Licensed under the  license */
+var VENDOR_PREFIXES = ['', 'webkit', 'Moz', 'MS', 'ms', 'o'];
+var TEST_ELEMENT = doc.createElement('div');
 var TYPE_FUNCTION = 'function';
 var round = Math.round;
 var abs = Math.abs;
@@ -63,35 +66,6 @@ function each(obj, iterator, context) {
     }
 }
 /**
- * extend object.
- * means that properties in dest will be overwritten by the ones in src.
- * @param {Object} dest
- * @param {Object} src
- * @param {Boolean} [merge]
- * @returns {Object} dest
- */
-function extend(dest, src, merge) {
-    var keys = Object.keys(src);
-    var i = 0;
-    while (i < keys.length) {
-        if (!merge || (merge && dest[keys[i]] === undefined)) {
-            dest[keys[i]] = src[keys[i]];
-        }
-        i++;
-    }
-    return dest;
-}
-/**
- * merge the values from src in the dest.
- * means that properties that exist in dest will not be overwritten by src
- * @param {Object} dest
- * @param {Object} src
- * @returns {Object} dest
- */
-function merge(dest, src) {
-    return extend(dest, src, true);
-}
-/**
  * simple class inheritance
  * @param {Function} child
  * @param {Function} base
@@ -103,7 +77,7 @@ function inherit(child, base, properties) {
     childP.constructor = child;
     childP._super = baseP;
     if (properties) {
-        extend(childP, properties);
+        util_1.assign(childP, properties);
     }
 }
 /**
@@ -147,7 +121,6 @@ function ifUndefined(val1, val2) {
  */
 function addEventListeners(target, types, handler) {
     each(splitStr(types), function (type) {
-        //console.debug('hammer addEventListener', type, target.tagName);
         target.addEventListener(type, handler, false);
     });
 }
@@ -159,7 +132,6 @@ function addEventListeners(target, types, handler) {
  */
 function removeEventListeners(target, types, handler) {
     each(splitStr(types), function (type) {
-        //console.debug('hammer removeEventListener', type, target.tagName);
         target.removeEventListener(type, handler, false);
     });
 }
@@ -251,7 +223,7 @@ function uniqueArray(src, key, sort) {
         }
         else {
             results = results.sort(function sortUniqueArray(a, b) {
-                return a[key] > b[key];
+                return a[key] > b[key] ? 1 : 0;
             });
         }
     }
@@ -291,8 +263,8 @@ function uniqueId() {
  * @returns {DocumentView|Window}
  */
 function getWindowForElement(element) {
-    var doc = element.ownerDocument;
-    return (doc.defaultView || doc.parentWindow);
+    var doc = element.ownerDocument || element;
+    return (doc.defaultView || doc.parentWindow || window);
 }
 var MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 var SUPPORT_TOUCH = ('ontouchstart' in window);
@@ -308,13 +280,13 @@ var INPUT_MOVE = 2;
 var INPUT_END = 4;
 var INPUT_CANCEL = 8;
 var DIRECTION_NONE = 1;
-var DIRECTION_LEFT = 2;
-var DIRECTION_RIGHT = 4;
+exports.DIRECTION_LEFT = 2;
+exports.DIRECTION_RIGHT = 4;
 var DIRECTION_UP = 8;
 var DIRECTION_DOWN = 16;
-var DIRECTION_HORIZONTAL = DIRECTION_LEFT | DIRECTION_RIGHT;
-var DIRECTION_VERTICAL = DIRECTION_UP | DIRECTION_DOWN;
-var DIRECTION_ALL = DIRECTION_HORIZONTAL | DIRECTION_VERTICAL;
+exports.DIRECTION_HORIZONTAL = exports.DIRECTION_LEFT | exports.DIRECTION_RIGHT;
+exports.DIRECTION_VERTICAL = DIRECTION_UP | DIRECTION_DOWN;
+var DIRECTION_ALL = exports.DIRECTION_HORIZONTAL | exports.DIRECTION_VERTICAL;
 var PROPS_XY = ['x', 'y'];
 var PROPS_CLIENT_XY = ['clientX', 'clientY'];
 /**
@@ -349,7 +321,6 @@ Input.prototype = {
      * bind the events
      */
     init: function () {
-        //console.debug('hammer Input init')
         this.evEl && addEventListeners(this.element, this.evEl, this.domHandler);
         this.evTarget && addEventListeners(this.target, this.evTarget, this.domHandler);
         this.evWin && addEventListeners(getWindowForElement(this.element), this.evWin, this.domHandler);
@@ -445,8 +416,14 @@ function computeInputData(manager, input) {
     input.distance = getDistance(offsetCenter, center);
     computeDeltaXY(session, input);
     input.offsetDirection = getDirection(input.deltaX, input.deltaY);
+    var overallVelocity = getVelocity(input.deltaTime, input.deltaX, input.deltaY);
+    input.overallVelocityX = overallVelocity.x;
+    input.overallVelocityY = overallVelocity.y;
+    input.overallVelocity = (abs(overallVelocity.x) > abs(overallVelocity.y)) ? overallVelocity.x : overallVelocity.y;
     input.scale = firstMultiple ? getScale(firstMultiple.pointers, pointers) : 1;
     input.rotation = firstMultiple ? getRotation(firstMultiple.pointers, pointers) : 0;
+    input.maxPointers = !session.prevInput ? input.pointers.length : ((input.pointers.length >
+        session.prevInput.maxPointers) ? input.pointers.length : session.prevInput.maxPointers);
     computeIntervalInputData(session, input);
     // find the correct target
     var target = manager.element;
@@ -481,8 +458,8 @@ function computeDeltaXY(session, input) {
 function computeIntervalInputData(session, input) {
     var last = session.lastInterval || input, deltaTime = input.timeStamp - last.timeStamp, velocity, velocityX, velocityY, direction;
     if (input.eventType != INPUT_CANCEL && (deltaTime > COMPUTE_INTERVAL || last.velocity === undefined)) {
-        var deltaX = last.deltaX - input.deltaX;
-        var deltaY = last.deltaY - input.deltaY;
+        var deltaX = input.deltaX - last.deltaX;
+        var deltaY = input.deltaY - last.deltaY;
         var v = getVelocity(deltaTime, deltaX, deltaY);
         velocityX = v.x;
         velocityY = v.y;
@@ -576,9 +553,9 @@ function getDirection(x, y) {
         return DIRECTION_NONE;
     }
     if (abs(x) >= abs(y)) {
-        return x > 0 ? DIRECTION_LEFT : DIRECTION_RIGHT;
+        return x < 0 ? exports.DIRECTION_LEFT : exports.DIRECTION_RIGHT;
     }
-    return y > 0 ? DIRECTION_UP : DIRECTION_DOWN;
+    return y < 0 ? DIRECTION_UP : DIRECTION_DOWN;
 }
 /**
  * calculate the absolute distance between two points
@@ -615,7 +592,7 @@ function getAngle(p1, p2, props) {
  * @return {Number} rotation
  */
 function getRotation(start, end) {
-    return getAngle(end[1], end[0], PROPS_CLIENT_XY) - getAngle(start[1], start[0], PROPS_CLIENT_XY);
+    return getAngle(end[1], end[0], PROPS_CLIENT_XY) + getAngle(start[1], start[0], PROPS_CLIENT_XY);
 }
 /**
  * calculate the scale factor between two pointersets
@@ -639,7 +616,7 @@ var MOUSE_WINDOW_EVENTS = 'mousemove mouseup';
  * @constructor
  * @extends Input
  */
-function MouseInput() {
+function MouseInput(manager, handler) {
     this.evEl = MOUSE_ELEMENT_EVENTS;
     this.evWin = MOUSE_WINDOW_EVENTS;
     this.allow = true; // used by Input.TouchMouse to disable mouse events
@@ -692,7 +669,7 @@ var IE10_POINTER_TYPE_ENUM = {
 var POINTER_ELEMENT_EVENTS = 'pointerdown';
 var POINTER_WINDOW_EVENTS = 'pointermove pointerup pointercancel';
 // IE10 has prefixed support, and case-sensitive
-if (window.MSPointerEvent) {
+if (win.MSPointerEvent && !win.PointerEvent) {
     POINTER_ELEMENT_EVENTS = 'MSPointerDown';
     POINTER_WINDOW_EVENTS = 'MSPointerMove MSPointerUp MSPointerCancel';
 }
@@ -817,7 +794,7 @@ var TOUCH_TARGET_EVENTS = 'touchstart touchmove touchend touchcancel';
  * @constructor
  * @extends Input
  */
-function TouchInput() {
+function TouchInput(manager, handler) {
     this.evTarget = TOUCH_TARGET_EVENTS;
     this.targetIds = {};
     Input.apply(this, arguments);
@@ -961,7 +938,7 @@ TouchAction.prototype = {
         if (value == TOUCH_ACTION_COMPUTE) {
             value = this.compute();
         }
-        if (NATIVE_TOUCH_ACTION) {
+        if (NATIVE_TOUCH_ACTION && this.manager.element.style) {
             this.manager.element.style[PREFIXED_TOUCH_ACTION] = value;
         }
         this.actions = value.toLowerCase().trim();
@@ -1005,9 +982,22 @@ TouchAction.prototype = {
         var hasNone = inStr(actions, TOUCH_ACTION_NONE);
         var hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y);
         var hasPanX = inStr(actions, TOUCH_ACTION_PAN_X);
+        if (hasNone) {
+            //do not prevent defaults if this is a tap gesture
+            var isTapPointer = input.pointers.length === 1;
+            var isTapMovement = input.distance < 2;
+            var isTapTouchTime = input.deltaTime < 250;
+            if (isTapPointer && isTapMovement && isTapTouchTime) {
+                return;
+            }
+        }
+        if (hasPanX && hasPanY) {
+            // `pan-x pan-y` means browser handles all scrolling/panning, do not prevent
+            return;
+        }
         if (hasNone ||
-            (hasPanY && direction & DIRECTION_HORIZONTAL) ||
-            (hasPanX && direction & DIRECTION_VERTICAL)) {
+            (hasPanY && direction & exports.DIRECTION_HORIZONTAL) ||
+            (hasPanX && direction & exports.DIRECTION_VERTICAL)) {
             return this.preventSrc(srcEvent);
         }
     },
@@ -1032,9 +1022,12 @@ function cleanTouchActions(actions) {
     }
     var hasPanX = inStr(actions, TOUCH_ACTION_PAN_X);
     var hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y);
-    // pan-x and pan-y can be combined
+    // if both pan-x and pan-y are set (different recognizers
+    // for different directions, e.g. horizontal pan but vertical swipe?)
+    // we need none (as otherwise with pan-x pan-y combined none of these
+    // recognizers will work, since the browser would handle all panning
     if (hasPanX && hasPanY) {
-        return TOUCH_ACTION_PAN_X + ' ' + TOUCH_ACTION_PAN_Y;
+        return TOUCH_ACTION_NONE;
     }
     // pan-x OR pan-y
     if (hasPanX || hasPanY) {
@@ -1087,9 +1080,9 @@ var STATE_FAILED = 32;
  * @param {Object} options
  */
 function Recognizer(options) {
+    this.options = util_1.assign({}, this.defaults, options || {});
     this.id = uniqueId();
     this.manager = null;
-    this.options = merge(options || {}, this.defaults);
     // default is enable true
     this.options.enable = ifUndefined(this.options.enable, true);
     this.state = STATE_POSSIBLE;
@@ -1108,7 +1101,7 @@ Recognizer.prototype = {
      * @return {Recognizer}
      */
     set: function (options) {
-        extend(this.options, options);
+        util_1.assign(this.options, options);
         // also update the touchAction, in case something changed about the directions/enabled state
         this.manager && this.manager.touchAction.update();
         return this;
@@ -1199,17 +1192,20 @@ Recognizer.prototype = {
     emit: function (input) {
         var self = this;
         var state = this.state;
-        function emit(withState) {
-            self.manager.emit(self.options.event + (withState ? stateStr(state) : ''), input);
+        function emit(event) {
+            self.manager.emit(event, input);
         }
         // 'panstart' and 'panmove'
         if (state < STATE_ENDED) {
-            emit(true);
+            emit(self.options.event + stateStr(state));
         }
-        emit(); // simple 'eventName' events
+        emit(self.options.event); // simple 'eventName' events
+        if (input.additionalEvent) {
+            emit(input.additionalEvent);
+        }
         // panend and pancancel
         if (state >= STATE_ENDED) {
-            emit(true);
+            emit(self.options.event + stateStr(state));
         }
     },
     /**
@@ -1246,7 +1242,7 @@ Recognizer.prototype = {
     recognize: function (inputData) {
         // make a new copy of the inputData
         // so we can change the inputData without messing up the other recognizers
-        var inputDataClone = extend({}, inputData);
+        var inputDataClone = util_1.assign({}, inputData);
         // is is enabled and allow recognizing?
         if (!boolOrFn(this.options.enable, [this, inputDataClone])) {
             this.reset();
@@ -1317,10 +1313,10 @@ function directionStr(direction) {
     else if (direction == DIRECTION_UP) {
         return 'up';
     }
-    else if (direction == DIRECTION_LEFT) {
+    else if (direction == exports.DIRECTION_LEFT) {
         return 'left';
     }
-    else if (direction == DIRECTION_RIGHT) {
+    else if (direction == exports.DIRECTION_RIGHT) {
         return 'right';
     }
     return '';
@@ -1420,10 +1416,10 @@ inherit(PanRecognizer, AttrRecognizer, {
     getTouchAction: function () {
         var direction = this.options.direction;
         var actions = [];
-        if (direction & DIRECTION_HORIZONTAL) {
+        if (direction & exports.DIRECTION_HORIZONTAL) {
             actions.push(TOUCH_ACTION_PAN_Y);
         }
-        if (direction & DIRECTION_VERTICAL) {
+        if (direction & exports.DIRECTION_VERTICAL) {
             actions.push(TOUCH_ACTION_PAN_X);
         }
         return actions;
@@ -1437,8 +1433,8 @@ inherit(PanRecognizer, AttrRecognizer, {
         var y = input.deltaY;
         // lock to axis?
         if (!(direction & options.direction)) {
-            if (options.direction & DIRECTION_HORIZONTAL) {
-                direction = (x === 0) ? DIRECTION_NONE : (x < 0) ? DIRECTION_LEFT : DIRECTION_RIGHT;
+            if (options.direction & exports.DIRECTION_HORIZONTAL) {
+                direction = (x === 0) ? DIRECTION_NONE : (x < 0) ? exports.DIRECTION_LEFT : exports.DIRECTION_RIGHT;
                 hasMoved = x != this.pX;
                 distance = Math.abs(input.deltaX);
             }
@@ -1460,7 +1456,7 @@ inherit(PanRecognizer, AttrRecognizer, {
         this.pY = input.deltaY;
         var direction = directionStr(input.direction);
         if (direction) {
-            this.manager.emit(this.options.event + direction, input);
+            input.additionalEvent = this.options.event + direction;
         }
         this._super.emit.call(this, input);
     }
@@ -1492,11 +1488,11 @@ inherit(PinchRecognizer, AttrRecognizer, {
             (Math.abs(input.scale - 1) > this.options.threshold || this.state & STATE_BEGAN);
     },
     emit: function (input) {
-        this._super.emit.call(this, input);
         if (input.scale !== 1) {
             var inOut = input.scale < 1 ? 'in' : 'out';
-            this.manager.emit(this.options.event + inOut, input);
+            input.additionalEvent = this.options.event + inOut;
         }
+        this._super.emit.call(this, input);
     }
 });
 /**
@@ -1518,8 +1514,8 @@ inherit(PressRecognizer, Recognizer, {
     defaults: {
         event: 'press',
         pointers: 1,
-        time: 500,
-        threshold: 5 // a minimal movement is ok, but keep it low
+        time: 251,
+        threshold: 9 // a minimal movement is ok, but keep it low
     },
     getTouchAction: function () {
         return [TOUCH_ACTION_AUTO];
@@ -1607,8 +1603,8 @@ inherit(SwipeRecognizer, AttrRecognizer, {
     defaults: {
         event: 'swipe',
         threshold: 10,
-        velocity: 0.65,
-        direction: DIRECTION_HORIZONTAL | DIRECTION_VERTICAL,
+        velocity: 0.3,
+        direction: exports.DIRECTION_HORIZONTAL | exports.DIRECTION_VERTICAL,
         pointers: 1
     },
     getTouchAction: function () {
@@ -1617,22 +1613,23 @@ inherit(SwipeRecognizer, AttrRecognizer, {
     attrTest: function (input) {
         var direction = this.options.direction;
         var velocity;
-        if (direction & (DIRECTION_HORIZONTAL | DIRECTION_VERTICAL)) {
-            velocity = input.velocity;
+        if (direction & (exports.DIRECTION_HORIZONTAL | exports.DIRECTION_VERTICAL)) {
+            velocity = input.overallVelocity;
         }
-        else if (direction & DIRECTION_HORIZONTAL) {
-            velocity = input.velocityX;
+        else if (direction & exports.DIRECTION_HORIZONTAL) {
+            velocity = input.overallVelocityX;
         }
-        else if (direction & DIRECTION_VERTICAL) {
-            velocity = input.velocityY;
+        else if (direction & exports.DIRECTION_VERTICAL) {
+            velocity = input.overallVelocityY;
         }
         return this._super.attrTest.call(this, input) &&
-            direction & input.direction &&
+            direction & input.offsetDirection &&
             input.distance > this.options.threshold &&
+            input.maxPointers == this.options.pointers &&
             abs(velocity) > this.options.velocity && input.eventType & INPUT_END;
     },
     emit: function (input) {
-        var direction = directionStr(input.direction);
+        var direction = directionStr(input.offsetDirection);
         if (direction) {
             this.manager.emit(this.options.event + direction, input);
         }
@@ -1670,7 +1667,7 @@ inherit(TapRecognizer, Recognizer, {
         taps: 1,
         interval: 300,
         time: 250,
-        threshold: 2,
+        threshold: 9,
         posThreshold: 10 // a multi-tap can be a bit off the initial position
     },
     getTouchAction: function () {
@@ -1739,26 +1736,26 @@ inherit(TapRecognizer, Recognizer, {
     }
 });
 /**
- * Simple way to create an manager with a default set of recognizers.
+ * Simple way to create a manager with a default set of recognizers.
  * @param {HTMLElement} element
  * @param {Object} [options]
  * @constructor
  */
 function Hammer(element, options) {
     options = options || {};
-    options.recognizers = ifUndefined(options.recognizers, Hammer.defaults.preset);
+    options.recognizers = ifUndefined(options.recognizers, _defaults.preset);
     return new Manager(element, options);
 }
 exports.Hammer = Hammer;
 /**
  * @const {string}
  */
-Hammer.VERSION = '2.0.4';
+var VERSION = '2.0.6';
 /**
  * default settings
  * @namespace
  */
-Hammer.defaults = {
+var _defaults = {
     /**
      * set if DOM events are being triggered.
      * But this is slower and unused by simple implementations, so disabled by default.
@@ -1801,8 +1798,8 @@ Hammer.defaults = {
         // RecognizerClass, options, [recognizeWith, ...], [requireFailure, ...]
         [RotateRecognizer, { enable: false }],
         [PinchRecognizer, { enable: false }, ['rotate']],
-        [SwipeRecognizer, { direction: DIRECTION_HORIZONTAL }],
-        [PanRecognizer, { direction: DIRECTION_HORIZONTAL }, ['swipe']],
+        [SwipeRecognizer, { direction: exports.DIRECTION_HORIZONTAL }],
+        [PanRecognizer, { direction: exports.DIRECTION_HORIZONTAL }, ['swipe']],
         [TapRecognizer],
         [TapRecognizer, { event: 'doubletap', taps: 2 }, ['tap']],
         [PressRecognizer]
@@ -1863,8 +1860,7 @@ var FORCED_STOP = 2;
  * @constructor
  */
 function Manager(element, options) {
-    options = options || {};
-    this.options = merge(options, Hammer.defaults);
+    this.options = util_1.assign({}, _defaults, options || {});
     this.options.inputTarget = this.options.inputTarget || element;
     this.handlers = {};
     this.session = {};
@@ -1873,7 +1869,7 @@ function Manager(element, options) {
     this.input = createInputInstance(this);
     this.touchAction = new TouchAction(this, this.options.touchAction);
     toggleCssProps(this, true);
-    each(options.recognizers, function (item) {
+    each(this.options.recognizers, function (item) {
         var recognizer = this.add(new (item[0])(item[1]));
         item[2] && recognizer.recognizeWith(item[2]);
         item[3] && recognizer.requireFailure(item[3]);
@@ -1886,7 +1882,7 @@ Manager.prototype = {
      * @returns {Manager}
      */
     set: function (options) {
-        extend(this.options, options);
+        util_1.assign(this.options, options);
         // Options that need a little more setup
         if (options.touchAction) {
             this.touchAction.update();
@@ -2002,10 +1998,16 @@ Manager.prototype = {
         if (invokeArrayArg(recognizer, 'remove', this)) {
             return this;
         }
-        var recognizers = this.recognizers;
         recognizer = this.get(recognizer);
-        recognizers.splice(inArray(recognizers, recognizer), 1);
-        this.touchAction.update();
+        // let's make sure this recognizer exists
+        if (recognizer) {
+            var recognizers = this.recognizers;
+            var index = inArray(recognizers, recognizer);
+            if (index !== -1) {
+                recognizers.splice(index, 1);
+                this.touchAction.update();
+            }
+        }
         return this;
     },
     /**
@@ -2035,7 +2037,7 @@ Manager.prototype = {
                 delete handlers[event];
             }
             else {
-                handlers[event].splice(inArray(handlers[event], handler), 1);
+                handlers[event] && handlers[event].splice(inArray(handlers[event], handler), 1);
             }
         });
         return this;
@@ -2084,6 +2086,9 @@ Manager.prototype = {
  */
 function toggleCssProps(manager, add) {
     var element = manager.element;
+    if (!element.style) {
+        return;
+    }
     each(manager.options.cssProps, function (value, name) {
         element.style[prefixed(element.style, name)] = add ? value : '';
     });
@@ -2094,12 +2099,12 @@ function toggleCssProps(manager, add) {
  * @param {Object} data
  */
 function triggerDomEvent(event, data) {
-    var gestureEvent = document.createEvent('Event');
+    var gestureEvent = doc.createEvent('Event');
     gestureEvent.initEvent(event, true, true);
     gestureEvent.gesture = data;
     data.target.dispatchEvent(gestureEvent);
 }
-extend(Hammer, {
+util_1.assign(Hammer, {
     INPUT_START: INPUT_START,
     INPUT_MOVE: INPUT_MOVE,
     INPUT_END: INPUT_END,
@@ -2112,12 +2117,12 @@ extend(Hammer, {
     STATE_CANCELLED: STATE_CANCELLED,
     STATE_FAILED: STATE_FAILED,
     DIRECTION_NONE: DIRECTION_NONE,
-    DIRECTION_LEFT: DIRECTION_LEFT,
-    DIRECTION_RIGHT: DIRECTION_RIGHT,
+    DIRECTION_LEFT: exports.DIRECTION_LEFT,
+    DIRECTION_RIGHT: exports.DIRECTION_RIGHT,
     DIRECTION_UP: DIRECTION_UP,
     DIRECTION_DOWN: DIRECTION_DOWN,
-    DIRECTION_HORIZONTAL: DIRECTION_HORIZONTAL,
-    DIRECTION_VERTICAL: DIRECTION_VERTICAL,
+    DIRECTION_HORIZONTAL: exports.DIRECTION_HORIZONTAL,
+    DIRECTION_VERTICAL: exports.DIRECTION_VERTICAL,
     DIRECTION_ALL: DIRECTION_ALL,
     Manager: Manager,
     Input: Input,
@@ -2138,11 +2143,8 @@ extend(Hammer, {
     on: addEventListeners,
     off: removeEventListeners,
     each: each,
-    merge: merge,
-    extend: extend,
     inherit: inherit,
     bindFn: bindFn,
     prefixed: prefixed
 });
-// attach to window for angular2 gesture listeners
-window.Hammer = Hammer;
+win.Hammer = Hammer;

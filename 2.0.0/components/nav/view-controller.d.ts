@@ -1,3 +1,7 @@
+import { Type, TemplateRef, ViewContainerRef, ElementRef, Renderer } from 'angular2/core';
+import { Navbar } from '../navbar/navbar';
+import { NavController } from './nav-controller';
+import { NavParams } from './nav-params';
 /**
  * @name ViewController
  * @description
@@ -14,7 +18,69 @@
  *  ```
  */
 export declare class ViewController {
-    constructor(navCtrl: any, componentType: any, params?: {});
+    componentType: Type;
+    data: any;
+    private _cntDir;
+    private _cntRef;
+    private _destroys;
+    private _hdAttr;
+    private _leavingOpts;
+    private _loaded;
+    private _nbDir;
+    private _nbTmpRef;
+    private _nbVwRef;
+    private _onDismiss;
+    private _pgRef;
+    protected _nav: NavController;
+    /**
+     * @private
+     */
+    id: string;
+    /**
+     * @private
+     */
+    instance: any;
+    /**
+     * @private
+     */
+    state: string;
+    /**
+     * @private
+     */
+    viewType: string;
+    /**
+     * @private
+     */
+    onReady: any;
+    /**
+     * @private
+     */
+    zIndex: number;
+    private _emitter;
+    constructor(componentType?: Type, data?: any);
+    subscribe(callback: any): void;
+    /**
+     * @private
+     */
+    emit(data: any): void;
+    onDismiss(callback: any): void;
+    dismiss(data: any): Promise<any>;
+    /**
+     * @private
+     */
+    setNav(navCtrl: any): void;
+    /**
+     * @private
+     */
+    getTransitionName(direction: any): any;
+    /**
+     * @private
+     */
+    getNavParams(): NavParams;
+    /**
+     * @private
+     */
+    setLeavingOpts(opts: any): void;
     /**
      * Check to see if you can go back in the navigation stack
      * @param {boolean} Check whether or not you can go back from this page
@@ -42,9 +108,9 @@ export declare class ViewController {
      *  }
      * ```
      *
-     * @returns {Number} Returns the index of this page within its NavController.
+     * @returns {number} Returns the index of this page within its NavController.
      */
-    index: any;
+    index: number;
     /**
      * @returns {boolean} Returns if this Page is the root page of the NavController.
      */
@@ -52,7 +118,7 @@ export declare class ViewController {
     /**
      * @private
      */
-    addDestroy(destroyFn: any): void;
+    addDestroy(destroyFn: Function): void;
     /**
      * @private
      */
@@ -60,37 +126,45 @@ export declare class ViewController {
     /**
      * @private
      */
-    setNavbarTemplateRef(templateRef: any): void;
+    domCache(shouldShow: boolean, renderer: Renderer): void;
     /**
      * @private
      */
-    getNavbarTemplateRef(): any;
+    setZIndex(zIndex: number, renderer: Renderer): void;
     /**
      * @private
      */
-    getNavbarViewRef(): any;
+    setNavbarTemplateRef(templateRef: TemplateRef): void;
     /**
      * @private
      */
-    setNavbarViewRef(viewContainerRef: any): void;
+    getNavbarTemplateRef(): TemplateRef;
     /**
      * @private
      */
-    setPageRef(elementRef: any): void;
+    getNavbarViewRef(): ViewContainerRef;
+    /**
+     * @private
+     */
+    setNavbarViewRef(viewContainerRef: ViewContainerRef): void;
+    /**
+     * @private
+     */
+    setPageRef(elementRef: ElementRef): void;
     /**
      * @private
      * @returns {ElementRef} Returns the Page's ElementRef
      */
-    pageRef(): any;
+    pageRef(): ElementRef;
     /**
      * @private
      */
-    setContentRef(elementRef: any): void;
+    setContentRef(elementRef: ElementRef): void;
     /**
      * @private
      * @returns {ElementRef} Returns the Page's Content ElementRef
      */
-    contentRef(): any;
+    contentRef(): ElementRef;
     /**
      * @private
      */
@@ -103,11 +177,11 @@ export declare class ViewController {
     /**
      * @private
      */
-    setNavbar(directive: any): void;
+    setNavbar(directive: Navbar): void;
     /**
      * @private
      */
-    getNavbar(): any;
+    getNavbar(): Navbar;
     /**
      * You can find out of the current view has a Navbar or not. Be sure to wrap this in an `onPageWillEnter` method in order to make sure the view has rendered fully.
      *
@@ -128,7 +202,7 @@ export declare class ViewController {
     /**
      * @private
      */
-    navbarRef(): any;
+    navbarRef(): ElementRef;
     /**
      * @private
      */
@@ -136,19 +210,19 @@ export declare class ViewController {
     /**
      * @private
      */
-    navbarItemRefs(): any;
+    navbarItemRefs(): any[];
     /**
      * @private
      */
-    backBtnRef(): any;
+    backBtnRef(): ElementRef;
     /**
      * @private
      */
-    backBtnTextRef(): any;
+    backBtnTextRef(): ElementRef;
     /**
      * @private
      */
-    navbarBgRef(): any;
+    navbarBgRef(): ElementRef;
     /**
      * You can change the text of the back button on a view-by-view basis.
      *
@@ -175,7 +249,7 @@ export declare class ViewController {
     /**
      * @private
      */
-    isLoaded(): any;
+    isLoaded(): boolean;
     /**
      * @private
      * The view has loaded. This event only happens once per view being

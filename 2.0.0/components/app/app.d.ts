@@ -7,13 +7,20 @@ import { ClickBlock } from '../../util/click-block';
  * components see the [IdRef API reference](../id/IdRef/).
  */
 export declare class IonicApp {
-    constructor(config: Config, clickBlock: ClickBlock, zone: NgZone);
+    private _config;
+    private _clickBlock;
+    private _zone;
+    private _titleSrv;
+    private _title;
+    private _disTime;
+    private _scrollTime;
+    private components;
+    constructor(_config: Config, _clickBlock: ClickBlock, _zone: NgZone);
     /**
-     * @private
      * Sets the document title.
      * @param {string} val  Value to set the document title to.
      */
-    setTitle(val: any): void;
+    setTitle(val: string): void;
     /**
      * @private
      * Sets if the app is currently enabled or not, meaning if it's
@@ -26,7 +33,7 @@ export declare class IonicApp {
      * it will automatically enable the app again. It's basically a fallback incase
      * something goes wrong during a transition and the app wasn't re-enabled correctly.
      */
-    setEnabled(isEnabled: any, duration?: number): void;
+    setEnabled(isEnabled: boolean, duration?: number): void;
     /**
      * @private
      * Boolean if the app is actively enabled or not.
@@ -35,29 +42,39 @@ export declare class IonicApp {
     isEnabled(): boolean;
     /**
      * @private
-     * Register a known component with a key, for easy lookups later.
-     * @param {TODO} id  The id to use to register the component
-     * @param {TODO} component  The component to register
      */
-    register(id: any, component: any): void;
+    setScrolling(): void;
+    /**
+     * @private
+     * Boolean if the app is actively scrolling or not.
+     * @return {bool}
+     */
+    isScrolling(): boolean;
+    /**
+     * @private
+     * Register a known component with a key, for easy lookups later.
+     * @param {string} id  The id to use to register the component
+     * @param {Object} component  The component to register
+     */
+    register(id: string, component: any): void;
     /**
      * @private
      * Unregister a known component with a key.
-     * @param {TODO} id  The id to use to unregister
+     * @param {string} id  The id to use to unregister
      */
-    unregister(id: any): void;
+    unregister(id: string): void;
     /**
      * @private
      * Get a registered component with the given type (returns the first)
      * @param {Object} cls the type to search for
-     * @return the matching component, or undefined if none was found
+     * @return {Object} the matching component, or undefined if none was found
      */
     getRegisteredComponent(cls: any): any;
     /**
      * @private
      * Get the component for the given key.
-     * @param {TODO} key  TODO
-     * @return {TODO} TODO
+     * @param {string} id  TODO
+     * @return {Object} TODO
      */
-    getComponent(id: any): any;
+    getComponent(id: string): any;
 }

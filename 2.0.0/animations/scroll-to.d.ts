@@ -1,6 +1,8 @@
 export declare class ScrollTo {
-    constructor(ele: any, x: any, y: any, duration: any);
-    start(x: any, y: any, duration: any, tolerance: any): any;
+    isPlaying: boolean;
+    private _el;
+    constructor(ele: any);
+    start(x: number, y: number, duration: number, tolerance?: number): Promise<any>;
     stop(): void;
     dispose(): void;
 }
