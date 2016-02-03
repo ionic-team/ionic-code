@@ -130,7 +130,7 @@
       padding: 0 10px;
     }
     </style>
-    <title>Ionic Framework CDN</title>
+    <title>Ionic Framework 在线资源</title>
   </head>
 
   <body>
@@ -138,68 +138,68 @@
       <div class="inner">
 
         <header>
-          <h1>Ionic Framework CDN</h1>
+          <h1>Ionic Framework 版本存档</h1>
         </header>
 
         <section>
           <p>
             <select id="versions" disabled="disabled">
-              <option>Loading...</option>
+              <option>正在加载...</option>
             </select>
           </p>
 
           <div id="files" style="display: none">
 
             <div class="files-panel">
-              <h3>Ionic Package: <span id="version-id"></span></h3>
-              <p>Includes all the files below in one archive file.</p>
+              <h3>Ionic 安装包：<span id="version-id"></span></h3>
+              <p>该安装包已包含样式、脚本以及所有依赖项目。</p>
               <div id="zip-files"></div>
             </div>
 
             <div class="files-panel">
-              <h3>Ionic CSS Files</h3>
+              <h3>样式文件</h3>
               <div id="css-files"></div>
             </div>
 
             <div class="files-panel">
-              <h3>Ionic JavaScript Files</h3>
-              <p>The ionic.bundle.js file combines all the required JS files, both Ionic and Angular.
-                Use ionic.js and ionic-angular.js if you'd like to break the files apart.</p>
+              <h3>脚本文件</h3>
+              <p>以下 ionic.bundle.js 文件是 ionic.js 和 ionic-angular.js 的合并脚本。<br/>
+                你也可以分别下载并单独引用 ionic.js 或 ionic-angular.js 脚本文件。</p>
               <div id="js-files"></div>
             </div>
 
             <div class="files-panel">
-              <h3>Dependencies</h3>
-              <p>Not all of these files are required by Ionic, but they have been included here if you need them.</p>
+              <h3>依赖项目</h3>
+              <p>部分文件并不属于强制依赖项目，请根据需要下载并使用。</p>
               <div id="dependency-files"></div>
             </div>
 
             <div class="files-panel">
-              <h3>Ionicons</h3>
-              <p>These files automatically get referenced from Ionic's CSS files.
-                See <a href="http://ionicons.com/">Ionicons</a> for more info.</p>
+              <h3>图标字体</h3>
+              <p>以下字体文件会在框架样式文件中自动加载并引用，
+                点击访问 <a href="http://ionicons.online/">Ionicons</a> 了解更多。</p>
               <div id="font-files"></div>
             </div>
 
           </div>
 
           <p class="note">
-            <strong>Note:</strong> Its best to use your own local copies of the framework's files when building a Cordova/Phonegap hybrid app. These CDN files are provided for archived versions, online tutorials, demos, examples, etc.
+            <strong>提示：</strong>如果您要在项目中使用开发框架或图标样式，建议直接下载并以本地资源的方式引用。<br/>
+            本站资源仅供版本存档，您可以在演示示例、在线测试等非正式项目中使用。
           </p>
 
           <h2>
-            Awesomely sponsored by <a href="http://www.maxcdn.com/">MaxCDN</a>.
+            由 <a href="http://su.baidu.com/">百度云加速</a> 提供技术支持
           </h2>
         </section>
 
         <footer>
-          <a href="http://ionicframework.com/">Ionic Framework</a>
-          &#183; <a href="https://github.com/driftyco/ionic">Github</a>
-          &#183; <a href="http://ionicons.com/">Ionicons</a>
-          &#183; <a href="http://ionicframework.com/blog/">Blog</a>
-          &#183; <a href="http://forum.ionicframework.com/">Forum</a>
-          &#183; <a href="http://ionicframework.com/subscribe/">Newsletter</a>
-          &#183; <a href="https://twitter.com/Ionicframework">@ionicframework</a>
+          <a href="http://ionicframework.online/">开发平台</a>
+          &#183; <a href="https://github.com/Vultur/ionic">开源项目</a>
+          &#183; <a href="http://ionicons.online/">图标字体</a>
+          &#183; <a href="http://ionicframework.online/blog/">官方博客</a>
+          &#183; <a href="http://forum.ionicframework.online/">社区论坛</a>
+          &#183; <a href="http://ionicframework.online/subscribe/">订阅我们</a>
         </footer>
 
       </div>
@@ -254,7 +254,7 @@
               for(f=0; f<data[x].files.length; f++) {
                 file = data[x].files[f];
 
-                link = '<div><a href="http://code.ionicframework.com' + file.path + '">http://code.ionicframework.com' + file.path + '</a></div>'
+                link = '<div><a href="http://code.ionicframework.online' + file.path + '">http://code.ionicframework.online' + file.path + '</a></div>'
 
                 if(file.type === 'zip') {
                   zip.push(link)
