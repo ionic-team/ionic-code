@@ -1,0 +1,24 @@
+@import "./badge";
+
+// iOS Badge
+// --------------------------------------------------
+
+$badge-ios-border-radius:             10px !default;
+
+
+ion-badge {
+  border-radius: $badge-ios-border-radius;
+}
+
+
+// Generate iOS Badge Colors
+// --------------------------------------------------
+
+@each $color-name, $color-value in $colors-ios {
+
+  .badge-#{$color-name} {
+    background-color: $color-value;
+    color: inverse($color-value);
+  }
+
+}

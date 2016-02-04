@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html> 
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <style>
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, img, ins, kbd, q, s, samp,
+    small, strike, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure,
+    footer, header, hgroup, menu, nav, section {
+      display: block;
+    }
+    body {
+      font-size: 1em;
+      line-height: 1.5;
+      font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+      color: #6d6d6d;
+      padding-bottom: 30px;
+    }
+
+    a {
+      color: #4F8EF7;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header {
+      padding: 20px 0;
+    }
+
+    header h1 {
+      font-family: 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 900;
+      letter-spacing: -1px;
+      font-size: 36px;
+      color: #303030;
+      line-height: 1.2;
+    }
+
+    header h2 {
+      letter-spacing: -1px;
+      font-size: 24px;
+      color: #aaa;
+      font-weight: normal;
+      line-height: 1.3;
+    }
+
+    h2 {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #container {
+      min-height: 595px;
+    }
+
+    .inner {
+      width: 800px;
+      margin: 0 auto;
+    }
+
+    #container .inner img {
+      max-width: 100%;
+    }
+
+    #downloads {
+      margin-bottom: 40px;
+    }
+
+    p {
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    select {
+      font-size: 16px;
+    }
+    #files {
+      line-height: 24px
+    }
+    .files-panel {
+      margin: 0 0 18px 0;
+    }
+    .files-panel h3 {
+      line-height: 18px;
+    }
+    .files-panel p {
+      font-size: 12px;
+      line-height: 18px;
+      margin: 3px 0 1px 0;
+    }
+    .note {
+      background: #eee;
+      padding: 5px 10px;
+      font-size: 14px;
+      margin: 25px 0;
+    }
+    footer {
+      text-align: center;
+      font-size: 12px;
+      border-top: 1px solid #ccc;
+      margin: 25px 0 0 0;
+      padding: 25px;
+    }
+    footer a {
+      padding: 0 10px;
+    }
+    </style>
+    <title>Ionic Framework CDN</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Ionic Framework CDN</h1>
+        </header>
+
+        <section>
+          <p>
+            <select id="versions" disabled="disabled">
+              <option>Loading...</option>
+            </select>
+          </p>
+
+          <div id="files" style="display: none">
+
+            <div class="files-panel">
+              <h3>Ionic Package: <span id="version-id"></span></h3>
+              <p>Includes all the files below in one archive file.</p>
+              <div id="zip-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Ionic CSS Files</h3>
+              <div id="css-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Ionic JavaScript Files</h3>
+              <p>The ionic.bundle.js file combines all the required JS files, both Ionic and Angular.
+                Use ionic.js and ionic-angular.js if you'd like to break the files apart.</p>
+              <div id="js-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Dependencies</h3>
+              <p>Not all of these files are required by Ionic, but they have been included here if you need them.</p>
+              <div id="dependency-files"></div>
+            </div>
+
+            <div class="files-panel">
+              <h3>Ionicons</h3>
+              <p>These files automatically get referenced from Ionic's CSS files.
+                See <a href="http://ionicons.com/">Ionicons</a> for more info.</p>
+              <div id="font-files"></div>
+            </div>
+
+          </div>
+
+          <p class="note">
+            <strong>Note:</strong> Its best to use your own local copies of the framework's files when building a Cordova/Phonegap hybrid app. These CDN files are provided for archived versions, online tutorials, demos, examples, etc.
+          </p>
+
+          <h2>
+            Awesomely sponsored by <a href="http://www.maxcdn.com/">MaxCDN</a>.
+          </h2>
+        </section>
+
+        <footer>
+          <a href="http://ionicframework.com/">Ionic Framework</a>
+          &#183; <a href="https://github.com/driftyco/ionic">Github</a>
+          &#183; <a href="http://ionicons.com/">Ionicons</a>
+          &#183; <a href="http://ionicframework.com/blog/">Blog</a>
+          &#183; <a href="http://forum.ionicframework.com/">Forum</a>
+          &#183; <a href="http://ionicframework.com/subscribe/">Newsletter</a>
+          &#183; <a href="https://twitter.com/Ionicframework">@ionicframework</a>
+        </footer>
+
+      </div>
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script>
+      (function(){
+        var data, preload;
+
+        $.get( "versions.json", function( d ) {
+          if(!d) return;
+
+          data = d;
+          var selectOptions = [];
+
+          for(var x=0; x<data.length; x++) {
+            selectOptions.push( '<option value="' +
+                                 data[x].id + '">' +
+                                 data[x].version_number +
+                                 ' - ' +
+                                 data[x].version_name +
+                                 '</option>');
+          }
+
+          $('#versions').html( selectOptions.join('') ).removeAttr('disabled');
+
+          if(preload) {
+            loadVersion(preload);
+          } else {
+            loadVersion(data[0].id);
+          }
+        });
+
+        function loadVersion(versionId) {
+          if(!data) return;
+
+          var
+          x, f, file, newUrl, link,
+          zip = [],
+          css = [],
+          js = [],
+          dependency = [],
+          font = [];
+
+          for(x=0; x<data.length; x++) {
+            if(versionId === data[x].id ||
+               versionId === data[x].version_number ||
+               versionId === data[x].version_name ||
+               versionId === data[x].version_codename) {
+
+              for(f=0; f<data[x].files.length; f++) {
+                file = data[x].files[f];
+
+                link = '<div><a href="http://code.ionicframework.com' + file.path + '">http://code.ionicframework.com' + file.path + '</a></div>'
+
+                if(file.type === 'zip') {
+                  zip.push(link)
+                } else if(file.type === 'css') {
+                  css.push(link)
+                } else if(file.type === 'js') {
+                  js.push(link)
+                } else if(file.type === 'dependency') {
+                  dependency.push(link)
+                } else if(file.type === 'font') {
+                  font.push(link)
+                }
+              }
+
+              $('#zip-files').html( zip.join('') );
+              $('#css-files').html( css.join('') );
+              $('#js-files').html( js.join('') );
+              $('#dependency-files').html( dependency.join('') );
+              $('#font-files').html( font.join('') );
+
+              $('#versions').val(data[x].id);
+
+              $('#files').show();
+
+              $('#version-id').html(data[x].version_number + ' ' + data[x].version_name + ' (' + data[x].release_date + ')');
+
+              newUrl = (x > 0 ? data[x].version_number : '');
+              try {
+                history.replaceState({},
+                                  'Ionic Framework CDN, ' + data[x].version_number,
+                                  '#' + newUrl);
+              }catch(e){};
+              return;
+            }
+          }
+        }
+
+        $('#versions').change(function(){
+          loadVersion( $(this).val() );
+        });
+
+        if(location.hash.length) {
+          preload = location.hash.replace('#', '');
+          loadVersion(preload);
+        }
+
+      })();
+    </script>
+  </body>
+</html>

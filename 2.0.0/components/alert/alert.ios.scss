@@ -1,0 +1,211 @@
+@import "../../globals.ios";
+@import "./alert";
+
+// iOS Alerts
+// --------------------------------------------------
+
+$alert-ios-max-width:                           270px !default;
+$alert-ios-background:                          rgba(0,0,0,0) !default;
+$alert-ios-border-radius:                       13px !default;
+$alert-ios-background-color:                    #f8f8f8 !default;
+
+$alert-ios-head-padding:                        12px 16px 20px !default;
+$alert-ios-head-text-align:                     center !default;
+
+$alert-ios-title-margin-top:                    12px !default;
+$alert-ios-title-font-weight:                   bold !default;
+$alert-ios-title-font-size:                     17px !default;
+$alert-ios-sub-title-font-size:                 14px !default;
+$alert-ios-sub-title-text-color:                #666 !default;
+
+$alert-ios-message-padding:                     0px 16px 24px !default;
+$alert-ios-message-text-color:                  inherit !default;
+$alert-ios-message-text-align:                  center !default;
+$alert-ios-message-font-size:                   13px !default;
+
+$alert-ios-input-padding:                       6px !default;
+$alert-ios-input-margin-top:                    10px !default;
+$alert-ios-input-background-color:              #fff !default;
+$alert-ios-input-border:                        1px solid #ccc !default;
+$alert-ios-input-border-radius:                 4px !default;
+
+$alert-ios-button-min-height:                   44px !default;
+$alert-ios-button-font-size:                    17px !default;
+$alert-ios-button-text-color:                   map-get($colors-ios, primary) !default;
+$alert-ios-button-background-color:             transparent !default;
+$alert-ios-button-border-radius:                0 !default;
+$alert-ios-button-border-color:                 #c8c7cc !default;
+$alert-ios-button-activated-background-color:   #e9e9e9 !default;
+
+
+ion-alert {
+  background: $alert-ios-background;
+}
+
+.alert-wrapper {
+  border-radius: $alert-ios-border-radius;
+  background-color: $alert-ios-background-color;
+  max-width: $alert-ios-max-width;
+  overflow: hidden;
+}
+
+
+// iOS Alert Header
+// --------------------------------------------------
+
+.alert-head {
+  padding: $alert-ios-head-padding;
+  text-align: $alert-ios-head-text-align;
+}
+
+.alert-title {
+  margin-top: $alert-ios-title-margin-top;
+  font-weight: $alert-ios-title-font-weight;
+  font-size: $alert-ios-title-font-size;
+}
+
+.alert-sub-title {
+  font-size: $alert-ios-sub-title-font-size;
+  color: $alert-ios-sub-title-text-color;
+}
+
+
+// iOS Alert Message
+// --------------------------------------------------
+
+.alert-message,
+.alert-input-group {
+  padding: $alert-ios-message-padding;
+  font-size: $alert-ios-message-font-size;
+  color: $alert-ios-message-text-color;
+  text-align: $alert-ios-message-text-align;
+}
+
+
+// iOS Alert Input
+// --------------------------------------------------
+
+.alert-input {
+  margin-top: $alert-ios-input-margin-top;
+  padding: $alert-ios-input-padding;
+  border: $alert-ios-input-border;
+  border-radius: $alert-ios-input-border-radius;
+  background-color: $alert-ios-input-background-color;
+  -webkit-appearance: none;
+}
+
+
+// iOS Alert Radio/Checkbox Group
+// --------------------------------------------------
+
+.alert-radio-group,
+.alert-checkbox-group {
+  max-height: 240px;
+  border-top: 1px solid $alert-ios-button-border-color;
+  overflow: scroll;
+}
+
+.alert-tappable {
+  display: flex;
+  min-height: $alert-ios-button-min-height;
+  cursor: pointer;
+}
+
+
+// iOS Alert Radio
+// --------------------------------------------------
+
+.alert-radio-label {
+  flex: 1;
+  order: 0;
+  padding: 13px;
+  text-align: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.alert-radio-icon {
+  position: relative;
+  order: 1;
+  min-width: 30px;
+}
+
+.alert-radio[aria-checked=true] {
+  color: $alert-ios-button-text-color;
+
+  .alert-radio-icon:after {
+    position: absolute;
+    border-width: 2px;
+    border-style: solid;
+    border-color: $alert-ios-button-text-color;
+    top: 13px;
+    left: 7px;
+    width: 4px;
+    height: 10px;
+    border-left: none;
+    border-top: none;
+    content: '';
+    transform: rotate(45deg);
+  }
+}
+
+
+// iOS Alert Checkbox
+// --------------------------------------------------
+
+.alert-checkbox-label {
+  flex: 1;
+  order: 0;
+  padding: 13px;
+  text-align: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+// iOS Alert Button
+// --------------------------------------------------
+
+.alert-button {
+  margin: 0;
+  flex: 1;
+  font-size: $alert-ios-button-font-size;
+  min-height: $alert-ios-button-min-height;
+  border-radius: $alert-ios-button-border-radius;
+  border-top: 1px solid $alert-ios-button-border-color;
+  border-right: 1px solid $alert-ios-button-border-color;
+  color: $alert-ios-button-text-color;
+  background-color: $alert-ios-button-background-color;
+
+  &:last-child {
+    font-weight: bold;
+    border-right: 0;
+  }
+
+  &.activated {
+    opacity: 1;
+    background-color: $alert-ios-button-activated-background-color;
+  }
+
+  &:hover:not(.disable-hover) {
+    opacity: 1;
+  }
+}
+
+&.hairlines {
+  .alert-radio-group,
+  .alert-checkbox-group {
+    border-width: 0.55px;
+  }
+
+  .alert-input {
+    border-width: 0.55px;
+  }
+
+  .alert-button {
+    border-top-width: 0.55px;
+    border-right-width: 0.55px;
+  }
+}
