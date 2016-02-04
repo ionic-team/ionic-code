@@ -1,8 +1,4 @@
-Ionic Framework Code
+Ionic Framework 版本存档
 ==========
 
-Static files for the [Ionic Framework](http://ionicframework.com/).
-
-[Ionic CDN](http://code.ionicframework.com/), sponsored by [MaxCDN](http://maxcdn.com/)
-
-Please submit any issues to the [Ionic repo](https://github.com/driftyco/ionic).
+由 [百度云加速](http://su.baidu.com/) 提供技术支持
