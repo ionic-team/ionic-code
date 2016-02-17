@@ -1,0 +1,30 @@
+
+// Material Design Theme
+@import "themes/default.md";
+
+
+// Material Design Components
+@import
+  "components/app/app.md",
+  "components/action-sheet/action-sheet.md",
+  "components/alert/alert.md",
+  "components/badge/badge.md",
+  "components/button/button.md",
+  "components/card/card.md",
+  "components/checkbox/checkbox.md",
+  "components/chip/chip.md",
+  "components/content/content.md",
+  "components/input/input.md",
+  "components/item/item.md",
+  "components/label/label.md",
+  "components/list/list.md",
+  "components/menu/menu.md",
+  "components/modal/modal.md",
+  "components/radio/radio.md",
+  "components/tap-click/ripple",
+  "components/searchbar/searchbar.md",
+  "components/segment/segment.md",
+  "components/select/select.md",
+  "components/tabs/tabs.md",
+  "components/toggle/toggle.md",
+  "components/toolbar/toolbar.md";

@@ -1,0 +1,18 @@
+{
+  "id": 2,
+  "name": "Ionic Dev Updates",
+  "list": [
+    {
+      "name": "The View App just landed. Preview your apps on any device",
+      "action": "http://view.ionic.io"
+    },
+    {
+      "name": "Invite anyone to preview and test your app",
+      "action": "ionic share EMAIL"
+    },
+    {
+      "name": "Generate splash screens and icons with ionic resource",
+      "action": "http://ionicframework.com/blog/automating-icons-and-splash-screens/"
+    }
+  ]
+}

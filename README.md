@@ -1,4 +1,4 @@
-Ionic Framework Code
+Ionic Framework 版本存档
 ==========
 
-Code for the [Ionic Framework](https://github.com/driftyco/ionic).
+由 [百度云加速](http://su.baidu.com/) 提供技术支持

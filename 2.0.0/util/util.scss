@@ -1,0 +1,225 @@
+@import "../globals.core";
+
+.no-transition {
+  transition: none !important;
+}
+
+.hide,
+[hidden],
+template,
+root-anchor {
+  display: none !important;
+}
+
+
+// Content Padding
+// --------------------------------------------------
+
+$content-padding:    16px !default;
+
+
+[padding],
+[padding] > scroll-content {
+  padding: $content-padding;
+}
+
+[padding-top] {
+  padding-top: $content-padding;
+}
+
+[padding-right] {
+  padding-right: $content-padding;
+}
+
+[padding-bottom] {
+  padding-bottom: $content-padding;
+}
+
+[padding-left] {
+  padding-left: $content-padding;
+}
+
+[padding-vertical] {
+  padding-top: $content-padding;
+  padding-bottom: $content-padding;
+}
+
+[padding-horizontal] {
+  padding-right: $content-padding;
+  padding-left: $content-padding;
+}
+
+[no-padding] {
+  padding: 0;
+}
+
+// Content Margin
+// --------------------------------------------------
+
+$content-margin:    16px !default;
+
+
+[margin],
+[margin] > scroll-content {
+  margin: $content-margin;
+}
+
+[margin-top] {
+  margin-top: $content-margin;
+}
+
+[margin-right] {
+  margin-right: $content-margin;
+}
+
+[margin-bottom] {
+  margin-bottom: $content-margin;
+}
+
+[margin-left] {
+  margin-left: $content-margin;
+}
+
+[margin-vertical] {
+  margin-top: $content-margin;
+  margin-bottom: $content-margin;
+}
+
+[margin-horizontal] {
+  margin-right: $content-margin;
+  margin-left: $content-margin;
+}
+
+[no-margin] {
+  margin: 0;
+}
+
+// Focus Outline
+// --------------------------------------------------
+
+$focus-outline-border-color:   #51a7e8 !default;
+$focus-outline-box-shadow:     0px 0px 8px 0px $focus-outline-border-color !default;
+
+
+:focus,
+:active {
+  outline: none;
+}
+
+.focus-outline {
+
+  :focus {
+    outline-offset: -1px;
+    outline: thin dotted;
+  }
+
+  button:focus,
+  [button]:focus {
+    border-color: $focus-outline-border-color;
+    box-shadow: $focus-outline-box-shadow;
+    outline: thin solid $focus-outline-border-color;
+  }
+
+  ion-input.input-has-focus,
+  button[ion-item]:focus,
+  a[ion-item]:focus {
+    border-color: $focus-outline-border-color;
+    box-shadow: inset $focus-outline-box-shadow !important;
+  }
+
+  ion-input :focus {
+    outline: none;
+  }
+
+}
+
+
+// Focus Controls
+// -------------------------------
+
+focus-ctrl {
+  position: fixed;
+
+  input,
+  button {
+    position: fixed;
+    top: 1px;
+    width: 9px;
+    left: -9999px;
+    z-index: 9999;
+    pointer-events: none;
+  }
+}
+
+
+// Backdrop
+// --------------------------------------------------
+
+$backdrop-color:      #000 !default;
+
+.backdrop {
+  position: absolute;
+  z-index: $z-index-backdrop;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $backdrop-color;
+  opacity: 0.01;
+  display: block;
+  transform: translateZ(0);
+}
+
+
+
+// Click Block
+// --------------------------------------------------
+// Fill the screen to block clicks (a better pointer-events: none)
+// to avoid full-page reflows and paints which can cause flickers
+
+click-block {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  z-index: $z-index-click-block;
+  transform: translate3d(0px, -100%, 0px);
+  transform: translate3d(0px, calc(-100% + 1px), 0px);
+
+  // background: red;
+  // opacity: .3;
+}
+
+.click-block-active {
+  transform: translate3d(0px, 0px, 0px);
+}
+
+
+// Loading Icon
+// --------------------------------------------------
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+ion-loading-icon {
+  display: flex;
+  align-self: center;
+  margin: auto;
+
+  font-family: 'Ionicons';
+  &:before {
+    content: "\f44e";
+  }
+  font-size: 128px;
+  color: #666666;
+
+  animation: rotation 45s infinite linear;
+}
