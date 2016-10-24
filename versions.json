@@ -38,14 +38,6 @@
     "type":"js"
    },
    {
-    "path":"/1.3.1/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.3.1/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.3.1/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -78,6 +70,14 @@
     "type":"dependency"
    },
    {
+    "path":"/1.3.1/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.3.1/js/angular-ui/angular-ui-router.min.js",
+    "type":"dependency"
+   },
+   {
     "path":"/1.3.1/fonts/ionicons.eot",
     "type":"font"
    },
@@ -94,12 +94,12 @@
     "type":"font"
    }
   ],
-  "release_datetime":"2016-05-12 18:37:11",
+  "release_datetime":"2016-10-24 20:55:37",
   "version_number":"1.3.1",
-  "release_date":"2016-05-12",
+  "release_date":"2016-10-24",
   "archive":"/1.3.1/ionic-v1.3.1.zip",
-  "version_codename":"el-salvador",
-  "version_name":"El Salvador",
+  "version_codename":"france",
+  "version_name":"France",
   "id":"101103101199"
  },
  {
@@ -141,14 +141,6 @@
     "type":"js"
    },
    {
-    "path":"/1.3.0/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.3.0/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.3.0/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -178,6 +170,14 @@
    },
    {
     "path":"/1.3.0/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.3.0/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.3.0/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -244,14 +244,6 @@
     "type":"js"
    },
    {
-    "path":"/1.2.4/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.2.4/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.2.4/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -281,6 +273,14 @@
    },
    {
     "path":"/1.2.4/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.2.4/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.2.4/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -347,14 +347,6 @@
     "type":"js"
    },
    {
-    "path":"/1.2.1/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.2.1/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.2.1/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -384,6 +376,14 @@
    },
    {
     "path":"/1.2.1/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.2.1/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.2.1/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -450,14 +450,6 @@
     "type":"js"
    },
    {
-    "path":"/1.1.1/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.1.1/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.1.1/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -487,6 +479,14 @@
    },
    {
     "path":"/1.1.1/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.1.1/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.1.1/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -553,14 +553,6 @@
     "type":"js"
    },
    {
-    "path":"/1.1.0/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.1.0/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.1.0/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -590,6 +582,14 @@
    },
    {
     "path":"/1.1.0/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.1.0/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.1.0/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -656,14 +656,6 @@
     "type":"js"
    },
    {
-    "path":"/1.0.1/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.1/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.0.1/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -693,6 +685,14 @@
    },
    {
     "path":"/1.0.1/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.1/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.1/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -759,14 +759,6 @@
     "type":"js"
    },
    {
-    "path":"/1.0.0/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.0.0/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -796,6 +788,14 @@
    },
    {
     "path":"/1.0.0/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -862,14 +862,6 @@
     "type":"js"
    },
    {
-    "path":"/1.0.0-rc.5/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-rc.5/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.0.0-rc.5/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -899,6 +891,14 @@
    },
    {
     "path":"/1.0.0-rc.5/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.5/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.5/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -965,14 +965,6 @@
     "type":"js"
    },
    {
-    "path":"/1.0.0-rc.4/js/angular-ui/angular-ui-router.js",
-    "type":"dependency"
-   },
-   {
-    "path":"/1.0.0-rc.4/js/angular-ui/angular-ui-router.min.js",
-    "type":"dependency"
-   },
-   {
     "path":"/1.0.0-rc.4/js/angular/angular-animate.js",
     "type":"dependency"
    },
@@ -1002,6 +994,14 @@
    },
    {
     "path":"/1.0.0-rc.4/js/angular/angular.min.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.4/js/angular-ui/angular-ui-router.js",
+    "type":"dependency"
+   },
+   {
+    "path":"/1.0.0-rc.4/js/angular-ui/angular-ui-router.min.js",
     "type":"dependency"
    },
    {
@@ -1044,14 +1044,6 @@
     "type":"css"
    },
    {
-    "path":"/nightly/js/ionic.js",
-    "type":"js"
-   },
-   {
-    "path":"/nightly/js/ionic.min.js",
-    "type":"js"
-   },
-   {
     "path":"/nightly/js/ionic-angular.js",
     "type":"js"
    },
@@ -1060,11 +1052,19 @@
     "type":"js"
    },
    {
+    "path":"/nightly/js/ionic.bundle.js",
+    "type":"js"
+   },
+   {
     "path":"/nightly/js/ionic.bundle.min.js",
     "type":"js"
    },
    {
-    "path":"/nightly/js/ionic.bundle.js",
+    "path":"/nightly/js/ionic.js",
+    "type":"js"
+   },
+   {
+    "path":"/nightly/js/ionic.min.js",
     "type":"js"
    },
    {
