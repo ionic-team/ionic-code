@@ -1,1 +1,0 @@
-Ionic.loadComponents("a00e55a3",["ion-avatar","Avatar",[],[],1,0,0,function(n,t,i){"use strict";var a=function(){function n(){}return n}();n.Avatar=a}],["ion-thumbnail","Thumbnail",[],[],1,0,0,function(n,t,i){"use strict";var a=function(){function n(){}return n}();n.Thumbnail=a}]);
