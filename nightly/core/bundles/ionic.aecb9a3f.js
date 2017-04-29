@@ -1,1 +1,0 @@
-Ionic.loadComponents("aecb9a3f",["ion-list-header","ListHeader",[],[],1,0,0,function(n,t,e){"use strict";var i=function(){function n(){}return n}();n.ListHeader=i}]);
